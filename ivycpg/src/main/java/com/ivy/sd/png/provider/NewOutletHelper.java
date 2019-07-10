@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.util.SparseArray;
 
 import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
@@ -32,14 +32,9 @@ import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Vector;
 
 public class NewOutletHelper {
@@ -117,13 +112,19 @@ public class NewOutletHelper {
 
     private SparseArray<Vector<RetailerMasterBO>> mLinkRetailerListByDistributorId;
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl#getRetailerType();}
+     * @since CPG134 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getRetailerType()}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<NewOutletBO> getRetailerTypeList() {
         return retailerTypeList;
     }
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#getContactTitle()}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -185,6 +186,12 @@ public class NewOutletHelper {
         this.id = id;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl#getImageTypeList;}
+     * @since CPG134 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getImageTypeList}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public Vector<NewOutletBO> getImageTypeList() {
         return imageTypeList;
     }
@@ -221,6 +228,12 @@ public class NewOutletHelper {
         return "'" + data + "'";
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl#getRetailerType();}
+     * @since CPG134 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getRetailerType()}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void loadRetailerType() {
         NewOutletBO retailerType;
         retailerTypeList = new ArrayList<>();
@@ -1434,12 +1447,24 @@ public class NewOutletHelper {
         }
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG134 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNewRetailers()}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public HashMap<String, NewOutletBO> getmNewRetailerById() {
         return mNewRetailerById;
     }
 
     private HashMap<String, NewOutletBO> mNewRetailerById;
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG134 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNewRetailers()}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<NewOutletBO> getNewRetailers() {
         ArrayList<NewOutletBO> lst = new ArrayList<>();
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -1537,7 +1562,12 @@ public class NewOutletHelper {
         return lst;
     }
 
-
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG134 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNewRetailers()}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     private ArrayList<String> loadImgList(String retailerID, DBUtil db) {
         ArrayList<String> imgList = new ArrayList<>();
         try {
@@ -1567,6 +1597,13 @@ public class NewOutletHelper {
 
     /*
     Load Edit Attributes list
+     */
+
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG134 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNewRetailers()}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
      */
     private ArrayList<String> loadEditAttributes(String retailerID, DBUtil db) {
         ArrayList<String> attributeList = new ArrayList<>();
@@ -1640,7 +1677,7 @@ public class NewOutletHelper {
             }
 
             if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
-
+//TODO To Check
                 if (selectQuery("RetailerPotential", rid))
                     db.deleteSQL("RetailerPotential", " Rid=" + bmodel.QT(rid), false);
             }
@@ -1680,6 +1717,8 @@ public class NewOutletHelper {
      * <p>
      * return
      */
+
+
     public void loadNewOutletConfiguration(int channelid) {
         ConfigureBO ConfigureBO;
 
@@ -1745,6 +1784,12 @@ public class NewOutletHelper {
 
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl#getImageTypeList;}
+     * @since CPG134 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getImageTypeList}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void loadImageType() {
         imageTypeList.clear();
         try {
@@ -1836,8 +1881,8 @@ public class NewOutletHelper {
     }
 
     /**
-     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl#getLocationListByLevId;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getLocationListByLevId}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -1845,6 +1890,12 @@ public class NewOutletHelper {
         return mLocationListByLevelId;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl#checkRetailerAlreadyAvailable ;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#checkRetailerAlreadyAvailable}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public boolean isRetailerAlreadyAvailable(String retailerName, String pincode) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -1909,8 +1960,8 @@ public class NewOutletHelper {
     private final HashMap<String, String> lstEditRequests = new HashMap<>();
 
     /**
-     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNearbyRetailersEditRequest}
+     * @See {@link  ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#getNearbyRetailersEditRequest}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -1935,7 +1986,13 @@ public class NewOutletHelper {
         }
     }
 
-
+    /**
+     * @See {@link  ProfileDataManagerImpl#getTaxType;}
+     * @since CPG134 replaced by {@link ProfileDataManagerImpl#getTaxType}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
+    @Deprecated
     public ArrayList<StandardListBO> downloadTaxType() {
         ArrayList<StandardListBO> taxTypeList = new ArrayList<>();
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -1963,6 +2020,12 @@ public class NewOutletHelper {
 
     }
 
+    /**
+     * @See {@link  ProfileDataManagerImpl#getTaxType;}
+     * @since CPG134 replaced by {@link ProfileDataManagerImpl#getTaxType}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<StandardListBO> downloadClaasType() {
         ArrayList<StandardListBO> classTypeList = new ArrayList<>();
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -1990,6 +2053,12 @@ public class NewOutletHelper {
 
     }
 
+    /**
+     * @See {@link  ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#downloadPriorityProducts}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<StandardListBO> downloadPriorityProducts() {
         ArrayList<StandardListBO> priorityproductList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -2020,8 +2089,8 @@ public class NewOutletHelper {
     }
 
     /**
-     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadPriorityProductsForRetailerUpdate}
+     * @See {@link  ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#downloadPriorityProductsForRetailerUpdate}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -2071,6 +2140,12 @@ public class NewOutletHelper {
         return priorityproductList;
     }
 
+    /**
+     * @See {@link  ProfileDataManagerImpl;}
+     * @since CPG134 replaced by {@link ProfileDataManagerImpl#downloadNearbyRetailers(String retailerId)}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<String> downloadNearbyRetailers(String retailerId) {
         ArrayList<String> nearByRetailers = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -2152,6 +2227,11 @@ public class NewOutletHelper {
         return channelList;
     }
 
+    /**
+     * @param newOutletBO
+     * @See {@link ProfileDataManagerImpl#savePriorityProducts(String, ArrayList)}
+     * @deprecated
+     */
     private void savePriorityProducts(NewOutletBO newOutletBO) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
         );
@@ -2204,17 +2284,17 @@ public class NewOutletHelper {
 
             if (isEdit) {
 
-                Cursor getCpidCursor = db.selectSQL("Select CPId from RetailerContact where retailerId=" + StringUtils.QT(outlet.getRetailerId()));
+                Cursor getCpidCursor = db.selectSQL("Select CPId from RetailerContact where retailerId=" + StringUtils.getStringQueryParam(outlet.getRetailerId()));
 
                 if (getCpidCursor != null && getCpidCursor.getCount() > 0) {
                     while (getCpidCursor.moveToNext()) {
                         db.deleteSQL("ContactAvailability", "CPId=" + getCpidCursor.getString(0), false);
                     }
                 }
-                db.deleteSQL("RetailerMaster", "retailerId=" + StringUtils.QT(outlet.getRetailerId()), false);
-                db.deleteSQL("RetailerContact", "retailerId=" + StringUtils.QT(outlet.getRetailerId()), false);
-                db.deleteSQL("RetailerAddress", "retailerId=" + StringUtils.QT(outlet.getRetailerId()), false);
-                db.deleteSQL("RetailerAttribute", "retailerId=" + StringUtils.QT(outlet.getRetailerId()), false);
+                db.deleteSQL("RetailerMaster", "retailerId=" + StringUtils.getStringQueryParam(outlet.getRetailerId()), false);
+                db.deleteSQL("RetailerContact", "retailerId=" + StringUtils.getStringQueryParam(outlet.getRetailerId()), false);
+                db.deleteSQL("RetailerAddress", "retailerId=" + StringUtils.getStringQueryParam(outlet.getRetailerId()), false);
+                db.deleteSQL("RetailerAttribute", "retailerId=" + StringUtils.getStringQueryParam(outlet.getRetailerId()), false);
                 db.updateSQL("Update NewRetailerSurveyResultHeader set retailerID = '" + getId() + "' where retailerID = '" + outlet.getRetailerId() + "'");
                 db.updateSQL("Update NewRetailerSurveyResultDetail set retailerID = '" + getId() + "' where retailerID = '" + outlet.getRetailerId() + "'");
             } else {
@@ -2230,8 +2310,7 @@ public class NewOutletHelper {
                             + QT("/RetailerImages/"
                             + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
                             + "/"
-                            + bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserid() + "/"
+                            + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/"
                             + (outlet.ImageName.get(i))) + "," + QT("N");
 
                     db.insertSQL("NewOutletImage", column, value);
@@ -2246,6 +2325,8 @@ public class NewOutletHelper {
                     && outlet.getPriorityProductList().size() > 0) {
                 savePriorityProducts(outlet);
             }
+
+            //@See {@link ProfileDataManagerImpl#saveNewOutlet(String, NewOutletBO)} *
 
             column = "RetailerID,RetailerName,channelID,subchannelid,beatid,"
                     + DataMembers.VISIT_DAYS_COLUMN_NAME + ",LocationId," +
@@ -2280,12 +2361,12 @@ public class NewOutletHelper {
                     + "," + QT(getNewoutlet().getGstNum())
                     + "," + QT(getNewoutlet().getRfield5())
                     + "," + QT(getNewoutlet().getRfield6())
-                    + "," + (getNewoutlet().getTinExpDate().isEmpty() ? null : QT(getNewoutlet().getTinExpDate()))
+                    + "," + (getNewoutlet().getTinExpDate() == null || getNewoutlet().getTinExpDate().isEmpty() ? null : QT(getNewoutlet().getTinExpDate()))
                     + "," + QT(getNewoutlet().getPanNo())
                     + "," + QT(getNewoutlet().getFoodLicenseNo())
-                    + "," + (getNewoutlet().getFlExpDate().isEmpty() ? null : QT(getNewoutlet().getFlExpDate()))
+                    + "," + (getNewoutlet().getFlExpDate() == null || getNewoutlet().getFlExpDate().isEmpty() ? null : QT(getNewoutlet().getFlExpDate()))
                     + "," + QT(getNewoutlet().getDrugLicenseNo())
-                    + "," + (getNewoutlet().getDlExpDate().isEmpty() ? null : QT(getNewoutlet().getDlExpDate()))
+                    + "," + (getNewoutlet().getDlExpDate() == null || getNewoutlet().getDlExpDate().isEmpty() ? null : QT(getNewoutlet().getDlExpDate()))
                     + "," + QT(getNewoutlet().getrField4())
                     + "," + QT(getNewoutlet().getrField7())
                     + "," + QT(userid + "");
@@ -2293,6 +2374,9 @@ public class NewOutletHelper {
 
             db.insertSQL("RetailerMaster", column, value);
             bmodel.setNewlyaddedRetailer(getId());
+
+
+            //@See {@link ProfileDataManagerImpl#saveNewOutletContactTabInformation()}
 
             column = "RetailerID,contactname,ContactName_LName,contactNumber," +
                     "contact_title,contact_title_lovid,IsPrimary,Email,Upload,salutationLovId,IsEmailNotificationReq,CPID";
@@ -2311,16 +2395,17 @@ public class NewOutletHelper {
                                 + "," + QT(retailerContactBo.getContactMail())
                                 + "," + QT("N")
                                 + "," + QT(retailerContactBo.getContactSalutationId())
-                                + "," + QT(retailerContactBo.getIsEmailPrimary()+"")
-                                + "," +QT(retailerContactBo.getCpId());
+                                + "," + QT(retailerContactBo.getIsEmailPrimary() + "")
+                                + "," + QT(retailerContactBo.getCpId());
                         db.insertSQL("RetailerContact", column, value);
 
                         if (retailerContactBo.getContactAvailList().size() > 0)
-                            addContactAvail(db,retailerContactBo);
+                            addContactAvail(db, retailerContactBo);
                     }
                     retailerContactList.clear();
                 }
-            }else{
+            } //@See {@link ProfileDataManagerImpl#saveNewOutletContactInformation(String, NewOutletBO)}
+            else {
                 if (outlet.getContactpersonname() != null && !outlet.getContactpersonname().trim().equals("")) {
                     value = QT(getId())
                             + "," + QT(outlet.getContactpersonname())
@@ -2333,7 +2418,7 @@ public class NewOutletHelper {
                             + "," + QT("N")
                             + "," + QT("")
                             + "," + QT("")
-                            + "," +QT("");
+                            + "," + QT("");
                     db.insertSQL("RetailerContact", column, value);
                 }
                 if (outlet.getContactpersonname2() != null && !outlet.getContactpersonname2().trim().equals("")) {
@@ -2348,11 +2433,12 @@ public class NewOutletHelper {
                             + "," + QT("N")
                             + "," + QT("")
                             + "," + QT("")
-                            + "," +QT("");
+                            + "," + QT("");
                     db.insertSQL("RetailerContact", column, value);
                 }
             }
 
+            //@See {@link ProfileDataManagerImpl#saveNewOutletAddressInformation(String, NewOutletBO)}
 
             column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
                     + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile,District";
@@ -2423,12 +2509,14 @@ public class NewOutletHelper {
             }
 
             column = "RetailerId, AttributeId, LevelId, Upload";
-            for (NewOutletAttributeBO attributeBO : outlet.getAttributeList()) {
-                value = QT(getId())
-                        + "," + attributeBO.getAttrId()
-                        + "," + attributeBO.getLevelId()
-                        + "," + QT("N");
-                db.insertSQL("RetailerAttribute", column, value);
+            if (outlet.getAttributeList() != null) {
+                for (NewOutletAttributeBO attributeBO : outlet.getAttributeList()) {
+                    value = QT(getId())
+                            + "," + attributeBO.getAttrId()
+                            + "," + attributeBO.getLevelId()
+                            + "," + QT("N");
+                    db.insertSQL("RetailerAttribute", column, value);
+                }
             }
 
             if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER && getOrderedProductList().size() > 0) {
@@ -2439,7 +2527,7 @@ public class NewOutletHelper {
                 // Commented after discussing it with Abbas.
                 // if (bmodel.configurationMasterHelper.SHOW_ORDER_SEQUENCE_NO) {
                 //   bmodel.insertSeqNumber("ORD");
-                //   uid = QT(bmodel.downloadSequenceNo("ORD"));
+                //   uid = getStringQueryParam(bmodel.downloadSequenceNo("ORD"));
                 // }
 
                 column = "OrderID, OrderDate, RetailerID, DistributorId, OrderValue,LinesPerCall,TotalWeight,Remarks,OrderTime";
@@ -2453,7 +2541,7 @@ public class NewOutletHelper {
                         + "," + QT(bmodel.getOrderHeaderNote())
                         + "," + QT(DateTimeUtils.now(DateTimeUtils.TIME));
                 db.insertSQL("OrderHeaderRequest", column, value);
-
+//TODO To Check
                 column = "OrderID, ProductID, Qty,uomid,Price,LineValue, Weight,uomcount,HsnCode,RetailerID";
                 for (ProductMasterBO productMasterBO : getOrderedProductList()) {
                     if (productMasterBO.getOrderedPcsQty() > 0) {
@@ -2469,6 +2557,7 @@ public class NewOutletHelper {
                                 + "," + QT(getId());
                         db.insertSQL("OrderDetailRequest", column, value);
                     }
+                    //TODO To Check
                     if (productMasterBO.getOrderedCaseQty() > 0) {
                         value = uid
                                 + "," + QT(productMasterBO.getProductID())
@@ -2519,8 +2608,8 @@ public class NewOutletHelper {
 
         return true;
     }
-
-    private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo){
+//TODO to check
+    private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo) {
         String column = "CPAId,CPId,Day,StartTime,EndTime,isLocal,upload,retailerID";
 
         for (RetailerContactAvailBo retailerContactAvailBo : retailerContactBo.getContactAvailList()) {
@@ -2641,6 +2730,13 @@ public class NewOutletHelper {
         this.mSelectedChannelname = mSelectedChannelname;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl#getRetailerBySupplierId ;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#getRetailerBySupplierId}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
+    @Deprecated
     public ArrayList<String> getRetialerIds(String suppilerID) {
         ArrayList<String> mRetailerIds = new ArrayList<>();
         DBUtil db = null;
@@ -2658,7 +2754,6 @@ public class NewOutletHelper {
                 }
                 c.close();
             }
-
             db.closeDB();
         } catch (Exception e) {
             if (db != null)
@@ -2847,10 +2942,18 @@ public class NewOutletHelper {
         return censusLocationList;
     }
 
+    /**
+     * @See {{@link ProfileDataManagerImpl#fetchCensusLocationDetails()}}
+     * @deprecated
+     */
     public void setCensusLocationList(ArrayList<CensusLocationBO> censusLocationList) {
         this.censusLocationList = censusLocationList;
     }
 
+    /**
+     * @See {{@link ProfileDataManagerImpl#fetchCensusLocationDetails()}}
+     * @deprecated
+     */
     public void downloadLocationLevels() {
         int pincodeLevel = 0;
         ArrayList<CensusLocationBO> pincodeList = new ArrayList<>();

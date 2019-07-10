@@ -2,7 +2,7 @@ package com.ivy.cpg.view.webview;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;

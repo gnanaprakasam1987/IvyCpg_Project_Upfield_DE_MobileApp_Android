@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.SearchView;
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.appcompat.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -546,7 +546,7 @@ public class QuickCallFragment extends IvyBaseFragment {
         inflater.inflate(R.menu.menu_search, menu);
         SearchManager searchManager = (SearchManager) getContext().getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        ImageView searchClose = searchView.findViewById(R.id.search_close_btn);
         searchClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
         searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getActivity().getComponentName()) : null);
         SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {

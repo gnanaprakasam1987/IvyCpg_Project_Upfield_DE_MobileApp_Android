@@ -7,8 +7,8 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -1390,7 +1390,7 @@ public class DiscountHelper {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select typeid,discountType,sum(Value) from OrderDiscountDetail" +
-                    " where orderid=" + StringUtils.QT(orderId) + "  group by typeid");
+                    " where orderid=" + StringUtils.getStringQueryParam(orderId) + "  group by typeid");
             Cursor c = db.selectSQL(sb.toString());
             while (c.moveToNext()) {
                 mDiscountsApplied.put(c.getString(1), c.getDouble(2));

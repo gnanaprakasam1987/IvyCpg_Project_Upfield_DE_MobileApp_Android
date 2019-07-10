@@ -1328,6 +1328,7 @@
     <string name="digital_content_header_older">Older</string>
 
     <string-array name="task_tab_header">
+        <item>All</item>
         <item>Assigned</item>
         <item>My Task</item>
         <item>Completed</item>

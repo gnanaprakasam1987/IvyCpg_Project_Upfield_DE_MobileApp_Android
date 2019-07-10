@@ -14,10 +14,9 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.SearchView;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.appcompat.widget.SearchView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +49,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.text.DateFormat;
@@ -237,7 +235,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         mSearchRetailer.clearFocus();
 
         /* Code for changing the textColor and hint color for the search view */
-        SearchView.SearchAutoComplete searchAutoComplete = mSearchRetailer.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        SearchView.SearchAutoComplete searchAutoComplete = mSearchRetailer.findViewById(R.id.search_src_text);
         searchAutoComplete.setHintTextColor(ResourcesCompat.getColor(getResources(), R.color.white, null));
         searchAutoComplete.setTextColor(ResourcesCompat.getColor(getResources(), R.color.white, null));
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -26,7 +26,7 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:context="com.ivy.cpg.view.stockcheck.CombinedStockDetailActivity">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_10sdp">
@@ -54,7 +54,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tvTitleAvaialabilty"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitleAvaialabilty" />
 
-            <android.support.v7.widget.AppCompatCheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 style="?attr/checkbox_style"
                 android:id="@+id/is_distributed"
                 android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_is_distributed"
                 app:layout_constraintTop_toBottomOf="@+id/tv_is_distributed" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/dist_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvTitleAvaialabilty"
                 app:layout_constraintTop_toTopOf="@+id/tv_is_distributed" />
 
-            <android.support.v7.widget.AppCompatCheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 style="?attr/checkbox_style"
                 android:id="@+id/is_listed"
                 android:layout_width="wrap_content"
@@ -96,7 +96,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_is_listed"
                 app:layout_constraintTop_toBottomOf="@+id/tv_is_listed" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/is_listed_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/chk_availability"
                 app:layout_constraintTop_toTopOf="@+id/tv_is_listed" />
 
-            <android.support.v7.widget.AppCompatCheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 style="?attr/checkbox_style"
                 android:id="@+id/chk_availability"
                 android:layout_width="wrap_content"
@@ -128,7 +128,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_availability"
                 app:layout_constraintTop_toBottomOf="@+id/tv_availability" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/avail_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/chk_availability"
                 app:layout_constraintTop_toTopOf="@+id/tv_availability" />
 
-            <android.support.v7.widget.AppCompatCheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 style="?attr/checkbox_style"
                 android:id="@+id/chk_price_tag"
                 android:layout_width="wrap_content"
@@ -160,7 +160,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_price_tag"
                 app:layout_constraintTop_toBottomOf="@+id/tv_price_tag" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/price_tag_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_reason"
                 tools:ignore="UnusedAttribute" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/reason_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -244,7 +244,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_avail_pctitle" />
 
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/cs_piece_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -274,7 +274,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_avail_cstitle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_avail_cstitle" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/cs_case_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -304,7 +304,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_avail_outitle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_avail_outitle" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/cs_outer_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -336,7 +336,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_faceqty_cstitle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_faceqty_cstitle" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/facing_qty_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -458,7 +458,7 @@
                 app:layout_constraintTop_toTopOf="@+id/tv_avg_rfield3_label" />
 
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/tv_avg_day_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -506,7 +506,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_price_pcTitle" />
 
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/pc_piece_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -520,7 +520,6 @@
                 android:tag="price_case"
                 android:text="@string/avail_cases"
                 app:layout_constraintEnd_toStartOf="@+id/tv_price_ouTitle"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/tv_price_pcTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitlePriceCheck"
                 app:layout_constraintTop_toTopOf="@+id/tv_price_pcTitle" />
@@ -537,7 +536,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_price_csTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_price_csTitle" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/pc_case_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -568,7 +567,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_price_ouTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_price_ouTitle" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/pc_outer_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -616,7 +615,7 @@
             </RadioGroup>
 
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/price_change_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -648,7 +647,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_priceMrp_pcTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_priceMrp_pcTitle" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/pc_mrp_piece_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -679,7 +678,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_priceMrp_csTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_priceMrp_csTitle" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/pc_mrp_case_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -711,7 +710,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_priceMrp_ouTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_priceMrp_ouTitle" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/pc_mrp_outer_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -727,7 +726,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/guideline3" />
 
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/price_check_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -772,7 +771,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_exp_pcTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_exp_pcTitle" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/exp_piece_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -802,7 +801,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_exp_csTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_exp_csTitle" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/exp_case_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -832,27 +831,27 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_exp_ouTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_exp_ouTitle" />
 
-            <android.support.constraint.Group
+            <androidx.constraintlayout.widget.Group
                 android:id="@+id/exp_outer_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:constraint_referenced_ids="tv_exp_ouTitle,et_exp_ouValue" />
 
-            <android.support.constraint.Guideline
+            <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.18" />
+                app:layout_constraintGuide_begin="112dp" />
 
-            <android.support.constraint.Guideline
+            <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.40" />
 
-            <android.support.constraint.Guideline
+            <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -860,7 +859,7 @@
                 app:layout_constraintGuide_percent="0.80" />
 
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 
@@ -899,4 +898,4 @@
             android:textAllCaps="false" />
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

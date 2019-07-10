@@ -7,9 +7,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
@@ -28,6 +26,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.UploadPresenterImpl;
 import com.ivy.cpg.view.van.odameter.OdameterHelper;
@@ -38,9 +37,8 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.SubDepotBo;
-import com.ivy.sd.png.bo.VanLoadMasterBO;
+import com.ivy.cpg.view.van.vanstockapply.VanLoadMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -315,7 +313,7 @@ public class LoadManagementHelper {
             @Override
             public void subscribe(final SingleEmitter<String> e) throws Exception {
                 bmodel.synchronizationHelper.updateAuthenticateToken(false);
-                if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     try {
                         String downloadurl = getDownloadUrl(mcontext);
                         if (downloadurl.length() > 0) {
@@ -332,7 +330,7 @@ public class LoadManagementHelper {
                                                         if (key.equals("Master")) {
                                                             try {
                                                                 if (jsonObject.getString(SynchronizationHelper.ERROR_CODE)
-                                                                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                                                        .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                                                     bmodel.synchronizationHelper.inserVanloadRecodrs(jsonObject);
                                                                     e.onSuccess(jsonObject.getString(SynchronizationHelper.ERROR_CODE));
                                                                 }
@@ -603,11 +601,11 @@ public class LoadManagementHelper {
                         + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                 StringBuilder stringBuilder=new StringBuilder();
-                stringBuilder.append(StringUtils.QT(id));
+                stringBuilder.append(StringUtils.getStringQueryParam(id));
                 stringBuilder.append(","+bmodel.getAppDataProvider().getUser().getUserid());
-                stringBuilder.append(","+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW)));
-                stringBuilder.append(","+StringUtils.QT("N"));
-                stringBuilder.append(","+StringUtils.QT("STARTED"));
+                stringBuilder.append(","+StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW)));
+                stringBuilder.append(","+StringUtils.getStringQueryParam("N"));
+                stringBuilder.append(","+StringUtils.getStringQueryParam("STARTED"));
                 stringBuilder.append(","+LocationUtil.latitude);
                 stringBuilder.append(","+LocationUtil.latitude);
 
@@ -620,7 +618,7 @@ public class LoadManagementHelper {
             }
             else
                 db.updateSQL("update "+DataMembers.tbl_TripMaster
-                        +" set endDate="+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
+                        +" set endDate="+StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                         +","+"upload='N',status='COMPLETED'"
                         +",endlatitude="+LocationUtil.latitude+",endlongitude="+LocationUtil.longitude
                         +" where userId="+bmodel.getAppDataProvider().getUser().getUserid());

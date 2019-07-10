@@ -2,12 +2,14 @@ package com.ivy.cpg.view.serializedAsset;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
@@ -58,7 +60,7 @@ SerializedAssetActivity extends IvyBaseActivityNoActionBar implements
                 @Override
                 public void onTagRead(String tagRead) {
                     if (!tagRead.equals("")) {
-                        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+                        FragmentManager fm = getSupportFragmentManager();
                         SerializedAssetFragment asf = (SerializedAssetFragment) fm
                                 .findFragmentById(R.id.serialized_asset_fragment);
                         asf.updateListByNFCTag(tagRead);
@@ -126,7 +128,7 @@ SerializedAssetActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SerializedAssetFragment asf = (SerializedAssetFragment) fm
                 .findFragmentById(R.id.serialized_asset_fragment);
         asf.updateBrandText(mFilterText, id);
@@ -138,7 +140,7 @@ SerializedAssetActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SerializedAssetFragment asf = (SerializedAssetFragment) fm
                 .findFragmentById(R.id.serialized_asset_fragment);
         asf.updateCancel();
@@ -146,7 +148,7 @@ SerializedAssetActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SerializedAssetFragment asf = (SerializedAssetFragment) fm
                 .findFragmentById(R.id.serialized_asset_fragment);
         asf.updateFromFiveLevelFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts, mFilterText);    }
@@ -158,7 +160,7 @@ SerializedAssetActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateDate(Date date, String tag) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SerializedAssetFragment fragment = (SerializedAssetFragment) fm
                 .findFragmentById(R.id.serialized_asset_fragment);
         fragment.updateDate(date,tag);

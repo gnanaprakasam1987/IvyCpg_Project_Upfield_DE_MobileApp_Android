@@ -8,17 +8,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.core.view.GravityCompat;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -128,7 +129,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         FrameLayout drawer = view.findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
         mDrawerLayout = view.findViewById(R.id.drawer_layout);
@@ -322,10 +323,10 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
             mDrawerLayout.openDrawer(GravityCompat.END);
 
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);

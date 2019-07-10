@@ -13,13 +13,9 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.widget.ImageView;
 
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import androidx.core.content.FileProvider;
+
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -65,7 +61,6 @@ public class FileUtils {
         } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
             // We can only read the media
             mExternalStorageAvailable = true;
-            mExternalStorageWriteable = false;
         } else {
             // Something else is wrong. It may be one of many other states, but
             // all we need
@@ -73,12 +68,8 @@ public class FileUtils {
             mExternalStorageAvailable = mExternalStorageWriteable = false;
         }
 
-        if (mExternalStorageAvailable
-                && mExternalStorageWriteable && mbAvailable > mb) {
-            return true;
-        } else {
-            return false;
-        }
+        return mExternalStorageAvailable
+                && mExternalStorageWriteable && mbAvailable > mb;
     }
 
     /**

@@ -90,6 +90,7 @@
 
     <string name="please_provide_valid_reason_or_Availability">Please Provide Valid Reason or Availability</string>
     <string name="contact_list_mandatory">Contact List is Mandatory</string>
+    <string name="others">OTHERS</string>
     <string name="condition">Condition</string>
     <string name="printFile_missing_error">Print file is not available</string>
 
@@ -326,6 +327,9 @@
 
 
     <string name="select_percentage">Select Percentage</string>
+
+    <string name="menu_mandatory_message"> is Mandatory</string>
+    <string name="menu_length_must_be"> length must be atleast</string>
     <string name="signature_label">Signature</string>
     <string name="sign_mandatory">Signature is mandatory</string>
     <string name="could_not_init_file_system">Could not initiate File System.. Is Sdcard mounted properly?</string>
@@ -361,7 +365,11 @@
     <string name="mvp_kpi_tab2_text">Top 5 peers</string>
     <string name="kpi_label">KPI</string>
     <string name="ach_label">Ach.</string>
-    <string name="do_u_want_close">Do you want to Close?</string>
+    <string name="downloading_app_tutorial">Downloading App Tutorial</string>
+    <string name="error_in_downloading_tutorial">Error in Downloading Tutorial</string>
+    <string name="upload">Upload</string>
+    <string name="records">Record\'s</string>
+    <string name="seconds">Second\'s</string>
     <string name="due_in_next_days">Due in next %1$d days</string>
     <string name="next_visit_date">Next Visit Date: </string>
     <string name="next_visit_date_count">%1$d days to go</string>
@@ -383,5 +391,14 @@
     <string name="mark_as_un_executed">Mark as un executed</string>
     <string name="due_today">Due today</string>
     <string name="compliance_pt">PT</string>
+    <string name="assigned">Assigned</string>
+    <string name="select_parent">Select Parent</string>
     <string name="seriallized_no_error_message">Serialized Number Should be more then two </string>
+    <string name="sync_report">Sync Report</string>
+    <string name="freeze_columns">Freeze Columns</string>
+    <string name="freeze_columns_alert_title">Select columns want to be freeze</string>
+    <string name="announcement">Announcement</string>
+    <string name="order_type">Order Type</string>
+    <string name="profile_view">Profile View</string>
+    <string name="do_u_want_close">Do you want to Close?</string>
 </resources>

@@ -3,14 +3,16 @@ package com.ivy.ui.task.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.constraint.Group;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
+
+import androidx.constraintlayout.widget.Group;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +45,7 @@ import com.ivy.ui.task.di.TaskModule;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -68,7 +71,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
 
     private int mSelectedCategoryID = 0;
-    private boolean isRetailerWiseTask = false;
+    private boolean isRetailerWiseTask;
+    private boolean isFromHomeSrc;
     private String menuCode;
     private int screenMode = 0;
     private TaskDataBO taskBo;
@@ -149,6 +153,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private HashMap<String, ArrayList<UserMasterBO>> linkUserListHashMap = new HashMap<>();
 
     private ArrayList<String> capturedImgList = new ArrayList<>();
+    private String deletedImageId = "";
 
 
     @Override
@@ -182,6 +187,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     protected void getMessageFromAliens() {
         if (getIntent().getExtras() != null) {
+            isFromHomeSrc = getIntent().getExtras().getBoolean(TaskConstant.FROM_HOME_SCREEN, false);
             isRetailerWiseTask = getIntent().getExtras().getBoolean(TaskConstant.RETAILER_WISE_TASK, false);
             screenTitle = getIntent().getExtras().getString(TaskConstant.SCREEN_TITLE, getString(R.string.task_creation));
             screenMode = getIntent().getExtras().getInt(TaskConstant.TASK_SCREEN_MODE, TaskConstant.NEW_TASK_CREATION);
@@ -200,14 +206,22 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskCreationDownloadMethods();
 
         if (isRetailerWiseTask) {
-            mode = TaskConstant.RETAILER_WISE;
-            switchOption.setVisibility(View.GONE);
-            optionTextView.setVisibility(View.GONE);
-            retSelectionAutoCompTxt.setVisibility(View.GONE);
-            peerUserRb.setVisibility(View.GONE);
+            setUpRetailerWiseMode();
         } else {
             mode = TaskConstant.SELLER_WISE;
         }
+    }
+
+    private void setUpRetailerWiseMode() {
+        mode = TaskConstant.RETAILER_WISE;
+        switchOption.setVisibility(View.GONE);
+        optionTextView.setText(getString(R.string.retailer_wise));
+        if (!isFromHomeSrc)
+            retSelectionAutoCompTxt.setVisibility(View.GONE);
+        else {
+            retSelectionAutoCompTxt.setVisibility(View.VISIBLE);
+        }
+        peerUserRb.setVisibility(View.GONE);
     }
 
 
@@ -244,7 +258,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public void setParentUserListData(ArrayList<UserMasterBO> userList) {
         if (!userList.isEmpty()) {
             parentUserMasterArrayAdapter.clear();
-            parentUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
+            parentUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_parent)));
             parentUserMasterArrayAdapter.addAll(userList);
             parentUserMasterArrayAdapter.notifyDataSetChanged();
             spinnerSelection.setAdapter(parentUserMasterArrayAdapter);
@@ -368,7 +382,21 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         showMessage(getString(R.string.something_went_wrong));
     }
 
-    TaskImgListAdapter.PhotoClickListener photoClickListener = this::prepareTaskPhotoCapture;
+    TaskImgListAdapter.PhotoClickListener photoClickListener = new TaskImgListAdapter.PhotoClickListener() {
+        @Override
+        public void onTakePhoto() {
+            prepareTaskPhotoCapture();
+        }
+
+        @Override
+        public void updateDeletedImageIds(String imageId) {
+
+            if (!deletedImageId.isEmpty())
+                deletedImageId = deletedImageId + ",";
+
+            deletedImageId += StringUtils.getStringQueryParam(imageId);
+        }
+    };
 
     @Override
     public String getTaskMode() {
@@ -390,7 +418,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         mode = getTaskMode();
         retSelectionAutoCompTxt.setVisibility(View.GONE);
         optionTextView.setText(getString(R.string.Seller));
-        peerUserRb.setVisibility(View.VISIBLE);
+        if (!peerUserMasterArrayAdapter.isEmpty())
+            peerUserRb.setVisibility(View.VISIBLE);
         handleLinkUserVisibility(View.GONE);
         handleProductLevelVisibility(View.GONE);
     }
@@ -475,6 +504,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @OnClick(R.id.task_due_date_btn)
     public void onDueDateClick() {
+        hideKeyboard();
         DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
         newFragment.show(getSupportFragmentManager(), TAG_DATE_PICKER_TO);
     }
@@ -536,9 +566,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             taskAssignId = getSelectedUserId();
         } else {
             mode = TaskConstant.RETAILER_WISE;
-            if (!isRetailerWiseTask)
-                taskAssignId = SDUtil.convertToInt(retailerMasterArrayAdapter.getItem(retSelectedPos).getRetailerID());
-            else
+            if (isFromHomeSrc) {
+                taskAssignId = (taskBo != null && retSelectedPos == 0) ? taskBo.getRid() : SDUtil.convertToInt(retailerMasterArrayAdapter.getItem(retSelectedPos).getRetailerID());
+            } else
                 taskAssignId = taskPresenter.getRetailerID();
 
             linkUserId = getSelectedUserId();
@@ -553,8 +583,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskBo.setTaskCategoryID(mSelectedCategoryID);
         taskBo.setMode(mode);
 
-        taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId);
+        taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId, deletedImageId);
     }
+
 
     private int getSelectedUserId() {
 
@@ -701,7 +732,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
         if (resultCode != -1) {
 
-            if (!isRetailerWiseTask)
+            if (isFromHomeSrc)
                 setResult(resultCode, new Intent(TaskCreationActivity.this,
                         HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
             else
@@ -771,6 +802,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         dueDateBtn.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                 taskDataObj.getTaskDueDate(), taskPresenter.outDateFormat()));
 
+        if (taskDataObj.getRid() != 0)
+            updateRetailerSelection();
+
         switch (taskDataObj.getMode()) {
 
             case TaskConstant.SELLER_WISE:
@@ -797,9 +831,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 break;
 
             case TaskConstant.RETAILER_WISE:
-                switchOption.setChecked(true);
-                switchOption.setText(getString(R.string.retailer_wise));
-                retSelectionAutoCompTxt.setText(retailerMasterArrayAdapter.getItem(getAdapterPosition(taskBo.getMode())).getRetailerName());
+                if (isFromHomeSrc)
+                    retSelectionAutoCompTxt.setText(retailerMasterArrayAdapter.getItem(getAdapterPosition(taskBo.getMode())).getRetailerName());
 
                 if (!linkUserMasterArrayAdapter.isEmpty()) {
                     handleLinkUserVisibility(View.VISIBLE);
@@ -812,6 +845,18 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         }
         taskView.setText(taskDataObj.getTaskDesc());
 
+    }
+
+    private void updateRetailerSelection() {
+        if (isFromHomeSrc)
+            retSelectionAutoCompTxt.setText(retailerMasterArrayAdapter.getItem(getAdapterPosition(TaskConstant.RETAILER_WISE)).getRetailerName());
+
+        if (!linkUserMasterArrayAdapter.isEmpty()) {
+            handleLinkUserVisibility(View.VISIBLE);
+            linkUserRb.setChecked(true);
+            setUpSpinnerData(3);
+            spinnerSelection.setSelection(getAdapterPosition(TaskConstant.LINK_WISE));
+        }
     }
 
     private int getAdapterPosition(String mode) {

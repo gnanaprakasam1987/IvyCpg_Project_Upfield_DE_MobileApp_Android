@@ -1,8 +1,8 @@
 package com.ivy.sd.png.ui.activation.activity;
 
 
-import android.support.test.espresso.action.ViewActions;
-import android.support.test.rule.ActivityTestRule;
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.rule.ActivityTestRule;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.ui.activation.view.ActivationActivity;
@@ -11,10 +11,10 @@ import org.junit.Rule;
 import org.junit.Test;
 
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 public class ActivationActivityTest {
     @Rule

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
@@ -7,10 +7,10 @@
     android:gravity="center_vertical"
     card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
-    card_view:cardElevation="5dp"
+    card_view:cardElevation="2dp"
     card_view:cardPreventCornerOverlap="true"
     card_view:cardUseCompatPadding="true"
-    card_view:contentPadding="5dp"
+    card_view:contentPadding="4dp"
     app:ignore="NamespaceTypo">
 
     <LinearLayout
@@ -21,256 +21,90 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:padding="3dp">
+
+           >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layout_primary"
+                >
+
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/stock_and_order_listview_productname"
                 style="@style/TextViewListItemPrimary"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:layout_toStartOf="@+id/img_view_layout"
-                android:layout_toLeftOf="@+id/img_view_layout"
                 android:maxLines="1"
                 android:text="@string/product_name"
-                app:use_gradient="true" />
+                app:use_gradient="true"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/layout_icons"
+                android:layout_toStartOf="@+id/layout_icons"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                />
 
+                <LinearLayout
+                    android:id="@+id/layout_icons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true">
+            <ImageView
+                android:id="@+id/iv_stock"
+                android:layout_width="@dimen/info_icon"
+                android:layout_height="@dimen/info_icon"
+                android:src="@drawable/activity_icon_stock_check"
+                android:tint="@color/black_bg1"
+                android:layout_toLeftOf="@+id/layout_product_tag_color"
+
+                />
             <LinearLayout
-                android:id="@+id/img_view_layout"
+                android:id="@+id/layout_product_tag_color"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:minWidth="@dimen/dimens_50dp"
+                android:gravity="center_vertical|end"
                 android:layout_alignParentRight="true"
-                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/iv_stock"
-                    android:layout_width="@dimen/info_icon"
-                    android:layout_height="@dimen/info_icon"
-                    android:padding="@dimen/list_item_padding"
-                    android:src="@drawable/activity_icon_stock_check"
-                    android:tint="@color/black_bg1" />
 
-                <com.ivy.sd.png.view.SlantView
-                    android:id="@+id/slant_view_bg"
-                    android:layout_width="@dimen/info_icon"
-                    android:layout_height="@dimen/info_icon"
-                    android:background="@color/RED"
-                    android:visibility="visible" />
+                >
 
             </LinearLayout>
-
+                </LinearLayout>
+            </RelativeLayout>
             <TextView
-                android:id="@+id/stock_and_order_listview_productcode"
-                style="@style/TextViewListItemPrimary"
+                android:id="@+id/textView_SecondaryLabel"
+                style="@style/TextViewListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/stock_and_order_listview_productname"
-                android:layout_gravity="end|center"
-                android:layout_marginTop="@dimen/dimens_6dp"
+                android:layout_below="@+id/layout_primary"
                 android:layout_marginRight="@dimen/dimens_4dp"
-                android:layout_marginBottom="-2dp"
-                android:gravity="start|center"
                 android:maxLines="1"
                 android:tag="pcode"
                 android:text="@string/prod_code"
-                android:textSize="@dimen/text_size_secondary"
-                android:visibility="visible" />
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_productbarcode"
-                style="@style/TextViewListItemPrimary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/stock_and_order_listview_productname"
-                android:layout_gravity="end|center"
-                android:layout_marginTop="@dimen/dimens_6dp"
-                android:layout_marginBottom="-2dp"
-                android:layout_toEndOf="@+id/stock_and_order_listview_productcode"
-                android:layout_toRightOf="@+id/stock_and_order_listview_productcode"
-                android:gravity="start|center"
-                android:maxLines="1"
-                android:text="@string/barcode"
-                android:textSize="@dimen/text_size_secondary"
-                android:visibility="visible" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-5dp"
-            android:orientation="horizontal"
-            android:padding="3dp">
+                android:visibility="visible"
+                card_view:layout_constraintTop_toBottomOf="@+id/layout_primary"
+                card_view:layout_constraintLeft_toLeftOf="parent"/>
 
 
             <TextView
-                android:id="@+id/stock_and_order_listview_allocation"
+                android:id="@+id/textView_product_tertiary_labels"
                 style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
-                android:tag="allocation"
-                android:text="@string/allocation" />
+                card_view:layout_constraintTop_toBottomOf="@+id/textView_SecondaryLabel"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                android:layout_below="@+id/textView_SecondaryLabel"
 
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_srp"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="srp"
-                android:text="@string/srp" />
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_ppq"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="ppq"
-                android:text="@string/ou" />
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_mrp"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:text="@string/mrp" />
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_msq"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="msq"
-                android:text="@string/msq"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_psq"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="psq"
-                android:text="@string/psq"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_sr_tv"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="sales_return"
-                android:text="@string/sr"
-                android:visibility="gone" />
-
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_moq"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="moq"
-                android:text="@string/moq"
-                android:visibility="gone" />
-
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_wsih"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/outlet_left_margin"
-                android:layout_marginLeft="@dimen/outlet_left_margin"
-                android:maxLines="1"
-                android:tag="dist_inv"
-                android:text="@string/dist_inv" />
-
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_sih_case"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="sih_case"
-                android:text="@string/sih_case" />
-
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_sih_outer"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="sih_outer"
-                android:text="@string/sih_outer" />
-
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_sih"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="sih_piece"
-                android:text="@string/sih" />
-
-
-            <TextView
-                android:id="@+id/indicativeOrder_oc"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="io_case"
-                android:text="@string/io" />
-
-            <TextView
-                android:id="@+id/cleanedOrder_oc"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="co_case"
-                android:text="@string/co" />
+                />
 
 
             <TextView
@@ -278,11 +112,15 @@
                 style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
                 android:tag="so_case"
-                android:text="@string/so_case" />
+                android:text="@string/so_case"
+                android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_toRightOf="@+id/textView_product_tertiary_labels"
+                android:layout_below="@+id/textView_SecondaryLabel"
+                card_view:layout_constraintLeft_toRightOf="@+id/textView_product_tertiary_labels"
+                card_view:layout_constraintTop_toBottomOf="@+id/textView_SecondaryLabel" />
 
 
             <TextView
@@ -294,42 +132,12 @@
                 android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
                 android:tag="so_piece"
-                android:text="@string/so" />
-
-
-            <TextView
-                android:id="@+id/rep_case"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="item_sr_case"
-                android:text="@string/rep_case" />
-
-
-            <TextView
-                android:id="@+id/rep_outer"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="item_sr_outer"
-                android:text="@string/rep_outer" />
-
-            <TextView
-                android:id="@+id/rep_pcs"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:maxLines="1"
-                android:tag="item_sr_piece"
-                android:text="@string/rep_pcs" />
+                android:text="@string/so"
+                android:layout_toRightOf="@+id/stock_and_order_listview_socs"
+                android:layout_below="@+id/textView_SecondaryLabel"
+                card_view:layout_constraintLeft_toRightOf="@+id/stock_and_order_listview_socs"
+                card_view:layout_constraintTop_toBottomOf="@+id/textView_SecondaryLabel"
+                />
 
 
             <TextView
@@ -341,65 +149,96 @@
                 android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
                 android:tag="item_sr_piece"
-                android:text="@string/zero" />
+                android:text="@string/stock"
+                android:layout_toRightOf="@+id/stock_and_order_listview_so"
+                android:layout_below="@+id/textView_SecondaryLabel"
+                card_view:layout_constraintLeft_toRightOf="@+id/stock_and_order_listview_so"
+                card_view:layout_constraintTop_toBottomOf="@+id/textView_SecondaryLabel"/>
 
-        </LinearLayout>
+        </RelativeLayout>
+
+
 
         <View
             android:id="@+id/view_dotted_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_2dp"
             android:layout_marginTop="@dimen/dimen_2dp"
+            android:layout_marginBottom="@dimen/dimen_2dp"
             android:background="@drawable/line_dotted" />
 
-        <RelativeLayout
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/lleditLaouyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="3dp">
+            android:background="@color/white"
+            android:orientation="horizontal"
+            >
+            <!--card_view:layout_constraintTop_toTopOf="parent"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintRight_toLeftOf="@+id/layout_label"
+            card_view:layout_constraintLeft_toLeftOf="parent"-->
 
-            <LinearLayout
-                android:id="@+id/lleditLaouyt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_toStartOf="@+id/lltotwight"
-                android:layout_toLeftOf="@+id/lltotwight"
-                android:background="@color/white"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/llAvail"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/shelfPcsCB"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:tag="avail_title"
-                        android:text="@string/avail" />
-
-                    <android.support.v7.widget.AppCompatCheckBox
-                        android:id="@+id/btn_availability"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llShelfCase"
+                <android.support.constraint.Group
+                    android:id="@+id/group_edit_field"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    card_view:constraint_referenced_ids="btn_availability,shelfPcsCB
+                    ,shelfCaseTitle,stock_and_order_listview_sc_qty,shelfOuterTitle
+                    ,stock_and_order_listview_shelfouter_qty,shelfPcsTitle
+                    ,stock_and_order_listview_sp_qty,label_uo_name,tv_uo_name,uomTitle
+                    ,stock_and_order_listview_uom_qty,caseTitle,stock_and_order_listview_case_qty
+                    ,outercaseTitle,stock_and_order_listview_outer_case_qty,pcsTitle,stock_and_order_listview_pcs_qty
+                    ,focTitle,stock_and_order_listview_foc,srpeditTitle,stock_and_order_listview_srpedit
+                    ,stkRtTitle,stock_and_order_listview_sales_return_qty"
+                    />
+
+                <android.support.constraint.Group
+                    android:id="@+id/group_availability_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:constraint_referenced_ids="btn_availability,shelfPcsCB" />
+
+
+            <TextView
+                android:id="@+id/shelfPcsCB"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:tag="avail_title"
+                android:text="@string/avail"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/btn_availability"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    card_view:layout_constraintLeft_toLeftOf="parent"
+                    card_view:layout_constraintTop_toBottomOf="@+id/shelfPcsCB"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier_availability"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    card_view:barrierDirection="right"
+                    card_view:constraint_referenced_ids="shelfPcsCB,btn_availability"
+                     />
+
+                <android.support.constraint.Group
+                    android:id="@+id/group_shelf_case"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="shelfCaseTitle,stock_and_order_listview_sc_qty"
+                    />
 
                     <TextView
                         android:id="@+id/shelfCaseTitle"
@@ -407,345 +246,534 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="shelf_case"
-                        android:text="@string/sc" />
+                        android:text="@string/sc"
+                        card_view:layout_constraintStart_toEndOf="@+id/barrier_availability"
+                        card_view:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginLeft="@dimen/dimen_2dp"
+                        />
 
                     <EditText
                         android:id="@+id/stock_and_order_listview_sc_qty"
                         style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llShelfOuter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/shelfOuterTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="shelf_outer"
-                        android:text="@string/souter" />
-
-                    <EditText
-                        android:id="@+id/stock_and_order_listview_shelfouter_qty"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llShelfPc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/shelfPcsTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="shelf_piece"
-                        android:text="@string/sp" />
-
-                    <EditText
-                        android:id="@+id/stock_and_order_listview_sp_qty"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/llUom_dropdwon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dimens_4dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <Button
-                        android:id="@+id/tv_uo_name"
-                        style="?attr/boxCustomButtonSmallGrey"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:gravity="center"
-                        android:text="@string/item_piece"
-                        android:textColor="@color/black_bg1" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llUom_Qty"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/uomTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="uom_qty"
-                        android:text="@string/qty" />
-
-                    <EditText
-                        android:id="@+id/stock_and_order_listview_uom_qty"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
+                        android:layout_width="@dimen/values_editextWidth"
                         android:layout_height="wrap_content"
                         android:gravity="start"
-                        android:text="@string/zero" />
+                        card_view:layout_constraintStart_toEndOf="@+id/barrier_availability"
+                        card_view:layout_constraintTop_toBottomOf="@+id/shelfCaseTitle"
+                        android:layout_marginLeft="@dimen/dimen_2dp"
+                        />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llCase"
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier_shelf_case"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    card_view:barrierDirection="right"
+                    card_view:constraint_referenced_ids="shelfCaseTitle,stock_and_order_listview_sc_qty"
+                    />
 
-                    <TextView
-                        android:id="@+id/caseTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="item_case"
-                        android:text="@string/item_case" />
+        <android.support.constraint.Group
+            android:id="@+id/group_shelf_outer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            card_view:constraint_referenced_ids="shelfOuterTitle,stock_and_order_listview_shelfouter_qty"/>
 
-                    <EditText
-                        android:id="@+id/stock_and_order_listview_case_qty"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:text="@string/zero" />
+                     <TextView
+                         android:id="@+id/shelfOuterTitle"
+                         style="@style/TextViewListItemCaption"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:tag="shelf_outer"
+                         android:text="@string/souter"
+                         card_view:layout_constraintStart_toEndOf="@+id/barrier_shelf_case"
+                         card_view:layout_constraintTop_toTopOf="parent"
+                         android:layout_marginLeft="@dimen/dimen_2dp"/>
 
-                </LinearLayout>
+                     <EditText
+                         android:id="@+id/stock_and_order_listview_shelfouter_qty"
+                         style="@style/EditText_ListItem"
+                         android:layout_width="@dimen/values_editextWidth"
+                         android:layout_height="wrap_content"
+                         card_view:layout_constraintStart_toEndOf="@+id/barrier_shelf_case"
+                         card_view:layout_constraintTop_toBottomOf="@+id/shelfOuterTitle"
+                         android:gravity="start"
+                         android:layout_marginLeft="@dimen/dimen_2dp"
+                         />
 
-                <LinearLayout
-                    android:id="@+id/llOuter"
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier_shelf_outer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    card_view:barrierDirection="right"
+                    android:layout_marginRight="@dimen/dimen_2dp"
+                    card_view:constraint_referenced_ids="shelfOuterTitle,stock_and_order_listview_shelfouter_qty"
+                    />
 
-                    <TextView
-                        android:id="@+id/outercaseTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="item_outer"
-                        android:text="@string/item_outer" />
+        <android.support.constraint.Group
+            android:id="@+id/group_shelf_pc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="shelfPcsTitle,stock_and_order_listview_sp_qty"
+            app:layout_constraintLeft_toRightOf="@+id/barrier_shelf_outer"/>
 
-                    <EditText
-                        android:id="@+id/stock_and_order_listview_outer_case_qty"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:text="@string/zero" />
+                     <TextView
+                         android:id="@+id/shelfPcsTitle"
+                         style="@style/TextViewListItemCaption"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:tag="shelf_piece"
+                         card_view:layout_constraintStart_toEndOf="@+id/barrier_shelf_outer"
+                         card_view:layout_constraintTop_toTopOf="parent"
+                         android:layout_marginLeft="@dimen/dimen_2dp"
+                         android:text="@string/sp" />
 
-                </LinearLayout>
+                     <EditText
+                         android:id="@+id/stock_and_order_listview_sp_qty"
+                         style="@style/EditText_ListItem"
+                         android:layout_width="@dimen/values_editextWidth"
+                         android:layout_height="wrap_content"
+                         card_view:layout_constraintStart_toEndOf="@+id/barrier_shelf_outer"
+                         card_view:layout_constraintTop_toBottomOf="@+id/shelfPcsTitle"
+                         android:layout_marginLeft="@dimen/dimen_2dp"
+                         android:gravity="start" />
 
-                <LinearLayout
-                    android:id="@+id/llPcs"
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier_shelf_pc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    card_view:barrierDirection="end"
+                    card_view:constraint_referenced_ids="shelfPcsTitle,stock_and_order_listview_sp_qty"
+                    />
 
-                    <TextView
-                        android:id="@+id/pcsTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="item_piece"
-                        android:text="@string/item_piece" />
+        <android.support.constraint.Group
+            android:id="@+id/group_shelf_uom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            card_view:constraint_referenced_ids="label_uo_name,tv_uo_name"
+            />
 
-                    <EditText
-                        android:id="@+id/stock_and_order_listview_pcs_qty"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:maxLength="5"
-                        android:text="@string/zero" />
+                     <TextView
+                         android:id="@+id/label_uo_name"
+                         style="@style/TextViewListItemCaption"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         card_view:layout_constraintTop_toTopOf="parent"
+                         card_view:layout_constraintStart_toEndOf="@+id/barrier_shelf_pc"
+                         android:layout_marginLeft="@dimen/dimen_2dp"
+                         android:text="uom"/>
 
-                </LinearLayout>
+                     <Button
+                         android:id="@+id/tv_uo_name"
+                         style="?attr/boxCustomButtonSmallGrey"
+                         android:foreground="?attr/selectableItemBackground"
+                         android:gravity="center"
+                         android:text="@string/item_piece"
+                         android:textColor="@color/black_bg1"
+                         card_view:layout_constraintTop_toBottomOf="@+id/label_uo_name"
+                         card_view:layout_constraintStart_toEndOf="@+id/barrier_shelf_pc"
+                         android:layout_marginLeft="@dimen/dimen_2dp"
+                         />
 
-
-                <LinearLayout
-                    android:id="@+id/llFoc"
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier_uom_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    card_view:barrierDirection="right"
+                    card_view:constraint_referenced_ids="label_uo_name,tv_uo_name"
+                    />
 
-                    <TextView
-                        android:id="@+id/focTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="item_foc"
-                        android:text="@string/foc" />
-
-                    <EditText
-                        android:id="@+id/stock_and_order_listview_foc"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:maxLength="5"
-                        android:text="@string/zero" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llSrpEdit"
+                <android.support.constraint.Group
+                    android:id="@+id/group_llUom_Qty"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    card_view:constraint_referenced_ids="uomTitle,stock_and_order_listview_uom_qty"
+                    card_view:layout_constraintLeft_toRightOf="@+id/barrier_uom_name"
+                    />
 
-                    <TextView
-                        android:id="@+id/srpeditTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="srp"
-                        android:text="@string/srp" />
+                     <TextView
+                         android:id="@+id/uomTitle"
+                         style="@style/TextViewListItemCaption"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:tag="uom_qty"
+                         android:text="@string/qty"
+                         card_view:layout_constraintStart_toEndOf="@+id/barrier_uom_name"
+                         card_view:layout_constraintTop_toTopOf="parent"
+                         android:layout_marginLeft="@dimen/dimen_5dp"/>
 
-                    <EditText
-                        android:id="@+id/stock_and_order_listview_srpedit"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:maxLength="8"
-                        android:text="@string/zero" />
+                     <EditText
+                         android:id="@+id/stock_and_order_listview_uom_qty"
+                         style="@style/EditText_ListItem"
+                         android:layout_width="@dimen/values_editextWidth"
+                         android:layout_height="wrap_content"
+                         android:gravity="start"
+                         android:text="@string/zero"
+                         card_view:layout_constraintStart_toEndOf="@+id/barrier_uom_name"
+                         card_view:layout_constraintTop_toBottomOf="@+id/uomTitle"
+                         android:layout_marginLeft="@dimen/dimen_5dp"/>
 
-                </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/llStkRtEdit"
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier_uom_qty"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    card_view:barrierDirection="right"
+                    card_view:constraint_referenced_ids="uomTitle,stock_and_order_listview_uom_qty"
+                    />
+
+        <android.support.constraint.Group
+            android:id="@+id/group_case"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            card_view:constraint_referenced_ids="caseTitle,stock_and_order_listview_case_qty"
+            />
+
+                     <TextView
+                         android:id="@+id/caseTitle"
+                         style="@style/TextViewListItemCaption"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:tag="item_case"
+                         android:text="@string/item_case"
+                         card_view:layout_constraintStart_toEndOf="@+id/barrier_uom_qty"
+                         card_view:layout_constraintTop_toTopOf="parent"
+                         android:layout_marginLeft="@dimen/dimen_2dp"/>
+
+                     <EditText
+                         android:id="@+id/stock_and_order_listview_case_qty"
+                         style="@style/EditText_ListItem"
+                         android:layout_width="@dimen/values_editextWidth"
+                         android:layout_height="wrap_content"
+                         android:gravity="start"
+                         android:text="@string/zero"
+                         card_view:layout_constraintStart_toEndOf="@+id/barrier_uom_qty"
+                         card_view:layout_constraintTop_toBottomOf="@+id/caseTitle"
+                         android:layout_marginLeft="@dimen/dimen_2dp"/>
+
+
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier_case"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    card_view:barrierDirection="right"
+                    card_view:constraint_referenced_ids="caseTitle,stock_and_order_listview_case_qty"
+                    />
+
+
+                <android.support.constraint.Group
+                    android:id="@+id/group_outer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    card_view:layout_constraintLeft_toRightOf="@+id/barrier_case"
+                    card_view:constraint_referenced_ids="outercaseTitle,stock_and_order_listview_outer_case_qty"
+                    />
+
+                <TextView
+                    android:id="@+id/outercaseTitle"
+                    style="@style/TextViewListItemCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tag="item_outer"
+                    android:text="@string/item_outer"
+                    card_view:layout_constraintStart_toEndOf="@+id/barrier_case"
+                    android:layout_marginLeft="@dimen/dimen_2dp"/>
+
+                <EditText
+                    android:id="@+id/stock_and_order_listview_outer_case_qty"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="@dimen/values_editextWidth"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="@string/zero"
+                    card_view:layout_constraintTop_toBottomOf="@+id/outercaseTitle"
+                    card_view:layout_constraintStart_toEndOf="@+id/barrier_case"
+                    android:layout_marginLeft="@dimen/dimen_2dp"/>
+
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier_outer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    card_view:barrierDirection="right"
+                    card_view:constraint_referenced_ids="outercaseTitle,stock_and_order_listview_outer_case_qty"
+                    />
+
+                <android.support.constraint.Group
+                    android:id="@+id/group_pc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    card_view:layout_constraintLeft_toRightOf="@+id/barrier_outer"
+                    card_view:constraint_referenced_ids="pcsTitle,stock_and_order_listview_pcs_qty"
+
+                    />
+
+                <TextView
+                    android:id="@+id/pcsTitle"
+                    style="@style/TextViewListItemCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tag="item_piece"
+                    android:text="@string/item_piece"
+                    card_view:layout_constraintStart_toEndOf="@+id/barrier_outer"
+                    android:layout_marginLeft="@dimen/dimen_2dp"/>
+
+                <EditText
+                    android:id="@+id/stock_and_order_listview_pcs_qty"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="@dimen/values_editextWidth"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:maxLength="5"
+                    android:text="@string/zero"
+                    card_view:layout_constraintStart_toEndOf="@+id/barrier_outer"
+                    card_view:layout_constraintTop_toBottomOf="@+id/pcsTitle"
+                    android:layout_marginLeft="@dimen/dimen_2dp"/>
+
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier_pc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    card_view:barrierDirection="right"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    card_view:constraint_referenced_ids="pcsTitle,stock_and_order_listview_pcs_qty"
+                    />
+
+                <android.support.constraint.Group
+                    android:id="@+id/group_foc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    card_view:layout_constraintLeft_toRightOf="@+id/barrier_pc"
+                    card_view:constraint_referenced_ids="focTitle,stock_and_order_listview_foc"
+                    />
+
+                <TextView
+                    android:id="@+id/focTitle"
+                    style="@style/TextViewListItemCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tag="item_foc"
+                    android:text="@string/foc"
+                    card_view:layout_constraintStart_toEndOf="@+id/barrier_pc"
+                    android:layout_marginLeft="@dimen/dimen_2dp"/>
+
+                <EditText
+                    android:id="@+id/stock_and_order_listview_foc"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="@dimen/values_editextWidth"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:maxLength="5"
+                    android:text="@string/zero"
+                    card_view:layout_constraintStart_toEndOf="@+id/barrier_pc"
+                    card_view:layout_constraintTop_toBottomOf="@+id/focTitle"
+                    android:layout_marginLeft="@dimen/dimen_2dp"/>
+
+
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier_foc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    card_view:barrierDirection="right"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    card_view:constraint_referenced_ids="focTitle,stock_and_order_listview_foc"
+                    />
+
+                <android.support.constraint.Group
+                    android:id="@+id/group_srp_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    card_view:constraint_referenced_ids="srpeditTitle,stock_and_order_listview_srpedit"
+                    />
+
+
+                <TextView
+                    android:id="@+id/srpeditTitle"
+                    style="@style/TextViewListItemCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tag="srp"
+                    android:text="@string/srp"
+                    card_view:layout_constraintStart_toEndOf="@+id/barrier_foc"
+                    android:layout_marginLeft="@dimen/dimen_2dp"/>
+
+                <EditText
+                    android:id="@+id/stock_and_order_listview_srpedit"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="@dimen/values_editextWidth"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:maxLength="8"
+                    android:text="@string/zero"
+                    card_view:layout_constraintStart_toEndOf="@+id/barrier_foc"
+                    card_view:layout_constraintTop_toBottomOf="@+id/srpeditTitle"
+                    android:layout_marginLeft="@dimen/dimen_2dp"/>
+
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier_srp_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    card_view:barrierDirection="right"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    card_view:constraint_referenced_ids="srpeditTitle,stock_and_order_listview_srpedit"
+                    />
+
+                <android.support.constraint.Group
+                    android:id="@+id/group_sr_return_qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    card_view:layout_constraintLeft_toRightOf="@+id/barrier_srp_edit"
+                    card_view:constraint_referenced_ids="stkRtTitle,stock_and_order_listview_sales_return_qty"
+                    />
+
+                <TextView
+                    android:id="@+id/stkRtTitle"
+                    style="@style/TextViewListItemCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tag="sales_return"
+                    android:text="@string/sr"
+                    card_view:layout_constraintTop_toTopOf="parent"
+                    card_view:layout_constraintLeft_toRightOf="@+id/barrier_srp_edit"
+                    android:layout_marginLeft="@dimen/dimen_2dp"
+                    />
+<!--            card_view:layout_constraintStart_toEndOf="@+id/barrier_srp_edit"-->
+
+                <EditText
+                    android:id="@+id/stock_and_order_listview_sales_return_qty"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="@dimen/values_editextWidth"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:gravity="start"
+                    android:maxLength="8"
+                    android:text="@string/zero"
+                    card_view:layout_constraintTop_toBottomOf="@+id/stkRtTitle"
+                    card_view:layout_constraintLeft_toRightOf="@+id/barrier_srp_edit"
+                    android:layout_marginLeft="@dimen/dimen_2dp"
+                    />
 
-                    <TextView
-                        android:id="@+id/stkRtTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="sales_return"
-                        android:text="@string/sr" />
-
-                    <EditText
-                        android:id="@+id/stock_and_order_listview_sales_return_qty"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="start"
-                        android:maxLength="8"
-                        android:text="@string/zero"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/lltotwight"
+            <android.support.constraint.Barrier
+                android:id="@+id/barrier_sr_return"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignTop="@+id/lleditLaouyt"
-                android:layout_alignBottom="@+id/lleditLaouyt"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginEnd="@dimen/list_margin"
-                android:layout_marginRight="@dimen/list_margin"
-                android:gravity="top"
-                android:minWidth="@dimen/dimens_80dp">
-
-                <LinearLayout
-                    android:id="@+id/llTotal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="end|top"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/totalTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="totaltitle"
-                        android:text="@string/total" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                card_view:barrierDirection="right"
+                card_view:constraint_referenced_ids="stkRtTitle,stock_and_order_listview_sales_return_qty"
+                />
 
 
-                    <TextView
-                        android:id="@+id/stock_and_order_listview_total"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center|end"
-                        android:text="@string/zero"
-                        android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_size_primary" />
-                </LinearLayout>
+            <android.support.constraint.Group
+                android:id="@+id/group_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                card_view:layout_constraintLeft_toRightOf="@+id/barrier_srp_edit"
+                card_view:constraint_referenced_ids="totalTitle,stock_and_order_listview_total"
+                />
 
-                <LinearLayout
-                    android:id="@+id/llWeight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/weight"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="weighttitle"
-                        android:text="@string/weight" />
+            <TextView
+                android:id="@+id/totalTitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/weight"
+                android:tag="totaltitle"
+                android:layout_alignParentTop="true"
+                android:text="@string/total"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintRight_toRightOf="@+id/barrier_weight"
+                />
 
 
-                    <TextView
-                        android:id="@+id/stock_and_order_listview_weight"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center|end"
-                        android:text="@string/zero"
-                        android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_size_primary" />
-                </LinearLayout>
-            </LinearLayout>
-        </RelativeLayout>
+            <TextView
+                android:id="@+id/stock_and_order_listview_total"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center|end"
+                android:text="@string/zero"
+                android:textColor="@color/black_bg1"
+                android:textSize="@dimen/text_size_primary"
+                card_view:layout_constraintRight_toRightOf="@+id/barrier_weight"
+                card_view:layout_constraintTop_toBottomOf="@+id/totalTitle"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+
+                />
+
+            <android.support.constraint.Barrier
+                android:id="@+id/barrier_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                card_view:barrierDirection="end"
+                card_view:constraint_referenced_ids="totalTitle,stock_and_order_listview_total"
+                />
+
+
+            <android.support.constraint.Group
+                android:id="@+id/group_total_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                card_view:constraint_referenced_ids="weight,stock_and_order_listview_weight"
+                />-->
+
+            <TextView
+                android:id="@+id/weight"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="weighttitle"
+                android:text="@string/weight"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintRight_toRightOf="parent"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                />
+
+
+            <TextView
+                android:id="@+id/stock_and_order_listview_weight"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/weight"
+                android:gravity="center|end"
+                android:text="@string/zero"
+                android:textColor="@color/black_bg1"
+                android:textSize="@dimen/text_size_primary"
+                card_view:layout_constraintRight_toRightOf="parent"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                card_view:layout_constraintTop_toBottomOf="@+id/weight"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <android.support.constraint.Barrier
+                android:id="@+id/barrier_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                card_view:barrierDirection="left"
+                card_view:constraint_referenced_ids="weight,stock_and_order_listview_weight"
+                />
+
+
+
+            </android.support.constraint.ConstraintLayout>
+
+
+
+
+
+<!--</android.support.constraint.ConstraintLayout>-->
+
+
 
     </LinearLayout>
 
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

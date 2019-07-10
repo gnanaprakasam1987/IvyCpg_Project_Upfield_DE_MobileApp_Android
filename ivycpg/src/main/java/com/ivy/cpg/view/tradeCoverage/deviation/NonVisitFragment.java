@@ -7,9 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.SearchView;
+import androidx.annotation.IdRes;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.widget.SearchView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -1287,10 +1287,132 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                             holder.tvTaskCount.setVisibility(View.GONE);
                     }
                 }
+                convertView.setTag(holder);
+            } else {
+                //holder = (ViewHolder) convertView.getTag();
+            }
+
+            if (mRetailerProp.get("RTPRTY09") != null) {
+                if (retailerObj.getRField8() == null)
+                    holder.tvTaskCount.setVisibility(View.GONE);
+                else {
+                    if (mRetailerProp.get("RTPRTY09").length() > 0) {
+                        if (mRetailerProp.get("RTPRTY09").equalsIgnoreCase("Task")) {
+                            holder.tvTaskCount.setVisibility(View.VISIBLE);
+                            holder.tvTaskCount.setText(getResources().getString(R.string.task) + ":" + retailerObj.getRField8());
+                        } else
+                            holder.tvTaskCount.setVisibility(View.GONE);
+                    }
+                }
 
             } else {
                 holder.tvTaskCount.setVisibility(View.GONE);
             }
+
+            if (selectedPosition.contains(retailerObj.getRetailerID())) {
+                holder.llFirst.setBackgroundColor(getResources().getColor(R.color.colorPrimaryAlpha));
+            } else {
+                holder.llFirst.setBackgroundColor(getResources().getColor(android.R.color.white));
+            }
+
+            convertView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    if ((bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION && calledBy
+                            .equals(MENU_PLANNING)
+                            || (bmodel.configurationMasterHelper.IS_VISITSCREEN_DEV_ALLOW && bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION))) {
+                        if (bmodel.reasonHelper.getDeviatedReturnMaster()
+                                .size() != 0) {
+
+                            retailerObj = (RetailerMasterBO) items
+                                    .get(holder.ref);
+
+                            if (("Y").equals(bmodel.getRetailerMasterBO().getIsNew())) {
+
+                                Toast.makeText(
+                                        getActivity()
+                                                .getApplicationContext(),
+                                        getResources()
+                                                .getString(
+                                                        R.string.deviation_not_allowed_for_new_retailer),
+                                        Toast.LENGTH_SHORT).show();
+
+                            } else if (bmodel
+                                    .isAlreadyExistInToday(retailerObj
+                                            .getRetailerID())) {
+                                Toast.makeText(
+                                        getActivity()
+                                                .getApplicationContext(),
+                                        getResources()
+                                                .getString(
+                                                        R.string.retailer_is_already_planned_for_today),
+                                        Toast.LENGTH_SHORT).show();
+
+
+                            } else {
+
+                                if (selectedPosition.contains(retailerObj.getRetailerID())) {
+                                    selectedPosition.remove(retailerObj.getRetailerID());
+                                } else {
+                                    selectedPosition.add(retailerObj.getRetailerID());
+                                }
+
+                                if (selectedPosition.size() > 0) {
+                                    fab.setVisibility(View.VISIBLE);
+                                } else {
+                                    fab.setVisibility(View.GONE);
+                                }
+
+                                notifyDataSetChanged();
+                            }
+                        } else {
+                            Toast.makeText(
+                                    getActivity()
+                                            .getApplicationContext(),
+                                    getResources()
+                                            .getString(
+                                                    R.string.no_deviate_reason_found_plz_redownload),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast t = Toast.makeText(getActivity()
+                                        .getApplicationContext(), getResources()
+                                        .getString(R.string.Deviation_not_allowed),
+                                Toast.LENGTH_SHORT);
+                        t.show();
+                    }
+                    return true;
+                }
+            });
+
+            holder.retailerId = retailerObj.getRetailerID();
+            holder.outletname.setText(retailerObj.getRetailerName());
+
+            if (bmodel.configurationMasterHelper.SHOW_RFIELD4)//to show retailer reserve field 4 value
+                holder.rField4.setText(retailerObj.getRField4());
+            else
+                holder.rField4.setVisibility(View.GONE);
+
+            holder.outletAddress.setText(retailerObj.getAddress1());
+
+            if (!bmodel.configurationMasterHelper.SHOW_RETIALER_CONTACTS) {
+
+                String contact_name = retailerObj.getContactname() + " " + retailerObj.getContactLname();
+                if (contact_name.trim().length() > 0) {
+                    String lNAme = retailerObj.getContactname2() + " " + retailerObj.getContactLname2();
+                    if (lNAme.trim().length() > 0)
+                        contact_name = contact_name + " & " + retailerObj.getContactname2() + " " + retailerObj.getContactLname2();
+                } else
+                    contact_name = retailerObj.getContactname2() + " " + retailerObj.getContactLname2();
+
+
+                if (contact_name.trim().length() > 0)
+                    holder.contactName.setText(contact_name);
+                else
+                    convertView.findViewById(R.id.llContactName).setVisibility(View.GONE);
+            } else
+                convertView.findViewById(R.id.llContactName).setVisibility(View.GONE);
 
             holder.ref = position;
 

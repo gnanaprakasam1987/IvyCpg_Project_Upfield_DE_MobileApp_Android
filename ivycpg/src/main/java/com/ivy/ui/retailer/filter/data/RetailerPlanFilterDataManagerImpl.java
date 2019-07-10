@@ -167,7 +167,7 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
                 queryStrng.append("Select rm.RetailerId from RetailerMaster as rm ");
 
                 if (planFilterBo.getIsNotVisited() > 0)
-                    queryStrng.append(" inner join DatewisePlan as dwp on dwp.EntityId = rm.RetailerID and dwp.Date = ").append(StringUtils.QT(planFilterBo.getSelectedDate())).append(" and dwp.VisitStatus = 'PLANNED'");
+                    queryStrng.append(" inner join DatewisePlan as dwp on dwp.EntityId = rm.RetailerID and dwp.Date = ").append(StringUtils.getStringQueryParam(planFilterBo.getSelectedDate())).append(" and dwp.VisitStatus = 'PLANNED'");
 
 
                 if (planFilterBo.getLastVisitDate() != null

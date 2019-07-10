@@ -24,6 +24,7 @@ public class MustSellReasonDialog extends Dialog {
 	Spinner reason_spnr;
 	ArrayAdapter<ReasonMaster> dataAdapter;
 	Context context;
+	private OnMustSellReasonSelectedListener mustSellReasonSelectedListener;
 
     public MustSellReasonDialog(Context context, boolean cancelable,
                                 OnCancelListener cancelListener, final BusinessModel bmodel) {
@@ -64,6 +65,9 @@ public class MustSellReasonDialog extends Dialog {
 									.equals("0")) {
 								bmodel.getOrderHeaderBO().setRemark(((ReasonMaster) reason_spnr
 										.getSelectedItem()).getReasonID());
+								if(mustSellReasonSelectedListener!=null)
+									mustSellReasonSelectedListener.onReasonSelected(((ReasonMaster) reason_spnr
+											.getSelectedItem()).getReasonID());
 								cancel();
 							}
 
@@ -94,7 +98,7 @@ public class MustSellReasonDialog extends Dialog {
 				});
 	}
 
-	public void loadMustSellReason() {
+	private void loadMustSellReason() {
 		try {
 			ReasonMaster reason;
 			DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -114,6 +118,19 @@ public class MustSellReasonDialog extends Dialog {
 		} catch (Exception e) {
 			Commons.printException(e);
 		}
+	}
+
+
+	public OnMustSellReasonSelectedListener getMustSellReasonSelectedListener() {
+		return mustSellReasonSelectedListener;
+	}
+
+	public void setMustSellReasonSelectedListener(OnMustSellReasonSelectedListener mustSellReasonSelectedListener) {
+		this.mustSellReasonSelectedListener = mustSellReasonSelectedListener;
+	}
+
+	interface OnMustSellReasonSelectedListener{
+    	void onReasonSelected(String reasonId);
 	}
 
 }

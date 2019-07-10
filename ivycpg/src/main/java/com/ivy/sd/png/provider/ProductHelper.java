@@ -31,7 +31,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeBO;
+import com.ivy.cpg.view.order.scheme.SchemeBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -370,16 +370,16 @@ public class ProductHelper {
                     if(stockQty != null){
                         String[] splitQty = stockQty.split(",");
                         if (splitQty.length >= 4) {
-                            p.setLastVisitColor(splitQty[0].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisitColor(splitQty[0].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[0]).find() ? android.R.color.holo_green_dark :
                                             android.R.color.holo_red_dark));
-                            p.setLastVisit1Color(splitQty[1].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisit1Color(splitQty[1].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[1]).find() ? android.R.color.holo_green_dark :
                                     android.R.color.holo_red_dark));
-                            p.setLastVisit2Color(splitQty[2].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisit2Color(splitQty[2].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[2]).find() ? android.R.color.holo_green_dark :
                                     android.R.color.holo_red_dark));
-                            p.setLastVisit3Color(splitQty[3].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisit3Color(splitQty[3].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[3]).find() ? android.R.color.holo_green_dark :
                                     android.R.color.holo_red_dark));
 
@@ -1107,7 +1107,7 @@ public class ProductHelper {
 
             db.closeDB();
 
-            if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
+            if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER && taxHelper!=null) {
                 taxHelper.downloadProductTaxDetails();
             }
 
@@ -1116,7 +1116,7 @@ public class ProductHelper {
                 downloadAttributeProductMapping();
 
 
-            if (filterProductLevels.size() > 0
+            if (filterProductLevels!=null && filterProductLevels.size() > 0
                     && (getLstProductAttributeMapping() != null
                     && getLstProductAttributeMapping().size() > 0))
                 downloadLeastBrandProductMapping(mContentLevelId, filterProductLevels.size(), moduleCode);
@@ -1232,7 +1232,7 @@ public class ProductHelper {
      * @param mContentLevelId to identify given products level id
      * @return Returns a query which gets products(content level) mapped to current distribution type
      */
-    private String downloadProductDistribution(int mContentLevelId) {
+    public String downloadProductDistribution(int mContentLevelId) {
 
         String PRODUCT_DISTRIBUTION_TYPE_ROUTE = "ROUTE";
         String PRODUCT_DISTRIBUTION_TYPE_RETAILER = "RETAILER";
@@ -1826,47 +1826,98 @@ public class ProductHelper {
                 product = productMaster.get(i);
 
                 if (product.getmDeadProduct() == 1
-                        && getFilterColor("Filt15") != 0)
-                    product.setTextColor(getFilterColor("Filt15"));
-                else if (product.getIsMustSell() == 1
-                        && getFilterColor("Filt10") != 0)
-                    product.setTextColor(getFilterColor("Filt10"));
-                else if (product.getIsFocusBrand() == 1
-                        && getFilterColor("Filt11") != 0)
-                    product.setTextColor(getFilterColor("Filt11"));
-                else if (product.getIsFocusBrand2() == 1
-                        && getFilterColor("Filt12") != 0)
-                    product.setTextColor(getFilterColor("Filt12"));
-                else if (product.getIsFocusBrand3() == 1
-                        && getFilterColor("Filt20") != 0)
-                    product.setTextColor(getFilterColor("Filt20"));
-                else if (product.getIsFocusBrand4() == 1
-                        && getFilterColor("Filt21") != 0)
-                    product.setTextColor(getFilterColor("Filt21"));
-                else if (product.getIsNMustSell() == 1
-                        && getFilterColor("Filt16") != 0)
-                    product.setTextColor(getFilterColor("Filt16"));
-                else if (product.isRPS() && getFilterColor("Filt02") != 0)
-                    product.setTextColor(getFilterColor("Filt02"));
-                else if (product.isPromo() && getFilterColor("Filt09") != 0)
-                    product.setTextColor(getFilterColor("Filt09"));
-                else if (product.getIsDiscountable() == 1
-                        && getFilterColor("Filt18") != 0)
-                    product.setTextColor(getFilterColor("Filt18"));
-                else if (product.getIsNearExpiryTaggedProduct() == 1
-                        && getFilterColor("Filt19") != 0)
-                    product.setTextColor(getFilterColor("Filt19"));
-                else if (product.getIsSMP() == 1
-                        && getFilterColor("Filt22") != 0)
-                    product.setTextColor(getFilterColor("Filt22"));
-                else
-                    product.setTextColor(mContext.getResources().getColor(
+                        && getFilterColor("Filt15") != 0) {
+                   // product.setTextColor(getFilterColor("Filt15"));
+                    int filterColorCode=getFilterColor("Filt15");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt15",filterColorCode);
+                }
+                if (product.getIsMustSell() == 1
+                        && getFilterColor("Filt10") != 0) {
+                   // product.setTextColor(getFilterColor("Filt10"));
+                    int filterColorCode=getFilterColor("Filt10");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt10",filterColorCode);
+                }
+                if (product.getIsFocusBrand() == 1
+                        && getFilterColor("Filt11") != 0) {
+                   // product.setTextColor(getFilterColor("Filt11"));
+                    int filterColorCode=getFilterColor("Filt11");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt11",filterColorCode);
+                }
+                if (product.getIsFocusBrand2() == 1
+                        && getFilterColor("Filt12") != 0) {
+                    //product.setTextColor(getFilterColor("Filt12"));
+                    int filterColorCode=getFilterColor("Filt12");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt12",filterColorCode);
+                }
+                if (product.getIsFocusBrand3() == 1
+                        && getFilterColor("Filt20") != 0) {
+                   // product.setTextColor(getFilterColor("Filt20"));
+                    int filterColorCode=getFilterColor("Filt20");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt20",filterColorCode);
+                }
+                if (product.getIsFocusBrand4() == 1
+                        && getFilterColor("Filt21") != 0) {
+                    //product.setTextColor(getFilterColor("Filt21"));
+                    int filterColorCode=getFilterColor("Filt21");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt21",filterColorCode);
+                }
+                if (product.getIsNMustSell() == 1
+                        && getFilterColor("Filt16") != 0) {
+                   // product.setTextColor(getFilterColor("Filt16"));
+                    int filterColorCode=getFilterColor("Filt16");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt16",filterColorCode);
+                }
+                if (product.isRPS() && getFilterColor("Filt02") != 0) {
+                   // product.setTextColor(getFilterColor("Filt02"));
+                    int filterColorCode=getFilterColor("Filt02");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt02",filterColorCode);
+                }
+                if (product.isPromo() && getFilterColor("Filt09") != 0) {
+                    //product.setTextColor(getFilterColor("Filt09"));
+                    int filterColorCode=getFilterColor("Filt09");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt09",filterColorCode);
+                }
+                if (product.getIsDiscountable() == 1
+                        && getFilterColor("Filt18") != 0) {
+                    //product.setTextColor(getFilterColor("Filt18"));
+                    int filterColorCode=getFilterColor("Filt18");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt18",filterColorCode);
+                }
+                if (product.getIsNearExpiryTaggedProduct() == 1
+                        && getFilterColor("Filt19") != 0) {
+                   // product.setTextColor(getFilterColor("Filt19"));
+                    int filterColorCode=getFilterColor("Filt19");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt19",filterColorCode);
+                }
+                if (product.getIsSMP() == 1
+                        && getFilterColor("Filt22") != 0) {
+                    //product.setTextColor(getFilterColor("Filt22"));
+                    int filterColorCode=getFilterColor("Filt22");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt22",filterColorCode);
+                }
+
+
+                product.setTextColor(mContext.getResources().getColor(
                             R.color.list_item_primary_text_color));
 
                 if (bmodel.configurationMasterHelper.SHOW_HIGHLIGHT_FOR_OOS
                         && product.getWSIH() == 0)
                     product.setTextColor(mContext.getResources().getColor(
                             R.color.RED));
+
+
 
             }
         } catch (Exception e) {
@@ -1884,6 +1935,7 @@ public class ProductHelper {
             for (int i = 0; i < genfilter.size(); i++) {
                 if (genfilter.get(i).getConfigCode()
                         .equalsIgnoreCase(filtername)) {
+
                     if (!genfilter.get(i).getMenuNumber().equals("0") && !genfilter.get(i).getMenuNumber().equals(""))
                         return Color.parseColor((genfilter.get(i)
                                 .getMenuNumber()));
@@ -1896,6 +1948,25 @@ public class ProductHelper {
             return 0;
         }
         return 0;
+
+    }
+
+    public String getSpecialFilterName(String filterCode) {
+
+        Vector<ConfigureBO> genfilter = bmodel.configurationMasterHelper
+                .getGenFilter();
+        try {
+            for (int i = 0; i < genfilter.size(); i++) {
+                if (genfilter.get(i).getConfigCode()
+                        .equalsIgnoreCase(filterCode)) {
+                    return genfilter.get(i).getMenuName();
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+            return "";
+        }
+        return "";
 
     }
 
@@ -2399,7 +2470,7 @@ public class ProductHelper {
             db.openDataBase();
           /*  Cursor indicativeCursor = db
                     .selectSQL("select distinct(uid) from indicativeorder where rid="
-                            + QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                            + getStringQueryParam(bmodel.getRetailerMasterBO().getRetailerID()));
             String uid = "";
             if (indicativeCursor.getCount() > 0) {
                 if (indicativeCursor.moveToFirst()) {

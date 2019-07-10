@@ -4,15 +4,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -65,7 +65,7 @@ import static com.ivy.ui.dashboard.SellerDashboardConstants.DAY;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.ROUTE;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.WEEK;
-import static com.ivy.utils.StringUtils.QT;
+import static com.ivy.utils.StringUtils.getStringQueryParam;
 
 
 public class SellerDashboardFragment extends BaseFragment implements SellerDashboardContract.SellerDashboardView, DashboardClickListener {
@@ -278,7 +278,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             h.setSelected(true);
             distArray.add(h);
             count++;
-            mSelectedDistributorId= mSelectedDistributorId.concat(QT(distributors.get(j).getDId() + ""));
+            mSelectedDistributorId= mSelectedDistributorId.concat(getStringQueryParam(distributors.get(j).getDId() + ""));
             if (count != distributors.size())
                 mSelectedDistributorId=mSelectedDistributorId.concat(",");
         }
@@ -289,7 +289,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             if (!items.isEmpty()) {
                 for (int i = 0; i < items.size(); i++) {
                     count1++;
-                    mSelectedDistributorId= mSelectedDistributorId.concat(QT(items.get(i).getId() + ""));
+                    mSelectedDistributorId= mSelectedDistributorId.concat(getStringQueryParam(items.get(i).getId() + ""));
                     if (count1 != items.size())
                         mSelectedDistributorId = mSelectedDistributorId.concat(",");
                 }
@@ -344,7 +344,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             h.setSelected(true);
             userArray.add(h);
             count++;
-            mSelectedUser = mSelectedUser.concat(QT(users.get(i).getUserid() + ""));
+            mSelectedUser = mSelectedUser.concat(getStringQueryParam(users.get(i).getUserid() + ""));
             if (count != users.size())
                 mSelectedUser= mSelectedUser.concat(",");
         }
@@ -355,7 +355,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             mSelectedUser = "";
             for (int i = 0; i < items.size(); i++) {
                 count1++;
-                mSelectedUser = mSelectedUser.concat(QT(items.get(i).getId() + ""));
+                mSelectedUser = mSelectedUser.concat(getStringQueryParam(items.get(i).getId() + ""));
                 if (count1 != items.size())
                     mSelectedUser= mSelectedUser.concat(",");
             }
@@ -452,7 +452,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
 
     private void getDashSpinnerData() {
-        if (!StringUtils.isEmptyString(type) && type.equalsIgnoreCase(SellerDashboardConstants.ROUTE)) {
+        if (!StringUtils.isNullOrEmpty(type) && type.equalsIgnoreCase(SellerDashboardConstants.ROUTE)) {
             presenter.fetchSellerDashList(SellerDashboardConstants.DashBoardType.ROUTE);
         } else if (!isFromRetailer) {
             presenter.fetchSellerDashList(SellerDashboardConstants.DashBoardType.SELLER);

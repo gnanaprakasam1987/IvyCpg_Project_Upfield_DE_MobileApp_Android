@@ -546,7 +546,7 @@ public class PriceTrackingHelper {
         try {
             db.openDataBase();
             String sb = "select tid from PriceCheckHeader where retailerid=" +
-                    StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID());
+                    StringUtils.getStringQueryParam(bmodel.getRetailerMasterBO().getRetailerID());
 
             if (!bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
                 sb = sb + " and upload='N'";
@@ -607,7 +607,7 @@ public class PriceTrackingHelper {
             String CODE_PRICE_UOM = "PRICE_UOM";
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + StringUtils.QT(CODE_PRICE_UOM) + " and Flag=1 and ForSwitchSeller = 0 and subchannelid=" + subChannelId;
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(CODE_PRICE_UOM) + " and Flag=1 and ForSwitchSeller = 0 and subchannelid=" + subChannelId;
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -617,7 +617,7 @@ public class PriceTrackingHelper {
             } else {
                 sql = "select RField from "
                         + DataMembers.tbl_HhtModuleMaster
-                        + " where hhtCode=" + StringUtils.QT(CODE_PRICE_UOM) + " and Flag=1 and ForSwitchSeller = 0 and subchannelid=0";
+                        + " where hhtCode=" + StringUtils.getStringQueryParam(CODE_PRICE_UOM) + " and Flag=1 and ForSwitchSeller = 0 and subchannelid=0";
                 c = db.selectSQL(sql);
                 if (c != null && c.getCount() != 0) {
                     if (c.moveToNext()) {
@@ -649,7 +649,7 @@ public class PriceTrackingHelper {
 
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode= " + StringUtils.QT(CODE_PRICE_01) + " and ForSwitchSeller = 0 and Flag=1";
+                    + " where hhtCode= " + StringUtils.getStringQueryParam(CODE_PRICE_01) + " and ForSwitchSeller = 0 and Flag=1";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -684,7 +684,7 @@ public class PriceTrackingHelper {
             String CODE_PRICE_CHANGED = "PRICE_CHANGED";
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + StringUtils.QT(CODE_PRICE_CHANGED) + " and ForSwitchSeller = 0 and Flag=1";
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(CODE_PRICE_CHANGED) + " and ForSwitchSeller = 0 and Flag=1";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -698,7 +698,7 @@ public class PriceTrackingHelper {
             String CODE_PRICE_COMPLIANCE = "PRICE_COMPLIANCE";
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + StringUtils.QT(CODE_PRICE_COMPLIANCE) + " and ForSwitchSeller = 0 and Flag=1";
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(CODE_PRICE_COMPLIANCE) + " and ForSwitchSeller = 0 and Flag=1";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -709,7 +709,7 @@ public class PriceTrackingHelper {
 
             String CODE_PRICE_COMPETITOR = "PRICE_COMPETITOR";
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + StringUtils.QT(CODE_PRICE_COMPETITOR) + " and ForSwitchSeller = 0 and Flag=1";
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(CODE_PRICE_COMPETITOR) + " and ForSwitchSeller = 0 and Flag=1";
 
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
@@ -723,7 +723,7 @@ public class PriceTrackingHelper {
             String CODE_PRICE_LOCATION = "PRICE02";
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + StringUtils.QT(CODE_PRICE_LOCATION) + " and ForSwitchSeller = 0 and Flag=1";
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(CODE_PRICE_LOCATION) + " and ForSwitchSeller = 0 and Flag=1";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {

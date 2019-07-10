@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.DateTimeUtils;
@@ -56,7 +57,7 @@ public class DownloadService extends IntentService {
                         String errorLoginCode = jsonLoginObject
                                 .getString(SynchronizationHelper.ERROR_CODE);
                         if (errorLoginCode
-                                .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
 
                             bmodel.synchronizationHelper
                                     .parseJSONAndInsert(jsonLoginObject, false);
@@ -107,7 +108,7 @@ public class DownloadService extends IntentService {
                             JSONObject jsonUrlObject = bmodel.synchronizationHelper.getmJsonObjectResponseByTableName().get(tablelist.get(i));
                             String errorUrlCode = jsonUrlObject.getString(SynchronizationHelper.ERROR_CODE);
                             if (errorUrlCode
-                                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                    .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
 
                                 bmodel.synchronizationHelper
                                         .parseJSONAndInsert(jsonUrlObject, true);
@@ -163,7 +164,7 @@ public class DownloadService extends IntentService {
 
                             final long startTime = System.nanoTime();
                             if (errorLoginCode != null) {
-                                if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                if (errorLoginCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                     if (isFromWhere == SynchronizationHelper.FROM_SCREEN.RETAILER_SELECTION) {
                                         if (bmodel.configurationMasterHelper.IS_DELETE_TABLE) {
                                             bmodel.synchronizationHelper
@@ -192,7 +193,7 @@ public class DownloadService extends IntentService {
                             insertBundle
                                     .putString(
                                             SynchronizationHelper.ERROR_CODE,
-                                            SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE);
+                                            IvyConstants.AUTHENTICATION_SUCCESS_CODE);
                             insertBundle.putSerializable("isFromWhere", isFromWhere);
                             insertBundle.putInt("updateCount", updateCount);
                             insertBundle.putInt("totalCount", totalListCount);
@@ -206,7 +207,7 @@ public class DownloadService extends IntentService {
                             insertBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
                                     SynchronizationHelper.VOLLEY_DOWNLOAD_INSERT);
                             insertBundle.putString(SynchronizationHelper.ERROR_CODE,
-                                    SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE);
+                                    IvyConstants.UPDATE_TABLE_SUCCESS_CODE);
                             insertBundle.putSerializable("isFromWhere", isFromWhere);
                             insertBundle.putInt("updateCount", updateCount);
                             insertBundle.putInt("totalCount", totalListCount);
@@ -260,7 +261,7 @@ public class DownloadService extends IntentService {
                                     .getString(SynchronizationHelper.ERROR_CODE);
                             final long startTime = System.nanoTime();
                             if (errorLoginCode != null) {
-                                if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                if (errorLoginCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
 
                                     bmodel.synchronizationHelper
                                             .parseJSONAndInsert(jsonLoginObject, false);
@@ -286,7 +287,7 @@ public class DownloadService extends IntentService {
                             insertBundle
                                     .putString(
                                             SynchronizationHelper.ERROR_CODE,
-                                            SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE);
+                                            IvyConstants.AUTHENTICATION_SUCCESS_CODE);
                             insertBundle.putSerializable("isFromWhere", isFromWhere);
                             insertBundle.putInt("updateCount", updateCount);
                             insertBundle.putInt("totalCount", totalListCount);
@@ -301,7 +302,7 @@ public class DownloadService extends IntentService {
                             insertBundle
                                     .putString(
                                             SynchronizationHelper.ERROR_CODE,
-                                            SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE);
+                                            IvyConstants.UPDATE_TABLE_SUCCESS_CODE);
                             insertBundle.putSerializable("isFromWhere", isFromWhere);
                             insertBundle.putInt("updateCount", updateCount);
                             insertBundle.putInt("totalCount", totalListCount);
@@ -358,7 +359,7 @@ public class DownloadService extends IntentService {
                                     .getString(SynchronizationHelper.ERROR_CODE);
                             final long startTime = System.nanoTime();
                             if (errorLoginCode != null) {
-                                if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                if (errorLoginCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                     bmodel.synchronizationHelper
                                             .parseJSONAndInsert(jsonLoginObject, false);
 
@@ -383,7 +384,7 @@ public class DownloadService extends IntentService {
                             insertBundle
                                     .putString(
                                             SynchronizationHelper.ERROR_CODE,
-                                            SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE);
+                                            IvyConstants.AUTHENTICATION_SUCCESS_CODE);
                             insertBundle.putSerializable("isFromWhere", isFromWhere);
                             insertBundle.putInt("updateCount", updateCount);
                             insertBundle.putInt("totalCount", totalListCount);
@@ -398,7 +399,7 @@ public class DownloadService extends IntentService {
                             insertBundle
                                     .putString(
                                             SynchronizationHelper.ERROR_CODE,
-                                            SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE);
+                                            IvyConstants.UPDATE_TABLE_SUCCESS_CODE);
                             insertBundle.putSerializable("isFromWhere", isFromWhere);
                             insertBundle.putInt("updateCount", updateCount);
                             insertBundle.putInt("totalCount", totalListCount);
@@ -456,7 +457,7 @@ public class DownloadService extends IntentService {
                             String errorLoginCode = jsonLoginObject
                                     .getString(SynchronizationHelper.ERROR_CODE);
                             if (errorLoginCode
-                                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                    .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                 bmodel.synchronizationHelper
                                         .parseJSONAndInsert(jsonLoginObject, false);
 
@@ -464,8 +465,8 @@ public class DownloadService extends IntentService {
 
                             if (totalListCount == updateCount) {
 
-                                bmodel.synchronizationHelper
-                                        .updatetempTablesWithRetailerMaster();
+                               /* bmodel.synchronizationHelper
+                                        .updatetempTablesWithRetailerMaster();*/
                                 //bmodel.configurationMasterHelper.downloadRetailerProperty();
                                 bmodel.downloadRetailerMaster();
                                 if (bmodel.configurationMasterHelper.CALC_QDVP3)
@@ -481,7 +482,7 @@ public class DownloadService extends IntentService {
                                 insertBundle
                                         .putString(
                                                 SynchronizationHelper.ERROR_CODE,
-                                                SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE);
+                                                IvyConstants.AUTHENTICATION_SUCCESS_CODE);
                                 insertBundle.putSerializable("isFromWhere", isFromWhere);
 
                                 downloadRetailerInsertIntent.putExtras(insertBundle);
@@ -536,7 +537,7 @@ public class DownloadService extends IntentService {
                             String errorLoginCode = jsonLoginObject
                                     .getString(SynchronizationHelper.ERROR_CODE);
                             if (errorLoginCode
-                                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                    .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
 
                                 bmodel.synchronizationHelper
                                         .parseJSONAndInsert(jsonLoginObject, false);
@@ -558,7 +559,7 @@ public class DownloadService extends IntentService {
                                 insertBundle
                                         .putString(
                                                 SynchronizationHelper.ERROR_CODE,
-                                                SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE);
+                                                IvyConstants.AUTHENTICATION_SUCCESS_CODE);
                                 insertBundle.putSerializable("isFromWhere", isFromWhere);
 
                                 downloadUserRetailerInsertIntent.putExtras(insertBundle);
@@ -609,7 +610,7 @@ public class DownloadService extends IntentService {
                             JSONObject jsonLoginObject = bmodel.synchronizationHelper.getmJsonObjectResponseByTableName().get(tablelist.get(i));
                             String errorLoginCode = jsonLoginObject
                                     .getString(SynchronizationHelper.ERROR_CODE);
-                            if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            if (errorLoginCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                 bmodel.synchronizationHelper
                                         .parseJSONAndInsert(jsonLoginObject, false);
                             }
@@ -644,7 +645,7 @@ public class DownloadService extends IntentService {
                         for (int i = 0; i < tableList.size(); i++) {
                             JSONObject jsonObject = bmodel.synchronizationHelper.getmJsonObjectResponseByTableName().get(tableList.get(i));
                             errorLoginCode = jsonObject.getString(SynchronizationHelper.ERROR_CODE);
-                            if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            if (errorLoginCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                 bmodel.synchronizationHelper.parseJSONAndInsert(jsonObject, true);
                             }
                         }
@@ -687,7 +688,7 @@ public class DownloadService extends IntentService {
                             JSONObject jsonObject = bmodel.synchronizationHelper.getmJsonObjectResponseByTableName().get(tablelist.get(i));
                             errorLoginCode = jsonObject
                                     .getString(SynchronizationHelper.ERROR_CODE);
-                            if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            if (errorLoginCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                 if (tablelist.get(i).equalsIgnoreCase("RetailerMaster"))
                                     bmodel.synchronizationHelper.downloadRetailerByLocOrUser(jsonObject);
                                 if (tablelist.get(i).equalsIgnoreCase("RetailerBeatMapping"))
@@ -895,7 +896,7 @@ public class DownloadService extends IntentService {
                             JSONObject jsonLoginObject = bmodel.synchronizationHelper.getmJsonObjectResponseByTableName().get(tablelist.get(i));
                             errorLoginCode = jsonLoginObject
                                     .getString(SynchronizationHelper.ERROR_CODE);
-                            if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            if (errorLoginCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                 bmodel.synchronizationHelper
                                         .parseJSONAndInsert(jsonLoginObject, true);
                             }

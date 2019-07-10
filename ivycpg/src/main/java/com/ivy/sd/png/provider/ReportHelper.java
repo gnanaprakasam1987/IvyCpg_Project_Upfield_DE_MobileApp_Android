@@ -16,7 +16,7 @@ import com.ivy.sd.png.bo.ProductivityReportBO;
 import com.ivy.sd.png.bo.ReportBrandPerformanceBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailersReportBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.cpg.view.sync.uploadStatusReport.SyncStatusBO;
@@ -1911,9 +1911,9 @@ public class ReportHelper {
 
         if (isInvoice) {
             sb.append("inner join SchemeMaster SM ON SM.SchemeID = SFP.SchemeID ");
-            sb.append("where invoiceid=" + StringUtils.QT(id) + " and SM.IsOnInvoice = '1'");
+            sb.append("where invoiceid=" + StringUtils.getStringQueryParam(id) + " and SM.IsOnInvoice = '1'");
         } else // Order Report
-            sb.append("where OrderID=" + StringUtils.QT(id));
+            sb.append("where OrderID=" + StringUtils.getStringQueryParam(id));
         Cursor c = db.selectSQL(sb.toString());
         if (c != null) {
             SchemeProductBO schemeProductBO;

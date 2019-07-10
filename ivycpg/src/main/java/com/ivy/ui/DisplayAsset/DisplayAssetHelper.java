@@ -117,9 +117,9 @@ public class DisplayAssetHelper {
             if (c.getCount() > 0) {
                 c.moveToNext();
                 db.deleteSQL(DataMembers.tbl_DisplayAssetHeader,
-                        "uid=" + StringUtils.QT(c.getString(0)), false);
+                        "uid=" + StringUtils.getStringQueryParam(c.getString(0)), false);
                 db.deleteSQL(DataMembers.tbl_DisplayAssetTDetails,
-                        "uid=" + StringUtils.QT(c.getString(0)), false);
+                        "uid=" + StringUtils.getStringQueryParam(c.getString(0)), false);
 
             }
 
@@ -136,12 +136,12 @@ public class DisplayAssetHelper {
             for(AssetTrackingBO assetTrackingBO:getDisplayAssetList()) {
                 for (CompanyBO companyBO : assetTrackingBO.getCompanyList()) {
 
-                    String detailValues = StringUtils.QT(id) + ","
+                    String detailValues = StringUtils.getStringQueryParam(id) + ","
                             + companyBO.getCompetitorid() + ","
-                            + StringUtils.QT(assetTrackingBO.getDisplayAssetId()) + "," + companyBO.getQuantity() + ","
+                            + StringUtils.getStringQueryParam(assetTrackingBO.getDisplayAssetId()) + "," + companyBO.getQuantity() + ","
                             + assetTrackingBO.getWeightage() + ","
                             + (companyBO.getQuantity()*assetTrackingBO.getWeightage()) + ","
-                            + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID());
+                            + StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID());
 
                     db.insertSQL(DataMembers.tbl_DisplayAssetTDetails, detailColumns,
                             detailValues);
@@ -150,12 +150,12 @@ public class DisplayAssetHelper {
             }
 
             if(isData) {
-                String headerValues = StringUtils.QT(id) + ","
+                String headerValues = StringUtils.getStringQueryParam(id) + ","
                         +  mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
-                        + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF())
+                        + StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF())
                         + "," + mBusinessModel.getAppDataProvider().getUniqueId() + ","
-                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                        + StringUtils.QT(status)+
+                        + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                        + StringUtils.getStringQueryParam(status)+
                         ","+ownCompanyScore+","+otherCompanyMaxScore;
 
                 db.insertSQL(DataMembers.tbl_DisplayAssetHeader, headerColumns,
@@ -210,7 +210,7 @@ public class DisplayAssetHelper {
             String tid = "";
             String sql = "SELECT uid FROM DisplayAssetTrackingHeader WHERE RetailerId = "
                     +  mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + " AND Date = "
-                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " and (upload='N')";
 
             Cursor orderHeaderCursor = db.selectSQL(sql);
@@ -224,7 +224,7 @@ public class DisplayAssetHelper {
             if(!tid.trim().isEmpty()){
 
                 String sql1 = "SELECT CompetitorId, DisplayAssetId, count"
-                        + " FROM DisplayAssetTrackingDetails WHERE uid=" + StringUtils.QT(tid);
+                        + " FROM DisplayAssetTrackingDetails WHERE uid=" + StringUtils.getStringQueryParam(tid);
 
                 Cursor orderDetailCursor = db.selectSQL(sql1);
 

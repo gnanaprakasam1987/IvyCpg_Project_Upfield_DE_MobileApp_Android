@@ -1,7 +1,6 @@
 package com.ivy.core.base.view;
 
-import android.support.annotation.StringRes;
-import android.widget.Toolbar;
+import androidx.annotation.StringRes;
 
 import com.ivy.sd.png.util.CommonDialog;
 
@@ -62,4 +61,10 @@ public interface BaseIvyView {
     void setScreenTitle(String title);
 
     void setUpToolbar(String title);
+
+    void getLocationPermission();
+
+    void getPhoneStatePermission();
+
+    void getCameraPermission();
 }

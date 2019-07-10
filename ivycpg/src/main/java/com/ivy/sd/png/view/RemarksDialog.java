@@ -2,7 +2,7 @@ package com.ivy.sd.png.view;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.promotion.PromotionBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -47,13 +46,13 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
     ArrayAdapter<ReasonMaster> spinnerAdapter;
     private Spinner spinner_remark_type;
     boolean isSpinnerAvailable;
-    private PromotionBO promotionBO;
-    private PromotionRemarks mCallback;
+    private String selectedRemark;
+    private RemarksListener mCallback;
 
     boolean isSalesRetRfAvailable;
 
-    public interface PromotionRemarks {
-        void updateRemarks();
+    public interface RemarksListener {
+        void updateRemarks(String remark);
     }
 
     public RemarksDialog(String moduleName) {
@@ -62,9 +61,9 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
         this.mModuleName = moduleName;
     }
 
-    public RemarksDialog(PromotionBO promotionBO, String mModuleName, PromotionRemarks listener) {
+    public RemarksDialog(String remark, String mModuleName, RemarksListener listener) {
         super();
-        this.promotionBO = promotionBO;
+        this.selectedRemark = remark;
         this.mModuleName = mModuleName;
         this.mCallback = listener;
     }
@@ -355,8 +354,17 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                 textInputLayout2.setVisibility(View.GONE);
                 textInputLayout3.setVisibility(View.GONE);
                 lnrRField1.setVisibility(View.GONE);
-                if (!StringUtils.isEmptyString(promotionBO.getRemarks()))
-                    remarks.setText(promotionBO.getRemarks());
+                if (!StringUtils.isNullOrEmpty(selectedRemark))
+                    remarks.setText(selectedRemark);
+                else
+                    remarks.setText("");
+                break;
+            case "TASK":
+                textInputLayout2.setVisibility(View.GONE);
+                textInputLayout3.setVisibility(View.GONE);
+                lnrRField1.setVisibility(View.GONE);
+                if (!StringUtils.isNullOrEmpty(selectedRemark))
+                    remarks.setText(selectedRemark);
                 else
                     remarks.setText("");
                 break;
@@ -424,8 +432,10 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                     bmodel.setNote(remarks.getText().toString());
                     break;
                 case "MENU_PROMO_REMARKS":
-                    promotionBO.setRemarks(remarks.getText().toString());
-                    mCallback.updateRemarks();
+                    mCallback.updateRemarks(remarks.getText().toString());
+                case "TASK":
+                    mCallback.updateRemarks(remarks.getText().toString());
+                    break;
                 default:
                     break;
             }

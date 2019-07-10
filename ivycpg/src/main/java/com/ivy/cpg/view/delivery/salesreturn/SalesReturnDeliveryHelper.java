@@ -270,25 +270,25 @@ public class SalesReturnDeliveryHelper {
             String values;
             columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,isCancel,ridSF,VisitId";
 
-            values = StringUtils.QT(uid) + ","
-                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                    + StringUtils.QT(businessModel.retailerMasterBO.getRetailerID()) + ","
+            values = StringUtils.getStringQueryParam(uid) + ","
+                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                    + StringUtils.getStringQueryParam(businessModel.retailerMasterBO.getRetailerID()) + ","
                     + businessModel.retailerMasterBO.getBeatID() + ","
                     + businessModel.getAppDataProvider().getUser().getUserid()
-                    + "," + StringUtils.QT(salesReturnDeliveryDataBo.getReturnValue()) + "," + salesReturnDeliveryDataBo.getLpc() + ","
-                    + StringUtils.QT(businessModel.retailerMasterBO.getRetailerCode()) + ","
-                    + StringUtils.QT(businessModel.getSaleReturnNote()) + ","
-                    + StringUtils.QT(businessModel.mSelectedRetailerLatitude + "") + ","
-                    + StringUtils.QT(businessModel.mSelectedRetailerLongitude + "") + ","
+                    + "," + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getReturnValue()) + "," + salesReturnDeliveryDataBo.getLpc() + ","
+                    + StringUtils.getStringQueryParam(businessModel.retailerMasterBO.getRetailerCode()) + ","
+                    + StringUtils.getStringQueryParam(businessModel.getSaleReturnNote()) + ","
+                    + StringUtils.getStringQueryParam(businessModel.mSelectedRetailerLatitude + "") + ","
+                    + StringUtils.getStringQueryParam(businessModel.mSelectedRetailerLongitude + "") + ","
                     + businessModel.retailerMasterBO.getDistributorId() + ","
                     + businessModel.retailerMasterBO.getDistParentId() + ","
-                    + StringUtils.QT(salesReturnDeliveryDataBo.getSignaturePath()) + ","
-                    + StringUtils.QT(salesReturnDeliveryDataBo.getSignatureName()) + ","
+                    + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getSignaturePath()) + ","
+                    + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getSignatureName()) + ","
                     + indicativeFlag + ","
-                    + StringUtils.QT(salesReturnDeliveryDataBo.getRefModuleTId()) + ","
-                    + StringUtils.QT(salesReturnDeliveryDataBo.getRefModule()) + "," +
-                    StringUtils.QT(salesReturnDeliveryDataBo.getUId()) + "," + StringUtils.QT("1") + ","
-                    + StringUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                    + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getRefModuleTId()) + ","
+                    + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getRefModule()) + "," +
+                    StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getUId()) + "," + StringUtils.getStringQueryParam("1") + ","
+                    + StringUtils.getStringQueryParam(businessModel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
                     + businessModel.getAppDataProvider().getUniqueId();
 
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
@@ -323,9 +323,9 @@ public class SalesReturnDeliveryHelper {
                 indicativeFlag = 1;
 
 
-            String sb = "select uid from SalesReturnHeader where RefUID=" + StringUtils.QT(salesReturnDeliveryDataBo.getUId()) +
+            String sb = "select uid from SalesReturnHeader where RefUID=" + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getUId()) +
                     " AND RetailerID=" +
-                    StringUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID()) +
+                    StringUtils.getStringQueryParam(businessModel.getAppDataProvider().getRetailMaster().getRetailerID()) +
                     " AND upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -374,9 +374,9 @@ public class SalesReturnDeliveryHelper {
                             salesReturnDeliveryDataModel.getActualCaseQuantity() > 0) {
 
 
-                        values = StringUtils.QT(uid)
+                        values = StringUtils.getStringQueryParam(uid)
                                 + ","
-                                + StringUtils.QT(salesReturnDeliveryDataModel.getProductId())
+                                + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getProductId())
                                 + ","
                                 + salesReturnDeliveryDataModel.getActualPieceQuantity()
                                 + ","
@@ -386,7 +386,7 @@ public class SalesReturnDeliveryHelper {
                                 + ","
                                 + salesReturnDeliveryDataModel.getCaseSize()
                                 + ","
-                                + StringUtils.QT(Utils.formatAsTwoDecimal(salesReturnDeliveryDataModel
+                                + StringUtils.getStringQueryParam(Utils.formatAsTwoDecimal(salesReturnDeliveryDataModel
                                 .getOldMrp()))
                                 + ","
                                 + DatabaseUtils
@@ -405,7 +405,7 @@ public class SalesReturnDeliveryHelper {
                                 + ","
                                 + salesReturnDeliveryDataModel.getProductId()
                                 + ","
-                                + StringUtils.QT(salesReturnDeliveryDataModel.getInvoiceId())
+                                + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getInvoiceId())
                                 + ","
                                 + salesReturnDeliveryDataModel.getSrpedit()
                                 + ","
@@ -413,14 +413,14 @@ public class SalesReturnDeliveryHelper {
                                 + ","
                                 + totalvalue
                                 + ","
-                                + StringUtils.QT(businessModel.retailerMasterBO
+                                + StringUtils.getStringQueryParam(businessModel.retailerMasterBO
                                 .getRetailerID()) + ","
                                 + salesReturnDeliveryDataModel.getReasonCategory() + ","
-                                + StringUtils.QT(salesReturnDeliveryDataModel.getLotNumber() + "")
+                                + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getLotNumber() + "")
                                 + "," + salesReturnDeliveryDataModel.getPieceUomId()
-                                + "," + StringUtils.QT(salesReturnDeliveryDataModel.getStatus() + "")
-                                + "," + StringUtils.QT(salesReturnDeliveryDataModel.getHnsCode())
-                                + "," + StringUtils.QT(salesReturnDeliveryDataModel.getUId());
+                                + "," + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getStatus() + "")
+                                + "," + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getHnsCode())
+                                + "," + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getUId());
 
 
                         db.insertSQL(
@@ -457,9 +457,9 @@ public class SalesReturnDeliveryHelper {
                                 salesReturnDeliveryDataModel.getActualCaseQuantity() > 0) {
 
 
-                            values = StringUtils.QT(uid)
+                            values = StringUtils.getStringQueryParam(uid)
                                     + ","
-                                    + StringUtils.QT(salesReturnDeliveryDataModel.getProductId())
+                                    + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getProductId())
                                     + ","
                                     + salesReturnDeliveryDataModel.getActualPieceQuantity()
                                     + ","
@@ -469,7 +469,7 @@ public class SalesReturnDeliveryHelper {
                                     + ","
                                     + salesReturnDeliveryDataModel.getCaseSize()
                                     + ","
-                                    + StringUtils.QT(Utils.formatAsTwoDecimal(salesReturnDeliveryDataModel
+                                    + StringUtils.getStringQueryParam(Utils.formatAsTwoDecimal(salesReturnDeliveryDataModel
                                     .getOldMrp()))
                                     + ","
                                     + DatabaseUtils
@@ -488,7 +488,7 @@ public class SalesReturnDeliveryHelper {
                                     + ","
                                     + salesReturnDeliveryDataModel.getProductId()
                                     + ","
-                                    + StringUtils.QT(salesReturnDeliveryDataModel.getInVoiceNumber())
+                                    + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getInVoiceNumber())
                                     + ","
                                     + salesReturnDeliveryDataModel.getSrpedit()
                                     + ","
@@ -496,14 +496,14 @@ public class SalesReturnDeliveryHelper {
                                     + ","
                                     + totalvalue
                                     + ","
-                                    + StringUtils.QT(businessModel.retailerMasterBO
+                                    + StringUtils.getStringQueryParam(businessModel.retailerMasterBO
                                     .getRetailerID()) + ","
                                     + salesReturnDeliveryDataModel.getReasonType() + ","
-                                    + StringUtils.QT(salesReturnDeliveryDataModel.getLotNumber() + "")
+                                    + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getLotNumber() + "")
                                     + "," + salesReturnDeliveryDataModel.getPieceUomId()
-                                    + "," + StringUtils.QT(salesReturnDeliveryDataModel.getStatus() + "")
-                                    + "," + StringUtils.QT(salesReturnDeliveryDataModel.getHnsCode())
-                                    + "," + StringUtils.QT(salesReturnDeliveryDataModel.getUId());
+                                    + "," + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getStatus() + "")
+                                    + "," + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getHnsCode())
+                                    + "," + StringUtils.getStringQueryParam(salesReturnDeliveryDataModel.getUId());
 
 
                             db.insertSQL(
@@ -520,27 +520,27 @@ public class SalesReturnDeliveryHelper {
                 // Preapre and save salesreturn header.
                 columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,CollectStatus,invoiceid,ridSF,VisitId";
 
-                values = StringUtils.QT(uid) + ","
-                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                        + StringUtils.QT(businessModel.retailerMasterBO.getRetailerID()) + ","
+                values = StringUtils.getStringQueryParam(uid) + ","
+                        + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                        + StringUtils.getStringQueryParam(businessModel.retailerMasterBO.getRetailerID()) + ","
                         + businessModel.retailerMasterBO.getBeatID() + ","
                         + srUserId
-                        + "," + StringUtils.QT(salesReturnDeliveryDataBo.getReturnValue()) + "," + lpcCount + ","
-                        + StringUtils.QT(businessModel.retailerMasterBO.getRetailerCode()) + ","
-                        + StringUtils.QT(businessModel.getSaleReturnNote()) + ","
-                        + StringUtils.QT(businessModel.mSelectedRetailerLatitude + "") + ","
-                        + StringUtils.QT(businessModel.mSelectedRetailerLongitude + "") + ","
+                        + "," + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getReturnValue()) + "," + lpcCount + ","
+                        + StringUtils.getStringQueryParam(businessModel.retailerMasterBO.getRetailerCode()) + ","
+                        + StringUtils.getStringQueryParam(businessModel.getSaleReturnNote()) + ","
+                        + StringUtils.getStringQueryParam(businessModel.mSelectedRetailerLatitude + "") + ","
+                        + StringUtils.getStringQueryParam(businessModel.mSelectedRetailerLongitude + "") + ","
                         + businessModel.retailerMasterBO.getDistributorId() + ","
                         + businessModel.retailerMasterBO.getDistParentId() + ","
-                        + StringUtils.QT(salesReturnDeliveryDataBo.getSignaturePath()) + ","
-                        + StringUtils.QT(salesReturnDeliveryDataBo.getSignatureName()) + ","
+                        + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getSignaturePath()) + ","
+                        + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getSignatureName()) + ","
                         + indicativeFlag + ","
-                        + StringUtils.QT(salesReturnDeliveryDataBo.getRefModuleTId()) + ","
-                        + StringUtils.QT(salesReturnDeliveryDataBo.getRefModule()) + ","
-                        + StringUtils.QT(salesReturnDeliveryDataBo.getUId()) + ","
-                        + StringUtils.QT("F") + ","
-                        + StringUtils.QT(invoiceID) + ","
-                        + StringUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                        + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getRefModuleTId()) + ","
+                        + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getRefModule()) + ","
+                        + StringUtils.getStringQueryParam(salesReturnDeliveryDataBo.getUId()) + ","
+                        + StringUtils.getStringQueryParam("F") + ","
+                        + StringUtils.getStringQueryParam(invoiceID) + ","
+                        + StringUtils.getStringQueryParam(businessModel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
                         + businessModel.getAppDataProvider().getUniqueId();
 
                 db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
@@ -621,7 +621,7 @@ public class SalesReturnDeliveryHelper {
         try {
             String[] iD = new String[2];
             String query = "select UserID,invoiceid from SalesReturnHeader" +
-                    " Where RetailerID=" + StringUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()) +
+                    " Where RetailerID=" + StringUtils.getStringQueryParam(businessModel.getRetailerMasterBO().getRetailerID()) +
                     " AND Upload = 'X'";
             Cursor c = db.selectSQL(query);
             if (c != null) {

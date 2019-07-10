@@ -2,7 +2,9 @@ package com.ivy.cpg.view.dashboard.olddashboard;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -36,7 +38,7 @@ public class DashBoardActivity extends IvyBaseActivityNoActionBar {
         DashboardFragment fragmentObject = new DashboardFragment();
         fragmentObject.setArguments(bundle);
         if (fragmentObject != null) {
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction().add(R.id.content_fragemnt, fragmentObject).commit();
         }
 

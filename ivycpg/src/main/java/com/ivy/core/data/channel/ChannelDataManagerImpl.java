@@ -2,11 +2,12 @@ package com.ivy.core.data.channel;
 
 import android.database.Cursor;
 
-import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.SubchannelBO;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -23,12 +24,14 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
 
     private DBUtil mDbUtil;
 
-    private AppDataProvider appDataProvider;
+    private DataManager dataManager;
+    private int retChannelId = 0;
+    private int retLocationId = 0;
 
     @Inject
-    public ChannelDataManagerImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider) {
+    public ChannelDataManagerImpl(@DataBaseInfo DBUtil dbUtil, DataManager dataManager) {
         this.mDbUtil = dbUtil;
-        this.appDataProvider = appDataProvider;
+        this.dataManager = dataManager;
     }
 
     private void initDb() {
@@ -261,7 +264,10 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
     }
 
     @Override
-    public Single<String> getChannelHierarchy(final int channelId) {
+    public Single<String> getChannelHierarchy() {
+
+        if (dataManager.getRetailMaster() != null)
+            retChannelId = dataManager.getRetailMaster().getChannelID();
         return Single.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() {
@@ -271,7 +277,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                     initDb();
 
                     Cursor c = mDbUtil.selectSQL("select min(Sequence) as childlevel," +
-                            "(select Sequence from ChannelLevel cl inner join ChannelHierarchy ch on ch.LevelId=cl.LevelId where ch.ChId=" + channelId + ") " +
+                            "(select Sequence from ChannelLevel cl inner join ChannelHierarchy ch on ch.LevelId=cl.LevelId where ch.ChId=" + retChannelId + ") " +
                             "as contentlevel  from ChannelLevel");
                     if (c != null) {
                         while (c.moveToNext()) {
@@ -304,7 +310,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                         sql = new StringBuilder("select " + sql1 + "  from ChannelHierarchy LM1");
                         for (int i = 2; i <= loopEnd; i++)
                             sql.append(" INNER JOIN ChannelHierarchy LM").append(i).append(" ON LM").append(i - 1).append(".ParentId = LM").append(i).append(".ChId");
-                        sql.append(" where LM1.ChId=").append(channelId);
+                        sql.append(" where LM1.ChId=").append(retChannelId);
 
                         try {
                             Cursor c = mDbUtil.selectSQL(sql.toString());
@@ -324,7 +330,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
 
                         }
                         shutDownDb();
-                        return str;
+                        return (str.isEmpty() ? "0" : str);
                     }
                 });
 
@@ -335,6 +341,8 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
 
     @Override
     public Single<String> getLocationHierarchy() {
+        if (dataManager.getRetailMaster() != null)
+            retLocationId = dataManager.getRetailMaster().getLocationId();
         return Single.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -345,7 +353,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
 
                     String sb = "select min(Sequence) as childlevel,(select Sequence from LocationLevel l1 " +
                             "inner join locationmaster lm on l1.id=LM.loclevelid where lm.locid=" +
-                            appDataProvider.getRetailMaster().getLocationId() +
+                            retLocationId +
                             ") as contentlevel  from LocationLevel";
 
                     Cursor c = mDbUtil.selectSQL(sb);
@@ -368,7 +376,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                     @Override
                     public String call() {
 
-                        String sql, sql1 = "", str = appDataProvider.getRetailMaster().getLocationId() + ",";
+                        String sql, sql1 = "", str = retLocationId + ",";
                         try {
                             for (int i = 2; i <= loopEnd; i++) {
                                 sql1 = sql1 + " LM" + i + ".Locid";
@@ -379,7 +387,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                             for (int i = 2; i <= loopEnd; i++)
                                 sql = sql + " INNER JOIN LocationMaster LM" + i + " ON LM" + (i - 1)
                                         + ".LocParentId = LM" + i + ".LocId";
-                            sql = sql + " where LM1.LocId=" + appDataProvider.getRetailMaster().getLocationId();
+                            sql = sql + " where LM1.LocId=" + retLocationId;
                             Cursor c = mDbUtil.selectSQL(sql);
                             if (c != null) {
                                 while (c.moveToNext()) {
@@ -425,8 +433,8 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                 try {
                     initDb();
 
-                    if (appDataProvider.getRetailMaster() != null)
-                        channelid = appDataProvider.getRetailMaster().getSubchannelid();
+                    if (dataManager.getRetailMaster() != null)
+                        channelid = dataManager.getRetailMaster().getSubchannelid();
 
                     int mChildLevel = 0;
                     int mContentLevel = 0;
@@ -474,6 +482,44 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
         });
 
 
+    }
+
+    /**
+     * To check whether the retailer mapped in account group for survey
+     *
+     * @return - account Group ID
+     */
+    @Override
+    public Single<String> getAccountGroupIds() {
+
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                try {
+                    initDb();
+                    StringBuilder accountGroupId = new StringBuilder();
+                    String retailerId = "0";
+
+                    if (dataManager.getRetailMaster() != null)
+                        retailerId = dataManager.getRetailMaster().getRetailerID();
+
+                    Cursor c = mDbUtil.selectSQL("select groupid from AccountGroupDetail where retailerid=" + retailerId);
+                    if (c != null) {
+                        if (c.moveToNext()) {
+                            if (accountGroupId.length() > 0)
+                                accountGroupId.append(",");
+                            accountGroupId.append(c.getString(0));
+                        }
+                        c.close();
+                    }
+                    shutDownDb();
+                    return accountGroupId.toString();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return "";
+            }
+        });
     }
 
     @Override

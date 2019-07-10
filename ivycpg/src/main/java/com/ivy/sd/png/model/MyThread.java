@@ -67,9 +67,9 @@ public class MyThread extends Thread {
         if (opt == DataMembers.LOCAL_LOGIN) {
             LoginBaseActivity frm = (LoginScreen) ctx;
             int count = frm.loginPresenter.mPasswordLockCountPref.getInt("passwordlock", 0);
-            if (true || bmodel.synchronizationHelper.validateUser(
-                    bmodel.userNameTemp.toLowerCase(Locale.US),
-                    bmodel.passwordTemp) && ((count + 1) != LoginHelper.getInstance(ctx).MAXIMUM_ATTEMPT_COUNT)) {
+            if (bmodel.synchronizationHelper.validateUser(
+                    bmodel.getAppDataProvider().getUserName().toLowerCase(Locale.US),
+                    bmodel.getAppDataProvider().getUserPassword()) && ((count + 1) != LoginHelper.getInstance(ctx).MAXIMUM_ATTEMPT_COUNT)) {
                 // If usermaster get updated
                 bmodel.userMasterHelper.downloadUserDetails();
                 bmodel.userMasterHelper.downloadDistributionDetails();
@@ -117,8 +117,6 @@ public class MyThread extends Thread {
 
                 if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
                     LoginHelper.getInstance(ctx).onFCMRegistration(ctx.getApplicationContext());
-                if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
-                    bmodel.downloadChatCredentials();
 
 
                 frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_USEREXIST);

@@ -3,11 +3,11 @@ package com.ivy.cpg.view.order.productdetails;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,10 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -33,8 +30,6 @@ import com.ivy.utils.FontUtils;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Vector;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
@@ -172,7 +167,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
             holder.configureBO = productConfigs.get(position);
 
             holder.menuTV.setText(holder.configureBO.getMenuName());
-            if(!StringUtils.isEmptyString(setValue(holder.configureBO, productObj))){
+            if(!StringUtils.isNullOrEmpty(setValue(holder.configureBO, productObj))){
                 holder.valueTV.setText(setValue(holder.configureBO, productObj));
             }
             if (holder.configureBO.getConfigCode().equalsIgnoreCase("PRODET08")){
@@ -292,6 +287,46 @@ public class ProductDetailsFragment extends IvyBaseFragment {
                 }
                 case "PRODET16": {
                     value = "" + productMasterBO.getASRP();
+                    break;
+                }
+                case "PRODET18": {
+                    value = "" + productMasterBO.getRField1();
+                    break;
+                }
+                case "PRODET19": {
+                    value = "" + productMasterBO.getRField2();
+                    break;
+                }
+                case "PRODET20": {
+                    value = "" + productMasterBO.getRField3();
+                    break;
+                }
+                case "PRODET21": {
+                    value = "" + productMasterBO.getRField4();
+                    break;
+                }
+                case "PRODET22": {
+                    value = "" + productMasterBO.getRField5();
+                    break;
+                }
+                case "PRODET23": {
+                    value = "" + productMasterBO.getRField6();
+                    break;
+                }
+                case "PRODET24": {
+                    value = "" + productMasterBO.getRField7();
+                    break;
+                }
+                case "PRODET25": {
+                    value = "" + productMasterBO.getRField8();
+                    break;
+                }
+                case "PRODET26": {
+                    value = "" + productMasterBO.getRField9();
+                    break;
+                }
+                case "PRODET27": {
+                    value = "" + productMasterBO.getRField10();
                     break;
                 }
             }

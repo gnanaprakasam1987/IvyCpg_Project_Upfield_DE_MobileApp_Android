@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         style="?attr/tablayout"
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
         android:background="?attr/primarycolor"
         android:orientation="vertical">
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="@dimen/view_pager_height"
@@ -30,7 +30,7 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dashboardRv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -50,7 +50,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/clear_btn"
         style="@style/ButtonNormal"
         android:layout_width="wrap_content"
@@ -60,7 +60,7 @@
         android:layout_toLeftOf="@+id/filter_btn"
         android:text="@string/clear" />
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/filter_btn"
         style="@style/ButtonNormal_Box_green"
         android:layout_width="wrap_content"

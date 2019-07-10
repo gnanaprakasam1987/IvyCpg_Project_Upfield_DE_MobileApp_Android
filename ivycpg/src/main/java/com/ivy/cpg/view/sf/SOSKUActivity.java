@@ -2,10 +2,12 @@ package com.ivy.cpg.view.sf;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -75,7 +77,7 @@ public class SOSKUActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SOSKUFragment sosku = (SOSKUFragment) fm.findFragmentById(R.id.sosku_fragment);
         sosku.updateBrandText(mFilterText, id);
     }
@@ -86,14 +88,14 @@ public class SOSKUActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SOSKUFragment sosku = (SOSKUFragment) fm.findFragmentById(R.id.sosku_fragment);
         sosku.updateCancel();
     }
 
     @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SOSKUFragment fragment = (SOSKUFragment) fm
                 .findFragmentById(R.id.sosku_fragment);
         fragment.updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);

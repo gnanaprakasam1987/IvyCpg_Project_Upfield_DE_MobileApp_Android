@@ -25,7 +25,7 @@
             android:textSize="@dimen/text_size_primary"
             android:textStyle="bold" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/planned_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -61,7 +61,7 @@
             android:textStyle="bold" />
 
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reason_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

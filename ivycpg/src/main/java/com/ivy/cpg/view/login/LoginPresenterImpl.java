@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
@@ -428,8 +429,8 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
             super.onPreExecute();
             try {
                 JSONObject jsonObj = new JSONObject();
-                jsonObj.put("LoginId", businessModel.userNameTemp);
-                jsonObj.put("Password", businessModel.passwordTemp);
+                jsonObj.put("LoginId", businessModel.getAppDataProvider().getUserName());
+                jsonObj.put("Password", businessModel.getAppDataProvider().getUserPassword());
                 jsonObj.put(SynchronizationHelper.VERSION_CODE,
                         businessModel.getApplicationVersionNumber());
 
@@ -439,7 +440,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                 jsonObj.put("FirmWare", "");
                 jsonObj.put("DeviceId",
                         DeviceUtils.getIMEINumber(context));
-                jsonObj.put("RegistrationId", businessModel.regid);
+                jsonObj.put("RegistrationId", businessModel.fcmRegistrationToken);
                 jsonObj.put("DeviceUniqueId", DeviceUtils.getDeviceId(context));
                 if (DataMembers.ACTIVATION_KEY != null && !DataMembers.ACTIVATION_KEY.isEmpty())
                     jsonObj.put("ActivationKey", DataMembers.ACTIVATION_KEY);
@@ -471,7 +472,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                     String key = (String) itr.next();
                     if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                         String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                             businessModel.synchronizationHelper
                                     .parseJSONAndInsert(jsonObject, false);
                             businessModel.userMasterHelper.downloadUserDetails();
@@ -490,7 +491,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
         protected void onPostExecute(String output) {
             super.onPostExecute(output);
             loginView.dismissAlertDialog();
-            if (isSFDC || output.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (isSFDC || output.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 new CheckNewVersionTask().execute();
             } else {
                 switch (output) {
@@ -556,7 +557,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                 Commons.print("SFDC url download start");
                 new UrlDownloadData().execute();  //used for sfdc purpose
             } else {
-                if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (businessModel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     if (!result) {
                         if (loginHelper.isPasswordReset(context.getApplicationContext())) {
                             loginView.dismissAlertDialog();
@@ -630,7 +631,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                 String key = (String) itr.next();
                 if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                     String errorCode = jsonObject.getString(key);
-                    if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                         businessModel.synchronizationHelper
                                 .parseJSONAndInsert(jsonObject, true);
                         businessModel.synchronizationHelper.loadMasterUrlFromDB(true);
@@ -648,7 +649,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
 
     private void updateDeleteTableStatus(String errorCode) {
         if (errorCode
-                .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
             deleteTables(true);
         } else {
             deleteTables(false);
@@ -737,7 +738,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                     String key = (String) itr.next();
                     if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                         String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                             businessModel.synchronizationHelper
                                     .parseJSONAndInsert(jsonObject, true);
                             businessModel.synchronizationHelper.loadMasterUrlFromDB(true);
@@ -757,7 +758,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             if (errorCode
-                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 if (businessModel.synchronizationHelper
                         .getUrlList().size() > 0) {
                     businessModel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
@@ -976,7 +977,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                         String key = (String) itr.next();
                         if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                             String errorCode = value.getString(key);
-                            if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                 businessModel.synchronizationHelper
                                         .parseJSONAndInsert(value, true);
 

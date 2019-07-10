@@ -8,7 +8,7 @@
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <android.support.v4.widget.DrawerLayout
+    <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/recycler_margin">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/pdt_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -44,7 +44,7 @@
                     android:scrollbars="none"
                     card_view:layout_behavior="@string/appbar_scrolling_view_behavior"
                     tools:ignore="UnusedAttribute">
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
                 <LinearLayout
                     android:id="@+id/bottom_layout"
@@ -70,5 +70,5 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:background="@drawable/background_noise" />
-    </android.support.v4.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
 </RelativeLayout>

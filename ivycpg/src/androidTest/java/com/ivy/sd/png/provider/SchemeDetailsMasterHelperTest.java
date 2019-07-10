@@ -1,12 +1,12 @@
 package com.ivy.sd.png.provider;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeBO;
+import com.ivy.cpg.view.order.scheme.SchemeBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -38,7 +38,7 @@ public class SchemeDetailsMasterHelperTest {
 
         db.openDataBase();
 
-        schemeDetailsMasterHelper.downloadSchemeParentDetails(db,0,"0",819,0,0,0,new ArrayList<String>());
+        //schemeDetailsMasterHelper.downloadSchemeParentDetails(db,0,"0",819,0,0,0,new ArrayList<String>());
         ArrayList<Integer> originalList=new ArrayList<>();
         originalList.add(12);
         originalList.add(13);
@@ -60,7 +60,7 @@ public class SchemeDetailsMasterHelperTest {
         db.openDataBase();
         BusinessModel businessModel=new BusinessModel();
         SchemeDetailsMasterHelper schemeDetailsMasterHelper=SchemeDetailsMasterHelper.getInstance(mContext);
-        schemeDetailsMasterHelper.downloadBuySchemeDetails(db,"0",226,0,819,0,0,0,new ArrayList<String>());
+        //schemeDetailsMasterHelper.downloadBuySchemeDetails(db,"0",226,0,819,0,0,0,new ArrayList<String>());
 
         db.closeDB();
 

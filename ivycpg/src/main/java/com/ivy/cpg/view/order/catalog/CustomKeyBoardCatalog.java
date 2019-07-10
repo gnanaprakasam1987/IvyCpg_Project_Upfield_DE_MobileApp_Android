@@ -97,16 +97,16 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         if (total_tv == null) {
             value_keyboard.setVisibility(View.GONE);
             //setKeyboard(((pdtBO.downloadInStoreLocationsForStockCheck().get(0).getShelfPiece() != -1) ? pdtBO.downloadInStoreLocationsForStockCheck().get(0).getShelfPiece() : 0) + "");
-            setCaseKeyboard(((pdtBO.getLocations().get(0).getShelfCase() != -1) ? pdtBO.getLocations().get(0).getShelfCase() : 0) + "", true);
-            setOuterKeyboard(((pdtBO.getLocations().get(0).getShelfOuter() != -1) ? pdtBO.getLocations().get(0).getShelfOuter() : 0) + "", true);
-            setPcsKeyboard(((pdtBO.getLocations().get(0).getShelfPiece() != -1) ? pdtBO.getLocations().get(0).getShelfPiece() : 0) + "", true);
+            setCaseKeyboard(((pdtBO.getLocations().get(0).getShelfCase() != -1) ? pdtBO.getLocations().get(0).getShelfCase() : 0) + "",true);
+            setOuterKeyboard(((pdtBO.getLocations().get(0).getShelfOuter() != -1) ? pdtBO.getLocations().get(0).getShelfOuter() : 0) + "",true);
+            setPcsKeyboard(((pdtBO.getLocations().get(0).getShelfPiece() != -1) ? pdtBO.getLocations().get(0).getShelfPiece() : 0) + "",true);
         } else {
             value_keyboard.setText(context.getResources().getString(R.string.value) + " : " + bmodel.formatValue(pdtBO.getTotalamount()));
             //mSelectedTV = tv;
 
-            setCaseKeyboard(pdtBO.getOrderedCaseQty() + "", false);
-            setOuterKeyboard(pdtBO.getOrderedOuterQty() + "", false);
-            setPcsKeyboard(pdtBO.getOrderedPcsQty() + "", false);
+            setCaseKeyboard(pdtBO.getOrderedCaseQty() + "",false);
+            setOuterKeyboard(pdtBO.getOrderedOuterQty() + "",false);
+            setPcsKeyboard(pdtBO.getOrderedPcsQty() + "",false);
         }
         if (isDecimalAllowed) {
             decimal_point.setVisibility(View.VISIBLE);
@@ -272,7 +272,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         }
     }
 
-    private void setCaseKeyboard(String s, boolean isStock) {
+    private void setCaseKeyboard(String s,boolean isStock) {
 
         /**
          * set max length digit based on IS_ORD_DIGIT config initially it will allow 4 digit only
@@ -281,6 +281,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             case_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
         if (bmodel.configurationMasterHelper.IS_STK_DIGIT && isStock)
             case_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
+
 
         currentCsQty = pdtBO.getOrderedCaseQty();
 
@@ -403,7 +404,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         });
     }
 
-    private void setOuterKeyboard(String s, boolean isStock) {
+    private void setOuterKeyboard(String s,boolean isStock) {
 
         /**
          * set max length digit based on IS_ORD_DIGIT config initially it will allow 4 digit only
@@ -532,7 +533,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         });
     }
 
-    private void setPcsKeyboard(String s, boolean isStock) {
+    private void setPcsKeyboard(String s,boolean isStock) {
 
         /**
          * set max length digit based on IS_ORD_DIGIT config initially it will allow 4 digit only
@@ -541,6 +542,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             pcs_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
         if (bmodel.configurationMasterHelper.IS_STK_DIGIT && isStock)
             pcs_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
+
 
         currentPsQty = pdtBO.getOrderedPcsQty();
         if (s.length() > 0)

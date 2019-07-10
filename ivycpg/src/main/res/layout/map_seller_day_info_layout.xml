@@ -13,7 +13,7 @@
     app:layout_behavior="@string/bottom_sheet_behavior">
 
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/cardview_ttl_seller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -225,7 +225,7 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/outlet_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -253,7 +253,7 @@
         </RelativeLayout>
 
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
 </LinearLayout>

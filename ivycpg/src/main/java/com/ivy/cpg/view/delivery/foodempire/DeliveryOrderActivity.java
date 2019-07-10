@@ -1,10 +1,12 @@
 package com.ivy.cpg.view.delivery.foodempire;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -33,7 +35,7 @@ public class DeliveryOrderActivity extends IvyBaseActivityNoActionBar {
     }
 
     public void numberPressed(View vw) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         DeliveryOrderFragment asf = (DeliveryOrderFragment) fm
                 .findFragmentById(R.id.delivery_order_fragment);
         asf.numberPressed(vw);

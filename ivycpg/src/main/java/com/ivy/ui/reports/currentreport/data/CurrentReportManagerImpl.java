@@ -88,7 +88,7 @@ public class CurrentReportManagerImpl implements CurrentReportManager {
 
             c = db.selectSQL("SELECT productId, productLevelId, uomid from ActivityGroupMapping AGM" +
                     " INNER JOIN ActivityGroupProductMapping APM ON APM.groupid=AGM.groupid" +
-                    " where AGM.activity=" + StringUtils.QT(activity));
+                    " where AGM.activity=" + StringUtils.getStringQueryParam(activity));
             if (c != null) {
                 if (c.getCount() > 0) {
                     initializeUOMmapping(reportType);

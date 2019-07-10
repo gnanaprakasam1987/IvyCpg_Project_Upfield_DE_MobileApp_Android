@@ -1,8 +1,8 @@
 package com.ivy.ui.profile.edit.view;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -13,6 +13,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.NearByRetailerDialog;
+import com.ivy.sd.png.view.ProfileContainerFragment;
 import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.ui.profile.view.ProfileBaseFragment;
 import com.ivy.utils.rx.AppSchedulerProvider;

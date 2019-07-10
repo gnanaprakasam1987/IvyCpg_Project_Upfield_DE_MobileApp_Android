@@ -87,7 +87,7 @@ public class DownloaderThreadNew extends Thread {
         userID = Userid;
         tm = transferUtility;
         bmodel = (BusinessModel) inParentActivity.getApplicationContext();
-        if (StringUtils.isEmptyString(start_time))
+        if (StringUtils.isNullOrEmpty(start_time))
             start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
     }
 
@@ -101,7 +101,7 @@ public class DownloaderThreadNew extends Thread {
         }
         sfdc_downloadUrls=sfdcImgUrls;
         bmodel = (BusinessModel) context.getApplicationContext();
-        if (StringUtils.isEmptyString(start_time))
+        if (StringUtils.isNullOrEmpty(start_time))
             start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
     }
 

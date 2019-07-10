@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.lib.Utils;
@@ -256,7 +257,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                     }
 
                 } else {
-                    if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    if (!bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                         String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
                         if (errorMsg != null) {
                             Toast.makeText(ChangePasswordActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
@@ -289,9 +290,9 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
             } else if (result == 1) {
                 if (ifReset)
                     deleteUserMaster();
-                bmodel.passwordTemp = edtNewPswd.getText().toString();
+                bmodel.getAppDataProvider().setUserPassword(edtNewPswd.getText().toString());
                 bmodel.userMasterHelper.changePassword(bmodel.getAppDataProvider()
-                        .getUser().getUserid(), bmodel.passwordTemp);
+                        .getUser().getUserid(), bmodel.getAppDataProvider().getUserPassword());
                 onCreateDialog(0, getResources().getString(R.string.password_changed_successfully));
 
             } else if (result == -2) {

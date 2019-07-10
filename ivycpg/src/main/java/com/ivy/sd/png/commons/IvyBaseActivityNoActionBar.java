@@ -14,9 +14,9 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
@@ -25,6 +25,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -350,9 +353,9 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
     public void loadFiveFilterFragment(Bundle bundle, int resId) {
         try {
 
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm.findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+            FragmentTransaction ft = fm.beginTransaction();
             if (frag != null)
                 ft.detach(frag);
 
@@ -430,14 +433,22 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
             }
         });
     }
+
+    public void showAlert(String title, String msg) {
+        showAlert(title, msg, null);
+    }
+
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener) {
         CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener);
         dialog.setCancelable(false);
         dialog.show();
     }
 
-    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener,boolean isCancelable) {
-        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener);
+
+
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, boolean isCancelable) {
+
+        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener, isCancelable);
         dialog.setCancelable(isCancelable);
         dialog.show();
     }
@@ -447,6 +458,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         dialog.setCancelable(false);
         dialog.show();
     }
+
 
     public void clearAppUrl() {
         SharedPreferences.Editor editor = PreferenceManager

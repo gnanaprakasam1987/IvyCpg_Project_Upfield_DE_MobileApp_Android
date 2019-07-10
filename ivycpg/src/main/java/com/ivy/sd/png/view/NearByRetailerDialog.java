@@ -2,9 +2,9 @@ package com.ivy.sd.png.view;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.SearchView;
+
+import androidx.core.view.MenuItemCompat;
+import androidx.appcompat.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +25,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -36,7 +37,7 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
     ListView listView;
     Button mDoneBTN;
     Context ctx;
-    android.support.v7.widget.Toolbar toolbar;
+    androidx.appcompat.widget.Toolbar toolbar;
     Vector<RetailerMasterBO> retailersList;
     Vector<RetailerMasterBO> tempRetailer = new Vector<>();
     SearchView searchView;
@@ -47,7 +48,7 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
         setContentView(R.layout.nearby_retailer_dialog);
         this.bmodel = bmodel;
         ctx = context;
-        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.menu_dialog);
         toolbar.getMenu().findItem(R.id.menu_close).setVisible(false);
         toolbar.getMenu().findItem(R.id.menu_done).setVisible(false);
@@ -87,12 +88,67 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
         listView = (ListView) findViewById(R.id.lv_retailers);
         initializeRetailers(retailers, mSelectedRetailers);
     }
+
+
     public NearByRetailerDialog(Context context, final int VALUE_NEARBY_RETAILER_MAX, Vector<RetailerMasterBO> retailers, Vector<RetailerMasterBO> mSelectedRetailers) {
         super(context);
+        initDialog(context, VALUE_NEARBY_RETAILER_MAX);
+        initializeRetailers(retailers, mSelectedRetailers);
+    }
+
+    public NearByRetailerDialog(Context context, final int VALUE_NEARBY_RETAILER_MAX, Vector<RetailerMasterBO> retailers, ArrayList<String> mSelectedRetailers) {
+        super(context);
+        initDialog(context, VALUE_NEARBY_RETAILER_MAX);
+        initializeRetailers(retailers, mSelectedRetailers);
+    }
+
+    private void initializeRetailers(Vector<RetailerMasterBO> retailers, ArrayList<String> selectedRetailer) {
+        if (selectedRetailer != null) {
+
+            for (RetailerMasterBO bo : retailers) {
+                for (String selectedBo : selectedRetailer) {
+                    if (bo.getRetailerID().equals(selectedBo)) {
+                        bo.setIsNearBy(true);
+                    }
+
+                }
+            }
+        }
+
+        initAdapter(retailers);
+
+    }
+
+    private void initAdapter(Vector<RetailerMasterBO> retailers) {
+        retailersList = retailers;
+        MyAdapter adapter = new MyAdapter(retailersList);
+        listView.setAdapter(adapter);
+    }
+
+
+    private void initializeRetailers(Vector<RetailerMasterBO> retailers, Vector<RetailerMasterBO> selectedRetailer) {
+        if (selectedRetailer != null) {
+
+            for (RetailerMasterBO bo : retailers) {
+                for (RetailerMasterBO selectedBo : selectedRetailer) {
+                    if (bo.getRetailerID().equals(selectedBo.getRetailerID())) {
+                        bo.setIsNearBy(true);
+                    }
+
+                }
+            }
+        }
+
+        initAdapter(retailers);
+
+    }
+
+
+    private void initDialog(Context context, int VALUE_NEARBY_RETAILER_MAX) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.nearby_retailer_dialog);
         ctx = context;
-        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.menu_dialog);
         toolbar.getMenu().findItem(R.id.menu_close).setVisible(false);
         toolbar.getMenu().findItem(R.id.menu_done).setVisible(false);
@@ -130,7 +186,6 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
         close_btn.setVisibility(View.GONE);
 
         listView = (ListView) findViewById(R.id.lv_retailers);
-        initializeRetailers(retailers, mSelectedRetailers);
     }
 
 
@@ -176,24 +231,6 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
 
     }
 
-    private void initializeRetailers(Vector<RetailerMasterBO> retailers, Vector<RetailerMasterBO> selectedRetailer) {
-        if (selectedRetailer != null) {
-
-            for (RetailerMasterBO bo : retailers) {
-                for (RetailerMasterBO selectedBo : selectedRetailer) {
-                    if (bo.getRetailerID().equals(selectedBo.getRetailerID())) {
-                        bo.setIsNearBy(true);
-                    }
-
-                }
-            }
-        }
-
-        retailersList = retailers;
-        MyAdapter adapter = new MyAdapter(retailersList);
-        listView.setAdapter(adapter);
-
-    }
 
     private Vector<RetailerMasterBO> getSelectedRetailers() {
         Vector<RetailerMasterBO> mSelectedRetailers = new Vector<>();

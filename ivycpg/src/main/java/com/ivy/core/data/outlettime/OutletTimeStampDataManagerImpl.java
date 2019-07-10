@@ -17,7 +17,7 @@ import io.reactivex.Single;
 
 import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
 import static com.ivy.utils.DateTimeUtils.now;
-import static com.ivy.utils.StringUtils.QT;
+import static com.ivy.utils.StringUtils.getStringQueryParam;
 
 public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManager {
 
@@ -53,7 +53,7 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
 
                     initDb();
                     String sb = "select VisitID from OutletTimestamp where " +
-                            " RetailerID=" + QT(retailerId);
+                            " RetailerID=" + getStringQueryParam(retailerId);
                     Cursor c = mDbUtil.selectSQL(sb);
                     shutDownDb();
                     return c.getCount() > 0;
@@ -108,16 +108,16 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
         return Completable.fromCallable(new Callable() {
             @Override
             public Void call() {
-                mDataManager.setModuleInTime(QT(datetimeIn));
+                mDataManager.setModuleInTime(getStringQueryParam(datetimeIn));
                 try {
 
                     initDb();
 
                     String values = mDataManager.getUniqueId() + ","
-                            + QT(moduleCode) + ","
+                            + getStringQueryParam(moduleCode) + ","
                             + mDataManager.getModuleIntime() + "," + mDataManager.getModuleIntime()
                             + ","
-                            + QT(mDataManager.getRetailMaster().getRetailerID());
+                            + getStringQueryParam(mDataManager.getRetailMaster().getRetailerID());
                     mDbUtil.insertSQL(DataMembers.tbl_outlet_time_stamp_detail, DataMembers.tbl_outlet_time_stamp_detail_cols, values);
 
                 } catch (Exception ignored) {
@@ -164,15 +164,15 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
                     initDb();
                     String dateTime = now(DATE_GLOBAL) + " " + timeOut;
                     String query = "UPDATE OutletTimeStamp SET TimeOut = '" + dateTime
-                            + "',feedback=" + QT(reasonDesc)
-                            + ", OrderValue = " + QT(String.valueOf(mDataManager.getOrderValue()))
-                            + ", outLatitude = " + QT(LocationUtil.latitude + "")
-                            + ", outLongitude = " + QT(LocationUtil.longitude + "")
-                            + ", LocationProvider = " + QT(LocationUtil.mProviderName)
-                            + ", gpsAccuracy = " + QT(LocationUtil.accuracy + "")
+                            + "',feedback=" + getStringQueryParam(reasonDesc)
+                            + ", OrderValue = " + getStringQueryParam(String.valueOf(mDataManager.getOrderValue()))
+                            + ", outLatitude = " + getStringQueryParam(LocationUtil.latitude + "")
+                            + ", outLongitude = " + getStringQueryParam(LocationUtil.longitude + "")
+                            + ", LocationProvider = " + getStringQueryParam(LocationUtil.mProviderName)
+                            + ", gpsAccuracy = " + getStringQueryParam(LocationUtil.accuracy + "")
                             + ", Battery = " + batteryPercentage
-                            + ", IsLocationEnabled = " + QT(String.valueOf(isGPSEnabled))
-                            + ", IsDeviated = " + QT(String.valueOf(mDataManager.getRetailMaster().getIsDeviated()))
+                            + ", IsLocationEnabled = " + getStringQueryParam(String.valueOf(isGPSEnabled))
+                            + ", IsDeviated = " + getStringQueryParam(String.valueOf(mDataManager.getRetailMaster().getIsDeviated()))
                             + "  WHERE RetailerID = '"
                             + mDataManager.getRetailMaster().getRetailerID()
                             + "' AND TimeIn = '" + mDataManager.getInTime() + "'";

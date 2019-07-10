@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -49,11 +49,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <android.support.design.widget.CoordinatorLayout
+                <androidx.coordinatorlayout.widget.CoordinatorLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/image_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -67,7 +67,7 @@
                         app:layout_behavior="@string/appbar_scrolling_view_behavior"
                         tools:ignore="UnusedAttribute"/>
 
-                    <android.support.design.widget.FloatingActionButton
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dimen_16dp"
@@ -76,7 +76,7 @@
                         app:backgroundTint="?attr/colorAccent"
                         android:id="@+id/fab_dragdrop_cam"
                         android:src="@drawable/ic_action_device_access_camera"/>
-                </android.support.design.widget.CoordinatorLayout>
+                </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -91,7 +91,7 @@
                         android:id="@+id/txt_thumbnailTitle"
                         android:textStyle="bold"/>
                 </LinearLayout>
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/thumnail_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
@@ -118,4 +118,4 @@
 
     </LinearLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

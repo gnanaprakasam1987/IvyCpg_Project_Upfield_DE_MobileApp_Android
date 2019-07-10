@@ -461,7 +461,7 @@ public class SalesReturnHelper {
             // transaction before saving new one.
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                 String sb = "select uid from SalesReturnHeader where RetailerID=" +
-                        StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) +
+                        StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) +
                         " and upload='N' and distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
                         " and RefModule != 'ORDER'";
                 Cursor c = db.selectSQL(sb);
@@ -1048,8 +1048,8 @@ public class SalesReturnHelper {
             );
             db.openDataBase();
             String sb = "select sum(SRH.Returnvalue) from SalesReturnHeader SRH inner join OrderHeader OH on OH.OrderID = SRH.RefModuleTId where SRH.RetailerId=" +
-                    StringUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + " and SRH.upload='N' and SRH.distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
-                    " and date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                    StringUtils.getStringQueryParam(bmodel.retailerMasterBO.getRetailerID()) + " and SRH.upload='N' and SRH.distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
+                    " and date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
             if (isVansales) {
                 sb += " and OH.invoicestatus = 1";

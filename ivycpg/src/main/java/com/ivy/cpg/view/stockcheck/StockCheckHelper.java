@@ -417,9 +417,9 @@ public class StockCheckHelper {
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
                 db.deleteSQL("NearExpiry_Tracking_Header", "Tid="
-                        + StringUtils.QT(headerCursor.getString(0)), false);
+                        + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                 db.deleteSQL("NearExpiry_Tracking_Detail", "Tid="
-                        + StringUtils.QT(headerCursor.getString(0)), false);
+                        + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                 refId = headerCursor.getString(1);
                 headerCursor.close();
             }
@@ -433,7 +433,7 @@ public class StockCheckHelper {
                     if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
                             .getNearexpPC().equals("0")) {
 
-                        values = StringUtils.QT(tid)
+                        values = StringUtils.getStringQueryParam(tid)
                                 + ","
                                 + skubo.getProductID()
                                 + ","
@@ -445,7 +445,7 @@ public class StockCheckHelper {
                                 .getNearexpiryDate().get(0)
                                 .getNearexpPC()
                                 + ","
-                                + StringUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
+                                + StringUtils.getStringQueryParam(changeMonthNameToNoyyyymmdd(df.format(c
                                 .getTime()))) + ","
                                 + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                 + "," + skubo.getOwn();
@@ -456,7 +456,7 @@ public class StockCheckHelper {
                     }
                     if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
                             .getNearexpOU().equals("0")) {
-                        values = StringUtils.QT(tid)
+                        values = StringUtils.getStringQueryParam(tid)
                                 + ","
                                 + skubo.getProductID()
                                 + ","
@@ -468,7 +468,7 @@ public class StockCheckHelper {
                                 .getNearexpiryDate().get(0)
                                 .getNearexpOU()
                                 + ","
-                                + StringUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
+                                + StringUtils.getStringQueryParam(changeMonthNameToNoyyyymmdd(df.format(c
                                 .getTime()))) + ","
                                 + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                 + "," + skubo.getOwn();
@@ -479,7 +479,7 @@ public class StockCheckHelper {
                     }
                     if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
                             .getNearexpCA().equals("0")) {
-                        values = StringUtils.QT(tid)
+                        values = StringUtils.getStringQueryParam(tid)
                                 + ","
                                 + skubo.getProductID()
                                 + ","
@@ -491,7 +491,7 @@ public class StockCheckHelper {
                                 .getNearexpiryDate().get(0)
                                 .getNearexpCA()
                                 + ","
-                                + StringUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
+                                + StringUtils.getStringQueryParam(changeMonthNameToNoyyyymmdd(df.format(c
                                 .getTime()))) + ","
                                 + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + "," + skubo.getOwn();
                         db.insertSQL("NearExpiry_Tracking_Detail",
@@ -509,7 +509,7 @@ public class StockCheckHelper {
                             if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
                                     .getNearexpPC().equals("0")) {
 
-                                values = StringUtils.QT(tid)
+                                values = StringUtils.getStringQueryParam(tid)
                                         + ","
                                         + skubo.getProductID()
                                         + ","
@@ -521,7 +521,7 @@ public class StockCheckHelper {
                                         .getNearexpiryDate().get(0)
                                         .getNearexpPC()
                                         + ","
-                                        + StringUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
+                                        + StringUtils.getStringQueryParam(changeMonthNameToNoyyyymmdd(df.format(c
                                         .getTime()))) + ","
                                         + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                         + "," + skubo.getOwn();
@@ -532,7 +532,7 @@ public class StockCheckHelper {
                             }
                             if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
                                     .getNearexpOU().equals("0")) {
-                                values = StringUtils.QT(tid)
+                                values = StringUtils.getStringQueryParam(tid)
                                         + ","
                                         + skubo.getProductID()
                                         + ","
@@ -544,7 +544,7 @@ public class StockCheckHelper {
                                         .getNearexpiryDate().get(0)
                                         .getNearexpOU()
                                         + ","
-                                        + StringUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
+                                        + StringUtils.getStringQueryParam(changeMonthNameToNoyyyymmdd(df.format(c
                                         .getTime()))) + ","
                                         + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                         + "," + skubo.getOwn();
@@ -555,7 +555,7 @@ public class StockCheckHelper {
                             }
                             if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
                                     .getNearexpCA().equals("0")) {
-                                values = StringUtils.QT(tid)
+                                values = StringUtils.getStringQueryParam(tid)
                                         + ","
                                         + skubo.getProductID()
                                         + ","
@@ -567,7 +567,7 @@ public class StockCheckHelper {
                                         .getNearexpiryDate().get(0)
                                         .getNearexpCA()
                                         + ","
-                                        + StringUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
+                                        + StringUtils.getStringQueryParam(changeMonthNameToNoyyyymmdd(df.format(c
                                         .getTime()))) + ","
                                         + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + "," + skubo.getOwn();
                                 db.insertSQL("NearExpiry_Tracking_Detail",
@@ -582,10 +582,10 @@ public class StockCheckHelper {
 
             // Saving Transaction Header if There is Any Detail
             if (isData) {
-                values = StringUtils.QT(tid) + "," + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
-                        + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                        + StringUtils.QT(getTimeZone()) + "," + StringUtils.QT(refId) + ","
-                        + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                values = StringUtils.getStringQueryParam(tid) + "," + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
+                        + "," + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                        + StringUtils.getStringQueryParam(getTimeZone()) + "," + StringUtils.getStringQueryParam(refId) + ","
+                        + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
                         + bmodel.getAppDataProvider().getUniqueId();
 
                 db.insertSQL("NearExpiry_Tracking_Header", headerColumns,
@@ -644,8 +644,8 @@ public class StockCheckHelper {
             db.createDataBase();
             db.openDataBase();
             db.executeQ("update " + DataMembers.tbl_retailerMaster
-                    + " set isReviewPlan=" + StringUtils.QT("Y") + " where retailerid="
-                    + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                    + " set isReviewPlan=" + StringUtils.getStringQueryParam("Y") + " where retailerid="
+                    + StringUtils.getStringQueryParam(bmodel.getRetailerMasterBO().getRetailerID()));
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -661,7 +661,7 @@ public class StockCheckHelper {
             db.openDataBase();
 
             boolean isData;
-            String id = StringUtils.QT(bmodel.getAppDataProvider().getUser().getUserid()
+            String id = StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getUser().getUserid()
                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
             if (bmodel.isEditStockCheck()) {
                 Cursor closingStockCursor = db
@@ -670,7 +670,7 @@ public class StockCheckHelper {
 
                 if (closingStockCursor.getCount() > 0) {
                     closingStockCursor.moveToNext();
-                    id = StringUtils.QT(closingStockCursor.getString(0));
+                    id = StringUtils.getStringQueryParam(closingStockCursor.getString(0));
                     db.deleteSQL("ClosingStockHeader", "StockID=" + id, false);
                     db.deleteSQL("ClosingStockDetail", "StockID=" + id, false);
                 }
@@ -750,10 +750,10 @@ public class StockCheckHelper {
                         int shelfOuter = ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter());
                         int availability = ((product.getLocations().get(j).getAvailability() == -1) ? 0 : product.getLocations().get(j).getAvailability());
                         values = (id) + ","
-                                + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                                + StringUtils.QT(product.getProductID()) + ","
+                                + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                                + StringUtils.getStringQueryParam(product.getProductID()) + ","
                                 + product.getCaseSize() + ","
-                                + StringUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
+                                + StringUtils.getStringQueryParam(bmodel.retailerMasterBO.getRetailerID()) + ","
                                 + product.getCaseUomId() + ","
                                 + product.getMSQty() + "," + count + ","
                                 + product.getOuUomid() + ","
@@ -805,20 +805,20 @@ public class StockCheckHelper {
             if (isData) {
                 columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID,AvailabilityShare,ridSF,VisitId";
 
-                values = (id) + ", " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                        + ", " + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) + ", "
-                        + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerCode()) + ","
-                        + StringUtils.QT(bmodel.getStockCheckRemark()) + "," + bmodel.getAppDataProvider().getRetailMaster().getDistributorId();
+                values = (id) + ", " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                        + ", " + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) + ", "
+                        + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRetailerCode()) + ","
+                        + StringUtils.getStringQueryParam(bmodel.getStockCheckRemark()) + "," + bmodel.getAppDataProvider().getRetailMaster().getDistributorId();
 
                 if (bmodel.configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
                     String availabilityShare = (bmodel.getAvailablilityShare() == null ||
                             bmodel.getAvailablilityShare().trim().length() == 0) ? "0.0" : bmodel.getAvailablilityShare();
-                    values = values + "," + StringUtils.QT(availabilityShare);
+                    values = values + "," + StringUtils.getStringQueryParam(availabilityShare);
                 } else {
-                    values = values + "," + StringUtils.QT("0.0");
+                    values = values + "," + StringUtils.getStringQueryParam("0.0");
                 }
 
-                values = values + "," + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                values = values + "," + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
                         + bmodel.getAppDataProvider().getUniqueId();
 
                 db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
@@ -872,32 +872,32 @@ public class StockCheckHelper {
 
         try {
             Cursor closingStockCursor = db
-                    .selectSQL("select Tid from RetailerScoreHeader where RetailerID=" + bmodel.getRetailerMasterBO().getRetailerID() + " and Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                    .selectSQL("select Tid from RetailerScoreHeader where RetailerID=" + bmodel.getRetailerMasterBO().getRetailerID() + " and Date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (closingStockCursor.getCount() > 0) {
                 closingStockCursor.moveToNext();
                 if (closingStockCursor.getString(0) != null) {
-                    headerID = StringUtils.QT(closingStockCursor.getString(0));
-                    db.deleteSQL("RetailerScoreDetails", "Tid=" + headerID + " and ModuleCode = " + StringUtils.QT(module), false);
+                    headerID = StringUtils.getStringQueryParam(closingStockCursor.getString(0));
+                    db.deleteSQL("RetailerScoreDetails", "Tid=" + headerID + " and ModuleCode = " + StringUtils.getStringQueryParam(module), false);
                 }
             }
             closingStockCursor.close();
 
-            String tid = (headerID.trim().length() == 0) ? StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)) : headerID;
+            String tid = (headerID.trim().length() == 0) ? StringUtils.getStringQueryParam(bmodel.userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)) : headerID;
             int moduleWeightage = FitScoreHelper.getInstance(context).getModuleWeightage(module);
             double achieved = ((sum / (double) 100) * moduleWeightage);
-            fitscoreDetailValues = (tid) + ", " + StringUtils.QT(module) + ", " + moduleWeightage + ", " + achieved + ", " + StringUtils.QT("N");
+            fitscoreDetailValues = (tid) + ", " + StringUtils.getStringQueryParam(module) + ", " + moduleWeightage + ", " + achieved + ", " + StringUtils.getStringQueryParam("N");
             db.insertSQL(DataMembers.tbl_retailerscoredetail, fitscoreDetailColumns, fitscoreDetailValues);
 
             if (headerID.trim().length() == 0) {
                 String retailerID = bmodel.getRetailerMasterBO().getRetailerID();
-                String date = StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
-                fitscoreHeaderValues = (tid) + ", " + StringUtils.QT(retailerID) + ", " + date + ", " + achieved + ", " + StringUtils.QT("N");
+                String date = StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                fitscoreHeaderValues = (tid) + ", " + StringUtils.getStringQueryParam(retailerID) + ", " + date + ", " + achieved + ", " + StringUtils.getStringQueryParam("N");
                 db.insertSQL(DataMembers.tbl_retailerscoreheader, fitscoreHeaderColumns, fitscoreHeaderValues);
             } else {
                 Cursor achievedCursor = db
                         .selectSQL("select sum(0+ifnull(B.Score,0)) from RetailerScoreHeader A inner join RetailerScoreDetails B on A.Tid = B.Tid where A.RetailerID="
-                                + bmodel.getRetailerMasterBO().getRetailerID() + " and A.Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                                + bmodel.getRetailerMasterBO().getRetailerID() + " and A.Date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
                 if (achievedCursor.getCount() > 0) {
                     achievedCursor.moveToNext();
@@ -905,8 +905,8 @@ public class StockCheckHelper {
                 }
                 achievedCursor.close();
                 db.updateSQL("Update " + DataMembers.tbl_retailerscoreheader + " set Score = " + headerScore + " where " +
-                        " Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "" +
-                        " and RetailerID = " + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                        " Date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "" +
+                        " and RetailerID = " + StringUtils.getStringQueryParam(bmodel.getRetailerMasterBO().getRetailerID()));
             }
         } catch (Exception e) {
             e.printStackTrace();

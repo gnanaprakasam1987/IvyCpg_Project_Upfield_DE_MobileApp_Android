@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.downloader.Error;
 import com.downloader.OnCancelListener;
@@ -224,7 +224,7 @@ public class CatalogImageDownloadProvider {
             initializePrDownloader(businessModel.getContext());
 
             String downloadURL;
-            if (StringUtils.isEmptyString(getCatalogDownloadUrl()))
+            if (StringUtils.isNullOrEmpty(getCatalogDownloadUrl()))
                 // Prepare download URL path.
                 downloadURL = getDownloadUrl();
             else

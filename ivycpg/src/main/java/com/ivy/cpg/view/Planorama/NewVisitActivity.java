@@ -1,9 +1,7 @@
 package com.ivy.cpg.view.Planorama;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,13 +9,8 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,19 +18,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.ivy.cpg.view.order.StockAndOrder;
-import com.ivy.cpg.view.reports.performancereport.SellerMapViewReportFragment;
-import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
@@ -56,10 +42,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.UUID;
-import java.util.Vector;
 
 public class NewVisitActivity extends IvyBaseActivityNoActionBar {
 
@@ -70,7 +53,7 @@ public class NewVisitActivity extends IvyBaseActivityNoActionBar {
     private BusinessModel bModel;
     private static final String TAG = "Planorama Screen";
     private int IMAGE_MAX_SIZE = 500;
-    android.support.v7.widget.Toolbar toolbar,toolbar_selection;
+    androidx.appcompat.widget.Toolbar toolbar,toolbar_selection;
     Button button_upload;
     String randomUID;
     ArrayList<String> imageNameList;
@@ -109,7 +92,7 @@ public class NewVisitActivity extends IvyBaseActivityNoActionBar {
 
         toolbar_selection.inflateMenu(R.menu.menu_planorama);
         toolbar_selection.setNavigationIcon(getResources().getDrawable(R.drawable.ok_tick));
-        toolbar_selection.setOnMenuItemClickListener(new android.support.v7.widget.Toolbar.OnMenuItemClickListener() {
+        toolbar_selection.setOnMenuItemClickListener(new androidx.appcompat.widget.Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId()==R.id.menu_delete){

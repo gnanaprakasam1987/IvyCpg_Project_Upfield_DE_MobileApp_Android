@@ -1,10 +1,12 @@
 package com.ivy.cpg.primarysale.view;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -52,7 +54,7 @@ public class PrimarySaleStockAndOrderFragmentActivity extends IvyBaseActivityNoA
     }
 
     public void numberPressed(View vw) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PrimarySaleStockAndOrderFragment asf = (PrimarySaleStockAndOrderFragment) fm
                 .findFragmentById(R.id.distributor_stock_and_order_fragment);
         asf.numberPressed(vw);
@@ -99,7 +101,7 @@ public class PrimarySaleStockAndOrderFragmentActivity extends IvyBaseActivityNoA
 
     @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PrimarySaleStockAndOrderFragment asf = (PrimarySaleStockAndOrderFragment) fm
                 .findFragmentById(R.id.distributor_stock_and_order_fragment);
         asf.updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);

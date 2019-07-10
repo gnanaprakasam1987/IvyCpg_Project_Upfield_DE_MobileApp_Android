@@ -14,14 +14,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.ShareCompat;
-import android.support.v4.content.FileProvider;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.FileProvider;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.ivy.apptutoriallibrary.AppTutorialPlugin;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.attendance.AttendanceActivity;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
@@ -230,11 +231,11 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
         int totalTableCount = bundle != null ? bundle.getInt("totalCount") : 0;
         switch (method) {
             case SynchronizationHelper.VOLLEY_DOWNLOAD_INSERT:
-                if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)
+                if (errorCode != null && errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)
                         && (totalTableCount == updateTableCount)) {
                     loginPresenter.applyOutletPerformancePref();
                     loginPresenter.callUpdateFinish();
-                } else if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
+                } else if (errorCode != null && errorCode.equals(IvyConstants.UPDATE_TABLE_SUCCESS_CODE)) {
                     updateProgress(updateTableCount, totalTableCount);
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
@@ -247,14 +248,14 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
                 }
                 break;
             case SynchronizationHelper.DISTRIBUTOR_WISE_DOWNLOAD_INSERT:
-                if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
+                if (errorCode != null && errorCode.equals(IvyConstants.UPDATE_TABLE_SUCCESS_CODE)) {
                     updateProgress(updateTableCount, totalTableCount);
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
                         loginPresenter.updateDownloadedTime();
                     }
-                } else if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                } else if (errorCode != null && errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     loginPresenter.callDistributorFinish();
                 } else {
                     reDownloadAlert(bundle);
@@ -262,14 +263,14 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
                 }
                 break;
             case SynchronizationHelper.LAST_VISIT_TRAN_DOWNLOAD_INSERT:
-                if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
+                if (errorCode != null && errorCode.equals(IvyConstants.UPDATE_TABLE_SUCCESS_CODE)) {
                     updateProgress(updateTableCount, totalTableCount);
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
                         loginPresenter.updateDownloadedTime();
                     }
-                } else if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                } else if (errorCode != null && errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     loginPresenter.callRetailerFinish();
                 } else {
                     reDownloadAlert(bundle);
@@ -686,7 +687,7 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
         protected Integer doInBackground(Integer... params) {
             try {
                 businessModel.synchronizationHelper.updateAuthenticateToken(false);
-                if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (businessModel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     String appTutorialAPi = businessModel.synchronizationHelper.downloadAppTutorialURL();
                     if (!appTutorialAPi.equals("")) {
                        String tutorialJSON= businessModel.synchronizationHelper.downLoadAppTutorial(LoginBaseActivity.this);

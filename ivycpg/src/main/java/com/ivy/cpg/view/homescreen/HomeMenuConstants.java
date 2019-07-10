@@ -62,6 +62,7 @@ public class HomeMenuConstants {
     public static final String MENU_NOTES_SW = "MENU_NOTES_SW";
     public static final String MENU_MAP_PLAN = "MENU_MAP_PLAN";
     public static final String TASK_NOTIFICATION = "taskNotificationFlag";
+    public static final String MENU_DYNAMIC_REPORT = "MENU_DYN_DASH01";
 
 
 
@@ -109,6 +110,7 @@ public class HomeMenuConstants {
         put(MENU_DENOMINATION, R.drawable.ic_vector_dashboard);
         put(MENU_MAP_PLAN, R.drawable.ic_show_me_map);
         put(MENU_NOTES_SW,R.drawable.task_add);
+        put(MENU_DYNAMIC_REPORT,R.drawable.ic_vector_reports);
 
     }};
 

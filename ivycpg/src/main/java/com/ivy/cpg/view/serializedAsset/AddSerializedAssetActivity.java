@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -521,7 +521,6 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                 }else{
                     mSNO.setError(null) ;
                 }
-
 
                 if (s.toString().length() > 0)
                     mSNO.setSelection(s.toString().length());

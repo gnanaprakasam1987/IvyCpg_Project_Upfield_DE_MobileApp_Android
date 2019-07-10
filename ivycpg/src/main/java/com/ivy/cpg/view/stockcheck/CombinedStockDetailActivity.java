@@ -4,10 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.CompoundButtonCompat;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.CompoundButtonCompat;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -550,7 +550,6 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 etShelfOuter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
                 etShelfCase.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
             }
-
 
             //Disable while all the UOM is not available
             if ((mProductMasterBO.getOuUomid() == 0 || !mProductMasterBO.isOuterMapped())

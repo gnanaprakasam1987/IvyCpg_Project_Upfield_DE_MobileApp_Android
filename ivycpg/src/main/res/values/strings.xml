@@ -1304,19 +1304,11 @@
 
 
     <string-array name="task_tab_header">
+        <item>All</item>
         <item>Assigned</item>
         <item>My Task</item>
         <item>Completed</item>
         <item>Delegate</item>
-    </string-array>
-
-    <string-array name="task_sort_list">
-        <item>Task(A—Z)</item>
-        <item>Task(Z—A)</item>
-        <item>Category(A—Z)</item>
-        <item>Category(Z—A)</item>
-        <item>Due Date(old—new)</item>
-        <item>Due Date(new—old)</item>
     </string-array>
 
     <string-array name="task_sort_list">

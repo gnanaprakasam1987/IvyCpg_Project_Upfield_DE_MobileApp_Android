@@ -6,6 +6,7 @@ import com.ivy.core.di.scope.PerActivity;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.ui.task.model.FilterBo;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.ui.task.model.TaskRetailerBo;
 
@@ -19,7 +20,6 @@ public interface TaskContract {
         void updateLabelNames(HashMap<String, String> labelMap);
 
         void updateListData(ArrayList<TaskDataBO> updatedList);
-
 
         void showImageUpdateMsg();
 
@@ -35,6 +35,8 @@ public interface TaskContract {
         void showTaskReasonUpdateMsg();
 
         void showDataNotMappedMsg();
+
+        void setUpFilterList(HashMap<String, ArrayList<FilterBo>> filterListHashMap);
     }
 
     interface TaskCreationView extends TaskView {
@@ -91,15 +93,17 @@ public interface TaskContract {
 
         void fetchReasonFromStdListMasterByListCode();
 
-        void getTaskListData(int userCreatedTask, String retailerID, boolean isRetailerWise, boolean isSurveywise, boolean isDelegate);
+        void getTaskListData(int tabPos, int userCreatedTask, String retailerID, boolean isFromHomeSrc, boolean isSurveywise, boolean isDelegate);
 
         void addNewImage(String imageName);
 
-        void onSaveTask(int channelId, TaskDataBO taskObj, int linkUserId, int retailerId);
+        void onSaveTask(int channelId, TaskDataBO taskObj, int linkUserId, int retailerId, String deletedImageId);
 
-        void updateTaskExecution(String retailerID, TaskDataBO taskDataBO, int reasonId);
+        void updateTaskExecution(TaskDataBO taskDataBO, int reasonId);
 
         void updateTaskExecutionImg(String imageName, String taskID, boolean isFrmDetailSrc);
+
+        void updateFilterListData(HashMap<String, ArrayList<Object>> selectedIds, boolean isRetailerWise);
 
         ArrayList<TaskDataBO> getTaskImgList();
 
@@ -123,6 +127,8 @@ public interface TaskContract {
 
         boolean isShowProdLevel();
 
+        boolean isShowRemarks();
+
         String outDateFormat();
 
         boolean validate(String taskTitle, String taskView, String dueDate, int retSelectionId, int spinnerSelectionId);
@@ -134,5 +140,7 @@ public interface TaskContract {
         void fetchUnPlannedTask();
 
         ArrayList<ReasonMaster> fetchNotCompletedTaskReasons();
+
+        void fetchFilterList(boolean isFromHomeSrc);
     }
 }

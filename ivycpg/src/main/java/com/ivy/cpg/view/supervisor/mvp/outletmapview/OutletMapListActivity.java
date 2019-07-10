@@ -4,14 +4,16 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -115,7 +117,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         mDrawerLayout = findViewById(R.id.drawer_layout);
         FrameLayout drawer = findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
@@ -355,7 +357,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        ImageView searchClose = searchView.findViewById(R.id.search_close_btn);
         searchClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
         searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getComponentName()) : null);
         SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
@@ -549,10 +551,10 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
             String productIds = TextUtils.join(",", integers.toArray(new Integer[integers.size()])) ;
 
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             FilterScreenFragment frag = (FilterScreenFragment) fm
                     .findFragmentByTag("FilterScreen");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);

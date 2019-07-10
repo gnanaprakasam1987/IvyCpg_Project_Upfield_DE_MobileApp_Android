@@ -1,7 +1,9 @@
 package com.ivy.cpg.view.planogram;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -36,7 +38,7 @@ public class PlanoGramActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PlanoGramFragment asf = (PlanoGramFragment) fm
                 .findFragmentById(R.id.planogram_fragment);
         asf.updateBrandText(mFilterText, id);
@@ -45,7 +47,7 @@ public class PlanoGramActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateGeneralText(String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PlanoGramFragment asf = (PlanoGramFragment) fm
                 .findFragmentById(R.id.planogram_fragment);
         asf.updateGeneralText(mFilterText);
@@ -53,7 +55,7 @@ public class PlanoGramActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PlanoGramFragment asf = (PlanoGramFragment) fm
                 .findFragmentById(R.id.planogram_fragment);
         asf.updateCancel();
@@ -62,7 +64,7 @@ public class PlanoGramActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PlanoGramFragment asf = (PlanoGramFragment) fm
                 .findFragmentById(R.id.planogram_fragment);
         asf.updateFromFiveLevelFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts, mFilterText);

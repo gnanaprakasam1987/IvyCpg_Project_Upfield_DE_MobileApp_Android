@@ -14,7 +14,7 @@
         tools:ignore="UselessParent">
 
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/task_name_tv"
             style="@style/TextViewListItemSecondary"
             android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
             android:text="@string/task"
             android:textAllCaps="true" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/task_due_date_tv"
             style="@style/TextViewListTitleSecondary"
             android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
             android:text="@string/due_date"
             android:textColor="@color/red_week_background" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/task_title_tv"
             style="@style/TextViewListItemSecondary"
             android:layout_width="@dimen/_300sdp"

@@ -9,11 +9,11 @@ import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
-import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
+import com.ivy.ui.profile.create.model.ContractStatus;
 
 
 import java.util.ArrayList;
@@ -148,7 +148,7 @@ public interface IProfileEditContract {
 
         String getPreviousProfileChangesList(String configCode);
 
-        ArrayList<NewOutletBO> getContractStatusList(String listName);
+        ArrayList<ContractStatus> getContractStatusList(String listName);
 
         ArrayList<LocationBO> getLocationMasterList1(String locationName);
 

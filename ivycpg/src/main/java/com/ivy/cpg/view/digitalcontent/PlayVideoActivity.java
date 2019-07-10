@@ -12,6 +12,7 @@ import android.widget.VideoView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
 
 import java.text.SimpleDateFormat;
@@ -28,6 +29,7 @@ public class PlayVideoActivity extends IvyBaseActivityNoActionBar{
     private String productID, digiContentId;
     private String vStart_Time;
     private boolean isFastForward = false;
+    private String filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,7 @@ public class PlayVideoActivity extends IvyBaseActivityNoActionBar{
             myVideoView.setMediaController(mediaControls);
 
             if (getIntent().getExtras() != null) {
-                String filePath = getIntent().getExtras().getString("videoPath", "");
+                filePath = getIntent().getExtras().getString("videoPath", "");
                 digiContentId = getIntent().getExtras().getString("DigiContentId", "");
                 productID = getIntent().getExtras().getString("PId", "");
                 myVideoView.setVideoURI(Uri.parse(filePath));
@@ -166,40 +168,41 @@ public class PlayVideoActivity extends IvyBaseActivityNoActionBar{
         // TODO Auto-generated method stub
         //super.onBackPressed();
 
-        String watchedDuration;
+        if(!filePath.contains("/" + DataMembers.PROMOTION + "/")) {
+            String watchedDuration;
 
-        int watchedSeconds = (int) (myVideoView.getCurrentPosition() / 1000) % 60;
-        int watchedMinutes = (int) ((myVideoView.getCurrentPosition() / (1000 * 60)) % 60);
-        int watchedHours = (int) ((myVideoView.getCurrentPosition() / (1000 * 60 * 60)) % 24);
-        watchedDuration = "" + watchedHours + ":" + watchedMinutes + ":" + watchedSeconds;
-        Commons.print("Duration : "+ watchedDuration);
+            int watchedSeconds = (int) (myVideoView.getCurrentPosition() / 1000) % 60;
+            int watchedMinutes = (int) ((myVideoView.getCurrentPosition() / (1000 * 60)) % 60);
+            int watchedHours = (int) ((myVideoView.getCurrentPosition() / (1000 * 60 * 60)) % 24);
+            watchedDuration = "" + watchedHours + ":" + watchedMinutes + ":" + watchedSeconds;
+            Commons.print("Duration : " + watchedDuration);
 
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.US);
-        Date d ;
-        String vEnd_Time = "";
+            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.US);
+            Date d;
+            String vEnd_Time = "";
 
-        try {
-            String[] time = vStart_Time.split(" ");
-            d = df.parse(time[1]);
+            try {
+                String[] time = vStart_Time.split(" ");
+                d = df.parse(time[1]);
 
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(d);
-            cal.add(Calendar.HOUR,watchedHours);
-            cal.add(Calendar.MINUTE,watchedMinutes);
-            cal.add(Calendar.SECOND,watchedSeconds);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(d);
+                cal.add(Calendar.HOUR, watchedHours);
+                cal.add(Calendar.MINUTE, watchedMinutes);
+                cal.add(Calendar.SECOND, watchedSeconds);
 
-            String newTime = df.format(cal.getTime());
+                String newTime = df.format(cal.getTime());
 
-            vEnd_Time = "" + DateTimeUtils.now(DateTimeUtils.DATE) + " " + newTime;
+                vEnd_Time = "" + DateTimeUtils.now(DateTimeUtils.DATE) + " " + newTime;
 
-        } catch (Exception e) {
-            Commons.printException(e);
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+            DigitalContentHelper.getInstance(PlayVideoActivity.this).
+                    saveDigitalContentDetails(PlayVideoActivity.this, digiContentId, productID,
+                            vStart_Time, vEnd_Time, isFastForward);
         }
-
-        DigitalContentHelper.getInstance(PlayVideoActivity.this).
-                saveDigitalContentDetails(PlayVideoActivity.this,digiContentId,productID,
-                        vStart_Time,vEnd_Time,isFastForward);
-
         finish();
 
     }

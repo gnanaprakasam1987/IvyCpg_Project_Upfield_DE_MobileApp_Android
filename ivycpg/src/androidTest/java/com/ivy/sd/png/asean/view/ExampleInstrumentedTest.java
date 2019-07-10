@@ -2,8 +2,8 @@ package com.ivy.sd.png.asean.view;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.Commons;

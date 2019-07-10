@@ -16,16 +16,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -71,7 +73,7 @@ import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
@@ -296,7 +298,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         FrameLayout drawer = findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
@@ -2453,7 +2455,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
-            bmodel.productHelper.taxHelper.removeTaxFromPrice();
+            bmodel.productHelper.taxHelper.removeTaxFromPrice(false);
         }
 
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
@@ -3557,10 +3559,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
 
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("generalfilter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);
@@ -3586,10 +3588,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);

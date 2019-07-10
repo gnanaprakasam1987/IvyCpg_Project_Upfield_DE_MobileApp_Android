@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_freeze_columns"
+        android:icon="@drawable/icon_column_freeze"
+        android:orderInCategory="102"
+        android:title="@string/freeze_columns"
+        ivydist:showAsAction="always"/>
+</menu>

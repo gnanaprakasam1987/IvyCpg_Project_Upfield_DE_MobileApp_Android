@@ -12,7 +12,7 @@
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_name_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
                 android:text="@string/asset_name" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_price_label"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -50,7 +50,7 @@
                 android:tag="asset_price"
                 android:text="@string/price" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_price_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
                 android:paddingRight="@dimen/_8sdp"
                 android:text="@string/zero_zero" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_serial_no_tv"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
                 android:text="@string/serial_no" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/sih_qty_label"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -89,7 +89,7 @@
                 android:tag="asset_sih_qty"
                 android:text="@string/sih" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/sih_qty_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -101,7 +101,7 @@
                 android:paddingTop="@dimen/_8sdp"
                 android:text="@string/zero" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_rental_price_label"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -113,7 +113,7 @@
                 android:tag="asset_rent_price"
                 android:text="@string/rental_price" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_rental_price_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -136,7 +136,7 @@
                 android:background="@color/divider_view_color" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/install_date_label"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -150,7 +150,7 @@
                 android:text="@string/installed_on" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/install_date_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -163,7 +163,7 @@
                 android:text="@string/date" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/service_date_label"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -179,7 +179,7 @@
                 android:text="@string/last_service_date" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/service_date_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -202,7 +202,7 @@
                 android:layout_margin="@dimen/_8sdp"
                 android:background="@color/divider_view_color" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_type_label"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -216,7 +216,7 @@
                 android:text="@string/type" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_type_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -229,7 +229,7 @@
                 android:text="@string/type" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_model_label"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -245,7 +245,7 @@
                 android:text="@string/model" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_model_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -260,7 +260,7 @@
                 android:text="@string/model" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_vendor_label"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -275,7 +275,7 @@
                 android:text="@string/vendor" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_vendor_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -288,7 +288,7 @@
                 android:text="@string/vendor" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_capacity_label"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -305,7 +305,7 @@
                 android:text="@string/capacity" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/asset_capacity_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -328,7 +328,7 @@
                 android:layout_margin="@dimen/_8sdp"
                 android:background="@color/divider_view_color" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eff_from_date_label"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -343,7 +343,7 @@
                 android:text="@string/effective_from" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eff_from_date_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -356,7 +356,7 @@
                 android:text="@string/dummy_txt" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eff_to_date_label"
                 style="@style/TextViewNormalHighlight"
                 android:layout_width="wrap_content"
@@ -373,7 +373,7 @@
                 android:text="@string/effective_to" />
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eff_to_date_tv"
                 style="@style/TextViewNormal"
                 android:layout_width="wrap_content"
@@ -395,7 +395,7 @@
                 android:layout_margin="@dimen/_8sdp"
                 android:background="@color/divider_view_color" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/asset_image_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -403,5 +403,5 @@
                 android:clipToPadding="false"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </RelativeLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

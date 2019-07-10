@@ -13,16 +13,20 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -127,6 +131,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private int mSurveyType;
     private String mMenuCode = "";
     private int screenMode = 0;
+    private String editRetailerId;
     // For Computing score
     private TextView surveyScoreTextView, overAllSurveyScoreTextView;
     private LinearLayout surveyScoreLinearLayout, surveyScoreOverAllLinearLayout;
@@ -157,7 +162,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) context.getApplicationContext();
-        bmodel.setContext(((Activity)context));
+        bmodel.setContext(((Activity) context));
         surveyHelperNew = SurveyHelperNew.getInstance(context);
 
         this.context = context;
@@ -172,12 +177,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         tabLayout.addOnTabSelectedListener(this);
         Bundle extras = getArguments();
         if (extras == null)
-            extras = ((Activity)context).getIntent().getExtras();
+            extras = ((Activity) context).getIntent().getExtras();
         if (extras != null) {
             isFromChild = extras.getBoolean("isFromChild", false);
             mFrom = extras.getString("from") != null ? extras.getString("from") : "";
 
-            isPreVisit = extras.getBoolean("PreVisit",false);
+            isPreVisit = extras.getBoolean("PreVisit", false);
         }
 
         initializeView(view);
@@ -216,35 +221,37 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.END);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(((Activity)context), /* host Activity */
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(((Activity) context), /* host Activity */
                 mDrawerLayout, /* DrawerLayout object */
                 R.string.ok, /* "open drawer" description for accessibility */
                 R.string.close /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
                 setScreenTitle(bmodel.mSelectedActivityName);
-                ((FragmentActivity)context).supportInvalidateOptionsMenu();
+                ((FragmentActivity) context).supportInvalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 setScreenTitle(getResources().getString(R.string.filter));
-                ((FragmentActivity)context).supportInvalidateOptionsMenu();
+                ((FragmentActivity) context).supportInvalidateOptionsMenu();
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         Bundle extras = getArguments();
         if (extras == null) {
-            extras = ((Activity)context).getIntent().getExtras();
+            extras = ((Activity) context).getIntent().getExtras();
         }
         try {
             if (extras != null) {
                 mSurveyType = extras.getInt("SurveyType", 0);
                 mMenuCode = extras.getString("menuCode", "");
                 screenMode = extras.getInt("screenMode", 0);
+                editRetailerId = extras.getString("editRetailerId", "");
             } else {
-                mSurveyType = ((Activity)context).getIntent().getExtras().getInt("SurveyType", 0);
-                mMenuCode = ((Activity)context).getIntent().getExtras().getString("menuCode", "");
-                screenMode = ((Activity)context).getIntent().getExtras().getInt("screenMode", 0);
+                mSurveyType = ((Activity) context).getIntent().getExtras().getInt("SurveyType", 0);
+                mMenuCode = ((Activity) context).getIntent().getExtras().getString("menuCode", "");
+                screenMode = ((Activity) context).getIntent().getExtras().getInt("screenMode", 0);
+                editRetailerId = ((Activity) context).getIntent().getExtras().getString("editRetailerId", "");
             }
         } catch (Exception e) {
             mSurveyType = 0;
@@ -306,7 +313,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     public void onStart() {
         super.onStart();
         bmodel = (BusinessModel) context.getApplicationContext();
-        bmodel.setContext(((Activity)context));
+        bmodel.setContext(((Activity) context));
         if (surveyHelperNew.ENABLE_MULTIPLE_PHOTO)
             isMultiPhotoCaptureEnabled = true;
         loadListData();
@@ -955,7 +962,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 if (result != null) {
                     if (result.getContents() == null) {
                         Toast.makeText(getActivity(), getResources().getString(R.string.cancelled), Toast.LENGTH_LONG).show();
-                    } else if (mBarcodeEditText != null){
+                    } else if (mBarcodeEditText != null) {
                         mBarcodeEditText.setText(result.getContents());
                     }
                 }
@@ -1110,7 +1117,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         setScreenTitle(bmodel.mSelectedActivityName);
 
         bmodel = (BusinessModel) context.getApplicationContext();
-        bmodel.setContext(((Activity)context));
+        bmodel.setContext(((Activity) context));
     }
 
     @Override
@@ -1135,7 +1142,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             mCurrentQuestionBO.getAnswersList().add(0, selectBo);
         }
         final ArrayList<AnswerBO> answers = mCurrentQuestionBO.getAnswersList();
-        final Spinner items = (Spinner) ((Activity)context).getLayoutInflater().inflate(R.layout.cust_spinner, null);
+        final Spinner items = (Spinner) ((Activity) context).getLayoutInflater().inflate(R.layout.cust_spinner, null);
 
         ArrayAdapter<String> comboAdapter = new ArrayAdapter<>(context,
                 R.layout.spinner_bluetext_layout);
@@ -1654,7 +1661,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 Intent intent = new Intent(
                                         context,
                                         CameraActivity.class);
-                                String path =FileUtils.photoFolderPath + "/" + imageName;
+                                String path = FileUtils.photoFolderPath + "/" + imageName;
                                 if (i == 0) {
                                     questBO.setImage1Path(path);
                                     questBO.setImage1Captured(true);
@@ -1712,7 +1719,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                               final QuestionBO mCurrentQuestionBO, final LinearLayout subQLL) {
         answerLL.removeAllViews();
         subQLL.removeAllViews();
-        final EditText et = (EditText) ((Activity)context).getLayoutInflater().inflate(R.layout.survey_dit_text, null);
+        final EditText et = (EditText) ((Activity) context).getLayoutInflater().inflate(R.layout.survey_dit_text, null);
         if (!mCurrentQuestionBO.getSelectedAnswer().isEmpty())
             et.setText(mCurrentQuestionBO.getSelectedAnswer().get(0));
         else
@@ -1934,7 +1941,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         answerLL.removeAllViews();
         subQLL.removeAllViews();
-        RelativeLayout rootView = (RelativeLayout) ((Activity)context).getLayoutInflater().inflate(R.layout.survey_barcode_edittext, null);
+        RelativeLayout rootView = (RelativeLayout) ((Activity) context).getLayoutInflater().inflate(R.layout.survey_barcode_edittext, null);
         EditText et = rootView.findViewById(R.id.et_sur_barcode);
         ImageView img_barcode = rootView.findViewById(R.id.imageView_barcode_scan);
 
@@ -1987,13 +1994,13 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             }
         });
 
-            img_barcode.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mBarcodeEditText = et;
-                    scanBarCode();
-                }
-            });
+        img_barcode.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBarcodeEditText = et;
+                scanBarCode();
+            }
+        });
 
         answerLL.addView(rootView);
 
@@ -2001,7 +2008,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        ((Activity)context).getMenuInflater().inflate(
+        ((Activity) context).getMenuInflater().inflate(
                 R.menu.menu_survey, menu);
     }
 
@@ -2176,7 +2183,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     PhotoCaptureActivity.class);
             intent.putExtra("fromSurvey", true);
             startActivity(intent);
-            ((Activity)context).overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            ((Activity) context).overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             return true;
         } else if (i == R.id.menu_reason) {
             bmodel.reasonHelper.downloadNpReason(bmodel.retailerMasterBO.getRetailerID(), mMenuCode);
@@ -2196,11 +2203,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             Intent intent = new Intent(context, HomeScreenTwo.class);
 
                             if (isPreVisit)
-                                intent.putExtra("PreVisit",true);
+                                intent.putExtra("PreVisit", true);
 
                             startActivity(intent);
                         }
-                        ((Activity)context).finish();
+                        ((Activity) context).finish();
                     }
                 }
             });
@@ -2208,7 +2215,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             args.putString("modulename", mMenuCode);
             dialog.setCancelable(false);
             dialog.setArguments(args);
-            dialog.show(((FragmentActivity)context).getSupportFragmentManager(), "ReasonDialogFragment");
+            dialog.show(((FragmentActivity) context).getSupportFragmentManager(), "ReasonDialogFragment");
             return true;
         } else if (i == R.id.menu_select) {
             //select user
@@ -2304,7 +2311,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         protected Boolean doInBackground(String... arg0) {
             try {
                 if ("MENU_NEW_RET".equals(mMenuCode)) {
-                    surveyHelperNew.saveAnswerNewRetailer(mMenuCode, screenMode);
+                    surveyHelperNew.saveAnswerNewRetailer(mMenuCode, screenMode, editRetailerId);
                 } else {
                     surveyHelperNew.deleteUnusedImages();
                     surveyHelperNew.saveAnswer(mMenuCode);
@@ -2344,7 +2351,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 @Override
                 public void onPositiveButtonClick() {
                     questionsRv.invalidate();
-                    Bundle extras = ((Activity)context).getIntent().getExtras();
+                    Bundle extras = ((Activity) context).getIntent().getExtras();
                     //Enabled global survey will re-direct to next screen or else screen remains same
                     if (bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE || tabCount == 1) {
                         if (extras != null && "HomeScreenTwo".equals(mFrom)) {
@@ -2353,10 +2360,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
 
                             if (isPreVisit)
-                                intent.putExtra("PreVisit",true);
+                                intent.putExtra("PreVisit", true);
 
                             startActivity(intent);
-                            ((Activity)context).finish();
+                            ((Activity) context).finish();
                         } else if ("HomeScreen".equals(mFrom)) {
                             HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) (context)).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
                             if (currentFragment != null) {
@@ -2406,7 +2413,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private void FiveFilterFragment() {
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = ((FragmentActivity)context)
+            FragmentManager fm = ((FragmentActivity) context)
                     .getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
@@ -2541,12 +2548,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     intent.putExtra("isStoreMenu", true);
 
                 if (isPreVisit)
-                    intent.putExtra("PreVisit",true);
+                    intent.putExtra("PreVisit", true);
 
                 startActivity(intent);
             }
-            ((Activity)context).finish();
-            ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            ((Activity) context).finish();
+            ((Activity) context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
     }
 
@@ -2561,12 +2568,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         intent.putExtra("isStoreMenu", true);
 
                     if (isPreVisit)
-                        intent.putExtra("PreVisit",true);
+                        intent.putExtra("PreVisit", true);
 
                     startActivity(intent);
                 }
-                ((Activity)context).finish();
-                ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                ((Activity) context).finish();
+                ((Activity) context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
         }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
             @Override
@@ -2675,27 +2682,27 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
                 int answerSize = question.getSelectedAnswerIDs().size();
                 for (int j = 0; j < answerSize; j++) {
-                        String answerStr = PDFGenerator.addSpace(String.valueOf(qNo).length()) + question
-                                .getSelectedAnswer().get(j);
-                        Phrase answerPhrase = pdfGenerator.addPhrase(answerStr, PDFGenerator.FONT_BOLD_SMALL);
-                        Paragraph answerPara = pdfGenerator.addParagraph(PDFGenerator.ALIGNMENT_JUSTIFIED);
-                        answerPara.add(answerPhrase);
-                        answerPara.add(PDFGenerator.NEW_LINE);
-                        pdfGenerator.getPdfWordCell().addElement(answerPara);
-                        if (question.getImageNames() != null && !question.getImageNames().isEmpty()) {
-                            pdfGenerator.setImageList(new ArrayList<>());
-                            for (String imagePath : question.getImageNames()) {
-                                String[] splitPath = imagePath.split("/");
-                                String imagename = splitPath[splitPath.length - 1];
-                                pdfGenerator.getImageList().add(imagename);
-                            }
-                            pdfGenerator.addImagesToPdf();
+                    String answerStr = PDFGenerator.addSpace(String.valueOf(qNo).length()) + question
+                            .getSelectedAnswer().get(j);
+                    Phrase answerPhrase = pdfGenerator.addPhrase(answerStr, PDFGenerator.FONT_BOLD_SMALL);
+                    Paragraph answerPara = pdfGenerator.addParagraph(PDFGenerator.ALIGNMENT_JUSTIFIED);
+                    answerPara.add(answerPhrase);
+                    answerPara.add(PDFGenerator.NEW_LINE);
+                    pdfGenerator.getPdfWordCell().addElement(answerPara);
+                    if (question.getImageNames() != null && !question.getImageNames().isEmpty()) {
+                        pdfGenerator.setImageList(new ArrayList<>());
+                        for (String imagePath : question.getImageNames()) {
+                            String[] splitPath = imagePath.split("/");
+                            String imagename = splitPath[splitPath.length - 1];
+                            pdfGenerator.getImageList().add(imagename);
                         }
+                        pdfGenerator.addImagesToPdf();
+                    }
                 }
                 qNo++;
             }
         }
-        if (!StringUtils.isEmptyString(surveyBO.getSignaturePath())) {
+        if (!StringUtils.isNullOrEmpty(surveyBO.getSignaturePath())) {
             String[] splitPath = surveyBO.getSignaturePath().split("/");
             String imagename = splitPath[splitPath.length - 1];
             pdfGenerator.addSignature(FileUtils.photoFolderPath + "/" + imagename, PDFGenerator.ALIGNMENT_CENTER, 25);
@@ -2730,10 +2737,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
-                    String val = ((EditText)v).getText().toString();
-                    if(!TextUtils.isEmpty(val)){
-                        if(Integer.valueOf(val) < min || Integer.valueOf(val) > max){
+                if (!hasFocus) {
+                    String val = ((EditText) v).getText().toString();
+                    if (!TextUtils.isEmpty(val)) {
+                        if (Integer.valueOf(val) < min || Integer.valueOf(val) > max) {
                             ((EditText) v).setError(String.format(getResources().getString(R.string.input_char_validation_msg), min, max));
                         }
 
@@ -2743,4 +2750,4 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         });
     }
 
- }
+}

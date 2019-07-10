@@ -24,8 +24,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
-import android.support.multidex.MultiDex;
-import android.support.v4.app.FragmentActivity;
+
+import androidx.multidex.MultiDex;
+import androidx.fragment.app.FragmentActivity;
+
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -39,6 +41,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.android.volley.VolleyLog;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -49,6 +52,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.ivy.core.CodeCleanUpUtil;
@@ -56,6 +60,7 @@ import com.ivy.core.IvyConstants;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.core.data.channel.ChannelDataManagerImpl;
+import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.core.data.db.AppDataManagerImpl;
 import com.ivy.core.data.retailer.RetailerDataManagerImpl;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
@@ -108,7 +113,7 @@ import com.ivy.sd.png.bo.OrderFullfillmentBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -198,9 +203,8 @@ import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.core.session.Configuration;
 import co.chatsdk.firebase.FirebaseNetworkAdapter;
 import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
-import co.chatsdk.firebase.push.FirebasePushModule;
-
 import co.chatsdk.firebase.push.DefaultBroadcastReceiver;
+import co.chatsdk.firebase.push.FirebasePushModule;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_API_KEY;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
@@ -208,6 +212,7 @@ import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_DATABSE_U
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_PROJECT_ID;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_STORAGE_BUCKET;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
+import static com.ivy.utils.StringUtils.getStringQueryParam;
 
 public class BusinessModel extends Application {
 
@@ -226,8 +231,13 @@ public class BusinessModel extends Application {
     public TimerCount timer;
     private String remarkType = "0";
 
+    @Deprecated
     public String userNameTemp = "", passwordTemp = "";
+
+    @Deprecated
     public RetailerMasterBO retailerMasterBO;
+
+    @Deprecated
     public Vector<RetailerMasterBO> retailerMaster;
     public Vector<RetailerMasterBO> subDMaster;
     public ArrayList<RetailerMasterBO> visitretailerMaster;
@@ -240,8 +250,8 @@ public class BusinessModel extends Application {
     public String mSelectedActivityName = new String();
     public String mSelectedActivityConfigCode = new String();
 
-
-    public String regid;
+    @Deprecated
+    public String fcmRegistrationToken;
 
 
     public InitiativeHelper initiativeHelper;
@@ -579,11 +589,21 @@ public class BusinessModel extends Application {
         this.saleReturnRfValue = saleReturnRfValue;
     }
 
+    /**
+     * @See {{@link AppDataProvider#getOrderHeaderNote()}}
+     * @deprecated
+     */
     public String getOrderHeaderNote() {
         return orderHeaderNote;
     }
 
+    /**
+     * @param orderHeaderNote
+     * @See {{@link AppDataProvider#setOrderHeaderNote(String)}}
+     * @deprecated
+     */
     public void setOrderHeaderNote(String orderHeaderNote) {
+        codeCleanUpUtil.setOrderHeaderNote(orderHeaderNote);
         this.orderHeaderNote = orderHeaderNote;
     }
 
@@ -635,11 +655,21 @@ public class BusinessModel extends Application {
         this.stockCheckRemark = stockCheckRemark;
     }
 
+    /**
+     * @return
+     * @See {@link AppDataProviderImpl#isEditOrder()}
+     * @deprecated
+     */
     public boolean isEdit() {
         return isEditOrder;
     }
 
+    /**
+     * @See {@link AppDataProviderImpl#setIsEditOrder(boolean)}
+     * @deprecated
+     */
     public void setEdit(boolean isEdit) {
+        getAppDataProvider().setIsEditOrder(isEditOrder);
         this.isEditOrder = isEdit;
         setDoubleEdit_temp(isEdit);
     }
@@ -703,10 +733,26 @@ public class BusinessModel extends Application {
             initializeFirebase();
             initializeChatSdk();
 
+            AppTutorialPlugin.getInstance().setContext(this);
+            AppTutorialPlugin.getInstance().setShouldInitOnShake(true);
+            AppTutorialPlugin.getInstance().init();
+
+            if (BuildConfig.DEBUG)
+                VolleyLog.DEBUG = true;
+
         } catch (Exception ex) {
             Commons.printException(ex);
         }
 
+    }
+
+    /***********************************************************************Code Refactoring Initiatives******************************************************************/
+
+    public CodeCleanUpUtil codeCleanUpUtil;
+
+
+    public IvyAppComponent getComponent() {
+        return mApplicationComponent;
     }
 
     private void enableDisableChatReceiver(boolean isenableReceiver){
@@ -729,16 +775,6 @@ public class BusinessModel extends Application {
                     PackageManager.DONT_KILL_APP);
 
     }
-
-    /***********************************************************************Code Refactoring Initiatives******************************************************************/
-
-    public CodeCleanUpUtil codeCleanUpUtil;
-
-
-    public IvyAppComponent getComponent() {
-        return mApplicationComponent;
-    }
-
 
     /*******************************************************************************************************************************************************************************/
 
@@ -776,7 +812,6 @@ public class BusinessModel extends Application {
 
                 FirebaseFileStorageModule.activate();
                 FirebasePushModule.activateForFirebase();
-
             }
 
             if (!SupervisorActivityHelper.getInstance().isChatConfigAvail(this))
@@ -904,7 +939,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ListName from StandardListMaster where ListType="
-                            + QT(listCode));
+                            + getStringQueryParam(listCode));
             if (c != null) {
                 if (c.moveToNext()) {
                     listName = c.getString(0);
@@ -996,9 +1031,9 @@ public class BusinessModel extends Application {
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
             sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
             sb.append(" WHERE inv.Retailerid = ");
-            sb.append(QT(retailerId));
+            sb.append(getStringQueryParam(retailerId));
             sb.append(" AND inv.DocStatus = ");
-            sb.append(QT(docStatus));
+            sb.append(getStringQueryParam(docStatus));
             sb.append(" GROUP BY Inv.InvoiceNo");
             sb.append(" ORDER BY Inv.InvoiceDate");
 
@@ -1066,13 +1101,13 @@ public class BusinessModel extends Application {
      * This method will return total acheived value of the seller for the day.
      * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
      * value will not be considered.
-     * @See {@link AppUtils#QT}
+     * @See {@link AppUtils#getStringQueryParam}
      */
 
     /**
      * @param data
      * @return
-     * @See {@link StringUtils#QT(String)}
+     * @See {@link StringUtils#getStringQueryParam(String)}
      * @deprecated
      */
     public String QT(String data) {
@@ -1097,7 +1132,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db.selectSQL("select orderid from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
-                    + QT(getRetailerMasterBO().getRetailerID())
+                    + getStringQueryParam(getRetailerMasterBO().getRetailerID())
                     + " and invoicestatus=0 and upload!='X'");
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -1215,7 +1250,7 @@ public class BusinessModel extends Application {
             Cursor c = db.selectSQL("select tid from "
                     + DataMembers.tbl_retailercontractrenewal
                     + " where RetailerId="
-                    + QT(getRetailerMasterBO().getRetailerID()));
+                    + getStringQueryParam(getRetailerMasterBO().getRetailerID()));
             if (c != null) {
                 if (c.getCount() > 0) {
                     flag = true;
@@ -1238,8 +1273,8 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db.selectSQL("select uid from "
                     + DataMembers.tbl_AnswerHeader + " where retailerid="
-                    + QT(getRetailerMasterBO().getRetailerID())
-                    + " and menucode=" + QT(menucode));
+                    + getStringQueryParam(getRetailerMasterBO().getRetailerID())
+                    + " and menucode=" + getStringQueryParam(menucode));
             if (c != null) {
                 if (c.getCount() > 0) {
                     flag = true;
@@ -1268,7 +1303,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(ordervalue)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
-                    + QT(retailerMasterBO.getRetailerID()) +
+                    + getStringQueryParam(retailerMasterBO.getRetailerID()) +
                     " AND upload='N' and invoicestatus=0");
             if (c != null) {
                 if (c.moveToNext()) {
@@ -1297,7 +1332,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(invNetamount) from InvoiceMaster where retailerid="
-                            + QT(retailerMasterBO.getRetailerID()) + " and InvoiceDate = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                            + getStringQueryParam(retailerMasterBO.getRetailerID()) + " and InvoiceDate = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getFloat(0);
@@ -1323,14 +1358,14 @@ public class BusinessModel extends Application {
             db.openDataBase();
 
             Cursor c = db.selectSQL("SELECT SUM( IFNULL(payment.amount,0))  FROM payment  WHERE  payment.retailerid = "
-                    + QT(retailerMasterBO.getRetailerID()));
+                    + getStringQueryParam(retailerMasterBO.getRetailerID()));
             if (c != null) {
                 if (c.moveToNext()) {
                     i = c.getFloat(0);
                 }
             }
             c = db.selectSQL("select sum(paidamount) from InvoiceMaster WHERE retailerid = "
-                    + QT(retailerMasterBO.getRetailerID()));
+                    + getStringQueryParam(retailerMasterBO.getRetailerID()));
             if (c != null) {
                 if (c.moveToNext()) {
                     i += c.getFloat(0);
@@ -1355,7 +1390,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(Points) from LoyaltyPoints where retailerid="
-                            + QT(retailerMasterBO.getRetailerID()));
+                            + getStringQueryParam(retailerMasterBO.getRetailerID()));
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getFloat(0);
@@ -1380,7 +1415,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(BalancePoints) from LoyaltyPoints where retailerid="
-                            + QT(retailerMasterBO.getRetailerID()));
+                            + getStringQueryParam(retailerMasterBO.getRetailerID()));
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getFloat(0);
@@ -1476,7 +1511,7 @@ public class BusinessModel extends Application {
 
                             + " LEFT JOIN RetailerClientMappingMaster RC " + (configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING ? " on RC.beatID=RBM.beatId" : " on RC.Rid = A.RetailerId")
 
-                            + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) : "")
+                            + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) : "")
 
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID AND RA.IsPrimary=1"
 
@@ -1706,6 +1741,7 @@ public class BusinessModel extends Application {
             else
                 getPlannedRetailer();
 
+
             if (configurationMasterHelper.SHOW_MISSED_RETAILER) {
                 mRetailerHelper.downloadMissedRetailer(db);
             }
@@ -1761,27 +1797,36 @@ public class BusinessModel extends Application {
      */
     private void updateRetailerPriceGRP(RetailerMasterBO retObj, DBUtil db) {
 
+        Cursor c =null;
         try {
-            Cursor c;
+
             int distId = 0;
-            c = db.selectSQL("select DistributorID From RetailerPriceGroup where DistributorID<>0 AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()));
+            c = db.selectSQL("select DistributorID From RetailerPriceGroup where DistributorID<>0 AND RetailerId=" + getStringQueryParam(retObj.getRetailerID()));
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
                     distId = c.getInt(0);
 
-            }
-            c.close();
 
-            c = db.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            }
+            if (c != null) {
+                c.close();
+            }
+
+            c = db.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + getStringQueryParam(retObj.getRetailerID()) + " LIMIT 1");
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
                     retObj.setGroupId(c.getInt(0));
             }
-            c.close();
+            if (c != null) {c.close();
+}
         } catch (Exception e) {
             Commons.printException("Exception ", e);
+        }finally {
+            if (c != null) {
+                c.close();
+            }
         }
 
     }
@@ -1795,24 +1840,24 @@ public class BusinessModel extends Application {
 
         try {
             Cursor c;
-            c = db.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()));
-            if (c != null
-                    && c.getCount() > 0) {
-                if (c.moveToNext())
-                    retObj.setTotalPlanned(c.getCount());
+            c = db.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.getStringQueryParam(retObj.getRetailerID()));
+            if (c != null)
+                if (c.getCount() > 0) {
+                    if (c.moveToNext())
+                        retObj.setTotalPlanned(c.getCount());
 
-                c.close();
-            }
+                    c.close();
+                }
 
 
-            c = db.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
-            if (c != null
-                    && c.getCount() > 0) {
-                if (c.moveToNext())
-                    retObj.setTotalVisited(c.getCount());
+            c = db.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + getStringQueryParam(retObj.getRetailerID()) + " LIMIT 1");
+            if (c != null)
+                if (c.getCount() > 0) {
+                    if (c.moveToNext())
+                        retObj.setTotalVisited(c.getCount());
 
-                c.close();
-            }
+                    c.close();
+                }
         } catch (Exception ignore) {
 
         }
@@ -1823,15 +1868,15 @@ public class BusinessModel extends Application {
         List<String> retailerIds = new ArrayList<>();
         List<String> vistedRetailerIds = new ArrayList<>();
         Cursor c = db.selectSQL("select EntityId,VisitStatus From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
-                "AND Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
-        if (c != null
-                && c.getCount() > 0) {
-            while (c.moveToNext()) {
-                retailerIds.add(c.getString(0));
-                if (c.getString(1).equals("COMPLETED"))
-                    vistedRetailerIds.add(c.getString(0));
+                "AND Date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+        if (c != null) {
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    retailerIds.add(c.getString(0));
+                    if (c.getString(1).equals("COMPLETED"))
+                        vistedRetailerIds.add(c.getString(0));
+                }
             }
-
             c.close();
         }
         if (retailerIds.size() > 0)
@@ -1875,8 +1920,9 @@ public class BusinessModel extends Application {
                         Retailer.setBomAchieved(false);
                     }
                 }
+                c.close();
             }
-            c.close();
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -2020,7 +2066,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db.selectSQL("select distinct ProductID from "
                     + DataMembers.tbl_orderDetails + " where retailerid="
-                    + QT(retailerMasterBO.getRetailerID()) + " and upload='N'");
+                    + getStringQueryParam(retailerMasterBO.getRetailerID()) + " and upload='N'");
             if (c != null) {
                 while (c.moveToNext()) {
                     mOrderedProductList.add(c.getString(0));
@@ -2113,6 +2159,10 @@ public class BusinessModel extends Application {
         }
     }
 
+    /**
+     * @See {{@link RetailerDataManagerImpl#updateSurveyScoreForRetailers(ArrayList)} where it it integrated with {@link RetailerDataManagerImpl#fetchRetailers()}}
+     * @deprecated
+     */
     public void updateSurveyScoreHistoryRetailerWise() {
         DBUtil db;
         try {
@@ -2124,7 +2174,7 @@ public class BusinessModel extends Application {
 
             sql = "SELECT sum(ifnull(score,0)),rm.retailerid FROM retailermaster rm "
                     + " left  join SurveyScoreHistory s on rm.retailerid =s.retailerid and  s.Date >="
-                    + QT(DateTimeUtils.getFirstDayOfCurrentMonth())
+                    + getStringQueryParam(DateTimeUtils.getFirstDayOfCurrentMonth())
                     + " group by rm.retailerid";
 
             c = db.selectSQL(sql);
@@ -2143,7 +2193,7 @@ public class BusinessModel extends Application {
             sql = "SELECT sum(AH.achscore),rm.retailerid  FROM  retailermaster rm"
                     + " join answerheader AH on rm.retailerid = ah.retailerid "
                     + " Left Join SurveyScoreHistory SSH on SSH.SurveyId=AH.SurveyId and ah.retailerid=ssh.retailerid and AH.Date = "
-                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " group by rm.retailerid";
             c = db.selectSQL(sql);
             if (c != null) {
@@ -2288,7 +2338,7 @@ public class BusinessModel extends Application {
                 String query = "update RetailerClientMappingMaster set isAudit="
                         + Auditvalue
                         + " where RID="
-                        + QT(getRetailerMasterBO().getRetailerID())
+                        + getStringQueryParam(getRetailerMasterBO().getRetailerID())
                         + " and userid="
                         + getRetailerMasterBO()
                         .getSelectedUserID();
@@ -2320,10 +2370,12 @@ public class BusinessModel extends Application {
     }
 
     /**
+     * @See {@link RetailerDataManagerImpl#updateRetailerMasterInfo(ArrayList)} which is integrated with {@link RetailerDataManagerImpl#fetchRetailers()}
      * Update isToday and is_vansales.
      * IS_DEFAULT_PRESALE - true than update is_vansales = 0 based on
      * ORDB08 config RField Value is 1
      * IS_DEFAULT_PRESALE - fales than update is_vansales = 1
+     * @deprecated
      */
     public void updateIsTodayAndIsVanSalesInRetailerMasterInfo() {
         DBUtil db = null;
@@ -2521,9 +2573,10 @@ public class BusinessModel extends Application {
     }
 
     /**
-     * Check weather product Master has any order.
-     *
      * @return
+     * @See {@link DataManagerImpl#isOpenOrderExisting()}
+     * Check weather product Master has any order.
+     * @deprecated
      */
     public boolean hasOrder() {
 
@@ -2671,7 +2724,7 @@ public class BusinessModel extends Application {
             String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
 
             for (int i = 0; i < retailers.size(); i++) {
-                id = StringUtils.QT(getAppDataProvider().getUser().getDistributorid()
+                id = getStringQueryParam(getAppDataProvider().getUser().getDistributorid()
                         + "" + getAppDataProvider().getUser().getUserid()
                         + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID) + i);
 
@@ -2682,12 +2735,12 @@ public class BusinessModel extends Application {
                     String ridSF = "";
                     if (getAppDataProvider().getRetailMaster() != null && getAppDataProvider().getRetailMaster().getRidSF() != null)
                         ridSF = getAppDataProvider().getRetailMaster().getRidSF();
-                    values = id + "," + StringUtils.QT(outlet.getRetailerid()) + ","
-                            + outlet.getBeatId() + "," + StringUtils.QT(outlet.getDate())
-                            + "," + StringUtils.QT(outlet.getReasonid()) + ","
-                            + StringUtils.QT(getStandardListId(outlet.getReasontype()))
-                            + "," + StringUtils.QT("N") + "," + outlet.getDistributorID()
-                            + "," + StringUtils.QT(ridSF);
+                    values = id + "," + getStringQueryParam(outlet.getRetailerid()) + ","
+                            + outlet.getBeatId() + "," + getStringQueryParam(outlet.getDate())
+                            + "," + getStringQueryParam(outlet.getReasonid()) + ","
+                            + getStringQueryParam(getStandardListId(outlet.getReasontype()))
+                            + "," + getStringQueryParam("N") + "," + outlet.getDistributorID()
+                            + "," + getStringQueryParam(ridSF);
 
                     db.insertSQL("Nonproductivereasonmaster", columns, values);
                 }
@@ -2716,7 +2769,7 @@ public class BusinessModel extends Application {
 
             // uid = distid+uid+hh:mm
 
-            String id = QT(userMasterHelper.getUserMasterBO()
+            String id = getStringQueryParam(userMasterHelper.getUserMasterBO()
                     .getDistributorid()
                     + ""
                     + userMasterHelper.getUserMasterBO().getUserid()
@@ -2725,33 +2778,33 @@ public class BusinessModel extends Application {
 
             db.deleteSQL(
                     "Nonproductivereasonmaster",
-                    "RetailerID=" + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
+                    "RetailerID=" + getStringQueryParam(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + StringUtils.QT(getStandardListId(outlet.getReasontype()))
+                            + getStringQueryParam(getStandardListId(outlet.getReasontype()))
                             + " and RouteID="
                             + getAppDataProvider().getRetailMaster().getBeatID(), false);
             db.deleteSQL(
                     "Nonproductivereasonmaster",
                     "RetailerID="
-                            + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
+                            + getStringQueryParam(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + StringUtils.QT(getStandardListId(outlet
+                            + getStringQueryParam(getStandardListId(outlet
                             .getCollectionReasonType()))
                             + " and RouteID="
                             + getAppDataProvider().getRetailMaster().getBeatID(), false);
 
             String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath,remarks,ridSF";
 
-            values = id + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + ","
+            values = id + "," + getStringQueryParam(getAppDataProvider().getRetailMaster().getRetailerID()) + ","
                     + getAppDataProvider().getRetailMaster().getBeatID() + ","
-                    + StringUtils.QT(outlet.getDate()) + "," + StringUtils.QT(outlet.getReasonid())
-                    + "," + StringUtils.QT(getStandardListId(outlet.getReasontype())) + ","
-                    + StringUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + StringUtils.QT(outlet.getImagePath()) + "," + StringUtils.QT(remarks)
-                    + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
+                    + getStringQueryParam(outlet.getDate()) + "," + getStringQueryParam(outlet.getReasonid())
+                    + "," + getStringQueryParam(getStandardListId(outlet.getReasontype())) + ","
+                    + getStringQueryParam("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + getStringQueryParam(outlet.getImagePath()) + "," + getStringQueryParam(remarks)
+                    + "," + getStringQueryParam(getAppDataProvider().getRetailMaster().getRidSF());
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             if (outlet.getCollectionReasonID() != null && !outlet.getCollectionReasonID().equals("0")) {
-                String uid = StringUtils.QT(getAppDataProvider().getUser()
+                String uid = getStringQueryParam(getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
                         + getAppDataProvider().getUser().getUserid()
@@ -2759,17 +2812,17 @@ public class BusinessModel extends Application {
                         + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                 values = uid
                         + ","
-                        + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
+                        + getStringQueryParam(getAppDataProvider().getRetailMaster().getRetailerID())
                         + ","
                         + getAppDataProvider().getRetailMaster().getBeatID()
                         + ","
-                        + StringUtils.QT(outlet.getDate())
+                        + getStringQueryParam(outlet.getDate())
                         + ","
-                        + StringUtils.QT(outlet.getCollectionReasonID())
+                        + getStringQueryParam(outlet.getCollectionReasonID())
                         + ","
-                        + StringUtils.QT(getStandardListId(outlet.getCollectionReasonType()))
-                        + "," + StringUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + StringUtils.QT(outlet.getImagePath()) + "," + StringUtils.QT(remarks)
-                        + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
+                        + getStringQueryParam(getStandardListId(outlet.getCollectionReasonType()))
+                        + "," + getStringQueryParam("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + getStringQueryParam(outlet.getImagePath()) + "," + getStringQueryParam(remarks)
+                        + "," + getStringQueryParam(getAppDataProvider().getRetailMaster().getRidSF());
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
             }
 
@@ -2787,8 +2840,8 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
 
-            String query = "Update DatewisePlan set cancelReasonId=" + StringUtils.QT(reasonId) + ",VisitStatus = 'CANCELLED' , Status = 'D' "
-                    + " where EntityId=" + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + " and Date=" + StringUtils.QT(date);
+            String query = "Update DatewisePlan set cancelReasonId=" + getStringQueryParam(reasonId) + ",VisitStatus = 'CANCELLED' , Status = 'D' "
+                    + " where EntityId=" + getStringQueryParam(getAppDataProvider().getRetailMaster().getRetailerID()) + " and Date=" + getStringQueryParam(date);
 
             db.updateSQL(query);
 
@@ -2855,7 +2908,7 @@ public class BusinessModel extends Application {
             String columnsNew = "rid,nearbyrid,upload";
             String values;
             for (int j = 0; j < getNearByRetailers().size(); j++) {
-                values = QT(id) + "," + getNearByRetailers().get(j).getRetailerID() + "," + QT("N");
+                values = getStringQueryParam(id) + "," + getNearByRetailers().get(j).getRetailerID() + "," + getStringQueryParam("N");
                 db.insertSQL("NearByRetailers", columnsNew, values);
             }
             db.closeDB();
@@ -2913,7 +2966,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db.selectSQL("select OrderID from "
                     + DataMembers.tbl_orderHeader + " where upload !='X' and retailerid="
-                    + QT(getRetailerMasterBO().getRetailerID()));
+                    + getStringQueryParam(getRetailerMasterBO().getRetailerID()));
             if (c != null) {
                 if (c.getCount() > 0) {
                     flag = true;
@@ -2944,8 +2997,8 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String sql = "select StockID from "
                     + DataMembers.tbl_closingstockheader + " where RetailerID="
-                    + QT(retailerId) + " and DistributorID=" + getRetailerMasterBO().getDistributorId();
-            sql += " AND date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                    + getStringQueryParam(retailerId) + " and DistributorID=" + getRetailerMasterBO().getDistributorId();
+            sql += " AND date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             sql += " and upload= 'N'";
             Cursor orderHeaderCursor = db.selectSQL(sql);
             if (orderHeaderCursor.getCount() > 0) {
@@ -2973,7 +3026,7 @@ public class BusinessModel extends Application {
         String sql = null;
 
         sql = "select deliveryDate from " + DataMembers.tbl_orderHeader
-                + " where upload !='X' and RetailerID=" + QT(retailerID) + " and OrderID = " + QT(orderID);
+                + " where upload !='X' and RetailerID=" + getStringQueryParam(retailerID) + " and OrderID = " + getStringQueryParam(orderID);
 
         Cursor orderHeaderCursor = db.selectSQL(sql);
         if (orderHeaderCursor != null) {
@@ -3044,7 +3097,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
 
-            String sql1 = "select productid, qty, StoreLocId from " + DataMembers.tbl_LastVisitStock_History + " where retailerid=" + QT(retailerId) + "";
+            String sql1 = "select productid, qty, StoreLocId from " + DataMembers.tbl_LastVisitStock_History + " where retailerid=" + getStringQueryParam(retailerId) + "";
             Cursor orderDetailCursor = db.selectSQL(sql1);
             if (orderDetailCursor != null) {
                 while (orderDetailCursor.moveToNext()) {
@@ -3088,9 +3141,9 @@ public class BusinessModel extends Application {
             StringBuilder sb = new StringBuilder();
             sb.append("select StockID,ifnull(remark,'') from ");
             sb.append(DataMembers.tbl_closingstockheader + " where RetailerID=");
-            sb.append(QT(retailerId));
+            sb.append(getStringQueryParam(retailerId));
             sb.append(" AND DistributorID=" + getRetailerMasterBO().getDistributorId());
-            sb.append(" AND date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+            sb.append(" AND date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             sb.append(" and upload= 'N'");
 
 
@@ -3112,7 +3165,7 @@ public class BusinessModel extends Application {
             String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isAuditDone,IsOwn,Facing,RField1,RField2,isAvailable,hasPriceTag from "
                     + DataMembers.tbl_closingstockdetail
                     + " where stockId="
-                    + QT(stockID) + "";
+                    + getStringQueryParam(stockID) + "";
             Cursor orderDetailCursor = db.selectSQL(sql1);
             if (orderDetailCursor != null) {
                 while (orderDetailCursor.moveToNext()) {
@@ -3310,7 +3363,7 @@ public class BusinessModel extends Application {
 
             StringBuffer sb = new StringBuffer();
             sb.append("select UId from DistOrderHeader where DistId="
-                    + QT(distid));
+                    + getStringQueryParam(distid));
             sb.append(" and upload='N'");
 
             Cursor orderDetailCursor = db.selectSQL(sb.toString());
@@ -3321,9 +3374,9 @@ public class BusinessModel extends Application {
                 }
                 orderDetailCursor.close();
             }
-            db.deleteSQL(DataMembers.tbl_distributor_order_header, "UId=" + QT(orderId)
+            db.deleteSQL(DataMembers.tbl_distributor_order_header, "UId=" + getStringQueryParam(orderId)
                     + " and upload='N'", false);
-            db.deleteSQL(DataMembers.tbl_distributor_order_detail, "UId=" + QT(orderId)
+            db.deleteSQL(DataMembers.tbl_distributor_order_detail, "UId=" + getStringQueryParam(orderId)
                     + " and upload='N'", false);
             db.closeDB();
         } catch (Exception e) {
@@ -3347,7 +3400,7 @@ public class BusinessModel extends Application {
 
             StringBuffer sb = new StringBuffer();
             sb.append("select UId from DistStockCheckHeader where DistId="
-                    + QT(distid));
+                    + getStringQueryParam(distid));
             sb.append(" and upload='N'");
 
             Cursor orderDetailCursor = db.selectSQL(sb.toString());
@@ -3359,9 +3412,9 @@ public class BusinessModel extends Application {
                 orderDetailCursor.close();
             }
 
-            db.deleteSQL(DataMembers.tbl_distributor_closingstock_header, "UId=" + QT(orderId)
+            db.deleteSQL(DataMembers.tbl_distributor_closingstock_header, "UId=" + getStringQueryParam(orderId)
                     + " and upload='N'", false);
-            db.deleteSQL(DataMembers.tbl_distributor_closingstock_detail, "UId=" + QT(orderId)
+            db.deleteSQL(DataMembers.tbl_distributor_closingstock_detail, "UId=" + getStringQueryParam(orderId)
                     + " and upload='N'", false);
             db.closeDB();
         } catch (Exception e) {
@@ -3827,6 +3880,17 @@ public class BusinessModel extends Application {
                 c.close();
             }
 
+            c = db.selectSQL("SELECT DISTINCT FilePath FROM PromotionAttachment");
+            if (c != null) {
+                while ((c.moveToNext())) {
+                    getDigitalContentURLS().put(
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                            DataMembers.PROMOTION);
+
+                }
+                c.close();
+            }
+
             db.closeDB();
 
             getDigitalContentURLS().put(
@@ -3980,8 +4044,8 @@ public class BusinessModel extends Application {
         db.createDataBase();
         db.openDataBase();
         db.executeQ("update " + DataMembers.tbl_retailerMaster
-                + " set isOrdered=" + QT(flag) + " where retailerid="
-                + QT(getRetailerMasterBO().getRetailerID()));
+                + " set isOrdered=" + getStringQueryParam(flag) + " where retailerid="
+                + getStringQueryParam(getRetailerMasterBO().getRetailerID()));
         db.closeDB();
     }
 
@@ -3992,8 +4056,8 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             db.executeQ("update " + DataMembers.tbl_retailerMaster
-                    + " set isOrderMerch=" + QT(flag) + " where retailerid="
-                    + QT(getRetailerMasterBO().getRetailerID()));
+                    + " set isOrderMerch=" + getStringQueryParam(flag) + " where retailerid="
+                    + getStringQueryParam(getRetailerMasterBO().getRetailerID()));
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -4005,8 +4069,8 @@ public class BusinessModel extends Application {
         db.createDataBase();
         db.openDataBase();
         db.executeQ("update " + DataMembers.tbl_retailerMaster
-                + " set isInvoiceCreated=" + QT("Y") + " where retailerid="
-                + QT(getRetailerMasterBO().getRetailerID()));
+                + " set isInvoiceCreated=" + getStringQueryParam("Y") + " where retailerid="
+                + getStringQueryParam(getRetailerMasterBO().getRetailerID()));
         db.closeDB();
     }
 
@@ -4020,7 +4084,7 @@ public class BusinessModel extends Application {
         float total = 0;
         Cursor c = db
                 .selectSQL("select ifnull(sum(Amount),0) from Payment where retailerid="
-                        + StringUtils.QT(getRetailerMasterBO().getRetailerID()) + " and Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                        + getStringQueryParam(getRetailerMasterBO().getRetailerID()) + " and Date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null) {
             if (c.getCount() > 0) {
                 c.moveToNext();
@@ -4048,9 +4112,9 @@ public class BusinessModel extends Application {
             );
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_RoadActivityDetail, "imgname ="
-                    + QT("RoadActivity" + "/" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_PLAIN)
+                    + getStringQueryParam("RoadActivity" + "/" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_PLAIN)
                     + "/" + userMasterHelper.getUserMasterBO().getUserid()
-                    + "/" + ImageName), false); // QT(ImageName));
+                    + "/" + ImageName), false); // getStringQueryParam(ImageName));
 
             db.closeDB();
         } catch (Exception e) {
@@ -4084,10 +4148,12 @@ public class BusinessModel extends Application {
     }
 
     /**
+     * @See {@link RetailerDataManagerImpl#fetchRetailers()} where the actual achieved is fetched along with retailer fetch
      * This method will download the acheived value of all the retailer and set
      * it in RetailerBO. setVisit_Actual will hold this value. If the seller is
      * Preseller , sum will be calculated from OrderHeader otherwise from
      * Invoice.
+     * @deprecated
      */
     public void downloadVisit_Actual_Achieved() {
         try {
@@ -4106,7 +4172,7 @@ public class BusinessModel extends Application {
 
            /* if (configurationMasterHelper.IS_INVOICE) {
                 c = db.selectSQL("select Retailerid, sum(invNetamount) from InvoiceMaster where invoicedate = "
-                        + QT(userMasterHelper.getUserMasterBO().getDownloadDate()) + " group by retailerid");
+                        + getStringQueryParam(userMasterHelper.getUserMasterBO().getDownloadDate()) + " group by retailerid");
             } else {*/
             c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader where upload!='X' group by retailerid");
             //}
@@ -4136,13 +4202,13 @@ public class BusinessModel extends Application {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
-            db.updateSQL("Update RetailerBeatMapping set isVisited=" + QT(flag) + " where RetailerID ="
+            db.updateSQL("Update RetailerBeatMapping set isVisited=" + getStringQueryParam(flag) + " where RetailerID ="
                     + getRetailerMasterBO().getRetailerID()
                     + " AND BeatID=" + getRetailerMasterBO().getBeatID());
 
             if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
-                db.updateSQL("Update DatewisePlan set VisitStatus=" + StringUtils.QT(RetailerConstants.COMPLETED) +
-                        " where EntityId=" + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + " and Date=" + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                db.updateSQL("Update DatewisePlan set VisitStatus=" + StringUtils.getStringQueryParam(RetailerConstants.COMPLETED) +
+                        " where EntityId=" + StringUtils.getStringQueryParam(getAppDataProvider().getRetailMaster().getRetailerID()) + " and Date=" + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             db.closeDB();
 
@@ -4204,32 +4270,32 @@ public class BusinessModel extends Application {
 
         try {
             Cursor closingStockCursor = db
-                    .selectSQL("select Tid from RetailerScoreHeader where RetailerID=" + getRetailerMasterBO().getRetailerID() + " and Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                    .selectSQL("select Tid from RetailerScoreHeader where RetailerID=" + getRetailerMasterBO().getRetailerID() + " and Date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (closingStockCursor.getCount() > 0) {
                 closingStockCursor.moveToNext();
                 if (closingStockCursor.getString(0) != null) {
-                    headerID = QT(closingStockCursor.getString(0));
-                    db.deleteSQL("RetailerScoreDetails", "Tid=" + headerID + " and ModuleCode = " + QT(module), false);
+                    headerID = getStringQueryParam(closingStockCursor.getString(0));
+                    db.deleteSQL("RetailerScoreDetails", "Tid=" + headerID + " and ModuleCode = " + getStringQueryParam(module), false);
                 }
             }
             closingStockCursor.close();
 
-            String tid = (headerID.trim().length() == 0) ? QT(userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)) : headerID;
+            String tid = (headerID.trim().length() == 0) ? getStringQueryParam(userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)) : headerID;
             int moduleWeightage = fitscoreHelper.getModuleWeightage(module);
             double achieved = (((double) sum / (double) 100) * moduleWeightage);
-            fitscoreDetailValues = (tid) + ", " + QT(module) + ", " + moduleWeightage + ", " + achieved + ", " + QT("N");
+            fitscoreDetailValues = (tid) + ", " + getStringQueryParam(module) + ", " + moduleWeightage + ", " + achieved + ", " + getStringQueryParam("N");
             db.insertSQL(DataMembers.tbl_retailerscoredetail, fitscoreDetailColumns, fitscoreDetailValues);
 
             if (headerID.trim().length() == 0) {
                 String retailerID = getRetailerMasterBO().getRetailerID();
-                String date = QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
-                fitscoreHeaderValues = (tid) + ", " + QT(retailerID) + ", " + date + ", " + achieved + ", " + QT("N");
+                String date = getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                fitscoreHeaderValues = (tid) + ", " + getStringQueryParam(retailerID) + ", " + date + ", " + achieved + ", " + getStringQueryParam("N");
                 db.insertSQL(DataMembers.tbl_retailerscoreheader, fitscoreHeaderColumns, fitscoreHeaderValues);
             } else {
                 Cursor achievedCursor = db
                         .selectSQL("select sum(0+ifnull(B.Score,0)) from RetailerScoreHeader A inner join RetailerScoreDetails B on A.Tid = B.Tid where A.RetailerID="
-                                + getRetailerMasterBO().getRetailerID() + " and A.Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                                + getRetailerMasterBO().getRetailerID() + " and A.Date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
                 if (achievedCursor.getCount() > 0) {
                     achievedCursor.moveToNext();
@@ -4237,8 +4303,8 @@ public class BusinessModel extends Application {
                 }
                 achievedCursor.close();
                 db.updateSQL("Update " + DataMembers.tbl_retailerscoreheader + " set Score = " + headerScore + " where " +
-                        " Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "" +
-                        " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
+                        " Date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "" +
+                        " and RetailerID = " + getStringQueryParam(getRetailerMasterBO().getRetailerID()));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -4864,7 +4930,7 @@ public class BusinessModel extends Application {
 
                 }
             } else {
-                if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (!synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     String errorMsg = synchronizationHelper.getErrormessageByErrorCode().get(synchronizationHelper.getAuthErroCode());
                     if (errorMsg != null) {
                         Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
@@ -5029,13 +5095,13 @@ public class BusinessModel extends Application {
 
             Cursor c = db
                     .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
-                            + retailerId + " AND MENU_CODE = " + QT(menuName));
+                            + retailerId + " AND MENU_CODE = " + getStringQueryParam(menuName));
 
             if (c.getCount() == 0) {
                 String columns = "Retailerid,MENU_CODE";
 
                 String values = retailerId + ","
-                        + QT(menuName);
+                        + getStringQueryParam(menuName);
 
                 db.insertSQL("ModuleCompletionReport", columns, values);
 
@@ -5059,11 +5125,11 @@ public class BusinessModel extends Application {
 
             Cursor c = db
                     .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
-                            + getRetailerMasterBO().getRetailerID() + " AND MENU_CODE = " + QT(menuName));
+                            + getRetailerMasterBO().getRetailerID() + " AND MENU_CODE = " + getStringQueryParam(menuName));
 
             if (c.getCount() > 0) {
                 db.deleteSQL("ModuleCompletionReport", "MENU_CODE="
-                        + QT(menuName), false);
+                        + getStringQueryParam(menuName), false);
             }
             c.close();
             db.closeDB();
@@ -5138,10 +5204,10 @@ public class BusinessModel extends Application {
             Cursor c;
             if (isVansales) {
                 c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from invoicemaster where retailerid="
-                        + StringUtils.QT(getRetailerMasterBO().getRetailerID()) + " and InvoiceDate = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                        + getStringQueryParam(getRetailerMasterBO().getRetailerID()) + " and InvoiceDate = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             } else {
                 c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from orderHeader where retailerid="
-                        + StringUtils.QT(getRetailerMasterBO().getRetailerID())
+                        + getStringQueryParam(getRetailerMasterBO().getRetailerID())
                         + " and upload='N' and is_vansales = 0");
             }
             if (c.getCount() > 0) {
@@ -5289,7 +5355,7 @@ public class BusinessModel extends Application {
             if (getOrderHeaderNote() != null
                     && getOrderHeaderNote().length() > 0) {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
-                        + " SET remark =" + QT(getOrderHeaderNote())
+                        + " SET remark =" + getStringQueryParam(getOrderHeaderNote())
                         + " WHERE " + " OrderID = (SELECT OrderID FROM  "
                         + DataMembers.tbl_orderHeader + " where "
                         + " RetailerID = "
@@ -5300,7 +5366,7 @@ public class BusinessModel extends Application {
             if (getRField1() != null
                     && getRField1().length() > 0) {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
-                        + " SET RField1 =" + QT(getRField1())
+                        + " SET RField1 =" + getStringQueryParam(getRField1())
                         + " WHERE " + " OrderID = (SELECT OrderID FROM  "
                         + DataMembers.tbl_orderHeader + " where "
                         + " RetailerID = "
@@ -5311,7 +5377,7 @@ public class BusinessModel extends Application {
             if (getRField2() != null
                     && getRField2().length() > 0) {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
-                        + " SET RField2 =" + QT(getRField2())
+                        + " SET RField2 =" + getStringQueryParam(getRField2())
                         + " WHERE " + " OrderID = (SELECT OrderID FROM  "
                         + DataMembers.tbl_orderHeader + " where "
                         + " RetailerID = "
@@ -5322,7 +5388,7 @@ public class BusinessModel extends Application {
             if (orderHeaderBO.getPO() != null
                     && orderHeaderBO.getPO().length() > 0) {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
-                        + " SET po =" + QT(orderHeaderBO.getPO()) + " WHERE "
+                        + " SET po =" + getStringQueryParam(orderHeaderBO.getPO()) + " WHERE "
                         + " OrderID = (SELECT OrderID FROM  "
                         + DataMembers.tbl_orderHeader + " where "
                         + " RetailerID = "
@@ -5333,7 +5399,7 @@ public class BusinessModel extends Application {
                     && orderHeaderBO.getDeliveryDate().length() > 0) {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
                         + " SET deliveryDate ="
-                        + QT(orderHeaderBO.getDeliveryDate()) + " WHERE "
+                        + getStringQueryParam(orderHeaderBO.getDeliveryDate()) + " WHERE "
                         + " OrderID = (SELECT OrderID FROM  "
                         + DataMembers.tbl_orderHeader + " where "
                         + " RetailerID = "
@@ -5360,7 +5426,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             retailerMasterBO.setIsVansales(0);
             String query = "select is_vansales from retailermasterinfo where retailerid="
-                    + QT(retailerMasterBO.getRetailerID());
+                    + getStringQueryParam(retailerMasterBO.getRetailerID());
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -5399,7 +5465,7 @@ public class BusinessModel extends Application {
                         "from Suppliermaster SM ");
                 sb.append("LEFT JOIN StandardListMaster SLM ON SLM.ListId=SM.RpTypeId ");
                 sb.append("where rid=");
-                sb.append(StringUtils.QT(retailerMasterBO.getRetailerID()));
+                sb.append(getStringQueryParam(retailerMasterBO.getRetailerID()));
                 sb.append(" or SM.rid= 0 order by SM.isPrimary desc");
             }
             Cursor c = db.selectSQL(sb.toString());
@@ -5455,7 +5521,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select supplierid from RetailerMasterInfo where retailerid="
-                            + QT(retailerMasterBO.getRetailerID()));
+                            + getStringQueryParam(retailerMasterBO.getRetailerID()));
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     int sid = c.getInt(0);
@@ -5657,7 +5723,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String columns = "Message, Imageurl, TimeStamp, Type";
 
-            values = QT(msg) + "," + (url) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME)) + "," + QT(type);
+            values = getStringQueryParam(msg) + "," + QT(url) + "," + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME)) + "," + getStringQueryParam(type);
 
             db.insertSQL("Notification", columns, values);
 
@@ -5803,7 +5869,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Calendar calendar = Calendar.getInstance();
             Cursor c = db
-                    .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
+                    .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
             if (c != null) {
                 while (c.moveToNext()) {
                     session = c.getString(0);
@@ -5890,50 +5956,6 @@ public class BusinessModel extends Application {
             }
         });
     }
-
-
-    // Chat
-    String chatRegId, chatUserName, ChatPassword;
-
-    public void downloadChatCredentials() {
-        try {
-
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select chatregid,chatUserName,chatUserPwd from AppVariables");
-            if (c != null) {
-                if (c.moveToNext()) {
-                    chatRegId = c.getString(0);
-                    chatUserName = c.getString(1);
-                    ChatPassword = c.getString(2);
-                }
-                c.close();
-            }
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
-
-    }
-
-    public String getChatRegId() {
-        return chatRegId;
-    }
-
-
-    public String getChatUserName() {
-        return chatUserName;
-    }
-
-
-    public String getChatPassword() {
-        return ChatPassword;
-    }
-
 
     public void updatePrintCount(int count) {
         try {
@@ -6052,7 +6074,7 @@ public class BusinessModel extends Application {
             );
             db.openDataBase();
             cursor = db
-                    .selectSQL("SELECT COUNT(SEQNO) FROM TransactionSequence WHERE TypeId IN (SELECT ListID FROM StandardListMaster WHERE LISTCODE =" + QT(type) + ")");
+                    .selectSQL("SELECT COUNT(SEQNO) FROM TransactionSequence WHERE TypeId IN (SELECT ListID FROM StandardListMaster WHERE LISTCODE =" + getStringQueryParam(type) + ")");
             if (cursor != null) {
                 if (cursor.moveToNext()) {
                     int count = cursor.getInt(0);
@@ -6083,7 +6105,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             cursor = db
-                    .selectSQL("SELECT ListId FROM StandardListMaster WHERE LISTCODE =" + QT(type));
+                    .selectSQL("SELECT ListId FROM StandardListMaster WHERE LISTCODE =" + getStringQueryParam(type));
             if (cursor != null) {
                 while (cursor.moveToNext()) {
                     String values = cursor.getInt(0) + "," + 0;
@@ -6226,7 +6248,7 @@ public class BusinessModel extends Application {
                     else if (mRules.get(i).contains("{SEQ")) {
                         seqNo = 0L;
                         cursor = db
-                                .selectSQL("SELECT SeqNo FROM TransactionSequence WHERE TypeId IN (SELECT ListID FROM StandardListMaster WHERE LISTCODE =" + QT(type) + ")");
+                                .selectSQL("SELECT SeqNo FROM TransactionSequence WHERE TypeId IN (SELECT ListID FROM StandardListMaster WHERE LISTCODE =" + getStringQueryParam(type) + ")");
                         if (cursor != null) {
                             if (cursor.moveToNext()) {
                                 seqNo = (cursor.getInt(0) + 1);
@@ -6291,7 +6313,7 @@ public class BusinessModel extends Application {
 
                 // Get Sequence ID
                 cursor = db
-                        .selectSQL("SELECT SeqNo FROM TransactionSequence WHERE TypeId IN (SELECT ListID FROM StandardListMaster WHERE LISTCODE =" + QT(type) + ")");
+                        .selectSQL("SELECT SeqNo FROM TransactionSequence WHERE TypeId IN (SELECT ListID FROM StandardListMaster WHERE LISTCODE =" + getStringQueryParam(type) + ")");
                 if (cursor != null) {
                     if (cursor.moveToNext()) {
                         seqNo = (cursor.getInt(0) + 1);
@@ -6303,7 +6325,7 @@ public class BusinessModel extends Application {
 
             // Update Sequence number
             db.updateSQL("Update TransactionSequence SET SeqNo = SeqNo+1, Upload = 'N'"
-                    + " WHERE TypeId IN (SELECT ListID FROM StandardListMaster WHERE LISTCODE = " + QT(type) + ")");
+                    + " WHERE TypeId IN (SELECT ListID FROM StandardListMaster WHERE LISTCODE = " + getStringQueryParam(type) + ")");
 
 
             db.closeDB();
@@ -6353,7 +6375,7 @@ public class BusinessModel extends Application {
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT Rule FROM TransactionRules WHERE TypeId ");
             sb.append("IN (SELECT ListID FROM StandardListMaster WHERE LISTCODE =");
-            sb.append(QT(type) + ")");
+            sb.append(getStringQueryParam(type) + ")");
             // Get Sequence ID
             cursor = db
                     .selectSQL(sb.toString());
@@ -6392,7 +6414,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(FocusPackLines)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
-                    + QT(retailerMasterBO.getRetailerID()) + " and upload='N'");
+                    + getStringQueryParam(retailerMasterBO.getRetailerID()) + " and upload='N'");
             if (c != null) {
                 if (c.moveToNext()) {
                     int i = c.getInt(0);
@@ -6417,7 +6439,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(MSPLines)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
-                    + QT(retailerMasterBO.getRetailerID()) + " and upload='N'");
+                    + getStringQueryParam(retailerMasterBO.getRetailerID()) + " and upload='N'");
             if (c != null) {
                 if (c.moveToNext()) {
                     int i = c.getInt(0);
@@ -6473,7 +6495,7 @@ public class BusinessModel extends Application {
 
             c = db.selectSQL("SELECT productId, productLevelId, uomid from ActivityGroupMapping AGM" +
                     " INNER JOIN ActivityGroupProductMapping APM ON APM.groupid=AGM.groupid" +
-                    " where AGM.activity=" + QT(activity));
+                    " where AGM.activity=" + getStringQueryParam(activity));
             if (c != null) {
                 if (c.getCount() > 0) {
                     initializeUOMmapping(type);
@@ -6720,7 +6742,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String query = "update retailermasterinfo set supplierid="
                     + supplierid + " where retailerid="
-                    + QT(getRetailerMasterBO().getRetailerID());
+                    + getStringQueryParam(getRetailerMasterBO().getRetailerID());
             db.updateSQL(query);
             db.close();
 
@@ -6766,7 +6788,7 @@ public class BusinessModel extends Application {
         sb.append(" Inv.comments FROM DebitNoteMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.DebitNoteNo");
         sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
         sb.append(" WHERE inv.Retailerid = ");
-        sb.append(QT(getRetailerMasterBO().getRetailerID()));
+        sb.append(getStringQueryParam(getRetailerMasterBO().getRetailerID()));
         sb.append(" GROUP BY Inv.DebitNoteNo ");
         sb.append(" ORDER BY Inv.Date");
 
@@ -6907,8 +6929,13 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
-    public void writeToFile(String data, String filename, String foldername) {
-        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
+    public void writeToFile(String data, String filename, String foldername, String filePath) {
+        String path;
+        if (filePath.equals("")) {
+            path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
+        } else {
+            path = filePath + foldername;
+        }
 
         File folder = new File(path);
         if (!folder.exists()) {
@@ -6991,6 +7018,11 @@ public class BusinessModel extends Application {
     }
 
 
+    /**
+     * @param isRetailer
+     * @See {{@link RetailerDataManagerImpl#updatePriceGroupId(boolean)}}
+     * @deprecated
+     */
     public void updatePriceGroupId(boolean isRetailer) {
 
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
@@ -7180,7 +7212,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             int siz = productHelper.getProductMaster().size();
 
-            db.deleteSQL("TempOrderDetail", "RetailerID=" + QT(getRetailerMasterBO().getRetailerID()),
+            db.deleteSQL("TempOrderDetail", "RetailerID=" + getStringQueryParam(getRetailerMasterBO().getRetailerID()),
                     false);
 
             String columns = "RetailerID,ProductID,pieceqty,caseQty,outerQty";
@@ -7192,9 +7224,9 @@ public class BusinessModel extends Application {
                         || product.getOrderedPcsQty() > 0
                         || product.getOrderedOuterQty() > 0) {
 
-                    String values = QT(getRetailerMasterBO().getRetailerID())
+                    String values = getStringQueryParam(getRetailerMasterBO().getRetailerID())
                             + ","
-                            + QT(product.getProductID())
+                            + getStringQueryParam(product.getProductID())
                             + ","
                             + product.getOrderedPcsQty()
                             + ","
@@ -7223,7 +7255,7 @@ public class BusinessModel extends Application {
 
             String sql2 = "select productId,pieceqty,caseQty,outerQty from TempOrderDetail "
                     + " where RetailerID="
-                    + QT(getRetailerMasterBO().getRetailerID()) + " order by rowid";
+                    + getStringQueryParam(getRetailerMasterBO().getRetailerID()) + " order by rowid";
 
             Cursor tOrderDetailCursor = db.selectSQL(sql2);
 
@@ -7276,10 +7308,10 @@ public class BusinessModel extends Application {
             if (!id.equals(""))
                 db.deleteSQL(
                         "NonFieldActivity",
-                        "Uid=" + QT(id), false);
+                        "Uid=" + getStringQueryParam(id), false);
 
 
-            id = QT(userMasterHelper.getUserMasterBO()
+            id = getStringQueryParam(userMasterHelper.getUserMasterBO()
                     .getDistributorid()
                     + ""
                     + userMasterHelper.getUserMasterBO().getUserid()
@@ -7298,9 +7330,9 @@ public class BusinessModel extends Application {
                     remark = remarks;
                 }
 
-                values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
-                        + QT(reasnBo.getDate()) + "," + QT(reasnBo.getReasonid())
-                        + "," + QT(remark) +
+                values = id + "," + getStringQueryParam(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
+                        + getStringQueryParam(reasnBo.getDate()) + "," + getStringQueryParam(reasnBo.getReasonid())
+                        + "," + getStringQueryParam(remark) +
                         "," + getRetailerMasterBO().getDistributorId();
 
                 db.insertSQL("NonFieldActivity", columns, values);
@@ -7458,7 +7490,7 @@ public class BusinessModel extends Application {
             sb.append("SELECT Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
             sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os ");
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
-            sb.append(" Where Inv.InvoiceDate = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+            sb.append(" Where Inv.InvoiceDate = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             Cursor c = db
                     .selectSQL(sb.toString());
 
@@ -7512,7 +7544,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(invNetamount) from InvoiceMaster where retailerid="
-                            + QT(retailerMasterBO.getRetailerID()));
+                            + getStringQueryParam(retailerMasterBO.getRetailerID()));
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getFloat(0);
@@ -7563,7 +7595,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ParentPositionIds from UserMaster where userid="
-                            + QT(String.valueOf(userMasterHelper.getUserMasterBO().getUserid())));
+                            + getStringQueryParam(String.valueOf(userMasterHelper.getUserMasterBO().getUserid())));
             if (c != null) {
                 if (c.moveToNext()) {
                     String id = c.getString(0);
@@ -7609,7 +7641,7 @@ public class BusinessModel extends Application {
             );
             db.openDataBase();
             Cursor c = db.selectSQL("select pieceqty,caseQty,outerQty,uomcount,dOuomQty,weight from OrderDetail " +
-                    "where retailerid =" + StringUtils.QT(bo.getRetailerID()));
+                    "where retailerid =" + getStringQueryParam(bo.getRetailerID()));
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     int qty = c.getInt(0) +

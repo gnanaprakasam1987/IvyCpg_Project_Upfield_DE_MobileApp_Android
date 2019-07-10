@@ -13,24 +13,24 @@ import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.CompoundButtonCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.widget.CompoundButtonCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -63,7 +63,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -83,7 +82,7 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.bo.SchemeBO;
+import com.ivy.cpg.view.order.scheme.SchemeBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
@@ -262,7 +261,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         drawer = view.findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
@@ -778,7 +777,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         holder.shelfCaseQty.setVisibility(View.GONE);
                         holder.shelfPcsQty.setVisibility(View.GONE);
                         holder.shelfouter.setVisibility(View.GONE);
+                    }
 
+                    if (businessModel.configurationMasterHelper.IS_STK_DIGIT) {
+                        holder.shelfCaseQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(businessModel.configurationMasterHelper.STK_DIGIT)});
+                        holder.shelfPcsQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(businessModel.configurationMasterHelper.STK_DIGIT)});
+                        holder.shelfouter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(businessModel.configurationMasterHelper.STK_DIGIT)});
                     }
 
                     if (businessModel.configurationMasterHelper.IS_STK_DIGIT) {
@@ -1971,10 +1975,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
             if (getActionBar() != null)
                 setScreenTitle(getResources().getString(R.string.filter));
 
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);
@@ -2411,10 +2415,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
             if (getActionBar() != null)
                 setScreenTitle(getResources().getString(R.string.filter));
 
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentManager fm = getActivity().getSupportFragmentManager();
             SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);
@@ -2443,11 +2447,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
             if (getActionBar() != null)
                 setScreenTitle(getResources().getString(R.string.competitor_filter));
 
-            android.support.v4.app.FragmentManager fm = getActivity()
+            FragmentManager fm = getActivity()
                     .getSupportFragmentManager();
             CompetitorFilterFragment frag = (CompetitorFilterFragment) fm
                     .findFragmentByTag("competitor filter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);

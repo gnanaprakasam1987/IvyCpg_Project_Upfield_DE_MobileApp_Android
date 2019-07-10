@@ -1,7 +1,6 @@
 package com.ivy.ui.task.presenter;
 
 import com.ivy.core.IvyConstants;
-import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.channel.ChannelDataManager;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.label.LabelsDataManager;
@@ -18,6 +17,7 @@ import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.TaskTestDataFactory;
 import com.ivy.ui.task.data.TaskDataManager;
+import com.ivy.ui.task.model.FilterBo;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.ui.task.model.TaskRetailerBo;
 import com.ivy.utils.DateTimeUtils;
@@ -28,7 +28,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -37,7 +36,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
@@ -70,10 +68,6 @@ public class TaskPresenterTest {
 
     @Mock
     private
-    AppDataProvider mockAppDataProvider;
-
-    @Mock
-    private
     LabelsDataManager mockLabelsDataManager;
 
     @Mock
@@ -101,7 +95,7 @@ public class TaskPresenterTest {
                 mockDisposable, mockConfigurationHelper,
                 parentView, mockUserDataManager,
                 mockChannelDataManager, mockTaskDataManager,
-                mockAppDataProvider, mockOutletTimeStampDataManager,
+                mockOutletTimeStampDataManager,
                 mockReasonDataManager, mockLabelsDataManager);
     }
 
@@ -127,7 +121,7 @@ public class TaskPresenterTest {
     @Test
     public void fetchTaskCreationData() {
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
         ArrayList<UserMasterBO> parentList = TaskTestDataFactory.getParentUserList();
@@ -212,10 +206,10 @@ public class TaskPresenterTest {
                 return mockProList;
             }
         }));
-  //Pre Condition
+        //Pre Condition
         taskPresenter.fetchTaskCategory();
         testScheduler.triggerActions();
-  // Post Condition
+        // Post Condition
         InOrder inOrder = Mockito.inOrder(parentView);
         then(parentView).should(inOrder).showLoading();
         then((TaskContract.TaskCreationView) parentView).should(inOrder).setTaskCategoryListData(mockProList);
@@ -246,7 +240,7 @@ public class TaskPresenterTest {
     @Test
     public void fetchTaskImageListSuccess() {
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
         ArrayList<TaskDataBO> mockImgList = TaskTestDataFactory.getTaskImgList();
         given(mockTaskDataManager.fetchTaskImageData("1", 123)).willReturn(Observable.fromCallable(new Callable<ArrayList<TaskDataBO>>() {
@@ -268,7 +262,7 @@ public class TaskPresenterTest {
     @Test
     public void fetchTaskImageListFailed() {
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
         ArrayList<TaskDataBO> mockImgList = new ArrayList<>();
         given(mockTaskDataManager.fetchTaskImageData(null, 123)).willReturn(Observable.fromCallable(new Callable<ArrayList<TaskDataBO>>() {
@@ -343,7 +337,7 @@ public class TaskPresenterTest {
     @Test
     public void testGetRetailerId() {
         TaskTestDataFactory.retailerMasterBO.setRetailerID("1");
-        given(mockAppDataProvider.getRetailMaster()).willReturn(TaskTestDataFactory.retailerMasterBO);
+        given(mDataManager.getRetailMaster()).willReturn(TaskTestDataFactory.retailerMasterBO);
         assertEquals(taskPresenter.getRetailerID(), 1);
     }
 
@@ -351,7 +345,7 @@ public class TaskPresenterTest {
     @Test
     public void testGetUserId() {
         TaskTestDataFactory.userMasterBO.setUserid(2);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 2);
     }
 
@@ -360,21 +354,12 @@ public class TaskPresenterTest {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
         ArrayList<ReasonMaster> mockReasonList = TaskTestDataFactory.getReasonList();
-        String mockChannelIds = TaskTestDataFactory.getChannelIdList();
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
-        given(mockChannelDataManager.fetchChannelIds())
-                .willReturn(Single.fromCallable(new Callable<String>() {
-                    @Override
-                    public String call() throws Exception {
-                        return mockChannelIds;
-                    }
-                }));
-
-        given(mockTaskDataManager.fetchTaskData("0", 1, false))
+        given(mockTaskDataManager.fetchTaskData(2, "0", 1, false))
                 .willReturn(Observable.fromCallable(new Callable<ArrayList<TaskDataBO>>() {
                     @Override
                     public ArrayList<TaskDataBO> call() throws Exception {
@@ -389,7 +374,7 @@ public class TaskPresenterTest {
                         return mockReasonList;
                     }
                 }));
-        taskPresenter.getTaskListData(1, "0", false, false, false);
+        taskPresenter.getTaskListData(2, 1, "0", false, false, false);
         testScheduler.triggerActions();
 
         then(parentView).should().showLoading();
@@ -401,23 +386,14 @@ public class TaskPresenterTest {
     @Test
     public void fetchTaskListUserIdNotMatchedSuccess() {
 
-        ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getTaskWithoutUserId();
+        ArrayList<TaskDataBO> mockTaskListData = new ArrayList<>();
         ArrayList<ReasonMaster> mockReasonList = TaskTestDataFactory.getReasonList();
-        String mockChannelIds = TaskTestDataFactory.getChannelIdList();
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
-        given(mockChannelDataManager.fetchChannelIds())
-                .willReturn(Single.fromCallable(new Callable<String>() {
-                    @Override
-                    public String call() throws Exception {
-                        return mockChannelIds;
-                    }
-                }));
-
-        given(mockTaskDataManager.fetchTaskData("0", 1, false))
+        given(mockTaskDataManager.fetchTaskData(2, "0", 1, false))
                 .willReturn(Observable.fromCallable(new Callable<ArrayList<TaskDataBO>>() {
                     @Override
                     public ArrayList<TaskDataBO> call() throws Exception {
@@ -432,7 +408,7 @@ public class TaskPresenterTest {
                         return mockReasonList;
                     }
                 }));
-        taskPresenter.getTaskListData(1, "0", false, false, false);
+        taskPresenter.getTaskListData(2, 1, "0", false, false, false);
         testScheduler.triggerActions();
 
         then(parentView).should().showLoading();
@@ -447,21 +423,12 @@ public class TaskPresenterTest {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getTaskByRetailerWise();
         ArrayList<ReasonMaster> mockReasonList = TaskTestDataFactory.getReasonList();
-        String mockChannelIds = TaskTestDataFactory.getChannelIdList();
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
-        given(mockChannelDataManager.fetchChannelIds())
-                .willReturn(Single.fromCallable(new Callable<String>() {
-                    @Override
-                    public String call() throws Exception {
-                        return mockChannelIds;
-                    }
-                }));
-
-        given(mockTaskDataManager.fetchTaskData("1", 1, false))
+        given(mockTaskDataManager.fetchTaskData(2, "1", 1, false))
                 .willReturn(Observable.fromCallable(new Callable<ArrayList<TaskDataBO>>() {
                     @Override
                     public ArrayList<TaskDataBO> call() throws Exception {
@@ -476,7 +443,7 @@ public class TaskPresenterTest {
                         return mockReasonList;
                     }
                 }));
-        taskPresenter.getTaskListData(1, "1", true, false, false);
+        taskPresenter.getTaskListData(2, 1, "1", true, false, false);
         testScheduler.triggerActions();
 
         then(parentView).should().showLoading();
@@ -489,21 +456,13 @@ public class TaskPresenterTest {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getTaskByRetailerWise();
         ArrayList<ReasonMaster> mockReasonList = TaskTestDataFactory.getReasonList();
-        String mockChannelIds = TaskTestDataFactory.getChannelIdList();
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
-        given(mockChannelDataManager.fetchChannelIds())
-                .willReturn(Single.fromCallable(new Callable<String>() {
-                    @Override
-                    public String call() throws Exception {
-                        return mockChannelIds;
-                    }
-                }));
 
-        given(mockTaskDataManager.fetchTaskData("1", 1, false))
+        given(mockTaskDataManager.fetchTaskData(2, "1", 1, false))
                 .willReturn(Observable.fromCallable(new Callable<ArrayList<TaskDataBO>>() {
                     @Override
                     public ArrayList<TaskDataBO> call() throws Exception {
@@ -518,7 +477,7 @@ public class TaskPresenterTest {
                         return mockReasonList;
                     }
                 }));
-        taskPresenter.getTaskListData(1, "1", true, true, false);
+        taskPresenter.getTaskListData(2, 1, "1", true, true, false);
         testScheduler.triggerActions();
 
         then(parentView).should().showLoading();
@@ -530,13 +489,13 @@ public class TaskPresenterTest {
     public void onSaveSuccess() {
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
 
         TaskDataBO mockBo = TaskTestDataFactory.getMockTaskBo();
         ArrayList<TaskDataBO> mockImgList = null;
-        given(mockTaskDataManager.saveTask(12, mockBo, mockImgList, 0))
+        given(mockTaskDataManager.saveTask(12, mockBo, mockImgList, 0,""))
                 .willReturn(Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
@@ -544,7 +503,7 @@ public class TaskPresenterTest {
                     }
                 }));
 
-        taskPresenter.onSaveTask(12, mockBo, 0, 0);
+        taskPresenter.onSaveTask(12, mockBo, 0, 0, "");
         testScheduler.triggerActions();
 
         then(parentView).should().showLoading();
@@ -558,13 +517,13 @@ public class TaskPresenterTest {
     public void onSaveFailed() {
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
 
         TaskDataBO mockBo = TaskTestDataFactory.getMockTaskBoWithDueDateNull();
         ArrayList<TaskDataBO> mockImgList = null;
-        given(mockTaskDataManager.saveTask(12, mockBo, mockImgList, 0))
+        given(mockTaskDataManager.saveTask(12, mockBo, mockImgList, 0,""))
                 .willReturn(Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
@@ -572,7 +531,7 @@ public class TaskPresenterTest {
                     }
                 }));
 
-        taskPresenter.onSaveTask(12, mockBo, 0, 0);
+        taskPresenter.onSaveTask(12, mockBo, 0, 0, "");
         testScheduler.triggerActions();
 
         then(parentView).should().showLoading();
@@ -585,21 +544,21 @@ public class TaskPresenterTest {
     @Test
     public void updateTaskSuccess() {
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
 
         TaskDataBO mockBo = TaskTestDataFactory.getMockTaskBo();
         ArrayList<TaskDataBO> mockImgList = null;
 
-        given(mockTaskDataManager.updateTaskExecutionData(mockBo, "0", 0))
+        given(mockTaskDataManager.updateTaskExecutionData(mockBo, 0))
                 .willReturn(Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
                         return true;
                     }
                 }));
-        taskPresenter.updateTaskExecution("0", mockBo, 0);
+        taskPresenter.updateTaskExecution(mockBo, 0);
         testScheduler.triggerActions();
 
         then((TaskContract.TaskListView) parentView).should().showTaskUpdateMsg();
@@ -608,21 +567,21 @@ public class TaskPresenterTest {
     @Test
     public void updateTaskReasonIdSuccess() {
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
 
         TaskDataBO mockBo = TaskTestDataFactory.getMockTaskBo();
         ArrayList<TaskDataBO> mockImgList = null;
 
-        given(mockTaskDataManager.updateTaskExecutionData(mockBo, "0", 12))
+        given(mockTaskDataManager.updateTaskExecutionData(mockBo, 12))
                 .willReturn(Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
                         return true;
                     }
                 }));
-        taskPresenter.updateTaskExecution("0", mockBo, 12);
+        taskPresenter.updateTaskExecution(mockBo, 12);
         testScheduler.triggerActions();
 
         then((TaskContract.TaskListView) parentView).should().showTaskReasonUpdateMsg();
@@ -631,7 +590,7 @@ public class TaskPresenterTest {
     @Test
     public void updateTaskImageSuccess() {
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
         TaskConstant.TASK_SERVER_IMG_PATH = "Download/"
@@ -679,9 +638,9 @@ public class TaskPresenterTest {
     @Test
     public void testGetRetailerMasterBoSuccess() {
         ArrayList<RetailerMasterBO> mockRetailerList = TaskTestDataFactory.getAllRetailer();
-        given(mockAppDataProvider.getRetailerMasters())
+        given(mDataManager.getRetailerMasters())
                 .willReturn(mockRetailerList);
-        assertEquals(mockAppDataProvider.getRetailerMasters(), mockRetailerList);
+        assertEquals(mDataManager.getRetailerMasters(), mockRetailerList);
 
         taskPresenter.getRetailerMasterBo("1");
         testScheduler.triggerActions();
@@ -831,10 +790,9 @@ public class TaskPresenterTest {
     public void testSortByTaskTitle() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
-        String mockChannelIds = TaskTestDataFactory.getChannelIdList();
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
 
@@ -850,10 +808,9 @@ public class TaskPresenterTest {
     public void testSortByTaskTitleDesc() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
-        String mockChannelIds = TaskTestDataFactory.getChannelIdList();
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
 
@@ -869,10 +826,9 @@ public class TaskPresenterTest {
     public void testSortByProdLevelAsc() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
-        String mockChannelIds = TaskTestDataFactory.getChannelIdList();
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
 
@@ -889,10 +845,9 @@ public class TaskPresenterTest {
     public void testSortByProdLevelDesc() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
-        String mockChannelIds = TaskTestDataFactory.getChannelIdList();
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
         taskPresenter.orderBySortList(mockTaskListData, TaskConstant.PRODUCT_LEVEL_DESC, false);
@@ -908,10 +863,9 @@ public class TaskPresenterTest {
     public void testSortByDueDateAsc() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
-        String mockChannelIds = TaskTestDataFactory.getChannelIdList();
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
         taskPresenter.orderBySortList(mockTaskListData, 4, true);
@@ -926,10 +880,9 @@ public class TaskPresenterTest {
     public void testSortByDueDateDesc() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
-        String mockChannelIds = TaskTestDataFactory.getChannelIdList();
 
         TaskTestDataFactory.userMasterBO.setUserid(123);
-        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
         taskPresenter.orderBySortList(mockTaskListData, 5, false);
@@ -937,6 +890,25 @@ public class TaskPresenterTest {
 
         Collections.sort(mockTaskListData, (sstr, fstr) -> sstr.getTaskDueDate().compareToIgnoreCase(fstr.getTaskDueDate()));
         then(parentView).should().updateListData(mockTaskListData);
+
+    }
+
+    @Test
+    public void testFetchFilterData() {
+        HashMap<String, ArrayList<FilterBo>> mockFilterList = TaskTestDataFactory.getMockFilterList();
+        mockConfigurationHelper.TASK_PRODUCT_LEVEL_NO = 94;
+
+        given(mockTaskDataManager.fetchFilterData(mockConfigurationHelper.TASK_PRODUCT_LEVEL_NO, true))
+                .willReturn(Observable.fromCallable(new Callable<HashMap<String, ArrayList<FilterBo>>>() {
+                    @Override
+                    public HashMap<String, ArrayList<FilterBo>> call() throws Exception {
+                        return mockFilterList;
+                    }
+                }));
+
+        taskPresenter.fetchFilterList(true);
+        testScheduler.triggerActions();
+        then((TaskContract.TaskListView) parentView).should().setUpFilterList(mockFilterList);
 
     }
 

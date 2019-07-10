@@ -8,10 +8,12 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.graphics.Palette;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.palette.graphics.Palette;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -150,9 +152,9 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
     public void loadFiveFilterFragment(Bundle bundle, int resId) {
         try {
 
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm.findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+            FragmentTransaction ft = fm.beginTransaction();
             if (frag != null)
                 ft.detach(frag);
 

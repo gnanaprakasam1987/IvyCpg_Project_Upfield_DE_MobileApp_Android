@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/space_between_edt">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cv_first"
             android:layout_width="match_parent"
             android:layout_height="@dimen/order_stock_list_barcode"
@@ -158,10 +158,10 @@
 
 
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cv_second"
             android:layout_width="match_parent"
             android:layout_height="@dimen/order_stock_list_barcode"
@@ -306,7 +306,7 @@
 
 
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
 
     </RelativeLayout>

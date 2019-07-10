@@ -11,7 +11,6 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -22,7 +21,7 @@ import java.util.TimeZone;
  *      private final static String m24 = "k:mm";
  */
 
-public class CustomDigitalClock extends android.support.v7.widget.AppCompatTextView  {
+public class CustomDigitalClock extends androidx.appcompat.widget.AppCompatTextView  {
 
     Calendar mCalendar;
     private final static String m12 = "h:mm:ss aa";

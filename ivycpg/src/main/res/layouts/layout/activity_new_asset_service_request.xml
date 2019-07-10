@@ -33,7 +33,7 @@
         android:text="@string/asset_name"
         android:layout_marginTop="20dp"/>
 
-    <android.support.v7.widget.AppCompatSpinner
+    <androidx.appcompat.widget.AppCompatSpinner
         style="@style/Base.Widget.AppCompat.Spinner.Underlined"
         android:id="@+id/spinner_assets"
         android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/serial_no"
                 />
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edittext_serialNumber"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/service_provider"
                 />
-            <android.support.v7.widget.AppCompatSpinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:id="@+id/spinner_service_provider"
                 android:layout_width="match_parent"
@@ -126,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/type"
                 />
-            <android.support.v7.widget.AppCompatSpinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/spinner_issue_type"
                 android:background="@drawable/edittext_bottom_border"
                 android:layout_width="match_parent"
@@ -180,12 +180,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="@dimen/dimen_5dp">
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recylerView_photo"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_100dp">
 
-            </android.support.v7.widget.RecyclerView>
+            </androidx.recyclerview.widget.RecyclerView>
 
         </LinearLayout>
     </LinearLayout>
@@ -198,7 +198,7 @@
             android:text="@string/description"
             android:layout_marginTop="@dimen/dimen_20dp"
             />
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edittext_description"
             style="@style/EditTextNormal"
             android:layout_width="match_parent"

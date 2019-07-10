@@ -5,7 +5,7 @@ import android.database.SQLException;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -71,7 +71,7 @@ public class TermsAndConditionsActivity extends IvyBaseActivityNoActionBar {
         fromScreen = getIntent().getStringExtra("fromScreen");
         TextView tv_content = findViewById(R.id.tv_terms_cond);
 
-        if (!StringUtils.isEmptyString(LoginHelper.getInstance(this).getTermsContent())) {
+        if (!StringUtils.isNullOrEmpty(LoginHelper.getInstance(this).getTermsContent())) {
 
             String htmlContent = LoginHelper.getInstance(this).getTermsContent();
 

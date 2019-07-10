@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.core.base.presenter.BasePresenter;
@@ -28,11 +30,13 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.adapter.TaskImgListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
 import com.ivy.ui.task.di.TaskModule;
+import com.ivy.ui.task.model.FilterBo;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
@@ -49,7 +53,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TaskDetailActivity extends BaseActivity implements TaskContract.TaskListView, ReasonCaptureDialog.OnButtonClickListener {
+public class TaskDetailActivity extends BaseActivity implements TaskContract.TaskListView, ReasonCaptureDialog.OnButtonClickListener, RemarksDialog.RemarksListener {
     private static final int CAMERA_REQUEST_CODE = 1;
 
     @BindView(R.id.toolbar)
@@ -112,6 +116,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     private TaskDataBO taskDetailBo;
     private boolean isRetailerWiseTask;
+    private boolean isFromHomeSrc;
     private int tabSelection;
     private String imageName = "";
     private String menuCode;
@@ -151,6 +156,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     @Override
     protected void getMessageFromAliens() {
         if (getIntent().getExtras() != null) {
+            isFromHomeSrc = getIntent().getBooleanExtra(TaskConstant.FROM_HOME_SCREEN, false);
             isRetailerWiseTask = getIntent().getBooleanExtra(TaskConstant.RETAILER_WISE_TASK, false);
             tabSelection = getIntent().getIntExtra(TaskConstant.TAB_SELECTION, 0);
             taskDetailBo = getIntent().getExtras().getParcelable(TaskConstant.TASK_OBJECT);
@@ -179,7 +185,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
                 + DataMembers.DIGITAL_CONTENT + "/"
                 + DataMembers.TASK_DIGITAL_CONTENT;
 
-        if (tabSelection == 2)
+        if (tabSelection == 3)
             hideViews();
 
 
@@ -229,7 +235,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         taskImgRecyclerView.setNestedScrollingEnabled(false);
         taskImgRecyclerView.setLayoutManager(layoutManager1);
 
-        if (tabSelection != 2
+        if (tabSelection != 3
                 && !fromTaskNotification)
             footerLayout.setVisibility(View.VISIBLE);
     }
@@ -249,12 +255,22 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         else
             taskDetailBo.setChecked(true);
 
-        if (source == TaskConstant.SOURCE.RETAILER) {
-            taskPresenter.updateModuleTime();
-            taskPresenter.updateTaskExecution(taskPresenter.getRetailerID() + "", taskDetailBo, 0);
+        if (taskPresenter.isShowRemarks()) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            RemarksDialog dialog = new RemarksDialog(taskDetailBo.getRemark(),
+                    "MENU_PROMO_REMARKS", this);
+            dialog.setCancelable(false);
+            dialog.show(ft, "TASK");
         } else {
-            taskPresenter.updateTaskExecution(0 + "", taskDetailBo, 0);
+            updateTaskExecution();
         }
+    }
+
+    private void updateTaskExecution() {
+        if (source == TaskConstant.SOURCE.RETAILER)
+            taskPresenter.updateModuleTime();
+
+        taskPresenter.updateTaskExecution(taskDetailBo, 0);
     }
 
     @Override
@@ -288,7 +304,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         taskTitleTv.setText(taskDetailBo.getTasktitle());
         taskProductLevelTv.setText(taskDetailBo.getTaskCategoryDsc());
 
-        if (tabSelection == 2)
+        if (tabSelection == 3)
             taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(taskDetailBo.getTaskExecDate(), taskPresenter.outDateFormat()));
         else
             taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(taskDetailBo.getTaskDueDate(), taskPresenter.outDateFormat()));
@@ -333,11 +349,20 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (fromTaskNotification || tabSelection == 2 || taskDetailBo.isChecked()) {
+
+        //close btn enable based on days count (over due tasks only)
+        int daysCount = DateTimeUtils.getDateCount(taskDetailBo.getTaskDueDate(),
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
+
+        if (daysCount >= 1)
+            menu.findItem(R.id.menu_close).setVisible(true);
+        else
+            menu.findItem(R.id.menu_close).setVisible(false);
+
+        if (fromTaskNotification || tabSelection == 3 || taskDetailBo.isChecked()) {
             menu.findItem(R.id.menu_edit_note).setVisible(false);
             menu.findItem(R.id.menu_delete_note).setVisible(false);
-        } else {
-            menu.findItem(R.id.menu_close).setVisible(true);
+            menu.findItem(R.id.menu_close).setVisible(false);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -392,12 +417,13 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         i.putExtra(TaskConstant.TASK_SCREEN_MODE, TaskConstant.EDIT_MODE_FROM_TASK_DETAIL_SRC);
         i.putExtra(TaskConstant.TASK_DETAIL_SRC, true);
         i.putExtra(TaskConstant.TASK_OBJECT, taskDetailBo);
-        i.putExtra(TaskConstant.RETAILER_WISE_TASK,isRetailerWiseTask);
+        i.putExtra(TaskConstant.FROM_HOME_SCREEN, isFromHomeSrc);
+        i.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask);
         startActivityForResult(i, TaskConstant.TASK_CREATED_SUCCESS_CODE);
     }
 
     private void backNavigation(int resultCode) {
-        if (!isRetailerWiseTask)
+        if (isFromHomeSrc)
             setResult(resultCode, new Intent(TaskDetailActivity.this,
                     HomeScreenActivity.class).putExtra(TaskConstant.TASK_EXECUTE_RESPONSE, taskDetailBo.isChecked()));
         else {
@@ -521,12 +547,23 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     }
 
     @Override
+    public void setUpFilterList(HashMap<String, ArrayList<FilterBo>> filterListHashMap) {
+
+    }
+
+    @Override
     public void addReason(int selectedResId) {
-        taskPresenter.updateTaskExecution(String.valueOf(taskDetailBo.getRid()), taskDetailBo, selectedResId);
+        taskPresenter.updateTaskExecution(taskDetailBo, selectedResId);
     }
 
     @Override
     public void onDismiss() {
         reasonCaptureDialog.dismiss();
+    }
+
+    @Override
+    public void updateRemarks(String remark) {
+        taskDetailBo.setRemark(remark);
+        updateTaskExecution();
     }
 }

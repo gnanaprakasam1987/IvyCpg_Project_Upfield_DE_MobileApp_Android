@@ -11,6 +11,7 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
@@ -29,6 +30,7 @@ public class PromotionHelper {
     int mSelectedPromoID = 0;
     int mSelectedProductId=0;
     private ArrayList<PromotionBO> mPromotionList;
+    private ArrayList<PromotionAttachmentBO> mPromotionAttachmentList;
     private ArrayList<StandardListBO> mRatingList;
     boolean SHOW_PROMO_TYPE;
     boolean SHOW_PROMO_RATING;
@@ -74,7 +76,7 @@ public class PromotionHelper {
         businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFilterLevelProducts(
                 businessModel.productHelper.getRetailerModuleSequenceValues(), false));
 
-        downloadPromotionMaster(mContext);
+        downloadPromotionMaster(mContext,mMenuCode);
         loadPromoEntered(mContext);
     }
 
@@ -156,17 +158,33 @@ public class PromotionHelper {
      * locationId - The hierarchy of the location level (Which level of location is set in ConfigActivityFiler)
      * channelId - The hierarchy of the channel level (Which level of channel is set in ConfigActivityFilter)
      */
-    private void downloadPromotionMaster(Context mContext) {
+    private void downloadPromotionMaster(Context mContext,String mMenuCode) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             PromotionBO promotionMaster;
             db.openDataBase();
             Cursor c;
+
+
+            String productDistributions="";
+            if (businessModel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                //downloading product distribution and preparing query to get products mapped..
+                int mContentLevelId = ProductHelper.getInstance(mContext).getContentLevel(db, mMenuCode);
+                String pdQuery = ProductHelper.getInstance(mContext).downloadProductDistribution(mContentLevelId);
+                if (pdQuery.length() > 0) {
+                    productDistributions= pdQuery ;
+                }
+                else {
+                    productDistributions= "0";
+                }
+            }
+
             String query = " where PM.AccId in (0," + businessModel.getRetailerMasterBO().getAccountid() + ")"
                     + " and (PM.ChId in(0," + businessModel.getRetailerMasterBO().getSubchannelid() + ") OR PM.Chid in(0," + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "))"
                     + " and PM.retailerid in (0," + businessModel.getRetailerMasterBO().getRetailerID() + ")"
                     + " and PM.ClassId in (0," + businessModel.getRetailerMasterBO().getClassid() + ")"
                     + " and (PM.LocId in (0," + businessModel.getRetailerMasterBO().getLocationId() + ") OR PM.LocId in(0," + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + "))"
+                    +  (productDistributions.length()>0?" AND PPM.pid in ("+productDistributions+")":"")
                     + " GROUP BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.PromoId,PPM.Pid,PPM.GroupName ORDER BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.GroupName ";
 
 
@@ -195,6 +213,10 @@ public class PromotionHelper {
                     promotionMaster.setProductPrice(c.getString(9));
                     promotionMaster.setAccepted(true);
                     promotionMaster.setPromotionGroupName(c.getString(10));
+                    if(businessModel.configurationMasterHelper.IS_SHOW_EXPLIST_IN_PROMO) {
+                        promotionMaster.setPromotionAttchmentList(downloadPromotionAttachments(mContext, promotionMaster.getMappingId(),
+                                promotionMaster.getPromoId()));
+                    }
                     getPromotionList().add(promotionMaster);
                 }
                 c.close();
@@ -218,6 +240,35 @@ public class PromotionHelper {
             db.closeDB();
             Commons.printException("" + e);
         }
+    }
+
+    private ArrayList<PromotionAttachmentBO> downloadPromotionAttachments(Context mContext, int mappingId, int promotionId) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+        try {
+            PromotionAttachmentBO promotionAttachment;
+            db.openDataBase();
+            Cursor c;
+            c = db.selectSQL("Select FilePath, FileName from PromotionAttachment where MappingId = '" + mappingId + "' " +
+                    "and PromotionId = '" + promotionId + "'");
+            if (c != null) {
+                mPromotionAttachmentList = new ArrayList<>();
+                while (c.moveToNext()) {
+                    promotionAttachment = new PromotionAttachmentBO();
+                    promotionAttachment.setPromotionId(String.valueOf(promotionId));
+                    promotionAttachment.setMappingId(String.valueOf(mappingId));
+                    promotionAttachment.setFilePath(c.getString(0));
+                    promotionAttachment.setFileName(c.getString(1));
+                    getmPromotionAttachmentList().add(promotionAttachment);
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            db.closeDB();
+            Commons.printException("" + e);
+        }
+        return getmPromotionAttachmentList();
     }
 
     private void downloadNonAcceptedPromotions(Context mContext) {
@@ -672,6 +723,14 @@ public class PromotionHelper {
         if (mPromotionList == null)
             return new ArrayList<PromotionBO>();
         return mPromotionList;
+    }
+
+    public ArrayList<PromotionAttachmentBO> getmPromotionAttachmentList() {
+        return mPromotionAttachmentList;
+    }
+
+    public void setmPromotionAttachmentList(ArrayList<PromotionAttachmentBO> mPromotionAttachmentList) {
+        this.mPromotionAttachmentList = mPromotionAttachmentList;
     }
 
     public Vector<ConfigureBO> getPromoFilter() {

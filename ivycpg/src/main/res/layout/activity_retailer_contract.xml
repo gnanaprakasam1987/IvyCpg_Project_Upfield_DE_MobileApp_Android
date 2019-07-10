@@ -9,7 +9,7 @@
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         style="?attr/tablayout"
         android:layout_width="fill_parent"

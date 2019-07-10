@@ -89,6 +89,10 @@ public class ConfigurationMasterHelper {
     public static final String CODE_VANLOAD_STOCK_PRINT = "STKPRO21";
     // version 90
     public static final String CODE_LOCAITON_WISE_TAX_APPLIED = "TAX02";
+
+    public static final String CODE_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS = "TAX03";
+    public boolean IS_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS = false;
+
     private static final String MENU_CALL_ANALYSIS = "MENU_CALL_ANLYS";
     private static final String MENU_LOAD_MANAGEMENT = "MENU_LOAD_MANAGEMENT";
     private static final String MENU_HOME = "HOME_MENU";
@@ -576,6 +580,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_CUMULATIVE_AND;
     public boolean IS_NEARBY = false;
     public boolean SHOW_DEVICE_STATUS;
+    @Deprecated
     public boolean floating_Survey = false;
     public boolean floating_np_reason_photo = false;
     public boolean IS_NEW_TASK;
@@ -1351,7 +1356,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_QTY_ORDER = "ORDB65";
 
 
-
     //cpg132-task 13
     public boolean SHOW_TOTAL_ACHIEVED_VOLUME;
     public boolean SHOW_TOTAL_ACHIEVED_VOLUME_WGT;
@@ -1588,6 +1592,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_TASK_DUDE_DATE_COUNT = "TASK02";
     public int IS_TASK_DUDE_DATE_COUNT;
 
+    private static final String CODE_TASK_REMARKS_MANDATORY = "TASK03";
+    public boolean IS_TASK_REMARKS_MANDATORY;
+
     private static final String CODE_SHOW_RETAILER_LAST_VISIT = "RTRS33";
     public boolean IS_SHOW_RETAILER_LAST_VISIT;
     public boolean IS_SHOW_RETAILER_LAST_VISITEDBY;
@@ -1599,7 +1606,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DISABLE_CALL_ANALAYSIS_TIMER = "FUN82";
     public boolean IS_DISABLE_CALL_ANALYSIS_TIMER = true;
 
-    private static final String CODE_SHOW_SORT_STKCHK = "FUN85";
+    private static final String CODE_SHOW_SORT_STKCHK = "CSSTK09";
     public boolean IS_SHOW_SORT_STKCHK = true;
 
     private static final String CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER = "NOTE01";
@@ -1613,6 +1620,12 @@ public class ConfigurationMasterHelper {
 
     private final String CODE_PRE_VISIT = "PREVISIT";
     public boolean IS_PRE_VISIT = false;
+
+    private static final String CODE_SHOW_ANNOUNCEMENT = "ANNCMNT01";
+    public Boolean IS_SHOW_ANNOUNCEMENT;
+
+    private static final String CODE_SHOW_NOTIFICATION = "NOTIFY01";
+    public boolean IS_SHOW_NOTIFICATION;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1984,12 +1997,14 @@ public class ConfigurationMasterHelper {
             );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                while (c.moveToNext()) {
-                    CALC_QDVP3 = true;
-                }
-                c.close();
-            }
+            if (c != null)
+                if (c.getCount() != 0) {
+                    while (c.moveToNext()) {
+                        CALC_QDVP3 = true;
+                    }
+                    c.close();
+                }else
+                    c.close();
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -1998,9 +2013,10 @@ public class ConfigurationMasterHelper {
     }
 
     /**
-     * This method will return RFiled6 column value from the HHTMenuMaster table.
-     *
      * @return boolean true - survey is required.
+     * @See {@link com.ivy.core.data.db.AppDataManagerImpl#isFloatingSurveyEnabled(String)}
+     * This method will return RFiled6 column value from the HHTMenuMaster table.
+     * @deprecated
      */
     public boolean downloadFloatingSurveyConfig(String moduleCode) {
 
@@ -2487,6 +2503,8 @@ public class ConfigurationMasterHelper {
         if (this.IS_LOCATION_WISE_TAX_APPLIED)
             this.STRING_LOCATION_WISE_TAX_APPLIED = loadLocationWiseTaxApplied();
 
+        this.IS_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS) : false;
+
         this.IS_RETAILER_PHOTO_NEEDED = hashMapHHTModuleConfig.get(CODE_RETAILER_PHOTO) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_PHOTO) : false;
         if (this.IS_RETAILER_PHOTO_NEEDED && hashMapHHTModuleOrder.get(CODE_RETAILER_PHOTO) > 1)
             this.RETAILER_PHOTO_COUNT = hashMapHHTModuleOrder.get(CODE_RETAILER_PHOTO);
@@ -2805,6 +2823,7 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleConfig.get(CODE_TASK_DUDE_DATE_COUNT) != null) {
             IS_TASK_DUDE_DATE_COUNT = hashMapHHTModuleOrder.get(CODE_TASK_DUDE_DATE_COUNT);
         }
+        this.IS_TASK_REMARKS_MANDATORY = hashMapHHTModuleConfig.get(CODE_TASK_REMARKS_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_TASK_REMARKS_MANDATORY) : false;
 
         this.IS_SHOW_RETAILER_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) : false;
         this.IS_SHOW_RETAILER_LAST_VISITEDBY = isShowLastVisitedBy();
@@ -2825,6 +2844,8 @@ public class ConfigurationMasterHelper {
         this.IS_PRE_VISIT = hashMapHHTModuleConfig.get(CODE_PRE_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_PRE_VISIT) : false;
         this.IS_SHOW_SORT_STKCHK = hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) : false;
         this.IS_SHOW_EXPLIST_IN_PROMO = hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) : false;
+        this.IS_SHOW_ANNOUNCEMENT = hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) : false;
+        this.IS_SHOW_NOTIFICATION = hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) : false;
     }
 
     private boolean isInOutModule() {
@@ -4925,7 +4946,6 @@ public class ConfigurationMasterHelper {
     }
 
 
-
     public int getSbdDistTargetPCent() {
         int targetPercent = 0;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -5041,7 +5061,6 @@ public class ConfigurationMasterHelper {
     public void setGenFilter(Vector<ConfigureBO> genFilter) {
         this.genFilter = genFilter;
     }
-
 
 
     public String getLoadmanagementtitle() {
@@ -6361,7 +6380,7 @@ public class ConfigurationMasterHelper {
             db.openDataBase();
 
             Cursor c = db.selectSQL("select RField from " + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + StringUtils.QT(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.DIGITAL_CONTENT_SIZE = c.getLong(0);

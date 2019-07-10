@@ -8,11 +8,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.cardview.widget.CardView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,7 +42,6 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 import com.ivy.ui.photocapture.di.DaggerPhotoCaptureComponent;
 import com.ivy.ui.photocapture.di.PhotoCaptureModule;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.ClickGuard;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
@@ -230,7 +229,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         getSupportActionBar().setTitle(null);
 
         photoCapturePresenter.getTitleLabel();
-        if(!StringUtils.isEmptyString(title))
+        if(!StringUtils.isNullOrEmpty(title))
             toolBarTitleTxt.setText(title);
         else
             photoCapturePresenter.getTitleLabel();
@@ -578,7 +577,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                     abvEditText.setText(photoCapturePresenter.getEditedPhotoListData().get(key).getAbv());
                     lotCodeEditText.setText(photoCapturePresenter.getEditedPhotoListData().get(key).getLotCode());
                 }
-                if (StringUtils.isEmptyString(photoCapturePresenter.getEditedPhotoListData().get(key).getImageName())) {
+                if (StringUtils.isNullOrEmpty(photoCapturePresenter.getEditedPhotoListData().get(key).getImageName())) {
                     handleNoImage();
                 } else {
                     setImageToView(photoCapturePresenter.getEditedPhotoListData().get(key).getImageName());

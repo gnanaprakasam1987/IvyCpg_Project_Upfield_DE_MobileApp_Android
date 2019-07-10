@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/sync_status_fragment"
-        android:name="com.ivy.cpg.view.reports.syncreport.SyncReportFragment"
+        android:name="com.ivy.ui.reports.syncreport.view.SyncReportFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />

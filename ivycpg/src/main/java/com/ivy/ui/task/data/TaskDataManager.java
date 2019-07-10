@@ -2,6 +2,7 @@ package com.ivy.ui.task.data;
 
 import com.ivy.core.data.AppDataManagerContract;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.ui.task.model.FilterBo;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.ui.task.model.TaskRetailerBo;
 
@@ -13,7 +14,7 @@ import io.reactivex.Single;
 
 public interface TaskDataManager extends AppDataManagerContract {
 
-    Observable<ArrayList<TaskDataBO>> fetchTaskData(String retailerId, int userCreatedTask, boolean isDelegate);
+    Observable<ArrayList<TaskDataBO>> fetchTaskData(int tabPos, String retailerId, int userCreatedTask, boolean isDelegate);
 
     Observable<ArrayList<TaskDataBO>> fetchCompletedTask(String retailerId);
 
@@ -21,15 +22,17 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Single<Integer> fetchTaskCount();
 
-    Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, String retailerId, int reasonId);
+    Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, int reasonId);
 
     Single<Boolean> updateTaskExecutionImage(String imageName, String taskId);
 
-    Single<Boolean> saveTask(int channelId, TaskDataBO taskObj, ArrayList<TaskDataBO> taskImgList, int linkUserId);
+    Single<Boolean> saveTask(int channelId, TaskDataBO taskObj, ArrayList<TaskDataBO> taskImgList, int linkUserId, String deletedImgIds);
 
     Observable<ArrayList<RetailerMasterBO>> fetchAllRetailers();
 
     Observable<ArrayList<TaskDataBO>> fetchTaskCategories(int prodLevelId);
+
+    Observable<HashMap<String, ArrayList<FilterBo>>> fetchFilterData(int prodLevelId, boolean isFromHomeSrc);
 
     Observable<ArrayList<TaskDataBO>> fetchTaskImageData(String taskId, int userIdLength);
 

@@ -33,7 +33,6 @@ public interface AppDataProvider {
 
     RetailerMasterBO getRetailMaster();
 
-
     void setCurrentUser(UserMasterBO userData);
 
     void setCurrentUser(UserMasterBO userData, boolean isFromBModel);
@@ -50,7 +49,7 @@ public interface AppDataProvider {
 
     void setTodayBeatMaster(BeatMasterBO beatMaster);
 
-    void setTodayBeatMaster(BeatMasterBO beatMaster,  boolean isFromBModel);
+    void setTodayBeatMaster(BeatMasterBO beatMaster, boolean isFromBModel);
 
     BeatMasterBO getBeatMasterBo();
 
@@ -73,4 +72,40 @@ public interface AppDataProvider {
     RetailerMasterBO getPausedRetailer();
 
 
+    void setOrderHeaderNote(String orderHeaderNote);
+
+    void setOrderHeaderNote(String orderHeaderNote,  boolean isFromBModel);
+
+    String getOrderHeaderNote();
+
+
+    String getUserName();
+
+    void setUserName(String userName);
+
+
+    boolean isEditOrder();
+
+    void setIsEditOrder(boolean isEditOrder);
+
+
+    String getUserPassword();
+
+    void setUserPassword(String userPassword);
+
+    String getAppVersionName();
+
+    String getAppVersionNumber();
+
+    String getDeviceId();
+
+    String getIMEINumber();
+
+    void setFcmRegistrationToken(String fcmRegistrationToken);
+
+    String getFcmRegistrationToken();
+
+    String getSyncLogId();
+
+    void setSyncLogId(String syncLogId);
 }

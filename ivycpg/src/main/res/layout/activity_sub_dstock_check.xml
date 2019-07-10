@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <android.support.v4.widget.DrawerLayout
+    <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,12 +21,12 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
-            <android.support.design.widget.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/dummy_tab_lay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            </android.support.design.widget.TabLayout>
+            </com.google.android.material.tabs.TabLayout>
 
             <HorizontalScrollView
                 android:id="@+id/hscrl_spl_filter"
@@ -59,7 +59,7 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvFilter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -418,5 +418,5 @@
             android:layout_gravity="end"
             android:background="@drawable/background_noise" />
 
-    </android.support.v4.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
 </RelativeLayout>

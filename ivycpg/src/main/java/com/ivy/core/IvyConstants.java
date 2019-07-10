@@ -3,6 +3,9 @@ package com.ivy.core;
 public class IvyConstants {
 
 
+    public static final String UPDATE_TABLE_SUCCESS_CODE = "-1";
+    public static final String AUTHENTICATION_SUCCESS_CODE = "0";
+
     /**
      * Class cannot be initialised.
      * To be used only for accessing Static constants
@@ -24,6 +27,7 @@ public class IvyConstants {
     public static final String METHOD_NAME_SECURITYPOLICY1 = "GetKeySyncURL";
     public static final String METHOD_NAME_SECURITYPOLICY2 = "GetIMEISyncURL";
 
+    public static final String USER_IDENTITY = "UserIdentity";
 
     public static final String VERSION_NAME = "VersionName";
     public static final String VERSION_CODE = "VersionCode";
@@ -43,4 +47,9 @@ public class IvyConstants {
 
     public static final String SAS_KEY_TYPE ="SAS";
     public static final String DEFAULT_TIME_CONSTANT = "1970/01/01 00:00:00";
+
+
+    public static final String DATA_NOT_AVAILABLE_ERROR = "E19";
+
+    public static final String IS_MANDATORY ="isMandatory";
 }

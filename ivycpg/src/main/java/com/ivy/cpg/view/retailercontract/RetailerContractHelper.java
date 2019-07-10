@@ -61,7 +61,7 @@ public class RetailerContractHelper {
             db.createDataBase();
             db.openDataBase();
             String sb ="select contractid,ContractDesc,ContractType,StartDate,EndDate,RetailerId,Status,templateid,typelovid,cs_id " +
-                    "from RetailerContract where retailerid= " + StringUtils.QT(retailerid);
+                    "from RetailerContract where retailerid= " + StringUtils.getStringQueryParam(retailerid);
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -97,8 +97,8 @@ public class RetailerContractHelper {
             db.createDataBase();
             db.openDataBase();
             String sb ="select upload from RetailerContractRenewalDetails  " +
-                    "where Retailerid= " + StringUtils.QT(mRetailerContractBO.getRetailerid()) +
-                    "AND ContractID= " + StringUtils.QT(mRetailerContractBO.getCs_id());
+                    "where Retailerid= " + StringUtils.getStringQueryParam(mRetailerContractBO.getRetailerid()) +
+                    "AND ContractID= " + StringUtils.getStringQueryParam(mRetailerContractBO.getCs_id());
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -127,8 +127,8 @@ public class RetailerContractHelper {
             db.createDataBase();
             db.openDataBase();
             String sb = "select RetailerId,ContractId,Tid,startdate,enddate,description,typelovid,ContractType "
-                    +"from RetailerContractRenewalDetails where retailerid=" + StringUtils.QT(retailerid)
-                    +" AND upload =" + StringUtils.QT("N");
+                    +"from RetailerContractRenewalDetails where retailerid=" + StringUtils.getStringQueryParam(retailerid)
+                    +" AND upload =" + StringUtils.getStringQueryParam("N");
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -162,21 +162,21 @@ public class RetailerContractHelper {
             db.openDataBase();
 
             db.deleteSQL("RetailerContractRenewalDetails", "ContractId="
-                    + StringUtils.QT(retailerContractBO.getContractid()), false);
+                    + StringUtils.getStringQueryParam(retailerContractBO.getContractid()), false);
 
             String columnsNew = "Retailerid,ContractID,Tid,startdate,enddate,utcDate,templateid,description,typelovid,ContractType";
             String values;
 
-            values = StringUtils.QT(retailerContractBO.getRetailerid()) + "," +
-                    StringUtils.QT(retailerContractBO.getCs_id()) + "," +
-                    StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)) + "," +
-                    StringUtils.QT(retailerContractBO.getStartdate()) + "," +
-                    StringUtils.QT(retailerContractBO.getEnddate()) + "," +
+            values = StringUtils.getStringQueryParam(retailerContractBO.getRetailerid()) + "," +
+                    StringUtils.getStringQueryParam(retailerContractBO.getCs_id()) + "," +
+                    StringUtils.getStringQueryParam(bmodel.userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)) + "," +
+                    StringUtils.getStringQueryParam(retailerContractBO.getStartdate()) + "," +
+                    StringUtils.getStringQueryParam(retailerContractBO.getEnddate()) + "," +
                     DatabaseUtils.sqlEscapeString( Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")) + "," +
-                    StringUtils.QT(retailerContractBO.getTemplateId()) + "," +
-                    StringUtils.QT(retailerContractBO.getContractname()) + "," +
-                    StringUtils.QT(retailerContractBO.getTypelovid()) + "," +
-                    StringUtils.QT(retailerContractBO.getContracttype());
+                    StringUtils.getStringQueryParam(retailerContractBO.getTemplateId()) + "," +
+                    StringUtils.getStringQueryParam(retailerContractBO.getContractname()) + "," +
+                    StringUtils.getStringQueryParam(retailerContractBO.getTypelovid()) + "," +
+                    StringUtils.getStringQueryParam(retailerContractBO.getContracttype());
 
             db.insertSQL("RetailerContractRenewalDetails", columnsNew, values);
             db.closeDB();
@@ -193,7 +193,7 @@ public class RetailerContractHelper {
             db.openDataBase();
 
             db.deleteSQL("RetailerContractRenewalDetails", "Tid="
-                    + StringUtils.QT(Tid), false);
+                    + StringUtils.getStringQueryParam(Tid), false);
 
 
             db.closeDB();

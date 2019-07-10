@@ -16,7 +16,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -122,7 +122,7 @@ public class OrderDeliveryHelper {
                     + DataMembers.tbl_orderHeader + " OD ") +
                     " left join OrderDeliveryStatus ODS on ODS.orderid = OD.orderid "+
                     " where OD.upload='X' and OD.RetailerID="
-                    + StringUtils.QT(businessModel.getRetailerMasterBO().getRetailerID());
+                    + StringUtils.getStringQueryParam(businessModel.getRetailerMasterBO().getRetailerID());
 
             Cursor orderHeaderCursor = db.selectSQL(sb);
             if (orderHeaderCursor != null) {
@@ -163,7 +163,7 @@ public class OrderDeliveryHelper {
                     "HsnCode,dOuomid,uomid from "
                     + DataMembers.tbl_orderDetails
                     + " where orderId="
-                    + StringUtils.QT(orderId) + " order by rowid";
+                    + StringUtils.getStringQueryParam(orderId) + " order by rowid";
 
 
             Cursor orderDetailCursor = db.selectSQL(sql1);
@@ -244,7 +244,7 @@ public class OrderDeliveryHelper {
             //previously stored status fetched from DB and set to obj
             String sb = "select SI.productid,SI.Condition,SI.Pqty,SI.Cqty,SI.outerqty,SH.uid" +
                     " from SalesReturnDetails SI inner join SalesReturnHeader SH ON SH.uid=SI.uid " +
-                    "where SH.Retailerid=" + StringUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()) + " and SH.RefModuleTId = '" + orderId + "' and SH.distributorid=" + businessModel.getRetailerMasterBO().getDistributorId();
+                    "where SH.Retailerid=" + StringUtils.getStringQueryParam(businessModel.getRetailerMasterBO().getRetailerID()) + " and SH.RefModuleTId = '" + orderId + "' and SH.distributorid=" + businessModel.getRetailerMasterBO().getDistributorId();
             Cursor c = db.selectSQL(sb);
             if (c != null && c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -297,8 +297,8 @@ public class OrderDeliveryHelper {
 
     private void loadSalesReplacementData(DBUtil db, String uid) {
         String sb = "select pid,batchid,uomid,qty from SalesReturnReplacementDetails " +
-                " where Retailerid=" + StringUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()) +
-                " and uid = " + StringUtils.QT(uid);
+                " where Retailerid=" + StringUtils.getStringQueryParam(businessModel.getRetailerMasterBO().getRetailerID()) +
+                " and uid = " + StringUtils.getStringQueryParam(uid);
         Cursor c = db.selectSQL(sb);
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
@@ -417,7 +417,7 @@ public class OrderDeliveryHelper {
                     .selectSQL("select schemeid,FreeProductID,FreeQty,UomID,pm.PName from schemeFreeProductDetail " +
                             " Inner Join ProductMaster pm ON pm.PID = FreeProductID "
                             + "where orderID="
-                            + StringUtils.QT(id)
+                            + StringUtils.getStringQueryParam(id)
                             + " order by schemeid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -454,7 +454,7 @@ public class OrderDeliveryHelper {
             db.openDataBase();
 
             Cursor orderHeader = db.selectSQL("select OrderValue,discount from OrderHeader " +
-                    "where orderid=" + StringUtils.QT(id));
+                    "where orderid=" + StringUtils.getStringQueryParam(id));
             if (orderHeader.getCount() > 0 && orderHeader.moveToNext()) {
                 setOrderDeliveryDiscountAmount(orderHeader.getString(1));
                 setOrderDeliveryTotalValue(orderHeader.getString(0));
@@ -654,11 +654,11 @@ public class OrderDeliveryHelper {
                                 "d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice," +
                                 "PcsUOMId,priceoffvalue,PriceOffId,weight,HsnCode,NetAmount";
 
-                        String sb = (StringUtils.QT(invoiceId) + ",") +
-                                StringUtils.QT(productBo.getProductID()) + "," +
+                        String sb = (StringUtils.getStringQueryParam(invoiceId) + ",") +
+                                StringUtils.getStringQueryParam(productBo.getProductID()) + "," +
                                 totalqty + "," + productBo.getSrp() + "," +
-                                StringUtils.QT(productBo.getOU()) + "," +
-                                StringUtils.QT(businessModel.retailerMasterBO.getRetailerID()) +
+                                StringUtils.getStringQueryParam(productBo.getOU()) + "," +
+                                StringUtils.getStringQueryParam(businessModel.retailerMasterBO.getRetailerID()) +
                                 "," + productBo.getCaseUomId() + "," +
                                 productBo.getMSQty() + "," +
                                 productBo.getCaseSize() + "," +
@@ -671,12 +671,12 @@ public class OrderDeliveryHelper {
                                 "," + orderOuterQty + "," +
                                 productBo.getOutersize() + "," +
                                 productBo.getOuUomid() + "," + productBo.getBatchid() +
-                                "," + StringUtils.QT("N") +
+                                "," + StringUtils.getStringQueryParam("N") +
                                 "," + productBo.getCsrp() + "," + productBo.getOsrp() + ","
                                 + productBo.getPcUomid() +
                                 "," + priceOffValue + "," + productBo.getPriceOffId() +
                                 "," + productBo.getWeight() +
-                                "," + StringUtils.QT(productBo.getHsnCode()) +
+                                "," + StringUtils.getStringQueryParam(productBo.getHsnCode()) +
                                 "," + line_total_price;
 
                         db.insertSQL(DataMembers.tbl_InvoiceDetails, columns, sb);
@@ -691,12 +691,12 @@ public class OrderDeliveryHelper {
                             "orderid,ImageName,invoiceAmount,latitude,longitude,return_amt," +
                             "LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
                             "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,totalamount,paidamount,ridSF,VisitId)" +
-                            " select " + invoiceId + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ",RouteId,retailerid," +
+                            " select " + invoiceId + "," + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ",RouteId,retailerid," +
                             (totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount())) + "," + (totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount())) + ",orderid," +
                             "imagename," + (totalOrderValue) + ",latitude,longitude,ReturnValue," + linesPerCall + ",totalWeight,SalesType," +
-                            "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," + StringUtils.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 +
-                            "," + totalAmount + ",0," + StringUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF())  +
-                            "," + businessModel.getAppDataProvider().getUniqueId() + " from OrderHeader where OrderId = " + StringUtils.QT(orderId);
+                            "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," + StringUtils.getStringQueryParam(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 +
+                            "," + totalAmount + ",0," + StringUtils.getStringQueryParam(businessModel.getAppDataProvider().getRetailMaster().getRidSF())  +
+                            "," + businessModel.getAppDataProvider().getUniqueId() + " from OrderHeader where OrderId = " + StringUtils.getStringQueryParam(orderId);
 
 
                     db.executeQ(invoiceHeaderQry);
@@ -708,12 +708,12 @@ public class OrderDeliveryHelper {
                         "orderid,ImageName,discount,invoiceAmount,latitude,longitude,return_amt," +
                         "discount_type,LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
                         "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,discountedAmount,totalamount,paidamount,ridSF,VisitId)" +
-                        " select " + invoiceId + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ",RouteId,retailerid," + StringUtils.QT(businessModel.formatBasedOnCurrency(totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))) +
-                        ",orderid,imagename,discount," + StringUtils.QT(getOrderDeliveryTotalValue()) + ",latitude,longitude,ReturnValue,discount_type,LinesPerCall,totalWeight,SalesType," +
+                        " select " + invoiceId + "," + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ",RouteId,retailerid," + StringUtils.getStringQueryParam(businessModel.formatBasedOnCurrency(totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))) +
+                        ",orderid,imagename,discount," + StringUtils.getStringQueryParam(getOrderDeliveryTotalValue()) + ",latitude,longitude,ReturnValue,discount_type,LinesPerCall,totalWeight,SalesType," +
                         "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," +
-                        StringUtils.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 + " , " + StringUtils.QT(businessModel.formatBasedOnCurrency(discountedAmount)) +
-                        "," + totalAmount + ",0," + StringUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF())  +
-                        "," + businessModel.getAppDataProvider().getUniqueId() + " from OrderHeader where OrderId = " + StringUtils.QT(orderId);
+                        StringUtils.getStringQueryParam(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 + " , " + StringUtils.getStringQueryParam(businessModel.formatBasedOnCurrency(discountedAmount)) +
+                        "," + totalAmount + ",0," + StringUtils.getStringQueryParam(businessModel.getAppDataProvider().getRetailMaster().getRidSF())  +
+                        "," + businessModel.getAppDataProvider().getUniqueId() + " from OrderHeader where OrderId = " + StringUtils.getStringQueryParam(orderId);
 
                 db.executeQ(invoiceHeaderQry);
 
@@ -721,8 +721,8 @@ public class OrderDeliveryHelper {
                         " (ProductID,retailerid,uomid,Qty,Rate,uomCount,pcsQty,CaseQty,d1,d2,d3,DA,outerQty," +
                         " dOuomQty,dOuomid,batchid,CasePrice,OuterPrice,PcsUOMId,OrderType,HsnCode,RField1,totalamount,PriceOffValue,PriceOffId,weight,invoiceID,NetAmount) " +
                         " select ProductID,retailerid,uomid,Qty,Rate,uomcount,pieceqty,caseQty,d1,d2,d3,DA,outerQty," +
-                        " dOuomQty,dOuomid,BatchId,CasePrice,OuterPrice,PcsUOMId,OrderType,HsnCode,RField1,totalamount,PriceOffValue,PriceOffId,weight," + StringUtils.QT(invoiceId) +
-                        " ,NetAmount from OrderDetail where OrderId = " + StringUtils.QT(orderId);
+                        " dOuomQty,dOuomid,BatchId,CasePrice,OuterPrice,PcsUOMId,OrderType,HsnCode,RField1,totalamount,PriceOffValue,PriceOffId,weight," + StringUtils.getStringQueryParam(invoiceId) +
+                        " ,NetAmount from OrderDetail where OrderId = " + StringUtils.getStringQueryParam(orderId);
                 db.executeQ(invoiceDetailQry);
 
                 for (ProductMasterBO productBo : getOrderedProductMasterBOS()) {
@@ -732,23 +732,23 @@ public class OrderDeliveryHelper {
 
                 String invoiceDiscountQry = "Insert into InvoiceDiscountDetail (OrderId,Pid,TypeId,Value,Percentage,ApplyLevelId," +
                         " RetailerId,DiscountId,isCompanyGiven,invoiceID) select OrderId,Pid,TypeId,Value,Percentage,ApplyLevelId," +
-                        " RetailerId,DiscountId,isCompanyGiven," + invoiceId + " from OrderDiscountDetail where OrderId = " + StringUtils.QT(orderId);
+                        " RetailerId,DiscountId,isCompanyGiven," + invoiceId + " from OrderDiscountDetail where OrderId = " + StringUtils.getStringQueryParam(orderId);
 
                 db.executeQ(invoiceDiscountQry);
 
-                db.updateSQL("update SchemeFreeProductDetail set upload='N',InvoiceID = " + StringUtils.QT(invoiceId) + " where orderId = " + StringUtils.QT(orderId));
+                db.updateSQL("update SchemeFreeProductDetail set upload='N',InvoiceID = " + StringUtils.getStringQueryParam(invoiceId) + " where orderId = " + StringUtils.getStringQueryParam(orderId));
 
                 String invoiceTaxDetail = "Insert into InvoiceTaxDetails (orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,invoiceid,applyLevelId) " +
-                        " select orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct," + invoiceId + ",applyLevelId from OrderTaxDetails where OrderId = " + StringUtils.QT(orderId);
+                        " select orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct," + invoiceId + ",applyLevelId from OrderTaxDetails where OrderId = " + StringUtils.getStringQueryParam(orderId);
 
                 db.executeQ(invoiceTaxDetail);
 
                 for (ProductMasterBO productBo : getOrderedProductMasterBOS()) {
-                    Cursor c = db.selectSQL("select ifnull(sum(taxValue),0) from OrderTaxDetails where OrderID=" + StringUtils.QT(orderId) + " and pid = '" + productBo.getProductID() + "'");
+                    Cursor c = db.selectSQL("select ifnull(sum(taxValue),0) from OrderTaxDetails where OrderID=" + StringUtils.getStringQueryParam(orderId) + " and pid = '" + productBo.getProductID() + "'");
                     if (c != null) {
                         if (c.moveToNext()) {
                             db.updateSQL("Update InvoiceDetails set TaxAmount = '" + c.getString(0) + "' where ProductID = '" +
-                                    productBo.getProductID() + "' and invoiceID = " + StringUtils.QT(invoiceId));
+                                    productBo.getProductID() + "' and invoiceID = " + StringUtils.getStringQueryParam(invoiceId));
                         }
                         c.close();
                     }
@@ -762,22 +762,22 @@ public class OrderDeliveryHelper {
                     saveProductLeveltax(orderId, db, totalOrderValue, invoiceId);
             }
 
-            db.updateSQL("update OrderHeader set is_vansales=1,invoicestatus = 1,totalamount =" + totalAmount + " where orderId = " + StringUtils.QT(orderId));
-            db.updateSQL("update SalesReturnHeader set IFLAG=0,upload='N',invoiceid = " + StringUtils.QT(invoiceId) + " where RefModuleTId = " + StringUtils.QT(orderId));
+            db.updateSQL("update OrderHeader set is_vansales=1,invoicestatus = 1,totalamount =" + totalAmount + " where orderId = " + StringUtils.getStringQueryParam(orderId));
+            db.updateSQL("update SalesReturnHeader set IFLAG=0,upload='N',invoiceid = " + StringUtils.getStringQueryParam(invoiceId) + " where RefModuleTId = " + StringUtils.getStringQueryParam(orderId));
 
             String uid = "";
-            Cursor c = db.selectSQL("select uid from SalesReturnHeader where RefModuleTId = " + StringUtils.QT(orderId));
+            Cursor c = db.selectSQL("select uid from SalesReturnHeader where RefModuleTId = " + StringUtils.getStringQueryParam(orderId));
             if (c.getCount() > 0 && c.moveToNext()) {
                 uid = c.getString(0);
-                db.updateSQL("update SalesReturnDetails set upload='N', invoiceno = " + StringUtils.QT(invoiceId) + " where uid = " + StringUtils.QT(uid));
+                db.updateSQL("update SalesReturnDetails set upload='N', invoiceno = " + StringUtils.getStringQueryParam(invoiceId) + " where uid = " + StringUtils.getStringQueryParam(uid));
                 c.close();
-                db.updateSQL("update SalesReturnReplacementDetails set upload='N' where uid = " + StringUtils.QT(uid));
+                db.updateSQL("update SalesReturnReplacementDetails set upload='N' where uid = " + StringUtils.getStringQueryParam(uid));
             }
 
             if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(context);
-                salesReturnHelper.setSalesReturnID(StringUtils.QT(uid));
-                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(context,db, StringUtils.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(),true);
+                salesReturnHelper.setSalesReturnID(StringUtils.getStringQueryParam(uid));
+                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(context,db, StringUtils.getStringQueryParam(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(),true);
             }
 
             updateOrderDeliverySIH(db, isEdit,false);
@@ -802,7 +802,7 @@ public class OrderDeliveryHelper {
             //OrderDelivery status insertion
             String orderDeliveryStatus = "OrderDeliveryStatus";
             String orderDeliveryStatus_cols = "orderId,refId";
-            String values = StringUtils.QT(orderId) + "," + StringUtils.QT(referenceId);
+            String values = StringUtils.getStringQueryParam(orderId) + "," + StringUtils.getStringQueryParam(referenceId);
             db.insertSQL(orderDeliveryStatus, orderDeliveryStatus_cols, values);
 
             db.closeDB();
@@ -863,7 +863,7 @@ public class OrderDeliveryHelper {
         StringBuffer values;
         values = new StringBuffer();
 
-        values.append(StringUtils.QT(orderId)).append(",")
+        values.append(StringUtils.getStringQueryParam(orderId)).append(",")
                 .append(productBO.getProductID()).append(",")
                 .append(taxBO.getTaxRate()).append(",");
         values.append(taxBO.getTaxType()).append(",")
@@ -873,7 +873,7 @@ public class OrderDeliveryHelper {
                 .append(taxBO.getGroupId())
                 .append(",0")
                 .append(",")
-                .append(StringUtils.QT(invoiceId))
+                .append(StringUtils.getStringQueryParam(invoiceId))
                 .append(",")
                 .append(taxBO.getApplyLevelId());
 
@@ -887,8 +887,8 @@ public class OrderDeliveryHelper {
             );
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select credit_flag from SalesReturnHeader where upload = 'X' and RefModuleTId =" + StringUtils.QT(orderId) + " and RetailerID="
-                            + StringUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()));
+                    .selectSQL("select credit_flag from SalesReturnHeader where upload = 'X' and RefModuleTId =" + StringUtils.getStringQueryParam(orderId) + " and RetailerID="
+                            + StringUtils.getStringQueryParam(businessModel.getRetailerMasterBO().getRetailerID()));
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     flag = c.getInt(0);
@@ -909,7 +909,7 @@ public class OrderDeliveryHelper {
             );
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select invoicecreated from SalesReturnHeader where upload ='X' and RefModuleTId =" + StringUtils.QT(orderId) + " and Retailerid="
+                    .selectSQL("select invoicecreated from SalesReturnHeader where upload ='X' and RefModuleTId =" + StringUtils.getStringQueryParam(orderId) + " and Retailerid="
                             + businessModel.getRetailerMasterBO().getRetailerID() + " and distributorid=" + businessModel.retailerMasterBO.getDistributorId());
             if (c != null) {
                 while (c.moveToNext()) {
@@ -1050,7 +1050,7 @@ public class OrderDeliveryHelper {
             db.openDataBase();
 
             String invoiceno = "";
-            Cursor cursor = db.selectSQL("select invoiceno,discount from invoicemaster where orderid =" + StringUtils.QT(orderId));
+            Cursor cursor = db.selectSQL("select invoiceno,discount from invoicemaster where orderid =" + StringUtils.getStringQueryParam(orderId));
             if (cursor.getCount() > 0 && cursor.moveToNext()) {
                 invoiceno = cursor.getString(0);
                 OrderHelper.getInstance(context).invoiceDiscount = cursor.getString(1);
@@ -1062,7 +1062,7 @@ public class OrderDeliveryHelper {
             String sb = "select PM.pid,PM.psname,ID.pcsQty,ID.caseQty,ID.OuterQty,ifnull(BM.Batchnum,\"\"),PM.duomQty,PM.douomQty,ID.Qty,PM.piece_uomid,PM.dUomId,PM.dOuomid,rate,caseprice,outerprice from InvoiceDetails ID " +
                     "inner join Productmaster PM on PM.pid=ID.productid " +
                     "left join batchmaster BM on ID.productid=BM.pid and ID.batchid=BM.batchid " +
-                    "where ID.invoiceID=" + StringUtils.QT(invoiceno);
+                    "where ID.invoiceID=" + StringUtils.getStringQueryParam(invoiceno);
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 ProductMasterBO productBO;
@@ -1092,7 +1092,7 @@ public class OrderDeliveryHelper {
             }
 
             String replQry = "select pid,batchid,uomid,qty from SalesReturnHeader SH" +
-                    " inner join SalesReturnReplacementDetails SRPD on SRPD.uid = SH.uid where SH.invoiceid =" + StringUtils.QT(invoiceno);
+                    " inner join SalesReturnReplacementDetails SRPD on SRPD.uid = SH.uid where SH.invoiceid =" + StringUtils.getStringQueryParam(invoiceno);
             Cursor cursorRpl = db.selectSQL(replQry);
             if (cursorRpl.getCount() > 0) {
                 while (cursorRpl.moveToNext()) {
@@ -1166,7 +1166,7 @@ public class OrderDeliveryHelper {
         try {
 
             String invoiceId = "";
-            Cursor invoice = db.selectSQL("Select invoiceno from invoicemaster where orderid=" + StringUtils.QT(orderId));
+            Cursor invoice = db.selectSQL("Select invoiceno from invoicemaster where orderid=" + StringUtils.getStringQueryParam(orderId));
             if (invoice.getCount() > 0 && invoice.moveToNext()) {
                 invoiceId = invoice.getString(0);
                 invoice.close();
@@ -1178,7 +1178,7 @@ public class OrderDeliveryHelper {
                     .selectSQL("select schemeid,FreeProductID,FreeQty,UomID,pm.PName from schemeFreeProductDetail " +
                             " Inner Join ProductMaster pm ON pm.PID = FreeProductID "
                             + "where invoiceid="
-                            + StringUtils.QT(invoiceId)
+                            + StringUtils.getStringQueryParam(invoiceId)
                             + " order by schemeid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -1245,13 +1245,13 @@ public class OrderDeliveryHelper {
                             db.updateSQL("UPDATE ProductMaster SET sih = "
                                     + calcSih
                                     + " WHERE PID = "
-                                    + StringUtils.QT(product.getProductID()));
+                                    + StringUtils.getStringQueryParam(product.getProductID()));
                             int batchid = businessModel.productHelper
                                     .getOldBatchIDByMfd(product.getProductID());
 
                             Cursor c = db
                                     .selectSQL("select pid,ifnull(qty,0) from StockInHandMaster where pid="
-                                            + StringUtils.QT(product.getProductID())
+                                            + StringUtils.getStringQueryParam(product.getProductID())
                                             + " and batchid=" + batchid);
                             if (c != null && c.getCount() > 0) {
                                 while (c.moveToNext()) {
@@ -1260,12 +1260,12 @@ public class OrderDeliveryHelper {
                                 db.updateSQL("UPDATE StockInHandMaster SET upload='N',qty = "
                                         + salRetSih
                                         + " WHERE pid = "
-                                        + StringUtils.QT(product.getProductID())
+                                        + StringUtils.getStringQueryParam(product.getProductID())
                                         + " AND batchid = " + batchid);
                                 c.close();
                             } else {
                                 String sihMasterColumns = "pid,qty,batchid";
-                                String sihMastervalues = StringUtils.QT(product.getProductID())
+                                String sihMastervalues = StringUtils.getStringQueryParam(product.getProductID())
                                         + ","
                                         + salRetSih + "," + batchid;
                                 db.insertSQL("StockInHandMaster",
@@ -1286,7 +1286,7 @@ public class OrderDeliveryHelper {
 
                             Cursor c = db
                                     .selectSQL("select pid,ifnull(qty,0) from NonSalableSIHMaster where pid="
-                                            + StringUtils.QT(product.getProductID())
+                                            + StringUtils.getStringQueryParam(product.getProductID())
                                             + " and reasonid = " + bo.getReasonID()
                                             + " and upload = 'N'");
                             //+ " and batchid=" + batchid);
@@ -1297,14 +1297,14 @@ public class OrderDeliveryHelper {
                                 db.updateSQL("UPDATE NonSalableSIHMaster SET upload='N',qty = "
                                         + nonSalRetSih
                                         + " WHERE pid = "
-                                        + StringUtils.QT(product.getProductID())
+                                        + StringUtils.getStringQueryParam(product.getProductID())
                                         + " and reasonid = " + bo.getReasonID());
                                 //+ " AND batchid = " + batchid);
                                 c.close();
                             } else {
                                 db.executeQ("delete from NonSalableSIHMaster where upload = 'Y' ");
                                 String sihMasterColumns = "pid,qty,reasonid";
-                                String sihMastervalues = StringUtils.QT(product.getProductID())
+                                String sihMastervalues = StringUtils.getStringQueryParam(product.getProductID())
                                         + ","
                                         + nonSalRetSih + ","
                                         + bo.getReasonID();
@@ -1334,7 +1334,7 @@ public class OrderDeliveryHelper {
             db.openDataBase();
 
             Cursor orderTaxCursor = db.selectSQL("select sum(taxValue) from OrderTaxDetails " +
-                    "where orderid=" + StringUtils.QT(id));
+                    "where orderid=" + StringUtils.getStringQueryParam(id));
             if (orderTaxCursor.getCount() > 0 && orderTaxCursor.moveToNext()) {
                 taxAmt = orderTaxCursor.getDouble(0);
             }
@@ -1361,7 +1361,7 @@ public class OrderDeliveryHelper {
 
             String orderDeliveryStatus = "OrderDeliveryStatus";
             String orderDeliveryStatus_cols = "orderId,refId,status";
-            String values = StringUtils.QT(orderId) + "," + StringUtils.QT(referenceId)+", 'R'";
+            String values = StringUtils.getStringQueryParam(orderId) + "," + StringUtils.getStringQueryParam(referenceId)+", 'R'";
             db.insertSQL(orderDeliveryStatus, orderDeliveryStatus_cols, values);
 
             updateOrderDeliverySIH(db,false,true); //default true - order is rejected, default false - order is not edited

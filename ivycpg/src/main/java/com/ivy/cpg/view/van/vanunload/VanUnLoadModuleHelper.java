@@ -53,7 +53,7 @@ public class VanUnLoadModuleHelper {
                 if (vanunloadbo.getCaseqty() > 0
                         || vanunloadbo.getPieceqty() > 0
                         || vanunloadbo.getOuterQty() > 0) {
-                    String values = StringUtils.QT(uid)
+                    String values = StringUtils.getStringQueryParam(uid)
                             + ","
                             + vanunloadbo.getProductid()
                             + ","
@@ -62,7 +62,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + vanunloadbo.getBatchId()
                             + ","
-                            + StringUtils.QT(vanunloadbo.getBatchNo())
+                            + StringUtils.getStringQueryParam(vanunloadbo.getBatchNo())
                             + ","
                             + vanunloadbo.getStocksih()
                             + ","
@@ -80,7 +80,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + vanunloadbo.getdOuonid()
                             + ","
-                            + StringUtils.QT(bmodel.userMasterHelper
+                            + StringUtils.getStringQueryParam(bmodel.userMasterHelper
                             .getUserMasterBO().getDownloadDate()) + ","
                             + 1 + "," + vanunloadbo.getIsFree();
                     db.insertSQL(DataMembers.tbl_vanunload_details, columns,
@@ -389,7 +389,7 @@ public class VanUnLoadModuleHelper {
 
             if (c != null) {
                 while (c.moveToNext()) {
-                    String values = StringUtils.QT(uid)
+                    String values = StringUtils.getStringQueryParam(uid)
                             + ","
                             + c.getInt(0)
                             + ","
@@ -397,7 +397,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + c.getInt(2)
                             + ","
-                            + StringUtils.QT(c.getString(3))
+                            + StringUtils.getStringQueryParam(c.getString(3))
                             + ","
                             + c.getInt(4)
                             + ","
@@ -415,7 +415,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + c.getInt(8)
                             + ","
-                            + StringUtils.QT(bmodel.userMasterHelper
+                            + StringUtils.getStringQueryParam(bmodel.userMasterHelper
                             .getUserMasterBO().getDownloadDate()) + ","
                             + 1;
 
@@ -528,7 +528,7 @@ public class VanUnLoadModuleHelper {
 
             if (c != null) {
                 while (c.moveToNext()) {
-                    String values = StringUtils.QT(uid)
+                    String values = StringUtils.getStringQueryParam(uid)
                             + ","
                             + c.getInt(0)
                             + ","
@@ -536,7 +536,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + c.getInt(2)
                             + ","
-                            + StringUtils.QT(c.getString(3))
+                            + StringUtils.getStringQueryParam(c.getString(3))
                             + ","
                             + c.getInt(4)
                             + ","
@@ -554,7 +554,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + c.getInt(8)
                             + ","
-                            + StringUtils.QT(bmodel.userMasterHelper
+                            + StringUtils.getStringQueryParam(bmodel.userMasterHelper
                             .getUserMasterBO().getDownloadDate()) + ","
                             + 0 + "," + 1;
 

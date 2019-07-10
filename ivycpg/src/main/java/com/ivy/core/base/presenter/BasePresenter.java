@@ -1,9 +1,9 @@
 package com.ivy.core.base.presenter;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.OnLifecycleEvent;
 
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseIvyView;
@@ -16,7 +16,7 @@ import javax.inject.Inject;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
-public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>, LifecycleObserver {
+    public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>, LifecycleObserver {
 
     public static final String RED = "red";
     public static final String ORANGE = "orange";

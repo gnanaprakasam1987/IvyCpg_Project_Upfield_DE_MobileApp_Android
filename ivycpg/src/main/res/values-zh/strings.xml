@@ -1302,6 +1302,7 @@
     <string name="rejected_order">Rejected Order</string>
 
     <string-array name="task_tab_header">
+        <item>所有</item>
         <item>Assigned</item>
         <item>My Task</item>
         <item>Completed</item>

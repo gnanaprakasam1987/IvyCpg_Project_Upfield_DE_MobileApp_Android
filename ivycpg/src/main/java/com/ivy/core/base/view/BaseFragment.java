@@ -9,9 +9,11 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +59,7 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        isPreVisit = ((Activity)context).getIntent().getBooleanExtra("PreVisit",false);
+        isPreVisit = ((Activity) context).getIntent().getBooleanExtra("PreVisit", false);
 
         return inflater.inflate(setContentViewLayout(), container, false);
     }
@@ -102,7 +105,11 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void showLoading(int strinRes) {
-        ((BaseActivity) getActivity()).showLoading(strinRes);
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).showLoading();
+        else
+            showDialog(getString(R.string.loading));
+
     }
 
     @Override
@@ -193,7 +200,10 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public boolean isNetworkConnected() {
-        return ((BaseActivity) getActivity()).isNetworkConnected();
+        if (getActivity() instanceof BaseActivity)
+            return ((BaseActivity) getActivity()).isNetworkConnected();
+        else
+           return NetworkUtils.isNetworkConnected(getActivity());
     }
 
 
@@ -278,19 +288,23 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener) {
         if (getActivity() instanceof BaseActivity)
             ((BaseActivity) getActivity()).showAlert(title, msg, positiveClickListener);
-        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+        else
             ((IvyBaseActivityNoActionBar) getActivity()).showAlert(title, msg, positiveClickListener);
     }
 
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, boolean isCancelable) {
-        ((BaseActivity) getActivity()).showAlert(title, msg, positiveClickListener, isCancelable);
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).showAlert(title, msg, positiveClickListener, isCancelable);
+        else
+            ((IvyBaseActivityNoActionBar) getActivity()).showAlert(title, msg, positiveClickListener, isCancelable);
+
     }
 
     @Override
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, CommonDialog.negativeOnClickListener negativeOnClickListener) {
         if (getActivity() instanceof BaseActivity)
             ((BaseActivity) getActivity()).showAlert(title, msg, positiveClickListener, negativeOnClickListener);
-        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+        else
             ((IvyBaseActivityNoActionBar) getActivity()).showAlert(title, msg, positiveClickListener, negativeOnClickListener);
     }
 
@@ -348,6 +362,30 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
             ((IvyBaseActivityNoActionBar) getActivity()).setUpToolbar(title);
     }
 
+    @Override
+    public void getLocationPermission() {
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).getLocationPermission();
+        else
+            ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(LOCATION_PERMISSION);
+    }
+
+    @Override
+    public void getCameraPermission() {
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).getCameraPermission();
+        else
+            ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(CAMERA_AND_WRITE_PERMISSION);
+    }
+
+    @Override
+    public void getPhoneStatePermission() {
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).getPhoneStatePermission();
+        else
+            ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(PHONE_STATE_AND_WRITE_PERMISSON);
+    }
+
     public void applyAlertDialogTheme(Context context, AlertDialog.Builder builder) {
         if (getActivity() instanceof BaseActivity)
             ((BaseActivity) getActivity()).applyAlertDialogTheme(context, builder);
@@ -356,6 +394,7 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     }
 
     // Todo to be removed
+    @Deprecated
     public boolean checkAndRequestPermissionAtRunTime(int mGroup) {
         List<String> listPermissionsNeeded = new ArrayList<>();
         int permissionStatus;

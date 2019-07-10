@@ -18,6 +18,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import com.ivy.cpg.view.tradeCoverage.deviation.DeviationHelper;
 import com.ivy.cpg.view.tradeCoverage.deviation.PlanningActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -31,7 +33,7 @@ import com.ivy.sd.png.view.MissedCallDialog;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class MissedVisitFragment extends android.support.v4.app.Fragment {
+public class MissedVisitFragment extends Fragment {
 
     MissedCallDialog dialogFragment;
     private BusinessModel bmodel;

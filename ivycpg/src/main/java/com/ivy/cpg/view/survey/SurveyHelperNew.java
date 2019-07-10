@@ -11,6 +11,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
@@ -127,6 +128,7 @@ public class SurveyHelperNew {
 
     /**
      * To check whether the retailer mapped in account group for survey
+     *
      * @return - true if account grouping enabled or else false
      */
     private boolean hasAccountGroup() {
@@ -149,6 +151,7 @@ public class SurveyHelperNew {
 
     /**
      * Retrieve survey id's mapped to the account group.
+     *
      * @return - Group of survey id's concatenated with comma separator.
      */
     private String getAccountGroupSurveys() {
@@ -166,7 +169,7 @@ public class SurveyHelperNew {
         } catch (Exception e) {
             Commons.printException(e);
         }
-        return String.valueOf(surveyIds).substring(0, surveyIds.length()-1);
+        return String.valueOf(surveyIds).substring(0, surveyIds.length() - 1);
     }
 
 
@@ -452,6 +455,19 @@ public class SurveyHelperNew {
             );
             db.openDataBase();
 
+            String productDistributions="";
+            if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                //downloading product distribution and preparing query to get products mapped..
+                int mContentLevelId = ProductHelper.getInstance(context).getContentLevel(db, moduleCode);
+                String pdQuery = ProductHelper.getInstance(context).downloadProductDistribution(mContentLevelId);
+                if (pdQuery.length() > 0) {
+                    productDistributions=  pdQuery;
+                }
+                else {
+                    productDistributions= "0";
+                }
+            }
+
             StringBuilder sb = new StringBuilder();
             sb.append("Select distinct SM.SurveyId, SM.SurveyDesc, SM.BonusPoint,");
             sb.append(" A.QId, A.QText, A.QType, IFNULL(C.ListCode, ''), A.BrandID, A.IsMand,");
@@ -484,6 +500,8 @@ public class SurveyHelperNew {
                 if (moduleCode.equalsIgnoreCase("MENU_NEW_RET") && bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER)
                     sb.append(" AND SCM.CriteriaID=" + bmodel.newOutletHelper.getmSelectedChannelid() + "  and SL.listcode='CHANNEL' OR SL.listcode='SUBCHANNEL'");
             }
+
+            sb.append(productDistributions.length()>0?" AND A.BrandID in ("+productDistributions+")":"");
 
             sb.append(" and SM.SurveyId not in (select AH.surveyid from answerheader AH ");
             sb.append("Where retailerid = '" + retailerid + "' and AH.frequency='DAILY_PIRAMAL') ");
@@ -545,7 +563,7 @@ public class SurveyHelperNew {
                         questionBO.setMinValue(c.getInt(c.getColumnIndex("MinValue")));
                         questionBO.setMaxValue(c.getInt(c.getColumnIndex("MaxValue")));
                         if (c.getInt(c.getColumnIndex("DefaultOptionId")) != 0)
-                        questionBO.setSelectedAnswerID(c.getInt(c.getColumnIndex("DefaultOptionId")));
+                            questionBO.setSelectedAnswerID(c.getInt(c.getColumnIndex("DefaultOptionId")));
                         if (questionBO.getBrandID() > 0)
                             questionBO.setParentHierarchy(getParentHiearchy(questionBO.getBrandID()));
 
@@ -647,7 +665,7 @@ public class SurveyHelperNew {
                             questionBO.setMinValue(c.getInt(c.getColumnIndex("MinValue")));
                             questionBO.setMaxValue(c.getInt(c.getColumnIndex("MaxValue")));
                             if (c.getInt(c.getColumnIndex("DefaultOptionId")) != 0)
-                            questionBO.setSelectedAnswerID(c.getInt(c.getColumnIndex("DefaultOptionId")));
+                                questionBO.setSelectedAnswerID(c.getInt(c.getColumnIndex("DefaultOptionId")));
                             if (questionBO.getBrandID() > 0)
                                 questionBO.setParentHierarchy(getParentHiearchy(questionBO.getBrandID()));
 
@@ -995,12 +1013,12 @@ public class SurveyHelperNew {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
                 for (QuestionBO qus : mParentQuestions) {
                     if (qus.getQuestionType().equals("EMAIL")) {
-                            if (qus.getSelectedAnswer().size() > 0
-                                    && qus.getSelectedAnswer().get(0).length()!=0
-                                    && !isValidEmail(qus.getSelectedAnswer().get(0))) {
-                                invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
-                                invalidEmails.append("\n");
-                            }
+                        if (qus.getSelectedAnswer().size() > 0
+                                && qus.getSelectedAnswer().get(0).length() != 0
+                                && !isValidEmail(qus.getSelectedAnswer().get(0))) {
+                            invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
+                            invalidEmails.append("\n");
+                        }
                     }
                 }
             }
@@ -1342,11 +1360,10 @@ public class SurveyHelperNew {
 
                                 qBO.setSignaturePath(getSignaturePath());
 
-                                if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
-                                    headerValues= headerValues+"," + StringUtils.QT(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
-                                }
-                                else {
-                                    headerValues= headerValues+",0";
+                                if (bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+                                    headerValues = headerValues + "," + StringUtils.getStringQueryParam(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
+                                } else {
+                                    headerValues = headerValues + ",0";
                                 }
 
                                 db.insertSQL("AnswerHeader", headerColumns, headerValues);
@@ -2320,23 +2337,29 @@ public class SurveyHelperNew {
     }
 
 
+    void saveAnswerNewRetailer(String menuCode, int screenMode, String retailerId) {
+        if (screenMode == 2) {
+            if (retailerId != null)
+                deleteNewRetailerSurvey(retailerId);
+            else
+                deleteNewRetailerSurvey(bmodel.newOutletHelper.getRetailerId_edit());
+        }
+        saveAnswerNewRetailer(menuCode, screenMode);
+    }
+
+
     /**
      * Save the Transaction as Survey Wise. NewRetailerSurveyResultHeader - used to hold the
      * survey detail.
      * NewRetailerSurveyResultDetail - used to hold the question and anser detail.
      */
-    public void saveAnswerNewRetailer(String menuCode, int screenMode) {
+    private void saveAnswerNewRetailer(String menuCode, int screenMode) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
             );
             db.createDataBase();
             db.openDataBase();
 
-            if (screenMode == 2) {
-                //Edit mode, then deleting old one
-                db.deleteSQL("NewRetailerSurveyResultHeader", "retailerId=" + bmodel.QT(bmodel.newOutletHelper.getRetailerId_edit()), false);
-                db.deleteSQL("NewRetailerSurveyResultDetail", "retailerId=" + bmodel.QT(bmodel.newOutletHelper.getRetailerId_edit()), false);
-            }
 
             String retailerid;
             String type = "RETAILER";
@@ -2570,6 +2593,13 @@ public class SurveyHelperNew {
     }
 
     //used for new retailer survey
+
+    /**
+     * @param retailerId
+     * @return
+     * @See {{@link com.ivy.ui.survey.data.SurveyDataManagerImpl#isSurveyAvailableForRetailer(String)}}
+     * @deprecated
+     */
     public boolean isSurveyAvaliable(String retailerId) {
         boolean isavailable = false;
         try {
@@ -2598,6 +2628,11 @@ public class SurveyHelperNew {
         return isavailable;
     }
 
+    /**
+     * @param retailerID
+     * @See {{@link com.ivy.ui.survey.data.SurveyDataManagerImpl#deleteNewRetailerSurvey(String)}}
+     * @deprecated
+     */
     public void deleteNewRetailerSurvey(String retailerID) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME

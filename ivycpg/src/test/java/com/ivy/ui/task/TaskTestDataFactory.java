@@ -3,6 +3,7 @@ package com.ivy.ui.task;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.ui.task.model.FilterBo;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.ui.task.model.TaskRetailerBo;
 
@@ -11,7 +12,7 @@ import java.util.HashMap;
 
 public class TaskTestDataFactory {
 
-    public static RetailerMasterBO retailerMasterBO = new RetailerMasterBO(1, "abcd");
+    public static RetailerMasterBO retailerMasterBO = new RetailerMasterBO("1", "abcd");
 
     public static UserMasterBO userMasterBO = new UserMasterBO(2, "user1");
 
@@ -77,12 +78,12 @@ public class TaskTestDataFactory {
     public static ArrayList<RetailerMasterBO> getAllRetailer() {
         ArrayList<RetailerMasterBO> mockRetList = new ArrayList<>();
 
-        mockRetList.add(new RetailerMasterBO(1, "abcd"));
-        mockRetList.add(new RetailerMasterBO(2, "abcde"));
-        mockRetList.add(new RetailerMasterBO(3, "abcdef"));
-        mockRetList.add(new RetailerMasterBO(4, "abcdefg"));
-        mockRetList.add(new RetailerMasterBO(5, "abcdefgh"));
-        mockRetList.add(new RetailerMasterBO(6, "abcdefghi"));
+        mockRetList.add(new RetailerMasterBO("1", "abcd"));
+        mockRetList.add(new RetailerMasterBO("2", "abcde"));
+        mockRetList.add(new RetailerMasterBO("3", "abcdef"));
+        mockRetList.add(new RetailerMasterBO("4", "abcdefg"));
+        mockRetList.add(new RetailerMasterBO("5", "abcdefgh"));
+        mockRetList.add(new RetailerMasterBO("6", "abcdefghi"));
         return mockRetList;
     }
 
@@ -165,17 +166,6 @@ public class TaskTestDataFactory {
         return mockReasonList;
     }
 
-    public static String getChannelIdList() {
-        StringBuilder mockChannelIds = new StringBuilder();
-
-        mockChannelIds.append("1213,");
-        mockChannelIds.append("1214,");
-        mockChannelIds.append("1215,");
-        mockChannelIds.append("1216,");
-        mockChannelIds.append("1217");
-        return mockChannelIds.toString();
-    }
-
     public static ArrayList<TaskDataBO> getTaskWithoutUserId() {
         ArrayList<TaskDataBO> mockTaskList = new ArrayList<>();
         TaskDataBO mockImgBo = new TaskDataBO();
@@ -249,7 +239,7 @@ public class TaskTestDataFactory {
 
         taskDataBO.setTaskId("1");
         taskDataBO.setUserId(123);
-        taskDataBO.setRid(1);
+        taskDataBO.setRid(0);
         taskDataBO.setMode(TaskConstant.SELLER_WISE);
         taskDataBO.setTaskDesc("task Desc");
         taskDataBO.setTasktitle("task title1");
@@ -318,5 +308,30 @@ public class TaskTestDataFactory {
         mockHashList.put("1", mockTaskList);
         return mockHashList;
     }
+
+    public static HashMap<String, ArrayList<FilterBo>> getMockFilterList() {
+        ArrayList<FilterBo> mockTaskList = new ArrayList<>();
+        HashMap<String, ArrayList<FilterBo>> mockHashList = new HashMap<>();
+        FilterBo mockfilterBo = new FilterBo();
+
+
+        mockfilterBo.setFilterId(123);
+        mockfilterBo.setFilterName("filter1");
+        mockTaskList.add(mockfilterBo);
+
+
+        mockfilterBo.setFilterId(123);
+        mockfilterBo.setFilterName("filter1");
+        mockTaskList.add(mockfilterBo);
+
+
+        mockfilterBo.setFilterId(123);
+        mockfilterBo.setFilterName("filter1");
+        mockTaskList.add(mockfilterBo);
+
+        mockHashList.put("Retailer", mockTaskList);
+        return mockHashList;
+    }
+
 
 }

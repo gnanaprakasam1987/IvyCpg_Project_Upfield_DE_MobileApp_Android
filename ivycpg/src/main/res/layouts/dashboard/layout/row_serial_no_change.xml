@@ -6,7 +6,7 @@
     android:gravity="center"
     android:padding="@dimen/_10sdp">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/asset_name"
         style="@style/TextViewListItemPrimary"
         android:layout_width="@dimen/price_product_name"
@@ -16,7 +16,7 @@
         android:text="@string/asset_name" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/old_serial_no_tv"
         style="@style/TextViewListItemSecondaryHighlight"
         android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
         android:layout_alignParentLeft="true"
         android:text="@string/old_serial_no" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/rent_price_label"
         style="@style/TextViewListItemCaption"
         android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
         android:layout_marginRight="@dimen/_30sdp"
         android:text="@string/rental_price" />
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edit_rent_price"
         style="@style/EditText_ListItem"
         android:layout_width="@dimen/list_item_date_picker_width"
@@ -56,7 +56,7 @@
         android:maxLength="10"
         android:textAlignment="textStart" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/eff_to_date_label"
         style="@style/TextViewListItemCaption"
         android:layout_width="wrap_content"
@@ -71,7 +71,7 @@
         android:text="@string/choose_eff_to_date"
         android:textAlignment="textStart" />
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/eff_to_date_button"
         style="@style/datePickerButton"
         android:layout_width="wrap_content"
@@ -84,7 +84,7 @@
         android:textAlignment="center" />
 
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/new_serial_no_edt"
         android:layout_width="@dimen/spinner_width"
         android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789_ \\"
         android:maxLength="25" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/barcode_scan_img"
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"

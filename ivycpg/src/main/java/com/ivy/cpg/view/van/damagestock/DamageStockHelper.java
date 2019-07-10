@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.SalesReturnReportBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -97,15 +96,15 @@ public class DamageStockHelper {
             String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,dUomId,douomqty,dOuomid,date,type";
             for (int i = 0; i < damageList.size(); i++) {
                 bo = damageList.get(i);
-                String values = StringUtils.QT(uid)
+                String values = StringUtils.getStringQueryParam(uid)
                         + ","
-                        + StringUtils.QT(bo.getProductid())
+                        + StringUtils.getStringQueryParam(bo.getProductid())
                         + ","
-                        + StringUtils.QT(bo.getProductName())
+                        + StringUtils.getStringQueryParam(bo.getProductName())
                         + ","
                         + bo.getBatchId()
                         + ","
-                        + StringUtils.QT(bo.getBatchNumber())
+                        + StringUtils.getStringQueryParam(bo.getBatchNumber())
                         + ","
                         + bo.getSih()
                         + ","
@@ -123,7 +122,7 @@ public class DamageStockHelper {
                         + ","
                         + bo.getdOuomid()
                         + ","
-                        + StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO()
+                        + StringUtils.getStringQueryParam(bmodel.userMasterHelper.getUserMasterBO()
                         .getDownloadDate()) + "," + 0;
                 db.insertSQL(DataMembers.tbl_vanunload_details, columns, values);
                 db.executeQ("update SalesReturnHeader set unload=1 where upload!='X'");
