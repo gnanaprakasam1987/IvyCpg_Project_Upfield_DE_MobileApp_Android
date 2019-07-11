@@ -118,6 +118,70 @@ public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.I
         return getChildAttribute().get(parentId) != null ? getChildAttribute().get(parentId) : new ArrayList<>();
     }
 
+    /*private void validateAttribute() {
+
+        boolean isAdded = true;
+        ArrayList<NewOutletAttributeBO> selectedAttributeLevel = new ArrayList<>();
+
+        try {
+            // to check all common mandatory attributes selected
+            for (NewOutletAttributeBO attributeBO : getAttributeParentList()) {
+
+                if (getCommonAttributeList().contains(attributeBO.getAttrId())) {
+
+                    NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBO.getAttrId());
+
+                    if (attributeBO.getIsMandatory() == 1) {
+                        if (tempBO != null && tempBO.getAttrId() != -1) {
+                            selectedAttributeLevel.add(tempBO);
+                        } else {
+                            isAdded = false;
+                            String errorMessage = attributeBO.getAttrName() + " is Mandatory";
+                            getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
+                            break;
+                        }
+                    } else {
+                        if (tempBO != null && tempBO.getAttrId() != -1)
+                            selectedAttributeLevel.add(tempBO);
+                    }
+                }
+            }
+            //to check all mandatory channel's attributes selected
+            if (isChannelAvailable() && isAdded) {
+
+                try {
+                    for (NewOutletAttributeBO attributeBo : getAttributeBOListByLocationID().get(getIvyView().subChannelGetSelectedItem())) {
+
+                        NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBo.getAttrId());
+
+                        if (attributeBo.getIsMandatory() == 1) {
+                            if (tempBO != null && tempBO.getAttrId() != -1) {
+                                selectedAttributeLevel.add(tempBO);
+                            } else {
+                                isAdded = false;
+                                String errorMessage = attributeBo.getAttrName() + " is Mandatory";
+                                getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
+                                break;
+                            }
+                        } else {
+                            if (tempBO != null && tempBO.getAttrId() != -1)
+                                selectedAttributeLevel.add(tempBO);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (!isAdded) {
+                validate = false;
+            }
+            setRetailerAttribute(selectedAttributeLevel);
+        } catch (Exception e) {
+            getIvyView().hideLoading();
+            Commons.printException(e);
+        }
+    }*/
+
     public void saveAttribute(ArrayList<AttributeBO> selectedAttributes){
 
         getCompositeDisposable().add(

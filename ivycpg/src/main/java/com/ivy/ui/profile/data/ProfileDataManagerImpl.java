@@ -10,7 +10,6 @@ import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.sync.SynchronizationDataManager;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
-import com.ivy.core.model.UrlMaster;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
 import com.ivy.cpg.view.retailercontact.RetailerContactBo;
@@ -49,8 +48,6 @@ import com.ivy.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,19 +62,14 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Function4;
 
 import static com.ivy.ui.profile.create.NewRetailerConstant.MENU_NEW_RETAILER;
-import static com.ivy.ui.profile.create.NewRetailerConstant.NO_RETAILER_DOWNLOAD_URL;
 import static com.ivy.utils.StringUtils.getStringQueryParam;
 import static com.ivy.utils.StringUtils.isNullOrEmpty;
 

@@ -2,9 +2,6 @@ package com.ivy.ui.profile.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 
 import com.ivy.cpg.view.retailercontact.ContactCreationFragment;
 import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
@@ -15,6 +12,11 @@ import com.stepstone.stepper.Step;
 import com.stepstone.stepper.adapter.AbstractFragmentStepAdapter;
 import com.stepstone.stepper.viewmodel.StepViewModel;
 
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+
+
 public class ProfileStepperAdapter extends AbstractFragmentStepAdapter {
 
     private int pageCount;
@@ -22,8 +24,8 @@ public class ProfileStepperAdapter extends AbstractFragmentStepAdapter {
     private boolean isAttribAvail, isContactAvail, isProfileEditView, isProfileViewOnly;
 
     ProfileStepperAdapter(FragmentManager fm, Context context, String retailerId,
-                                 boolean isAttribAvail, boolean isContactAvail,
-                                 boolean isProfileEditView, boolean isProfileViewOnly) {
+                          boolean isAttribAvail, boolean isContactAvail,
+                          boolean isProfileEditView, boolean isProfileViewOnly) {
         super(fm, context);
 
         if (isAttribAvail && isContactAvail)

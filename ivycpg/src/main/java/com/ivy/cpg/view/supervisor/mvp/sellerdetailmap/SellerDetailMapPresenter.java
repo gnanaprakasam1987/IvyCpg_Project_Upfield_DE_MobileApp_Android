@@ -51,14 +51,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.Vector;
 
 import javax.annotation.Nullable;
@@ -311,18 +309,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
         if (isFocus)
             sellerMapView.focusMarker(builder);
-    }
-
-    @Override
-    public String convertMillisToTime(Long time) {
-
-        if (time != null && time != 0) {
-            Date date = new Date(time);
-            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return format.format(date);
-        } else
-            return "";
     }
 
     @Override

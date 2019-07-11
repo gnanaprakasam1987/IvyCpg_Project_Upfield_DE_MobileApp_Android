@@ -1332,8 +1332,8 @@ public class ProfileHelper {
 
             String query = "select RField from "
                     + DataMembers.tbl_HhtMenuMaster
-                    + " where flag=1 and HHTCode = " +StringUtils.QT(config)
-                    + " and MenuType= "+StringUtils.QT(menu)+" and lang=" + StringUtils.QT(locale);
+                    + " where flag=1 and HHTCode = " +StringUtils.getStringQueryParam(config)
+                    + " and MenuType= "+StringUtils.getStringQueryParam(menu)+" and lang=" + StringUtils.getStringQueryParam(locale);
 
             Cursor c = db.selectSQL(query);
             if (c != null && c.getCount() > 0 && c.moveToNext()) {

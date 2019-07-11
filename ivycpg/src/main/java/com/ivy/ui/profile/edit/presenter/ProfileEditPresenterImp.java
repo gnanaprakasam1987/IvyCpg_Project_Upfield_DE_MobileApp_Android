@@ -2,22 +2,13 @@ package com.ivy.ui.profile.edit.presenter;
 
 
 import android.annotation.SuppressLint;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.OnLifecycleEvent;
 import android.util.SparseArray;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
@@ -36,8 +27,6 @@ import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.create.model.ContractStatus;
-import com.ivy.ui.profile.attribute.data.IProfileAttributeDataManager;
-import com.ivy.ui.profile.attribute.view.ProfileAttributeFragment;
 import com.ivy.ui.profile.data.ChannelWiseAttributeList;
 import com.ivy.ui.profile.data.ProfileDataManager;
 import com.ivy.ui.profile.edit.IProfileEditContract;
@@ -57,11 +46,12 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.OnLifecycleEvent;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function3;
 import io.reactivex.functions.Function5;
 import io.reactivex.observers.DisposableObserver;
 
@@ -2072,13 +2062,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            } else if (configCode.equals(ProfileConstant.ATTRIBUTE)
-                    && profileConfig.get(i).getModule_Order() == 1) {
-                if (getIvyView().getSelectedAttribList().size() != 0) {
-                    validateAttribute();
-                }
-                break;
-            } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.EMAIL)
+            }else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.EMAIL)
                     && profileConfig.get(i).getModule_Order() == 1
                     && getIvyView().getDynamicEditTextValues(i).length() != 0) {
                 try {
@@ -2507,70 +2491,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             }
         }
         return true;
-    }
-
-    private void validateAttribute() {
-
-        boolean isAdded = true;
-        ArrayList<NewOutletAttributeBO> selectedAttributeLevel = new ArrayList<>();
-
-        try {
-            // to check all common mandatory attributes selected
-            for (NewOutletAttributeBO attributeBO : getAttributeParentList()) {
-
-                if (getCommonAttributeList().contains(attributeBO.getAttrId())) {
-
-                    NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBO.getAttrId());
-
-                    if (attributeBO.getIsMandatory() == 1) {
-                        if (tempBO != null && tempBO.getAttrId() != -1) {
-                            selectedAttributeLevel.add(tempBO);
-                        } else {
-                            isAdded = false;
-                            String errorMessage = attributeBO.getAttrName() + " is Mandatory";
-                            getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
-                            break;
-                        }
-                    } else {
-                        if (tempBO != null && tempBO.getAttrId() != -1)
-                            selectedAttributeLevel.add(tempBO);
-                    }
-                }
-            }
-            //to check all mandatory channel's attributes selected
-            if (isChannelAvailable() && isAdded) {
-
-                try {
-                    for (NewOutletAttributeBO attributeBo : getAttributeBOListByLocationID().get(getIvyView().subChannelGetSelectedItem())) {
-
-                        NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBo.getAttrId());
-
-                        if (attributeBo.getIsMandatory() == 1) {
-                            if (tempBO != null && tempBO.getAttrId() != -1) {
-                                selectedAttributeLevel.add(tempBO);
-                            } else {
-                                isAdded = false;
-                                String errorMessage = attributeBo.getAttrName() + " is Mandatory";
-                                getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
-                                break;
-                            }
-                        } else {
-                            if (tempBO != null && tempBO.getAttrId() != -1)
-                                selectedAttributeLevel.add(tempBO);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if (!isAdded) {
-                validate = false;
-            }
-            setRetailerAttribute(selectedAttributeLevel);
-        } catch (Exception e) {
-            getIvyView().hideLoading();
-            Commons.printException(e);
-        }
     }
 
 

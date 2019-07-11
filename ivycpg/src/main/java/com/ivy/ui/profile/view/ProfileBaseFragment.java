@@ -3,12 +3,12 @@ package com.ivy.ui.profile.view;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
@@ -19,7 +19,10 @@ import com.stepstone.stepper.VerificationError;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ProfileBaseFragment extends IvyBaseFragment implements StepperLayout.StepperListener {
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+
+public class ProfileBaseFragment extends BaseFragment implements StepperLayout.StepperListener {
 
     private BusinessModel bmodel;
     private boolean isFromEditProfileView;
@@ -41,15 +44,28 @@ public class ProfileBaseFragment extends IvyBaseFragment implements StepperLayou
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.profile_base_fragment, container, false);
+    public void initializeDi() {
 
-        getBundleValues();
+    }
 
+    @Override
+    protected int setContentViewLayout() {
+        return R.layout.profile_base_fragment;
+    }
+
+    @Override
+    public void init(View view) {
         initializeItem(view);
+    }
 
-        return view;
+    @Override
+    protected void getMessageFromAliens() {
+        getBundleValues();
+    }
+
+    @Override
+    protected void setUpViews() {
+
     }
 
     private void initializeItem(View view) {
@@ -114,21 +130,21 @@ public class ProfileBaseFragment extends IvyBaseFragment implements StepperLayou
 
     @Override
     public void onCompleted(View completeButton) {
-
+        Toast.makeText(getActivity(), "onCompleted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onError(VerificationError verificationError) {
-
+        Toast.makeText(getActivity(), "onError", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onStepSelected(int newStepPosition) {
-
+        Toast.makeText(getActivity(), "onStepSelected", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onReturn() {
-
+        Toast.makeText(getActivity(), "onReturn", Toast.LENGTH_SHORT).show();
     }
 }

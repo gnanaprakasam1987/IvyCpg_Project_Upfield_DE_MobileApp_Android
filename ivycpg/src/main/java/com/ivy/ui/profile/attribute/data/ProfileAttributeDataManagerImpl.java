@@ -123,8 +123,8 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                         " EAM.ParentId,ifnull(RA.AttributeId,-1) as retailAttribute,ifnull(REA.AttributeId,-1) as retailEditAttribute," +
                         " EAM1.LevelId,ifnull(REA.status,'') as status  from EntityAttributeMaster EAM " +
                         " inner join EntityAttributeMaster as EAM1 on EAM.AttributeId = EAM1.ParentId " +
-                        " left join RetailerAttribute as RA on RA.AttributeId = EAM1.AttributeId  and RA.RetailerId = "+ StringUtils.QT(retailerId) +
-                        " left join RetailerEditAttribute as REA on REA.AttributeId = EAM1.AttributeId  and REA.RetailerId = "+ StringUtils.QT(retailerId) +
+                        " left join RetailerAttribute as RA on RA.AttributeId = EAM1.AttributeId  and RA.RetailerId = "+ StringUtils.getStringQueryParam(retailerId) +
+                        " left join RetailerEditAttribute as REA on REA.AttributeId = EAM1.AttributeId  and REA.RetailerId = "+ StringUtils.getStringQueryParam(retailerId) +
                         " group by EAM1.AttributeId " +
                         " order by EAM1.Sequence,EAM.AttributeId ASC ";
 
@@ -219,9 +219,9 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                             + " WHERE RetailerId = "
                             + retailerId
                             + " AND Date = "
-                            + StringUtils.QT(currentDate)
+                            + StringUtils.getStringQueryParam(currentDate)
                             + " AND Upload = "
-                            + StringUtils.QT("N"));
+                            + StringUtils.getStringQueryParam("N"));
 
                     if (headerCursor.getCount() > 0) {
                         headerCursor.moveToNext();
@@ -243,15 +243,15 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                                                          final ArrayList<AttributeBO> selectedAttribList) {
 
         try {
-            mDbUtil.deleteSQL("RetailerEditAttribute", " tid =" + StringUtils.QT(mTid), false);
+            mDbUtil.deleteSQL("RetailerEditAttribute", " tid =" + StringUtils.getStringQueryParam(mTid), false);
 
             for (AttributeBO id : selectedAttribList) {
                 String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
-                        "values (" + StringUtils.QT(mTid)
+                        "values (" + StringUtils.getStringQueryParam(mTid)
                         + "," + RetailerID
                         + "," + id.getAttributeId()
                         + "," + id.getLevelId()
-                        + "," + StringUtils.QT(id.getStatus()) + ",'N')";
+                        + "," + StringUtils.getStringQueryParam(id.getStatus()) + ",'N')";
                 mDbUtil.executeQ(Q);
             }
 

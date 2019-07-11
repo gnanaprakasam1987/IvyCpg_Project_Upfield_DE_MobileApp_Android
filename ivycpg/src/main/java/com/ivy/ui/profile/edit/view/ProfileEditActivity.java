@@ -1,8 +1,6 @@
 package com.ivy.ui.profile.edit.view;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -13,14 +11,14 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.NearByRetailerDialog;
-import com.ivy.sd.png.view.ProfileContainerFragment;
-import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.ui.profile.view.ProfileBaseFragment;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -63,13 +61,10 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
                     .subscribeOn(appSchedulerProvider.io())
                     .observeOn(appSchedulerProvider.ui())
                     .subscribeWith(arrayListObserver()));
-        }else{
-            Fragment fragment = new ProfileEditFragmentNew();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_frame, fragment, fragment.getClass().getSimpleName())
-                    .addToBackStack(null)
-                    .commit();
-        }
+        }else
+            openProfileEditScreen();
+
+
 
     }
 
@@ -78,15 +73,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
             @Override
             public void onNext(ArrayList<RetailerContactBo> contactList) {
                 bmodel.newOutletHelper.setRetailerContactList(contactList);
-                Fragment fragment = new ProfileBaseFragment();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("isEdit",true);
-                bundle.putString("retailerId", bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
-                fragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_frame, fragment, fragment.getClass().getSimpleName())
-                        .addToBackStack(null)
-                        .commit();
+                openProfileEditScreen();
             }
 
             @Override
@@ -98,6 +85,18 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
             public void onComplete() {
             }
         };
+    }
+
+    private void openProfileEditScreen(){
+        Fragment fragment = new ProfileBaseFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isEdit",true);
+        bundle.putString("retailerId", bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
+        fragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_frame, fragment, fragment.getClass().getSimpleName())
+                .addToBackStack(null)
+                .commit();
     }
 
 
