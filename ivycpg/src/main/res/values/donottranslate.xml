@@ -402,4 +402,5 @@
     <string name="profile_view">Profile View</string>
     <string name="do_u_want_close">Do you want to Close?</string>
     <string name="exposition_status">Exposition Status</string>
+    <string name="not_applicable">Not Applicable</string>
 </resources>

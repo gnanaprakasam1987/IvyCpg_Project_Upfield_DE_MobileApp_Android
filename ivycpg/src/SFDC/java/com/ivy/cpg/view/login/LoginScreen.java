@@ -134,6 +134,8 @@ public class LoginScreen extends LoginBaseActivity {
             instServer = SalesforceSDKManager.decryptWithPasscode(mgr.getUserData(account[0], AuthenticatorService.KEY_INSTANCE_URL), passcodeHash);
             userId = SalesforceSDKManager.decryptWithPasscode(mgr.getUserData(account[0], AuthenticatorService.KEY_USER_ID), passcodeHash);
             username = SalesforceSDKManager.decryptWithPasscode(mgr.getUserData(account[0], AuthenticatorService.KEY_USERNAME), passcodeHash);
+            bmodel.getAppDataProvider().setUserName(username);
+            bmodel.getAppDataProvider().setUserPassword(bmodel.passwordTemp);
             bmodel.userNameTemp = username;
             String encClientSecret = mgr.getUserData(account[0], AuthenticatorService.KEY_CLIENT_SECRET);
             clientSecret = null;

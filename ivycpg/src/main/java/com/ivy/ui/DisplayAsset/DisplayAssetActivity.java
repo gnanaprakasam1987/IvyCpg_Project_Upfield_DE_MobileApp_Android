@@ -45,8 +45,8 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
     AppCompatRadioButton expoStatusNo;
     AppCompatRadioButton expoStatusNone;
     private final String yesStatus="YES";
-    private final String noStatus="NO";
-    private final String noneStatus="NONE";
+    private final String noStatus="N0";
+    private final String noneStatus="NOT APPLICABLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
