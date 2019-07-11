@@ -2,8 +2,6 @@ package com.ivy.ui.DisplayAsset;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,8 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.AppCompatRadioButton;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.asean.view.R;
@@ -30,24 +33,31 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
     private ExpandableListView expandableListView;
     private DisplayAssetHelper displayAssetHelper;
     private Toolbar toolbar;
-    private TextView label_company_name,textview_company_count,textview_other_count;
+    private TextView label_company_name, textview_company_count, textview_other_count;
     private LinearLayout layout_status;
     private TextView textView_status;
     DisplayAssetPresenterImpl presenter;
     BusinessModel businessModel;
     Button button_save;
-    int lastExpandedGroup=-1;
+    int lastExpandedGroup = -1;
+    private String expositionStatus = "";
+    AppCompatRadioButton expoStatusYes;
+    AppCompatRadioButton expoStatusNo;
+    AppCompatRadioButton expoStatusNone;
+    private final String yesStatus="YES";
+    private final String noStatus="NO";
+    private final String noneStatus="NONE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_asset);
 
-        businessModel=(BusinessModel)getApplicationContext();
+        businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
-        String menuName="";
-        if(getIntent().getExtras()!=null)
-            menuName=getIntent().getExtras().getString("menuName");
+        String menuName = "";
+        if (getIntent().getExtras() != null)
+            menuName = getIntent().getExtras().getString("menuName");
 
         toolbar = findViewById(R.id.toolbar);
 
@@ -58,11 +68,14 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
         layout_status = findViewById(R.id.layout_status);
         textView_status = findViewById(R.id.textview_status);
         button_save = findViewById(R.id.btn_save);
+        expoStatusYes = findViewById(R.id.expo_status_yes);
+        expoStatusNo = findViewById(R.id.expo_status_no);
+        expoStatusNone = findViewById(R.id.expo_status_none);
 
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
-            if(getSupportActionBar()!=null) {
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayShowTitleEnabled(false);
                 setScreenTitle(menuName);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -70,15 +83,16 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
             }
         }
 
-        displayAssetHelper=DisplayAssetHelper.getInstance(this);
-        presenter=new DisplayAssetPresenterImpl(displayAssetHelper);
+        displayAssetHelper = DisplayAssetHelper.getInstance(this);
+        presenter = new DisplayAssetPresenterImpl(displayAssetHelper);
         presenter.setView(this);
 
-        expandableListView=findViewById(R.id.listview_assets);
+        expandableListView = findViewById(R.id.listview_assets);
         expandableListView.setAdapter(new MyAdapter(displayAssetHelper.getDisplayAssetList()));
         presenter.refreshStatus();
-        int size=displayAssetHelper.getDisplayAssetList().size();
-        if(size>0){
+        expositionStatus = presenter.getLastExposStatus(this);
+        int size = displayAssetHelper.getDisplayAssetList().size();
+        if (size > 0) {
             expandableListView.expandGroup(0);
         }
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
@@ -91,17 +105,47 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
                 lastExpandedGroup = groupPosition;
             }
         });
+        if (!expositionStatus.isEmpty())
+            updateExpositionStatusInEditMode();
 
+        ((RadioGroup) findViewById(R.id.rg_expo_status)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                switch (checkedId) {
+                    case R.id.expo_status_yes:
+                        expoStatusNo.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.plano_yes_grey));
+                        expoStatusNone.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.plano_yes_grey));
+
+                        expoStatusYes.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.green_productivity));
+                        expositionStatus = yesStatus;
+                        break;
+                    case R.id.expo_status_no:
+                        expoStatusYes.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.plano_yes_grey));
+                        expoStatusNone.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.plano_yes_grey));
+
+                        expoStatusNo.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.plano_no_red));
+                        expositionStatus = noStatus;
+                        break;
+                    case R.id.expo_status_none:
+                        expoStatusYes.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.plano_yes_grey));
+                        expoStatusNo.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.plano_yes_grey));
+
+                        expoStatusNone.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.dark_red));
+                        expositionStatus = noneStatus;
+                        break;
+                }
+            }
+        });
         button_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(presenter.saveDisplayAssets(DisplayAssetActivity.this)){
-                    Toast.makeText(DisplayAssetActivity.this,getResources().getString(R.string.saved_successfully),Toast.LENGTH_LONG).show();
+                if (presenter.saveDisplayAssets(DisplayAssetActivity.this, expositionStatus)) {
+                    Toast.makeText(DisplayAssetActivity.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
 
-                }
-                else {
-                    Toast.makeText(DisplayAssetActivity.this,getResources().getString(R.string.error_in_saving),Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(DisplayAssetActivity.this, getResources().getString(R.string.error_in_saving), Toast.LENGTH_LONG).show();
                 }
                 startActivity(new Intent(DisplayAssetActivity.this,
                         HomeScreenTwo.class));
@@ -111,14 +155,32 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
         });
     }
 
+
+    private void updateExpositionStatusInEditMode() {
+        switch (expositionStatus) {
+            case yesStatus:
+                expoStatusYes.setChecked(true);
+                expoStatusYes.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.green_productivity));
+                break;
+            case noStatus:
+                expoStatusNo.setChecked(true);
+                expoStatusNo.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.plano_no_red));
+                break;
+            case noneStatus:
+                expoStatusNone.setChecked(true);
+                expoStatusNone.setTextColor(ContextCompat.getColor(DisplayAssetActivity.this, R.color.dark_red));
+                break;
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
 
-            Intent intent = new Intent(this,HomeScreenTwo.class);
-            if (getIntent().getBooleanExtra("PreVisit",false))
-                intent.putExtra("PreVisit",true);
+            Intent intent = new Intent(this, HomeScreenTwo.class);
+            if (getIntent().getBooleanExtra("PreVisit", false))
+                intent.putExtra("PreVisit", true);
 
             startActivity(intent);
             finish();
@@ -132,13 +194,14 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
 
         ArrayList<AssetTrackingBO> assetList;
 
-        public MyAdapter(ArrayList<AssetTrackingBO> assetList){
-            this.assetList=assetList;
+        public MyAdapter(ArrayList<AssetTrackingBO> assetList) {
+            this.assetList = assetList;
         }
+
         @Override
         public Object getChild(int arg0, int arg1) {
 
-            ArrayList<CompanyBO> companyList=assetList.get(arg0).getCompanyList();
+            ArrayList<CompanyBO> companyList = assetList.get(arg0).getCompanyList();
 
             return companyList.get(arg1);
         }
@@ -170,14 +233,13 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
                     @Override
                     public void onClick(View view) {
 
-                        int value=Integer.parseInt(holder.editText_quantity.getText().toString());
-                        if(value>0){
-                            value-=1;
-                        }
-                        else
-                            value=0;
+                        int value = Integer.parseInt(holder.editText_quantity.getText().toString());
+                        if (value > 0) {
+                            value -= 1;
+                        } else
+                            value = 0;
 
-                        CompanyBO companyBO=(CompanyBO)getChild(groupPosition,childPosition);
+                        CompanyBO companyBO = (CompanyBO) getChild(groupPosition, childPosition);
                         companyBO.setQuantity(value);
 
                         holder.editText_quantity.setText(String.valueOf(value));
@@ -188,13 +250,13 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
                 holder.imageView_plus.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        int value=Integer.parseInt(holder.editText_quantity.getText().toString());
-                        value+=1;
-                        if(value<0){
-                            value=0;
+                        int value = Integer.parseInt(holder.editText_quantity.getText().toString());
+                        value += 1;
+                        if (value < 0) {
+                            value = 0;
                         }
 
-                        CompanyBO companyBO=(CompanyBO)getChild(groupPosition,childPosition);
+                        CompanyBO companyBO = (CompanyBO) getChild(groupPosition, childPosition);
                         companyBO.setQuantity(value);
 
                         holder.editText_quantity.setText(String.valueOf(value));
@@ -236,7 +298,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
                 holder = (ViewHolder) row.getTag();
             }
 
-            CompanyBO companyBO=(CompanyBO)getChild(groupPosition,childPosition);
+            CompanyBO companyBO = (CompanyBO) getChild(groupPosition, childPosition);
             holder.textView_companyName.setText(companyBO.getCompetitorName());
             holder.editText_quantity.setText(String.valueOf(companyBO.getQuantity()));
 
@@ -280,8 +342,6 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
                 holder.textView_assetName = row.findViewById(R.id.texview_asset_name);
 
 
-
-
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -305,7 +365,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
     }
 
     class ViewHolder {
-        TextView textView_assetName,textView_companyName;
+        TextView textView_assetName, textView_companyName;
         Button imageView_minus;
         Button imageView_plus;
         EditText editText_quantity;
@@ -313,28 +373,25 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
-    public void updateStatus(String companyName,double ownCompanyWeightage,double otherCompanyMaxWeightage,int flag) {
+    public void updateStatus(String companyName, double ownCompanyWeightage, double otherCompanyMaxWeightage, int flag) {
 
-        if(!companyName.equals(""))
-        label_company_name.setText(companyName);
+        if (!companyName.equals(""))
+            label_company_name.setText(companyName);
         else label_company_name.setText("Own");
         textview_company_count.setText(String.valueOf(ownCompanyWeightage));
         textview_other_count.setText(String.valueOf(otherCompanyMaxWeightage));
 
         layout_status.setVisibility(View.VISIBLE);
-        if(flag==1){
+        if (flag == 1) {
             layout_status.setBackground(getResources().getDrawable(R.color.green_productivity));
             textView_status.setText(getResources().getString(R.string.advantage));
-        }
-        else if(flag==2){
+        } else if (flag == 2) {
             layout_status.setBackground(getResources().getDrawable(R.color.colorPrimaryOrange));
             textView_status.setText(getResources().getString(R.string.equal));
-        }
-        else if(flag==3) {
+        } else if (flag == 3) {
             layout_status.setBackground(getResources().getDrawable(R.color.colorPrimaryRed));
             textView_status.setText(getResources().getString(R.string.dis_advantage));
-        }
-        else {
+        } else {
             layout_status.setVisibility(View.GONE);
         }
 
@@ -344,10 +401,10 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            expandableListView.setIndicatorBounds(expandableListView.getRight()-100, expandableListView.getWidth());
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            expandableListView.setIndicatorBounds(expandableListView.getRight() - 100, expandableListView.getWidth());
         } else {
-            expandableListView.setIndicatorBoundsRelative(expandableListView.getRight()-100, expandableListView.getWidth());
+            expandableListView.setIndicatorBoundsRelative(expandableListView.getRight() - 100, expandableListView.getWidth());
         }
 
     }
