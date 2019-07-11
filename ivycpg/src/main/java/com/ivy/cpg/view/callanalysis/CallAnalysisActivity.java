@@ -1853,65 +1853,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     return true;
 
 
-                case DataMembers.NOTIFY_SIH_UPLOADED:
+                case DataMembers.NOTIFY_UPLOADED_CONTINUE:
                     dismissProgressDialog();
                     presenter.upload();
-                    return true;
-
-                case DataMembers.NOTIFY_SIH_UPLOAD_ERROR:
-                    Commons.print("SIH ," + "Error");
-                    dismissProgressDialog();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
-                    return true;
-
-                case DataMembers.NOTIFY_STOCKAPLY_UPLOADED:
-                    dismissProgressDialog();
-                    presenter.upload();
-                    return true;
-                case DataMembers.NOTIFY_STOCKAPLY_UPLOAD_ERROR:
-                    Commons.print("Stock Apply Upload," + "Error");
-                    dismissProgressDialog();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
-                    return true;
-
-                case DataMembers.NOTIFY_LP_UPLOADED:
-                    dismissProgressDialog();
-                    presenter.upload();
-                    return true;
-
-                case DataMembers.NOTIFY_LP_UPLOAD_ERROR:
-                    dismissProgressDialog();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
-                    return true;
-
-                case DataMembers.NOTIFY_PICKLIST_UPLOADED:
-                    dismissProgressDialog();
-                    presenter.upload();
-                    return true;
-
-                case DataMembers.NOTIFY_PICKLIST_UPLOAD_ERROR:
-                    dismissProgressDialog();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
-                    return true;
-
-                case DataMembers.NOTIFY_TRIP_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    return true;
-
-                case DataMembers.NOTIFY_TRIP_UPLOAD_ERROR:
-                    alertDialog.dismiss();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
                     return true;
 
                 case DataMembers.NOTIFY_UPLOADED:

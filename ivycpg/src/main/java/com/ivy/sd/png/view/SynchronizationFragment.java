@@ -126,8 +126,6 @@ public class SynchronizationFragment extends IvyBaseFragment
     private SharedPreferences mLastSyncSharedPref;
 
 
-
-
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
 
@@ -144,7 +142,7 @@ public class SynchronizationFragment extends IvyBaseFragment
     private boolean isClicked = false;
 
     private SyncronizationReceiver mSyncReceiver;
-    private UploadPresenterImpl presenter;
+    private UploadPresenterImpl uploadPresenter;
     private LastSyncTimeHelper lastSyncTimeHelper;
 
     private boolean isValidUser = false;
@@ -152,6 +150,10 @@ public class SynchronizationFragment extends IvyBaseFragment
     private boolean aws = BuildConfig.FLAVOR.equalsIgnoreCase("aws");
 
     private Context context;
+
+    private enum ALERT{
+        DAY_CLOSE,WITH_IMAGE_UPLOAD
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -163,7 +165,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         lastSyncTimeHelper = new LastSyncTimeHelper(getContext());
         VanUnLoadModuleHelper mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(getActivity());
         UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
-        presenter = new UploadPresenterImpl(context, bmodel, this, mUploadHelper, mVanUnloadHelper);
+        uploadPresenter = new UploadPresenterImpl(context, bmodel, this, mUploadHelper, mVanUnloadHelper);
     }
 
     @Override
@@ -197,12 +199,6 @@ public class SynchronizationFragment extends IvyBaseFragment
         setScreenTitle(getResources().getString(R.string.sync));
         return view;
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
 
     private void initializeItem() {
 
@@ -248,20 +244,21 @@ public class SynchronizationFragment extends IvyBaseFragment
             if (dbImageCount >= bmodel.configurationMasterHelper.photocount) {
 
                 withPhotosCheckBox.setChecked(true);
-                presenter.updateIsWithImageStatus(true);
+                uploadPresenter.updateIsWithImageStatus(true);
             }
 
         }
 
         if (!bmodel.configurationMasterHelper.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL)
             bmodel.userMasterHelper.downloadJoinCallusers();
+
         withPhotosCheckBox
                 .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView,
                                                  boolean isChecked) {
-                        int dbImageCount = presenter.getImageFilesCount();
+                        int dbImageCount = uploadPresenter.getImageFilesCount();
                         if (!isChecked) {
 
                             if (dbImageCount >= bmodel.configurationMasterHelper.photocount) {
@@ -271,13 +268,13 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                         R.string.its_not_possible_to_upload_without_img),
                                         0);
                                 withPhotosCheckBox.setChecked(true);
-                                presenter.updateIsWithImageStatus(true);
+                                uploadPresenter.updateIsWithImageStatus(true);
                             } else {
-                                presenter.updateIsWithImageStatus(false);
+                                uploadPresenter.updateIsWithImageStatus(false);
                             }
 
                         } else {
-                            presenter.updateIsWithImageStatus(true);
+                            uploadPresenter.updateIsWithImageStatus(true);
 
                         }
                         syncStatus(1);
@@ -302,14 +299,13 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                  boolean isChecked) {
                         if (isChecked) {
 
-                            boolean proceedDayClose=LoadManagementHelper.getInstance(context.getApplicationContext()).validateDayClose(context,true,presenter,dayCloseCheckBox);
+                            boolean proceedDayClose = LoadManagementHelper.getInstance(context.getApplicationContext()).validateDayClose(context, true, uploadPresenter, dayCloseCheckBox);
 
-                            if(proceedDayClose) {
-                                presenter.updateDayCloseStatus(true);
-                            }
-                            else {
+                            if (proceedDayClose) {
+                                uploadPresenter.updateDayCloseStatus(true);
+                            } else {
                                 dayCloseCheckBox.setChecked(false);
-                                presenter.updateDayCloseStatus(false);
+                                uploadPresenter.updateDayCloseStatus(false);
                             }
 
 
@@ -340,27 +336,27 @@ public class SynchronizationFragment extends IvyBaseFragment
                     getActivity().finish();
                 }
 
-                if (presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
-
+                if (uploadPresenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
 
                     if (bmodel.getAppDataProvider().getPausedRetailer() == null) {
 
-                        isValidUser = !aws || presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString());
+                        // Below two lines commented by Abbas, bec it's not adding any value.
+                        //isValidUser = !aws || presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString());
+                        //if (isValidUser)
 
-                        if (isValidUser)
-                            if (dayCloseCheckBox.isChecked()) {
-                                showAlertOkCancel(
-                                        getResources()
-                                                .getString(
-                                                        R.string.do_u_want_to_close_the_day),
-                                        0);
+                        if (dayCloseCheckBox.isChecked()) {
+                            showAlertOkCancel(
+                                    getResources()
+                                            .getString(
+                                                    R.string.do_u_want_to_close_the_day),
+                                    ALERT.DAY_CLOSE);
 
-                            } else {
-                                presenter.validateAndUpload(false);
+                        } else {
+                            uploadPresenter.validateAndUpload(false);
+                        }
 
-                            }
                     } else {
-                        Toast.makeText(getActivity(), R.string.visit_paused_msg, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), R.string.close_paused_visit_to_sync, Toast.LENGTH_LONG).show();
                     }
                 } else {
                     bmodel.showAlert(
@@ -396,7 +392,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     return;
                 }
                 if (NetworkUtils.isNetworkConnected(getActivity())) {
-                    if (bmodel.synchronizationHelper.checkDataForSync()) {
+                    if (uploadPresenter.checkDataForSync()) {
 
                         try {
                             if (bmodel.labelsMasterHelper
@@ -599,7 +595,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         int background_color = type_arr.getColor(R.styleable.MyTextView_accentcolor, 0);
         if (!aws || txtPassword.getText().toString().length() > 0) {
             if (btn_count == 1) {
-                if ((bmodel.synchronizationHelper.checkDataForSync() || withPhotosCheckBox.isChecked() || dayCloseCheckBox.isChecked()
+                if ((uploadPresenter.checkDataForSync() || withPhotosCheckBox.isChecked() || dayCloseCheckBox.isChecked()
                         && (bmodel.synchronizationHelper
                         .countImageFiles() > 0)) || (dayCloseCheckBox.isChecked())) {
                     sync.setBackgroundResource(R.drawable.round_light);
@@ -649,10 +645,10 @@ public class SynchronizationFragment extends IvyBaseFragment
         bmodel.setContext(getActivity());
 
         // If trip enabled, then day close will be considered if trip is closed in load management screen.
-        if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP){
+        if (bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
             // Day close checkbox is not needed if this config enabled.
-            if(LoadManagementHelper.getInstance(context.getApplicationContext()).isTripEnded(context))
-              presenter.updateDayCloseStatus(true);
+            if (LoadManagementHelper.getInstance(context.getApplicationContext()).isTripEnded(context))
+                uploadPresenter.updateDayCloseStatus(true);
         }
 
         setDayCloseEnableDisable();
@@ -737,7 +733,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         if (!bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
             menu.findItem(R.id.menu_catalog_img).setVisible(false);
 
-        if (bmodel.synchronizationHelper.isDayClosed() && !bmodel.synchronizationHelper.checkDataForSync())
+        if (bmodel.synchronizationHelper.isDayClosed() && !uploadPresenter.checkDataForSync())
             menu.findItem(R.id.menu_switch_user).setVisible(true);
         else
             menu.findItem(R.id.menu_switch_user).setVisible(false);
@@ -748,29 +744,29 @@ public class SynchronizationFragment extends IvyBaseFragment
         if (bmodel.getDigitalContentLargeFileURLS().size() > 0) {
             ArrayList<DigitalContentModel> digitalContentSavedList = FileDownloadProvider.getInstance(getContext()).getDigitalContentList();
             boolean isShowDownloadMenu = false;
-            if (digitalContentSavedList != null && digitalContentSavedList.size() > 0){
+            if (digitalContentSavedList != null && digitalContentSavedList.size() > 0) {
                 int incrementList = 0;
-                for (DigitalContentModel digitalContentModel : digitalContentSavedList){
+                for (DigitalContentModel digitalContentModel : digitalContentSavedList) {
                     if (bmodel.getDigitalContenLargeFileModel(digitalContentModel.getImageID()) == null) {
                         FileDownloadProvider.getInstance(getContext()).removeDigitalContentModel(digitalContentModel.getImageID());
-                    }else if (digitalContentModel.getStatus() != null
-                            && digitalContentModel.getStatus().equals(FileDownloadProvider.STATUS_ERROR)){
+                    } else if (digitalContentModel.getStatus() != null
+                            && digitalContentModel.getStatus().equals(FileDownloadProvider.STATUS_ERROR)) {
                         menu.findItem(R.id.menu_file_download).setIcon(R.drawable.ic_action_file_download_error);
                         isShowDownloadMenu = true;
                         break;
-                    }else if (digitalContentModel.getStatus() != null
-                            && digitalContentModel.getStatus().equals(FileDownloadProvider.DONE)){
-                        if (incrementList == digitalContentSavedList.size() - 1){
+                    } else if (digitalContentModel.getStatus() != null
+                            && digitalContentModel.getStatus().equals(FileDownloadProvider.DONE)) {
+                        if (incrementList == digitalContentSavedList.size() - 1) {
                             isShowDownloadMenu = false;
                         }
                         incrementList = incrementList + 1;
-                    }else
+                    } else
                         isShowDownloadMenu = true;
                 }
             }
             if (isShowDownloadMenu)
                 menu.findItem(R.id.menu_file_download).setVisible(true);
-        }else
+        } else
             menu.findItem(R.id.menu_file_download).setVisible(false);
 
         menu.findItem(R.id.menu_download_upload_report).setVisible(bmodel.configurationMasterHelper.SHOW_SYNC_EXPORT_TXT);
@@ -805,10 +801,9 @@ public class SynchronizationFragment extends IvyBaseFragment
             dialog.show(ft, "MENU_SYNC");
 
         } else if (i == R.id.menu_sync_report) {
-                startActivity(new Intent(getActivity(), UploadStatusActivity.class));
-                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        }
-        else if (i == R.id.menu_file_download){
+            startActivity(new Intent(getActivity(), UploadStatusActivity.class));
+            getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        } else if (i == R.id.menu_file_download) {
             startActivity(new Intent(getActivity(), LargeFileDownloadActivity.class));
         } else if (i == R.id.menu_download_upload_report) {
             startActivity(new Intent(getActivity(), SyncReportActivity.class));
@@ -880,7 +875,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         //getActivity().finish();
                         /*BusinessModel.loadActivity(getActivity(),
                                 DataMembers.actHomeScreen);*/
-                       // moveToHomeScreenActivity();
+                        // moveToHomeScreenActivity();
                         if (bmodel.synchronizationHelper.checkDataForSyncLogUpload())
                             new UploadSyncLog().execute();
                         else {
@@ -909,80 +904,14 @@ public class SynchronizationFragment extends IvyBaseFragment
                     getActivity().finish();
                     break;
 
-                case DataMembers.NOTIFY_SIH_UPLOADED:
+                case DataMembers.NOTIFY_UPLOADED_CONTINUE:
                     alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-                case DataMembers.NOTIFY_SIH_UPLOAD_ERROR:
-                    Commons.print("SIH ," + "Error");
-                    alertDialog.dismiss();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
-                    break;
-
-                case DataMembers.NOTIFY_ORDER_DELIVERY_STATUS_UPLOADED: // Delivered order realtime sync
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-
-                case DataMembers.NOTIFY_ORDER_DELIVERY_STATUS_UPLOAD_ERROR:
-                    Commons.print("OrderDeliveryStatus ," + "Error");
-                    alertDialog.dismiss();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
-                    break;
-
-                case DataMembers.NOTIFY_STOCKAPLY_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-                case DataMembers.NOTIFY_STOCKAPLY_UPLOAD_ERROR:
-                    Commons.print("Stock Apply Upload," + "Error");
-                    alertDialog.dismiss();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
-                    break;
-                case DataMembers.NOTIFY_LP_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-                case DataMembers.NOTIFY_LP_UPLOAD_ERROR:
-                    alertDialog.dismiss();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
-                    break;
-                case DataMembers.NOTIFY_PICKLIST_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-
-
-                case DataMembers.NOTIFY_PICKLIST_UPLOAD_ERROR:
-                    alertDialog.dismiss();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
-                    break;
-
-                case DataMembers.NOTIFY_TRIP_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-
-                case DataMembers.NOTIFY_TRIP_UPLOAD_ERROR:
-                    alertDialog.dismiss();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
+                    uploadPresenter.upload();
                     break;
 
                 case DataMembers.NOTIFY_UPLOADED:
                     if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES)
-                            && (presenter.getImageFilesCount() > 0 || presenter.getTextFilesCount() > 0)) {
+                            && (uploadPresenter.getImageFilesCount() > 0 || uploadPresenter.getTextFilesCount() > 0)) {
                         String s1 = tvwstatus.getText()
                                 + DataMembers.CR1
                                 + getResources().getString(
@@ -992,7 +921,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         setMessageInProgressDialog(builder, getResources().getString(
                                 R.string.image_uploading));
                         alertDialog.show();
-                        presenter.uploadImages();
+                        uploadPresenter.uploadImages();
 
                         lastSyncTimeHelper.updateUploadedTime();
                         updateLastTransactionTimeInView();
@@ -1024,7 +953,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                 case DataMembers.NOTIFY_UPLOADED_IMAGE:
                     withPhotosCheckBox.setChecked(false);
                     if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT)
-                        presenter.loadRetailerSelectionScreen();
+                        uploadPresenter.loadRetailerSelectionScreen();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.images_sucessfully_uploaded), 0);
@@ -1095,6 +1024,10 @@ public class SynchronizationFragment extends IvyBaseFragment
                     break;
 
                 default:
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
                     break;
             }
         }
@@ -1104,7 +1037,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         switch (requestCode) {
             case 0:
                 if (resultCode == Activity.RESULT_OK) {
-                    presenter.upload();
+                    uploadPresenter.upload();
 
                 }
                 break;
@@ -1112,12 +1045,12 @@ public class SynchronizationFragment extends IvyBaseFragment
             case 1:
                 if (resultCode == Activity.RESULT_OK) {
                     Bundle returnValue = data.getExtras();
-                    presenter.setIsVisitedRetailerList(returnValue.getParcelableArrayList("VisitedList"));
-                    presenter.prepareSelectedRetailerIds();
-                    if (presenter.getVisitedRetailerId() != null
-                            && presenter.getVisitedRetailerId().toString().length() > 0) {
+                    uploadPresenter.setIsVisitedRetailerList(returnValue.getParcelableArrayList("VisitedList"));
+                    uploadPresenter.prepareSelectedRetailerIds();
+                    if (uploadPresenter.getVisitedRetailerId() != null
+                            && uploadPresenter.getVisitedRetailerId().toString().length() > 0) {
                         isClicked = false;
-                        presenter.upload();
+                        uploadPresenter.upload();
                     } else {
                         bmodel.showAlert(
                                 getResources()
@@ -1163,8 +1096,8 @@ public class SynchronizationFragment extends IvyBaseFragment
         bmodel.applyAlertDialogTheme(builder);
     }
 
-    public void showAlertOkCancel(String msg, int id) {
-        final int idd = id;
+    public void showAlertOkCancel(String msg, ALERT id) {
+        final ALERT idd = id;
         AlertDialog.Builder builder = new AlertDialog.Builder(
                 getActivity());
         builder.setCancelable(false);
@@ -1173,13 +1106,13 @@ public class SynchronizationFragment extends IvyBaseFragment
                 new android.content.DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
-                        if (idd == 0) {
-                            presenter.validateAndUpload(true);
-                        } else if (idd == 3) {
+                        if (idd == ALERT.DAY_CLOSE) {
+                            uploadPresenter.validateAndUpload(true);
+                        } else if (idd == ALERT.WITH_IMAGE_UPLOAD) {
                             isClicked = false;
                             withPhotosCheckBox.setChecked(true);
-                            presenter.updateIsWithImageStatus(true);
-                            presenter.upload();
+                            uploadPresenter.updateIsWithImageStatus(true);
+                            uploadPresenter.upload();
                         }
                     }
 
@@ -1188,8 +1121,8 @@ public class SynchronizationFragment extends IvyBaseFragment
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         isClicked = false;
-                        if (idd == 3) {
-                            presenter.upload();
+                        if (idd == ALERT.WITH_IMAGE_UPLOAD) {
+                            uploadPresenter.upload();
                         }
                     }
                 });
@@ -1357,9 +1290,9 @@ public class SynchronizationFragment extends IvyBaseFragment
                         if (bmodel.configurationMasterHelper.IS_AZURE_CLOUD_STORAGE) {
                             AzureConnectionHelper.getInstance().setAzureCredentials(getActivity());
                             try {
-                                downloaderThread = new DownloaderThreadNew(getActivity(),activityHandler,bmodel.getDigitalContentURLS(),
+                                downloaderThread = new DownloaderThreadNew(getActivity(), activityHandler, bmodel.getDigitalContentURLS(),
                                         bmodel.userMasterHelper.getUserMasterBO().getUserid(),
-                                        AzureConnectionHelper.getInstance().initializeAzureStorageConnection(),bmodel.getDigitalContentSFDCURLS());
+                                        AzureConnectionHelper.getInstance().initializeAzureStorageConnection(), bmodel.getDigitalContentSFDCURLS());
                             } catch (Exception e) {
                                 Commons.printException(e);
                                 bmodel.showAlert(context.getString(R.string.error_message_general), 0);
@@ -1371,7 +1304,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                             downloaderThread = new DownloaderThreadNew(getActivity(),
                                     activityHandler, bmodel.getDigitalContentURLS(),
                                     bmodel.userMasterHelper.getUserMasterBO()
-                                            .getUserid(), transferUtility,bmodel.getDigitalContentSFDCURLS());
+                                            .getUserid(), transferUtility, bmodel.getDigitalContentSFDCURLS());
 
                         }
                         downloaderThread.start();
@@ -2230,9 +2163,9 @@ public class SynchronizationFragment extends IvyBaseFragment
                 if (bmodel.configurationMasterHelper.IS_AZURE_CLOUD_STORAGE) {
                     AzureConnectionHelper.getInstance().setAzureCredentials(getActivity());
                     try {
-                        downloaderThread = new DownloaderThreadNew(getActivity(),activityHandler,bmodel.getDigitalContentURLS(),
+                        downloaderThread = new DownloaderThreadNew(getActivity(), activityHandler, bmodel.getDigitalContentURLS(),
                                 bmodel.userMasterHelper.getUserMasterBO().getUserid(),
-                                AzureConnectionHelper.getInstance().initializeAzureStorageConnection(),bmodel.getDigitalContentSFDCURLS());
+                                AzureConnectionHelper.getInstance().initializeAzureStorageConnection(), bmodel.getDigitalContentSFDCURLS());
                     } catch (Exception e) {
                         Commons.printException(e);
                         bmodel.showAlert(context.getString(R.string.error_message_general), 0);
@@ -2244,7 +2177,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     downloaderThread = new DownloaderThreadNew(getActivity(),
                             activityHandler, bmodel.getDigitalContentURLS(),
                             bmodel.userMasterHelper.getUserMasterBO()
-                                    .getUserid(), transferUtility,bmodel.getDigitalContentSFDCURLS());
+                                    .getUserid(), transferUtility, bmodel.getDigitalContentSFDCURLS());
 
                 }
                 downloaderThread.start();
@@ -2555,11 +2488,11 @@ public class SynchronizationFragment extends IvyBaseFragment
 //        intent.putExtras(bun);
 //        startActivityForResult(intent, 1);
 
-        presenter.prepareSelectedRetailerIds();
-        if (presenter.getVisitedRetailerId() != null
-                && presenter.getVisitedRetailerId().toString().length() > 0) {
+        uploadPresenter.prepareSelectedRetailerIds();
+        if (uploadPresenter.getVisitedRetailerId() != null
+                && uploadPresenter.getVisitedRetailerId().toString().length() > 0) {
             isClicked = false;
-            presenter.upload();
+            uploadPresenter.upload();
         } else {
             bmodel.showAlert(
                     getResources()
@@ -2575,7 +2508,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                 getResources()
                         .getString(
                                 R.string.image_upload_recommended),
-                3);
+                ALERT.WITH_IMAGE_UPLOAD);
     }
 
     @Override
@@ -2637,11 +2570,11 @@ public class SynchronizationFragment extends IvyBaseFragment
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-                builder = new AlertDialog.Builder(getActivity());
+            builder = new AlertDialog.Builder(getActivity());
 
-                customProgressDialog(builder, "Uploading Sync Log Details");
-                alertDialog = builder.create();
-                alertDialog.show();
+            customProgressDialog(builder, "Uploading Sync Log Details");
+            alertDialog = builder.create();
+            alertDialog.show();
         }
 
         @Override

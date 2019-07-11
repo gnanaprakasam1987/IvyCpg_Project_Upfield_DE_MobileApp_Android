@@ -122,28 +122,45 @@ public class DataMembers {
     public static String uidSOD = "";
     public static String backDate = "";
     public static final int LOCAL_LOGIN = 1;
-    public static final int SYNCUPLOAD = 5;
-    public static final int SYNCUPLOADRETAILERWISE = 217;
+
     public static final int UPLOAD_FILE_IN_AMAZON = 5959;
     public static final int NOTIFY_FILE_UPLOADED__COMPLETED_IN_AMAZON = 595959;
     public static final int NOTIFY_FILE_UPLOADED_FAILED_IN_AMAZON = 696969;
+
+
+    public static final int SYNCUPLOAD = 5;
     public static final int SYNCSIHUPLOAD = -30;
-    public static final int NOTIFY_SIH_UPLOADED = -31;
-    public static final int NOTIFY_SIH_UPLOAD_ERROR = -32;
-
+    public static final int SYNCUPLOADRETAILERWISE = 217;
     public static final int SYNCSTKAPPLYUPLOAD = -33;
-    public static final int NOTIFY_STOCKAPLY_UPLOADED = -34;
-    public static final int NOTIFY_STOCKAPLY_UPLOAD_ERROR = -35;
-
-    public static final int NOTIFY_LP_UPLOADED = -38;
-    public static final int NOTIFY_LP_UPLOAD_ERROR = -39;
     public static final int SYNCLYTYPTUPLOAD = -40;
-
     public static final int SYNC_REALLOC_UPLOAD = -36;
-    public static final int SYNC_EXPORT = 218;
+    public static final int SYNCPICKLISTUPLOAD = -50;
+    public static final int SYNC_TRIP = -80;
+    public static final int SYNC_ORDER_DELIVERY_STATUS_UPLOAD = -47;
+
     public static final int AMAZONIMAGE_UPLOAD = 501;
-    //public static final int SYNCUPLOAD_IMAGE = 5555;
     public static final int AZURE_IMAGE_UPLOAD = 999;
+
+    public static final int NOTIFY_UPLOADED_CONTINUE = -310;
+
+
+    //Pick List
+    //public static final int NOTIFY_PICKLIST_UPLOADED = -51;
+    //public static final int NOTIFY_PICKLIST_UPLOAD_ERROR = -52;
+
+    //public static final int NOTIFY_TRIP_UPLOADED = -81;
+    //public static final int NOTIFY_TRIP_UPLOAD_ERROR = -82;
+
+    //public static final int NOTIFY_SIH_UPLOADED = -31;
+    //public static final int NOTIFY_SIH_UPLOAD_ERROR = -32;
+
+    //public static final int NOTIFY_STOCKAPLY_UPLOADED = -34;
+    //public static final int NOTIFY_STOCKAPLY_UPLOAD_ERROR = -35;
+
+    //public static final int NOTIFY_LP_UPLOADED = -38;
+    //public static final int NOTIFY_LP_UPLOAD_ERROR = -39;
+
+    //public static final int SYNCUPLOAD_IMAGE = 5555;
     public static final int NOTIFY_UPLOADED_IMAGE = 55551;
     public static final int NOTIFY_UPLOAD_ERROR_IMAGE = 55552;
     public static final int SAVECOLLECTION = 66;
@@ -187,18 +204,10 @@ public class DataMembers {
     public static final int DIST_DELETE_STOCK_ORDER = 1012;
 
     // Delivery order for realtime sync
-    public static final int SYNC_ORDER_DELIVERY_STATUS_UPLOAD = -47;
-    public static final int NOTIFY_ORDER_DELIVERY_STATUS_UPLOADED = -48;
-    public static final int NOTIFY_ORDER_DELIVERY_STATUS_UPLOAD_ERROR = -49;
 
-    //Pick List
-    public static final int SYNCPICKLISTUPLOAD = -50;
-    public static final int NOTIFY_PICKLIST_UPLOADED = -51;
-    public static final int NOTIFY_PICKLIST_UPLOAD_ERROR = -52;
 
-    public static final int SYNC_TRIP = -80;
-    public static final int NOTIFY_TRIP_UPLOADED = -81;
-    public static final int NOTIFY_TRIP_UPLOAD_ERROR = -82;
+
+
 
     // ***********
     public static final int PRINT_COUNT = 5;

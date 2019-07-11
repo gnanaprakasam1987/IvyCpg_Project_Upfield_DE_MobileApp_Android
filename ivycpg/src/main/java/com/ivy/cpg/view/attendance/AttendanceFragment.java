@@ -501,7 +501,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         }
     };
 
-    class UploadAttendance extends AsyncTask<Void, Void, Integer> {
+    class UploadAttendance extends AsyncTask<Void, Void, UploadHelper.UPLOAD_STATUS> {
         protected void onPreExecute() {
 
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
@@ -512,23 +512,31 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         }
 
         @Override
-        protected Integer doInBackground(Void... params) {
+        protected UploadHelper.UPLOAD_STATUS doInBackground(Void... params) {
 
             UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
-            return mUploadHelper.uploadUsingHttp(getHandler(), DataMembers.ATTENDANCE_UPLOAD, getActivity().getApplicationContext());
+            return mUploadHelper.uploadTransactionDataByType(getHandler(), DataMembers.ATTENDANCE_UPLOAD, getActivity().getApplicationContext());
         }
 
         @Override
-        protected void onPostExecute(Integer result) {
+        protected void onPostExecute(UploadHelper.UPLOAD_STATUS result){
             super.onPostExecute(result);
 
             mAlertDialog.dismiss();
 
-            if (result == 1) {
+            if (result == UploadHelper.UPLOAD_STATUS.SUCCESS) {
                 showUploadAlert(getResources().getString(R.string.attend),
                         getResources()
                                 .getString(R.string.successfully_uploaded), 1);
-            } else if (result == 2) {
+            } else if (result == UploadHelper.UPLOAD_STATUS.URL_NOTFOUND) {
+                bmodel.showAlert(
+                        getResources().getString(
+                                R.string.url_not_mapped), 0);
+            }else if (result == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
+                bmodel.showAlert(
+                        getResources().getString(
+                                R.string.token_expired), 0);
+            }else {
                 bmodel.showAlert(
                         getResources().getString(
                                 R.string.upload_failed_please_try_again), 0);

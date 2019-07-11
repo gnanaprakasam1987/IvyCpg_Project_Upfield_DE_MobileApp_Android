@@ -42,6 +42,8 @@ public interface SyncContractor {
 
         void prepareSelectedRetailerIds();
 
+        boolean checkDataForSync();
+
     }
 
     interface SyncView {

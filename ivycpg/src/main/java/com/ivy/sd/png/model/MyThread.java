@@ -170,23 +170,10 @@ public class MyThread extends Thread {
             if (bmodel.isOnline()) {
 
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOAD, ctx.getApplicationContext());
-                // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 0);
+                UploadHelper.UPLOAD_STATUS status = mUploadHelper.uploadTransactionDataByType(handler, DataMembers.SYNCUPLOAD, ctx.getApplicationContext());
 
                 if (BuildConfig.FLAVOR.equalsIgnoreCase("aws")) {
-                    if (bool == 1) {
-
-                        handler.sendEmptyMessage(
-                                DataMembers.NOTIFY_UPLOADED);
-                    } else if (bool == -1) {
-                        handler.sendEmptyMessage(
-                                DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-
-
-                    } else {
-                        handler.sendEmptyMessage(
-                                DataMembers.NOTIFY_UPLOAD_ERROR);
-                    }
+                    sendMessage(status,handler);
                 }
             } else {
                 handler.sendEmptyMessage(
@@ -200,14 +187,8 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(frm.getHandler(), DataMembers.SYNC_REALLOC_UPLOAD, ctx.getApplicationContext());
-                if (bool == 1) {
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_UPLOADED);
-                } else {
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_UPLOAD_ERROR);
-                }
+                UploadHelper.UPLOAD_STATUS status = mUploadHelper.uploadTransactionDataByType(frm.getHandler(), DataMembers.SYNC_REALLOC_UPLOAD, ctx.getApplicationContext());
+                sendMessage(status,handler);
             } else {
                 frm.getHandler().sendEmptyMessage(
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
@@ -230,43 +211,14 @@ public class MyThread extends Thread {
             if (bmodel.isOnline()) {
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 1);
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOADRETAILERWISE, ctx.getApplicationContext());
+                UploadHelper.UPLOAD_STATUS status = mUploadHelper.uploadTransactionDataByType(handler, DataMembers.SYNCUPLOADRETAILERWISE, ctx.getApplicationContext());
 
                 if (BuildConfig.FLAVOR.equalsIgnoreCase("aws")) {
-                    if (bool == 1) {
-
-                        handler.sendEmptyMessage(
-                                DataMembers.NOTIFY_UPLOADED);
-                    } else if (bool == -1) {
-                        handler.sendEmptyMessage(
-                                DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-
-
-                    } else {
-                        handler.sendEmptyMessage(
-                                DataMembers.NOTIFY_UPLOAD_ERROR);
-                    }
+                    sendMessage(status,handler);
                 }
             } else {
                 handler.sendEmptyMessage(
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
-            }
-
-        } else if (opt == DataMembers.SYNC_EXPORT) // download other masters
-        {
-            HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-            bmodel = (BusinessModel) ctx.getApplicationContext();
-            bmodel.setContext(ctx);
-            UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-            // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 2);
-            int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNC_EXPORT, ctx.getApplicationContext());
-
-            if (bool == 1) {
-                fragment.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_EXPORT_SUCCESS);
-            } else {
-                fragment.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_EXPORT_FAILURE);
             }
 
         } else if (opt == DataMembers.UPLOAD_FILE_IN_AMAZON) {
@@ -729,17 +681,17 @@ public class MyThread extends Thread {
             }
 
             if (bmodel.isOnline()) {
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSIHUPLOAD, ctx.getApplicationContext());
+                UploadHelper.UPLOAD_STATUS status = mUploadHelper.uploadTransactionDataByType(handler, DataMembers.SYNCSIHUPLOAD, ctx.getApplicationContext());
 
-                if (bool == 2) {
+                if (status == UploadHelper.UPLOAD_STATUS.SUCCESS) {
                     handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_SIH_UPLOADED);
-                } else if (bool == -1) {
+                            DataMembers.NOTIFY_UPLOADED_CONTINUE);
+                } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
                 } else {
                     handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_SIH_UPLOAD_ERROR);
+                            DataMembers.NOTIFY_UPLOAD_ERROR);
                 }
             } else {
                 handler.sendEmptyMessage(
@@ -762,19 +714,17 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSTKAPPLYUPLOAD, ctx.getApplicationContext());
+                UploadHelper.UPLOAD_STATUS status = mUploadHelper.uploadTransactionDataByType(handler, DataMembers.SYNCSTKAPPLYUPLOAD, ctx.getApplicationContext());
 
-                if (bool == 2) {
+                if (status == UploadHelper.UPLOAD_STATUS.SUCCESS) {
                     handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_STOCKAPLY_UPLOADED);
-                } else if (bool == -1) {
+                            DataMembers.NOTIFY_UPLOADED_CONTINUE);
+                } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-
-
                 } else {
                     handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_STOCKAPLY_UPLOAD_ERROR);
+                            DataMembers.NOTIFY_UPLOAD_ERROR);
                 }
             } else {
                 handler.sendEmptyMessage(
@@ -796,17 +746,17 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCLYTYPTUPLOAD, ctx.getApplicationContext());
+                UploadHelper.UPLOAD_STATUS status = mUploadHelper.uploadTransactionDataByType(handler, DataMembers.SYNCLYTYPTUPLOAD, ctx.getApplicationContext());
 
-                if (bool == 2) {
+                if (status == UploadHelper.UPLOAD_STATUS.SUCCESS) {
                     handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_LP_UPLOADED);
-                } else if (bool == -1) {
+                            DataMembers.NOTIFY_UPLOADED_CONTINUE);
+                } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
                 } else {
                     handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_LP_UPLOAD_ERROR);
+                            DataMembers.NOTIFY_UPLOAD_ERROR);
                 }
             } else {
                 handler.sendEmptyMessage(
@@ -828,18 +778,18 @@ public class MyThread extends Thread {
             }
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCPICKLISTUPLOAD, ctx.getApplicationContext());
+                UploadHelper.UPLOAD_STATUS status = mUploadHelper.uploadTransactionDataByType(handler, DataMembers.SYNCPICKLISTUPLOAD, ctx.getApplicationContext());
 
-                if (bool == 2) {
+                if (status == UploadHelper.UPLOAD_STATUS.SUCCESS) {
                     handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_PICKLIST_UPLOADED);
-                } else if (bool == -1) {
+                            DataMembers.NOTIFY_UPLOADED_CONTINUE);
+                } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
 
                 } else {
                     handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_PICKLIST_UPLOAD_ERROR);
+                            DataMembers.NOTIFY_UPLOAD_ERROR);
                 }
             } else {
                 handler.sendEmptyMessage(
@@ -861,18 +811,50 @@ public class MyThread extends Thread {
             }
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNC_TRIP, ctx.getApplicationContext());
+                UploadHelper.UPLOAD_STATUS status = mUploadHelper.uploadTransactionDataByType(handler, DataMembers.SYNC_TRIP, ctx.getApplicationContext());
 
-                if (bool == 2) {
+                if (status == UploadHelper.UPLOAD_STATUS.SUCCESS) {
                     handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_TRIP_UPLOADED);
-                } else if (bool == -1) {
+                            DataMembers.NOTIFY_UPLOADED_CONTINUE);
+                } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
 
                 } else {
                     handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_TRIP_UPLOAD_ERROR);
+                            DataMembers.NOTIFY_UPLOAD_ERROR);
+                }
+            } else {
+                handler.sendEmptyMessage(
+                        DataMembers.NOTIFY_CONNECTION_PROBLEM);
+            }
+
+        }else if (opt == DataMembers.SYNC_ORDER_DELIVERY_STATUS_UPLOAD) {   // Delivered order realtime sync
+            bmodel = (BusinessModel) ctx.getApplicationContext();
+            bmodel.setContext(ctx);
+            UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
+
+            Handler handler;
+            if (isFromCallAnalysis) {
+                CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
+                handler = fragment.getHandler();
+            } else {
+                HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+                handler = fragment.getHandler();
+            }
+
+            if (bmodel.isOnline()) {
+                UploadHelper.UPLOAD_STATUS status = mUploadHelper.uploadTransactionDataByType(handler, DataMembers.SYNC_ORDER_DELIVERY_STATUS_UPLOAD,ctx.getApplicationContext());
+
+                if (status == UploadHelper.UPLOAD_STATUS.SUCCESS) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_UPLOADED_CONTINUE);
+                } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
+                } else {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_UPLOAD_ERROR);
                 }
             } else {
                 handler.sendEmptyMessage(
@@ -882,4 +864,20 @@ public class MyThread extends Thread {
         }
     }// RUN
 
+    private void sendMessage(UploadHelper.UPLOAD_STATUS uploadStatus,Handler handler){
+        if (uploadStatus == UploadHelper.UPLOAD_STATUS.SUCCESS) {
+
+            handler.sendEmptyMessage(
+                    DataMembers.NOTIFY_UPLOADED);
+        } else if (uploadStatus == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
+            handler.sendEmptyMessage(
+                    DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
+        } else if (uploadStatus == UploadHelper.UPLOAD_STATUS.URL_NOTFOUND) {
+            handler.sendEmptyMessage(
+                    DataMembers.NOTIFY_UPLOAD_ERROR);
+        }else {
+            handler.sendEmptyMessage(
+                    DataMembers.NOTIFY_UPLOAD_ERROR);
+        }
+    }
 }

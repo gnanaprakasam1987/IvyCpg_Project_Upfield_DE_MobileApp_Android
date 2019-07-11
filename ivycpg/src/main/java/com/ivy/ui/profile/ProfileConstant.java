@@ -22,8 +22,8 @@ public class ProfileConstant {
     public static final String PROFILE_41 = "PROFILE41";//CONTACT_TITLE 1 ,length validation=Y,Has Edit=1,,RetailerContact
     public static final String PROFILE_42 = "PROFILE42";//CONTACT_TITLE 2,length validation=Y,Has Edit=1,RetailerContact
 
-    public static final String LOCATION01 = "PROFILE13";//LOCATION01 One level up,length validation=Y,Has Edit=0,RetailerMaster
-    public static final String LOCATION02 = "PROFILE14";//LOCATION02 two level up,length validation=Y,Has Edit=0,RetailerMaster
+   public static final String LOCATION02 = "PROFILE14";//LOCATION02 two level up,length validation=Y,Has Edit=0,RetailerMaster
+   public static final String LOCATION01 = "PROFILE13";//LOCATION01 One level up,length validation=Y,Has Edit=0,RetailerMaster
     public static final String LOCATION   = "PROFILE15";//LOCATION Least level,length validation=Y,Has Edit=0,RetailerMaster
     public static final String RFiled1 = "PROFILE20";//RFiled1, IF (FUN42) -> CreditLimit - Outstanding,Has Edit=0
     public static final String CONTRACT_TYPE = "PROFILE22";//CONTRACT_TYPE,Has Edit=0 Note:-Only Profile Config

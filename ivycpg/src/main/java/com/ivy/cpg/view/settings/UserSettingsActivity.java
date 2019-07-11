@@ -37,6 +37,7 @@ import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.homescreen.deviceStatus.DeviceStatusActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.password.ChangePasswordActivity;
+import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.webview.PrivacyPolicyActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -288,7 +289,8 @@ public class UserSettingsActivity extends PreferenceActivity {
             case 1:
                 return createmacDialog();
             case 2:
-                if (bmodel.synchronizationHelper.checkDataForSync()) {
+                UploadHelper mUploadHelper = UploadHelper.getInstance(this);
+                if (mUploadHelper.checkDataForSync()) {
                     return clearSyncDialog();
                 } else {
                     return clearDialog();

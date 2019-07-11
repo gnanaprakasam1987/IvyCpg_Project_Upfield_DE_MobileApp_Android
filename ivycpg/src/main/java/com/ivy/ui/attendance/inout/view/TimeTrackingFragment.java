@@ -328,25 +328,29 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
         new UploadAttendance().execute();
     }
 
-    class UploadAttendance extends AsyncTask<Void, Void, Integer> {
+    class UploadAttendance extends AsyncTask<Void, Void, UploadHelper.UPLOAD_STATUS> {
         protected void onPreExecute() {
             if(mContext!=null)
                 showLoading(mContext.getResources().getString(R.string.uploading_data));
         }
 
         @Override
-        protected Integer doInBackground(Void... params) {
-            return UploadHelper.getInstance(mContext).uploadUsingHttp(getHandler(), DataMembers.ATTENDANCE_UPLOAD, mContext);
+        protected UploadHelper.UPLOAD_STATUS doInBackground(Void... params) {
+            return UploadHelper.getInstance(mContext).uploadTransactionDataByType(getHandler(), DataMembers.ATTENDANCE_UPLOAD, mContext);
         }
 
         @Override
-        protected void onPostExecute(Integer result) {
+        protected void onPostExecute(UploadHelper.UPLOAD_STATUS result) {
             super.onPostExecute(result);
             hideLoading();
             if(mContext!=null) {
-                if (result == 1) {
+                if (result == UploadHelper.UPLOAD_STATUS.SUCCESS) {
                     showAlert("", mContext.getResources().getString(R.string.successfully_uploaded));
-                } else if (result == 2) {
+                } else if (result == UploadHelper.UPLOAD_STATUS.URL_NOTFOUND) {
+                    showAlert("", mContext.getResources().getString(R.string.url_not_mapped));
+                }else if (result == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
+                    showAlert("", mContext.getResources().getString(R.string.token_expired));
+                }else{
                     showAlert("", mContext.getResources().getString(R.string.upload_failed_please_try_again));
                 }
             }

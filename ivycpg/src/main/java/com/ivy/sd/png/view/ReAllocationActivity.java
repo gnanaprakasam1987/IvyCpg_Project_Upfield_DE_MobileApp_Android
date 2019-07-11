@@ -708,6 +708,12 @@ public class ReAllocationActivity extends IvyBaseActivityNoActionBar implements
 
 
                 default:
+                    alertDialog.dismiss();
+                    bmodel = (BusinessModel) getApplicationContext();
+                    bmodel.showAlert(
+                            "Error: "
+                                    + getResources().getString(
+                                    R.string.upload_failed_please_try_again), 3333);
                     break;
             }
         }
