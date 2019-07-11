@@ -34,6 +34,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/_5sdp"
+            android:gravity="center|start"
             android:layout_toStartOf="@+id/rg_expo_status"
             android:layout_toLeftOf="@+id/rg_expo_status"
             android:text="@string/exposition_status" />
@@ -71,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_8sdp"
                 android:button="@drawable/radio_btn_none"
-                android:text="@string/none" />
+                android:text="@string/not_applicable" />
         </RadioGroup>
     </RelativeLayout>
 

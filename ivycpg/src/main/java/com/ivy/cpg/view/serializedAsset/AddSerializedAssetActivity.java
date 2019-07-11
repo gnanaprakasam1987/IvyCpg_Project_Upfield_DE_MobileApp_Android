@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -21,6 +19,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -515,10 +516,10 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().length() <= 2){
+                if (s.toString().length() <= 2) {
                     mSNO.setError(getResources().getString(R.string.seriallized_no_error_message));
-                }else{
-                    mSNO.setError(null) ;
+                } else {
+                    mSNO.setError(null);
                 }
 
                 if (s.toString().length() > 0)
