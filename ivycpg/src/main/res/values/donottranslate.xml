@@ -401,4 +401,5 @@
     <string name="order_type">Order Type</string>
     <string name="profile_view">Profile View</string>
     <string name="do_u_want_close">Do you want to Close?</string>
+    <string name="exposition_status">Exposition Status</string>
 </resources>
