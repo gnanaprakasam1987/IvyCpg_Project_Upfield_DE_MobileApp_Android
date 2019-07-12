@@ -49,9 +49,6 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     private static final int UPLOAD_PICK_LIST = 8;
     private static final int UPLOAD_TRIP = 9;
 
-    // Upload URL Type code constants
-    private static final String SIH_UPLOAD = "";
-
 
     public UploadPresenterImpl(Context mContext, BusinessModel mBModel, SyncContractor.SyncView view
             , UploadHelper mUploadHelper, VanUnLoadModuleHelper mVanUnloadHelper) {

@@ -89,22 +89,23 @@ public class UploadHelper {
         }
     }
 
-    // URL Type Code
-    public static final String UPLOAD_SEQUENCE_URL_CODE = "UPLDSEQ";
-    public static final String UPLOAD_USER_REPLACEMENT_URL_CODE = "USRREPLACEUPLD";
-    public static final String UPLOAD_TRANSACTION_URL_CODE = "UPLDTRAN";
+    // URL Type Code for synchronous upload
     public static final String UPLOAD_REALLOCATION_URL_CODE = "UPLDALLOC";
     public static final String UPLOAD_STOCK_APPLY_URL_CODE = "UPLDSTOK";
     public static final String UPLOAD_SIH_URL_CODE = "UPLDSIH";
-    public static final String UPLOAD_SUBD_SIH_URL_CODE = "UPLOADSDSIH";
     public static final String UPLOAD_TRIP_URL_CODE = "UPLOADTRIP";
     public static final String UPLOAD_PICKLIST_URL_CODE = "UPLDDELIVERYSTS";
     public static final String UPLOAD_LOYALTY_URL_CODE = "UPLDLOYALTY";
-    public static final String UPLOAD_TERMSACCEPT_URL_CODE = "UPDATEUSER";
     public static final String UPLOAD_ORDR_DEL_URL_CODE = "UPLDORDDELSTS";
 
-    private static final String UPLOAD_RETAILER_URL_CODE = "UPLDRET";
+    // Regular transaction upload
+    public static final String UPLOAD_TRANSACTION_URL_CODE = "UPLDTRAN";
 
+    // Other spl direct connect URL's
+    public static final String UPLOAD_SEQUENCE_URL_CODE = "UPLDSEQ";
+    private static final String UPLOAD_NEW_RETAILER_URL_CODE = "UPLDRET";
+    public static final String UPLOAD_USER_REPLACEMENT_URL_CODE = "USRREPLACEUPLD";
+    public static final String UPLOAD_TERMSACCEPT_URL_CODE = "UPDATEUSER";
 
 
     private UploadHelper(Context context) {
@@ -1275,6 +1276,7 @@ public class UploadHelper {
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
+
             Set<String> keys = DataMembers.uploadInvoiceSequenceNo.keySet();
             jsonObjData = new JSONObject();
             for (String tableName : keys) {
@@ -1379,7 +1381,7 @@ public class UploadHelper {
 
             JSONFormatter jsonFormatter = generateUploadHeaderInformation(context, jsonobj);
 
-            String appendurl = businessModel.synchronizationHelper.getUploadUrl(UPLOAD_RETAILER_URL_CODE);
+            String appendurl = businessModel.synchronizationHelper.getUploadUrl(UPLOAD_NEW_RETAILER_URL_CODE);
             if (appendurl.length() == 0)
                 return 2 + "";
 
