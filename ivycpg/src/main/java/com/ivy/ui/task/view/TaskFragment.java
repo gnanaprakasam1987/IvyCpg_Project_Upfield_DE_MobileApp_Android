@@ -660,7 +660,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             drawerOpen = drawerLayout.isDrawerOpen(GravityCompat.END);
         }
 
-        menu.findItem(R.id.menu_notification).setVisible(true);
+        menu.findItem(R.id.menu_notification).setVisible(source == TaskConstant.SOURCE.HOME_SCREEN);
         menu.findItem(R.id.menu_save).setVisible(false);
         menu.findItem(R.id.menu_sort).setVisible(true);
         menu.findItem(R.id.menu_new_task).setVisible(false);
@@ -843,6 +843,11 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             filterHashMapList = new HashMap<>();
             filterHashMapList.putAll(filterListHashMap);
         }
+    }
+
+    @Override
+    public void updateSortList() {
+        taskListAdapter.notifyDataSetChanged();
     }
 
     private void handleVisibilty(int visibility) {

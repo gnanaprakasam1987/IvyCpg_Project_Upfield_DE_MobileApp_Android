@@ -2530,7 +2530,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     @Override
     public void switchTaskView(boolean fromPendingTask) {
         if (!fromPendingTask) {
-            for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
+            for (ConfigureBO con : leftmenuDB) {
                 if (con.getConfigCode().equals(MENU_TASK_NEW)) {
                     gotoNextActivity(con);
                     break;
