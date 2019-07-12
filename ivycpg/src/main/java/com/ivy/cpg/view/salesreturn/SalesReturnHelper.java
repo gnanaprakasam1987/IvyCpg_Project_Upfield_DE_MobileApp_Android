@@ -74,7 +74,7 @@ public class SalesReturnHelper {
     public boolean IS_SHOW_SR_INVOICE_NO_HISTORY;
 
     private static final String CODE_SR_CATALOG = "SR24";
-    public boolean IS_SHOW_SR_CATALOG=true;
+    public boolean IS_SHOW_SR_CATALOG;
 
 
     public static final String CREDIT_TYPE = "CREDIT";
