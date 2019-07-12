@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Environment;
 import androidx.core.app.ActivityCompat;
@@ -20,6 +19,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -37,12 +40,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.order.OrderHelper;
@@ -58,9 +62,9 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.PauseOnFling;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
@@ -73,7 +77,7 @@ import static android.app.Activity.RESULT_OK;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SalesReturnFragment extends IvyBaseFragment implements
-        BrandDialogInterface, OnClickListener, OnEditorActionListener, FiveLevelFilterCallBack {
+        BrandDialogInterface, OnClickListener, OnEditorActionListener, FiveLevelFilterCallBack, SalesReturnAdapter.SalesReturnInterface {
 
     private static final int SALES_RET_SUMMARY = 1;
     private static final int SALES_ENTRY = 2;
@@ -97,7 +101,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     private String generalbutton = GENERAL;
     private Button mBtn_Search, mBtn_clear;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    public ListView lvwplist;
+    public RecyclerView lvwplist;
     public String strBarCodeSearch = "ALL";
     public EditText mEdt_searchproductName;
     public TextView totalValueText, lpcText, productName;
@@ -107,6 +111,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     Button mBtnFilterPopup;
     private String screenTitle = "";
     private boolean loadBothSalable;
+    private LinearLayout ListHeader;
+    private RequestManager glide;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -117,6 +123,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         mDrawerLayout = view.findViewById(
                 R.id.drawer_layout);
 
+        this.glide = Glide.with(getActivity());
+
         //setting drawer width equal to scren width
         drawer = view.findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
@@ -124,6 +132,13 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         params.width = width;
         drawer.setLayoutParams(params);
         screenTitle = getActivity().getIntent().getStringExtra("screentitle");
+
+
+        salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
+        if(salesReturnHelper.IS_SHOW_SR_CATALOG){
+            ListHeader=view.findViewById(R.id.ListHeader);
+            ListHeader.setVisibility(View.GONE);
+        }
 
 
         return view;
@@ -172,7 +187,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         mBtn_clear.setOnEditorActionListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
         lvwplist = view.findViewById(R.id.list);
-        lvwplist.setCacheColorHint(0);
+        //lvwplist.setCacheColorHint(0);
 
         totalValueText = view.findViewById(R.id.totalValue);
         lpcText = view.findViewById(R.id.lcp);
@@ -275,8 +290,23 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 + " (" + mylist.size() + ")";
         pnametitle.setText(strPname);
         // OutletListAdapter lvwplist = new OutletListAdapter(mylist);
-        lvwplist.setAdapter(new SalesReturnAdapter(mylist,getActivity(),bmodel));
+
         salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
+
+        lvwplist.setHasFixedSize(true);
+        lvwplist.setItemViewCacheSize(10);
+        lvwplist.setDrawingCacheEnabled(true);
+        lvwplist.setItemAnimator(new DefaultItemAnimator());
+        lvwplist.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        lvwplist.setNestedScrollingEnabled(false);
+        lvwplist.addOnScrollListener(new PauseOnFling(glide));
+        
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+        lvwplist.setLayoutManager(linearLayoutManager);
+
+        lvwplist.setAdapter(new SalesReturnAdapter(mylist,getActivity(),bmodel,glide));
+
     }
 
     @Override
@@ -978,7 +1008,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         updateValue();
     }
 
-    private void showSalesReturnDialog(String productId, View v, int holderPostion, int holderTop) {
+    private void showSalesReturnDialog(String productId, int holderPostion, int holderTop) {
         Intent intent = new Intent(getActivity(),
                 SalesReturnEntryActivity.class);
         intent.putExtra("pid", productId);
@@ -1026,7 +1056,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 int holderPosition = extras.getInt("position", 0);
                 int holderTop = extras.getInt("top", 0);
                 if (mylist.size() > 0)
-                    lvwplist.setSelectionFromTop(holderPosition, holderTop);
+                    lvwplist.getLayoutManager().scrollToPosition(holderPosition);
             }
         } else {
             if (result != null) {
@@ -1048,4 +1078,21 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         }
     }
 
+    @Override
+    public void onListItemSelected(String pid) {
+        productName.setText(bmodel.productHelper.getProductMasterBOById(pid).getProductName());
+        if (viewFlipper.getDisplayedChild() != 0) {
+            viewFlipper.showPrevious();
+        }
+    }
+
+    @Override
+    public void showSalesReturnDialog(String pid) {
+        View vChild = lvwplist.getChildAt(0);
+                        int holderPosition = ((LinearLayoutManager)lvwplist.getLayoutManager()).findFirstVisibleItemPosition();
+                        int holderTop = (vChild == null) ? 0 : (vChild.getTop() - lvwplist.getPaddingTop());
+
+                        productName.setText(bmodel.productHelper.getProductMasterBOById(pid).getProductName());
+                        showSalesReturnDialog(pid, holderPosition, holderTop);
+    }
 }

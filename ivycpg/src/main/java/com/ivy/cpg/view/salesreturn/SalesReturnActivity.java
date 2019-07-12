@@ -13,7 +13,7 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface,FiveLevelFilterCallBack {
+public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface,FiveLevelFilterCallBack, SalesReturnAdapter.SalesReturnInterface {
 
     private Toolbar toolbar;
 
@@ -67,4 +67,19 @@ public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements B
         fragment.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
+    @Override
+    public void onListItemSelected(String pid) {
+        FragmentManager fm = getSupportFragmentManager();
+        SalesReturnFragment fragment = (SalesReturnFragment) fm
+                .findFragmentById(R.id.sales_return_fragment);
+        fragment.onListItemSelected(pid);
+    }
+
+    @Override
+    public void showSalesReturnDialog(String pid) {
+        FragmentManager fm = getSupportFragmentManager();
+        SalesReturnFragment fragment = (SalesReturnFragment) fm
+                .findFragmentById(R.id.sales_return_fragment);
+        fragment.showSalesReturnDialog(pid);
+    }
 }
