@@ -20,7 +20,6 @@ public class DisplayAssetHelper {
     private final BusinessModel mBusinessModel;
 
 
-
     private ArrayList<AssetTrackingBO> mDisplayAssetList;
 
 
@@ -37,15 +36,15 @@ public class DisplayAssetHelper {
 
 
     public ArrayList<AssetTrackingBO> getDisplayAssetList() {
-        if(mDisplayAssetList==null)
-            mDisplayAssetList=new ArrayList<>();
+        if (mDisplayAssetList == null)
+            mDisplayAssetList = new ArrayList<>();
         return mDisplayAssetList;
     }
 
 
-    public void downloadDisplayAssets(Context context){
+    public void downloadDisplayAssets(Context context) {
 
-        mDisplayAssetList =new ArrayList<>();
+        mDisplayAssetList = new ArrayList<>();
 
         StringBuilder sb = new StringBuilder();
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -53,13 +52,13 @@ public class DisplayAssetHelper {
         try {
             db.openDataBase();
 
-            ArrayList<CompanyBO> companyList=new ArrayList<>();
+            ArrayList<CompanyBO> companyList = new ArrayList<>();
             sb.append("select companyId,CompanyName,isOwn from CompanyMaster");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 CompanyBO companyBO;
                 while (c.moveToNext()) {
-                    companyBO=new CompanyBO();
+                    companyBO = new CompanyBO();
                     companyBO.setCompetitorid(c.getInt(0));
                     companyBO.setCompetitorName(c.getString(1));
                     companyBO.setIsOwn(c.getInt(2));
@@ -70,13 +69,13 @@ public class DisplayAssetHelper {
             }
 
 
-            sb=new StringBuilder();
+            sb = new StringBuilder();
             sb.append("select DisplayAssetId, DisplayAssetName, weightage from DisplayAssetMaster");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 AssetTrackingBO assetTrackingBO;
                 while (c.moveToNext()) {
-                    assetTrackingBO=new AssetTrackingBO();
+                    assetTrackingBO = new AssetTrackingBO();
                     assetTrackingBO.setDisplayAssetId(c.getString(0));
                     assetTrackingBO.setAssetName(c.getString(1));
                     assetTrackingBO.setWeightage(c.getDouble(2));
@@ -87,8 +86,7 @@ public class DisplayAssetHelper {
                 }
             }
 
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
@@ -102,7 +100,7 @@ public class DisplayAssetHelper {
         return clone;
     }
 
-    public boolean saveDisplayAsset(Context context,String status,double ownCompanyScore,double otherCompanyMaxScore){
+    public boolean saveDisplayAsset(Context context, String status, double ownCompanyScore, double otherCompanyMaxScore, String expositionStatus) {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
         );
@@ -126,37 +124,37 @@ public class DisplayAssetHelper {
             String id = mBusinessModel.getAppDataProvider().getUser().getUserid()
                     + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
-            String headerColumns = "Uid,RetailerId,ridSF,visitId,Date,status,ownShare,competitorShare";
+            String headerColumns = "Uid,RetailerId,ridSF,visitId,Date,status,ownShare,competitorShare,ExpositionStatus";
             String detailColumns = "Uid,CompetitorId,DisplayAssetId,count,weightage,score,RetailerID";
 
 
-
-
-            boolean isData=false;
-            for(AssetTrackingBO assetTrackingBO:getDisplayAssetList()) {
+            boolean isData = false;
+            for (AssetTrackingBO assetTrackingBO : getDisplayAssetList()) {
                 for (CompanyBO companyBO : assetTrackingBO.getCompanyList()) {
 
                     String detailValues = StringUtils.getStringQueryParam(id) + ","
                             + companyBO.getCompetitorid() + ","
                             + StringUtils.getStringQueryParam(assetTrackingBO.getDisplayAssetId()) + "," + companyBO.getQuantity() + ","
                             + assetTrackingBO.getWeightage() + ","
-                            + (companyBO.getQuantity()*assetTrackingBO.getWeightage()) + ","
+                            + (companyBO.getQuantity() * assetTrackingBO.getWeightage()) + ","
                             + StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID());
 
                     db.insertSQL(DataMembers.tbl_DisplayAssetTDetails, detailColumns,
                             detailValues);
-                    isData=true;
+                    isData = true;
                 }
             }
 
-            if(isData) {
+            if (isData) {
                 String headerValues = StringUtils.getStringQueryParam(id) + ","
-                        +  mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
+                        + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
                         + StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF())
                         + "," + mBusinessModel.getAppDataProvider().getUniqueId() + ","
                         + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                        + StringUtils.getStringQueryParam(status)+
-                        ","+ownCompanyScore+","+otherCompanyMaxScore;
+                        + StringUtils.getStringQueryParam(status) + ","
+                        + ownCompanyScore + ","
+                        + otherCompanyMaxScore + ","
+                        + StringUtils.getStringQueryParam(expositionStatus);
 
                 db.insertSQL(DataMembers.tbl_DisplayAssetHeader, headerColumns,
                         headerValues);
@@ -178,13 +176,13 @@ public class DisplayAssetHelper {
     }
 
 
-    public void loadDisplayAssetInEditMode(Context context){
+    public void loadDisplayAssetInEditMode(Context context) {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
-            if(mBusinessModel.configurationMasterHelper.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) {
+            if (mBusinessModel.configurationMasterHelper.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) {
                 // LastVisit
                 String lastVisitQuery = "SELECT CompetitorId,DisplayAssetId,count"
                         + " FROM LastVisitDisplayAsset WHERE retailerId=" + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID();
@@ -193,9 +191,9 @@ public class DisplayAssetHelper {
 
                 if (lastVisitCursor != null) {
                     while (lastVisitCursor.moveToNext()) {
-                        for(AssetTrackingBO assetTrackingBO:getDisplayAssetList()) {
+                        for (AssetTrackingBO assetTrackingBO : getDisplayAssetList()) {
                             for (CompanyBO companyBO : assetTrackingBO.getCompanyList()) {
-                                if(lastVisitCursor.getString(1).equals(assetTrackingBO.getDisplayAssetId())&&lastVisitCursor.getInt(0)==companyBO.getCompetitorid()){
+                                if (lastVisitCursor.getString(1).equals(assetTrackingBO.getDisplayAssetId()) && lastVisitCursor.getInt(0) == companyBO.getCompetitorid()) {
                                     companyBO.setQuantity(lastVisitCursor.getInt(2));
                                 }
 
@@ -209,7 +207,7 @@ public class DisplayAssetHelper {
 
             String tid = "";
             String sql = "SELECT uid FROM DisplayAssetTrackingHeader WHERE RetailerId = "
-                    +  mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + " AND Date = "
+                    + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + " AND Date = "
                     + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " and (upload='N')";
 
@@ -221,7 +219,7 @@ public class DisplayAssetHelper {
 
             orderHeaderCursor.close();
 
-            if(!tid.trim().isEmpty()){
+            if (!tid.trim().isEmpty()) {
 
                 String sql1 = "SELECT CompetitorId, DisplayAssetId, count"
                         + " FROM DisplayAssetTrackingDetails WHERE uid=" + StringUtils.getStringQueryParam(tid);
@@ -230,9 +228,9 @@ public class DisplayAssetHelper {
 
                 if (orderDetailCursor != null) {
                     while (orderDetailCursor.moveToNext()) {
-                        for(AssetTrackingBO assetTrackingBO:getDisplayAssetList()) {
+                        for (AssetTrackingBO assetTrackingBO : getDisplayAssetList()) {
                             for (CompanyBO companyBO : assetTrackingBO.getCompanyList()) {
-                                if(orderDetailCursor.getString(1).equals(assetTrackingBO.getDisplayAssetId())&&orderDetailCursor.getInt(0)==companyBO.getCompetitorid()){
+                                if (orderDetailCursor.getString(1).equals(assetTrackingBO.getDisplayAssetId()) && orderDetailCursor.getInt(0) == companyBO.getCompetitorid()) {
                                     companyBO.setQuantity(orderDetailCursor.getInt(2));
                                 }
 
@@ -244,9 +242,33 @@ public class DisplayAssetHelper {
 
             }
 
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
+    }
+
+    public String fetchLastExpositionStatus(Context context) {
+        String exposStatus = "";
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+            String sql = "SELECT ExpositionStatus FROM DisplayAssetTrackingHeader WHERE RetailerId = "
+                    + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + " AND Date = "
+                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + " and (upload='N')";
+
+            Cursor cursor = db.selectSQL(sql);
+            if (cursor != null) {
+                if (cursor.moveToNext())
+                    exposStatus = cursor.getString(0);
+            }
+            cursor.close();
+            db.closeDB();
+            return exposStatus;
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return "";
     }
 }

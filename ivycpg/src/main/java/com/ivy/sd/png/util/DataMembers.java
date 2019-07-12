@@ -746,7 +746,7 @@ public class DataMembers {
     private static final String tbl_RetailerLocationDeviation_cols = "Tid,ReasonID,RetailerID,Date,Type,ExpectedRadius,ActualRadius,OutletTimeStampID";
 
     public static final String tbl_DisplayAssetHeader = "DisplayAssetTrackingHeader";
-    private static final String tbl_DisplayAsseteader_cols = "Uid,RetailerId,ridSF,visitId,Date,status,ownShare,competitorShare";
+    private static final String tbl_DisplayAsseteader_cols = "Uid,RetailerId,ridSF,visitId,Date,status,ownShare,competitorShare,ExpositionStatus";
 
     public static final String tbl_DisplayAssetTDetails = "DisplayAssetTrackingDetails";
     private static final String tbl_DisplayAssetDetail_cols = "Uid,CompetitorId,DisplayAssetId,count,weightage,score";

@@ -12,15 +12,6 @@ import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +31,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.jointcall.JoinCallActivity;
@@ -729,27 +730,27 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME_WGT)
                 tv_target.setText(String.valueOf(getTotalWeight()));
 
+            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
+                tv_target.setText(getTotalTimeSpend());
                 //cpg132-task13
             else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
                 tv_target.setText(String.valueOf(getTotalVolume()));
 
-            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
-                tv_target.setText(getTotalTimeSpend());
             else
                 tv_target.setText(getTotalVisitActual());
         } else {
 
             if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
                 tv_target1.setText(String.valueOf(getStoreVisited()));
+
             else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME_WGT)
                 tv_target1.setText(String.valueOf(getTotalWeight()));
 
+            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
+                tv_target1.setText(getTotalTimeSpend());
                 //cpg132-task13
             else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
                 tv_target1.setText(String.valueOf(getTotalVolume()));
-
-            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
-                tv_target1.setText(getTotalTimeSpend());
             else
                 tv_target1.setText(getTotalVisitActual());
         }
