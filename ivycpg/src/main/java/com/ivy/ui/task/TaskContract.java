@@ -37,6 +37,8 @@ public interface TaskContract {
         void showDataNotMappedMsg();
 
         void setUpFilterList(HashMap<String, ArrayList<FilterBo>> filterListHashMap);
+
+        void updateSortList();
     }
 
     interface TaskCreationView extends TaskView {

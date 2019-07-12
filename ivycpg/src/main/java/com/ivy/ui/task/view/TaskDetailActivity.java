@@ -442,7 +442,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     }
 
     private void showDeleteAlert() {
-        showAlert("", getString(R.string.do_you_want_to_delete_the_note),
+        showAlert("", getString(R.string.do_you_want_to_delete_the_task),
                 () -> taskPresenter.deleteTask(taskDetailBo.getTaskId(), taskDetailBo.getTaskOwner(), taskDetailBo.getServerTask()),
                 () -> {
                 });
@@ -548,6 +548,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     @Override
     public void setUpFilterList(HashMap<String, ArrayList<FilterBo>> filterListHashMap) {
+
+    }
+
+    @Override
+    public void updateSortList() {
 
     }
 

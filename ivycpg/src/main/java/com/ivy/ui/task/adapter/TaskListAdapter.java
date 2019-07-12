@@ -74,12 +74,12 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
 
         // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
         // put an unique string id as value, can be any string which uniquely define the data
-        binderHelper.bind(holder.swipeLayout, taskBo.getTaskId());
+        binderHelper.bind(holder.swipeLayout, String.valueOf(position));
 
         if (mTabPosition == 3
                 || taskBo.isChecked()
                 || (taskBo.isUpload() && taskBo.getIsdone().equals("1")))
-            binderHelper.lockSwipe(taskBo.getTaskId());
+            binderHelper.lockSwipe(String.valueOf(position));
 
 
         holder.taskTitle.setText(taskBo.getTasktitle());
@@ -116,11 +116,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             if (!taskBo.isChecked()) {
                 holder.taskCB.setChecked(true);
                 taskBo.setChecked(true);
-                binderHelper.lockSwipe(taskBo.getTaskId());
+                binderHelper.lockSwipe(String.valueOf(position));
             } else {
                 holder.taskCB.setChecked(false);
                 taskBo.setChecked(false);
-                binderHelper.unlockSwipe(taskBo.getTaskId());
+                binderHelper.unlockSwipe(String.valueOf(position));
             }
             taskClickListener.onTaskExecutedClick(taskBo, holder.getAdapterPosition());
 
