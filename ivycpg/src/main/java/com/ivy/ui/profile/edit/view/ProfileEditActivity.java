@@ -64,8 +64,6 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
         }else
             openProfileEditScreen();
 
-
-
     }
 
     private Observer<ArrayList<RetailerContactBo>> arrayListObserver() {

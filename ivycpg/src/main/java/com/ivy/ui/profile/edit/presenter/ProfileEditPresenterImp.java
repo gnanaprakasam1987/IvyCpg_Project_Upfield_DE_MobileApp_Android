@@ -879,117 +879,195 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     private void prepareProfileEditValues() {
 
+        ArrayList<ConfigureBO> retailerFieldList = new ArrayList<>();
+
         for (ConfigureBO configBO : profileConfig) {
             String conficCode = configBO.getConfigCode();
             if (configBO.getModule_Order() == 1) {
                 switch (conficCode) {
                     case ProfileConstant.STORENAME:
-                        updateStoreName(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getLocationId() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.ADDRESS1:
-                        updateAddress1(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getAddress1() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.ADDRESS2:
-                        updateAddress2(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getAddress2() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.ADDRESS3:
-                        updateAddress3(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getAddress3() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.CITY:
-                        updateCity(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getCity() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.STATE:
-                        updateState(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getState() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.CONTRACT:
-                        updateContract(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getContractLovid() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.PINCODE:
-                        updatePincode(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getPincode() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.CONTACT_NUMBER:
-                        updateContactNumber(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getContactnumber() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.CHANNEL:
-                        updateChannel(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getChannelID() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.SUBCHANNEL:
-                        updateSubChannel(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getSubchannelid() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.LATTITUDE:
-                        updateLatitude(configBO);
+                        if (!configBO.getMenuNumber().equals("0.0")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getLatitude() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.LONGITUDE:
-                        updateLongitude(configBO);
+                        if (!configBO.getMenuNumber().equals("0.0")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getLongitude() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.PHOTO_CAPTURE:
                         updatePhotoCapture(configBO);
                         break;
                     case ProfileConstant.RFiled1:
-                        updateRFiled1(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getRField1() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.RField2:
-                        updateRFiled2(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getRfield2() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.CREDIT_INVOICE_COUNT:
-                        updateCreditInvoiceCount(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getCredit_invoice_count() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.RField4:
-                        updateRfield4(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getRField4() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.RFIELD5:
-                        updateRfield5(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getRField5() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.RFIELD6:
-                        updateRfield6(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getRField6() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.RFIELD7:
-                        updateRfield7(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getRField7() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.LOCATION01:
-                        updateLocation1(configBO);
+                        if (!configBO.getMenuNumber().equals("0")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getLocationId() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.CREDITPERIOD:
-                        updateCreditPeriod(configBO);
+                        configBO.setRefId(retailerMasterBO.getRetailerID());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getCreditDays()+"",retailerFieldList);
                         break;
                     case ProfileConstant.PROFILE_60:
                         updateProfileImage(configBO);
                         break;
                     case ProfileConstant.GSTN:
-                        updateGSTN(configBO);
+                        configBO.setRefId(retailerMasterBO.getRetailerID());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getGSTNumber()+"",retailerFieldList);
                         break;
                     case ProfileConstant.INSEZ:
-                        updateSezCheckBox(configBO);
+                        configBO.setRefId(retailerMasterBO.getRetailerID());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getIsSEZzone()+"",retailerFieldList);
                         break;
                     case ProfileConstant.PAN_NUMBER:
-                        updatePanNumber(configBO);
+                        configBO.setRefId(retailerMasterBO.getRetailerID());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getPanNumber(),retailerFieldList);
                         break;
                     case ProfileConstant.FOOD_LICENCE_NUM:
-                        updateFoodLIcenceNumber(configBO);
+                        configBO.setRefId(retailerMasterBO.getRetailerID());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getFoodLicenceNo(),retailerFieldList);
                         break;
                     case ProfileConstant.DRUG_LICENSE_NUM:
-                        updateDrugLIcenceNumber(configBO);
+                        configBO.setRefId(retailerMasterBO.getRetailerID());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getDLNo(),retailerFieldList);
                         break;
                     case ProfileConstant.FOOD_LICENCE_EXP_DATE:
-                        updateFoodLcenceExpDate(configBO);
+                        configBO.setRefId(retailerMasterBO.getRetailerID());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getFoodLicenceExpDate(),retailerFieldList);
                         break;
                     case ProfileConstant.DRUG_LICENSE_EXP_DATE:
-                        updateDrugLcenceExpDate(configBO);
+                        configBO.setRefId(retailerMasterBO.getRetailerID());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getDLNoExpDate(),retailerFieldList);
                         break;
                     case ProfileConstant.EMAIL:
-                        updateEmail(configBO);
+                        configBO.setRefId(retailerMasterBO.getAddressid());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getEmail(),retailerFieldList);
                         break;
                     case ProfileConstant.MOBILE:
-                        updateMobile(configBO);
+                        configBO.setRefId(retailerMasterBO.getAddressid());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getMobile(),retailerFieldList);
                         break;
                     case ProfileConstant.FAX:
-                        updateFax(configBO);
+                        configBO.setRefId(retailerMasterBO.getAddressid());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getFax(),retailerFieldList);
                         break;
                     case ProfileConstant.REGION:
-                        updateRegion(configBO);
+                        configBO.setRefId(retailerMasterBO.getAddressid());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getRegion(),retailerFieldList);
                         break;
                     case ProfileConstant.COUNTRY:
-                        updateCountry(configBO);
+                        configBO.setRefId(retailerMasterBO.getAddressid());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getCountry(),retailerFieldList);
                         break;
                     case ProfileConstant.NEARBYRET:
                         updateNearByRetailer();
@@ -997,20 +1075,24 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     case ProfileConstant.PRIORITYPRODUCT:
                         updatePriorityProduct();
                         break;
-                    case ProfileConstant.ATTRIBUTE:
-                        updateRetailerMasterAttributeList();
-                        break;
                     case ProfileConstant.DISTRICT:
-                        updateDistrict(configBO);
+                        configBO.setRefId(retailerMasterBO.getAddressid());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getDistrict(),retailerFieldList);
                         break;
                 }
             } else if (configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
                 switch (conficCode) {
                     case ProfileConstant.LATTITUDE:
-                        updateLatitude(configBO);
+                        if (!configBO.getMenuNumber().equals("0.0")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO,retailerMasterBO.getLatitude()+"",retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.LONGITUDE:
-                        updateLongitude(configBO);
+                        if (!configBO.getMenuNumber().equals("0.0")) {
+                            configBO.setRefId(retailerMasterBO.getAddressid());
+                            getRetailerProfileObject(configBO,retailerMasterBO.getLongitude()+"",retailerFieldList);
+                        }
                         break;
                 }
             }
@@ -1283,209 +1365,19 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     }
 
+    private void getRetailerProfileObject(ConfigureBO configBO, String field,ArrayList<ConfigureBO> retailerFieldList){
 
-    private void updateCountry(ConfigureBO configBO) {
-        if ((retailerMasterBO.getCountry() + "").equals(configBO.getMenuNumber())
+        configBO.setRetailerId(retailerMasterBO.getRetailerID());
+        if ((field + "").equals(configBO.getMenuNumber())
                 && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getCountry() + "").equals(configBO.getMenuNumber())
+            configBO.setDeleteRow(true);
+            retailerFieldList.add(configBO);
+        } else if ((!(field + "").equals(configBO.getMenuNumber())
                 && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getAddressid()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-    private void updateRegion(ConfigureBO configBO) {
-        if ((retailerMasterBO.getRegion() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getRegion() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getAddressid()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-    private void updateFax(ConfigureBO configBO) {
-        if ((retailerMasterBO.getFax() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getFax() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getAddressid()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-    private void updateMobile(ConfigureBO configBO) {
-        if ((retailerMasterBO.getMobile() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getMobile() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getAddressid()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-    private void updateEmail(ConfigureBO configBO) {
-        if ((retailerMasterBO.getEmail() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getEmail() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getAddressid()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-    private void updateDrugLcenceExpDate(ConfigureBO configBO) {
-        if ((retailerMasterBO.getDLNoExpDate() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getDLNoExpDate() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getRetailerID()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-    private void updateFoodLcenceExpDate(ConfigureBO configBO) {
-        if ((retailerMasterBO.getFoodLicenceExpDate() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getFoodLicenceExpDate() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getRetailerID()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-    private void updateDrugLIcenceNumber(ConfigureBO configBO) {
-        if ((retailerMasterBO.getDLNo() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getDLNo() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getRetailerID()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-    private void updateFoodLIcenceNumber(ConfigureBO configBO) {
-        if ((retailerMasterBO.getFoodLicenceNo() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getFoodLicenceNo() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getRetailerID()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-    private void updatePanNumber(ConfigureBO configBO) {
-        if ((retailerMasterBO.getPanNumber() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getPanNumber() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getRetailerID()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-
-    private void updateSezCheckBox(ConfigureBO configBO) {
-        if ((retailerMasterBO.getIsSEZzone() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getIsSEZzone() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getRetailerID()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-    private void updateGSTN(ConfigureBO configBO) {
-        if ((retailerMasterBO.getGSTNumber() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getGSTNumber() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getRetailerID()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            retailerFieldList.add(configBO);
         }
     }
 
@@ -1506,179 +1398,12 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
                 String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode()) + "," + StringUtils.getStringQueryParam(imagePath) + ","
                         + retailerMasterBO.getRetailerID() + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+                insertRow(configBO, mCustomquery);
                 FileUtils.checkFileExist(configBO.getMenuNumber() + "", retailerMasterBO.getRetailerID(), false);
             }
 
         }
 
-    }
-
-    private void updateCreditPeriod(ConfigureBO configBO) {
-        if ((retailerMasterBO.getCreditDays() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getCreditDays() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getRetailerID()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
-    }
-
-    private void updateLocation1(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("0")) {
-            if ((retailerMasterBO.getLocationId() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if (retailerMasterBO.getLocationId() != 0
-                    && ((!(retailerMasterBO.getLocationId() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber()))))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getRetailerID()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateRfield7(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if ((retailerMasterBO.getRField7() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getRField7() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getRetailerID()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateRfield6(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if ((retailerMasterBO.getRField6() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getRField6() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getRetailerID()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateRfield5(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if ((retailerMasterBO.getRField5() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getRField5() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getRetailerID()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateRfield4(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if ((retailerMasterBO.getRField4() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getRField4() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getRetailerID()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateCreditInvoiceCount(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if ((retailerMasterBO.getCredit_invoice_count() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getCredit_invoice_count() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getRetailerID()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateRFiled2(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if ((retailerMasterBO.getRfield2() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getRfield2() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getRetailerID()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateRFiled1(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if ((retailerMasterBO.getRField1() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getRField1() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getAddressid()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
     }
 
     private void updatePhotoCapture(ConfigureBO configBO) {
@@ -1687,247 +1412,13 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 + "/" + userMasterHelper.getUserMasterBO().getUserid() + "/" + configBO.getMenuNumber();
         String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode()) + ","
                 + StringUtils.getStringQueryParam(imagePath) + "," + retailerMasterBO.getAddressid() + "," + retailerMasterBO.getRetailerID() + ")";
-        insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        insertRow(configBO, mCustomquery);
 
         FileUtils.checkFileExist(AppUtils.latlongImageFileName + "", retailerMasterBO.getRetailerID(), true);
     }
 
-    private void updateLongitude(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("0.0")) {
-            if ((retailerMasterBO.getLongitude() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getLongitude() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getAddressid()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateLatitude(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("0.0")) {
-            if ((retailerMasterBO.getLatitude() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getLatitude() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getAddressid()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateSubChannel(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if ((retailerMasterBO.getSubchannelid() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getSubchannelid() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getRetailerID()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateChannel(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if ((retailerMasterBO.getChannelID() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getChannelID() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getRetailerID()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateContactNumber(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if (retailerMasterBO.getContactnumber().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!retailerMasterBO.getContactnumber().equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getAddressid()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updatePincode(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if (retailerMasterBO.getPincode().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!retailerMasterBO.getPincode().equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getAddressid()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateContract(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if ((retailerMasterBO.getContractLovid() + "").equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!(retailerMasterBO.getContractLovid() + "").equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getRetailerID()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateState(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if (retailerMasterBO.getState().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!retailerMasterBO.getState().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getAddressid()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateCity(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if (retailerMasterBO.getCity().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!retailerMasterBO.getCity().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getAddressid()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateStoreName(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if (retailerMasterBO.getRetailerName().equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!retailerMasterBO.getRetailerName().equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getRetailerID()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateAddress1(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if (retailerMasterBO.getAddress1().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!retailerMasterBO.getAddress1().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getAddressid()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateAddress2(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if (retailerMasterBO.getAddress2().equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!retailerMasterBO.getAddress2().equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getAddressid()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateAddress3(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if (retailerMasterBO.getAddress3().equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-            } else if ((!retailerMasterBO.getAddress3().equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                        + "," + retailerMasterBO.getAddressid()
-                        + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-            }
-        }
-    }
-
-    private void updateDistrict(ConfigureBO configBO) {
-        if ((retailerMasterBO.getDistrict() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-        } else if ((!(retailerMasterBO.getDistrict() + "").equals(configBO.getMenuNumber())
-                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
-                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
-                    + "," + retailerMasterBO.getAddressid()
-                    + "," + retailerMasterBO.getRetailerID() + ")";
-            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-        }
+    private void insertRow(ConfigureBO configBO, String mCustomquery) {
+        insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
     }
 
     private void updateHeaderList() {

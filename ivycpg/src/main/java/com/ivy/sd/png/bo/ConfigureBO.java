@@ -17,6 +17,10 @@ public class ConfigureBO implements Serializable {
     private String menu_type;
     private String regex;
 
+    private boolean isDeleteRow;
+    private String retailerId;
+    private String refId;
+
     public String getMenu_type() {
         return menu_type;
     }
@@ -181,5 +185,29 @@ public class ConfigureBO implements Serializable {
 
     public void setRField(String RField) {
         this.RField = RField;
+    }
+
+    public boolean isDeleteRow() {
+        return isDeleteRow;
+    }
+
+    public void setDeleteRow(boolean deleteRow) {
+        isDeleteRow = deleteRow;
+    }
+
+    public String getRetailerId() {
+        return retailerId;
+    }
+
+    public void setRetailerId(String retailerId) {
+        this.retailerId = retailerId;
+    }
+
+    public String getRefId() {
+        return refId;
+    }
+
+    public void setRefId(String refId) {
+        this.refId = refId;
     }
 }
