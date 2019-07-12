@@ -20,6 +20,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,6 +51,7 @@ import com.bumptech.glide.RequestManager;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -66,6 +68,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.PauseOnFling;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
@@ -300,10 +303,21 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         lvwplist.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         lvwplist.setNestedScrollingEnabled(false);
         lvwplist.addOnScrollListener(new PauseOnFling(glide));
-        
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-        lvwplist.setLayoutManager(linearLayoutManager);
+
+        if(salesReturnHelper.IS_SHOW_SR_CATALOG) {
+            GridLayoutManager gridLayoutManager;
+            if (DeviceUtils.isCatalogDevice(getActivity())) {
+                gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+            } else {
+                gridLayoutManager = new GridLayoutManager(getActivity(), 1);
+            }
+            lvwplist.setLayoutManager(gridLayoutManager);
+        }else {
+
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+            linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+            lvwplist.setLayoutManager(linearLayoutManager);
+        }
 
         lvwplist.setAdapter(new SalesReturnAdapter(mylist,getActivity(),bmodel,glide));
 
