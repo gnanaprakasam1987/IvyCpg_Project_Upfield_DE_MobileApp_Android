@@ -934,22 +934,39 @@ public class TaxGstHelper implements TaxInterface {
                 if (isAllProducts||(productMasterBO.getOrderedCaseQty() > 0
                         || productMasterBO.getOrderedPcsQty() > 0
                         || productMasterBO.getOrderedOuterQty() > 0)) {
-                if (productMasterBO.getSrp() > 0) {
+                    if (productMasterBO.getSrp() > 0) {
 
-                    float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmountInPrice(productMasterBO.getProductID()), 2).floatValue();
+                        float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() /(1+ getTotalTaxRate(productMasterBO.getProductID())), 2).floatValue();
 
-                    if (srpWithoutTax > 0)
-                        productMasterBO.setSrp(srpWithoutTax);
-                    else productMasterBO.setSrp(0);
+                        if (srpWithoutTax > 0)
+                            productMasterBO.setSrp(srpWithoutTax);
+                        else productMasterBO.setSrp(0);
 
+                    }
                 }
-            }
 
-             }
+            }
         } catch (Exception ex) {
             Commons.printException(ex);
         }
 
+    }
+
+    private float getTotalTaxRate(String productId) {
+        float taxRate = 0;
+        try {
+            ProductMasterBO bo = mBusinessModel.productHelper.getProductMasterBOById(productId);
+            if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(productId) != null) {
+                    for (TaxBO taxBO : mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(productId)) {
+                        if (taxBO.getParentType().equals("0")) {
+                            taxRate += taxBO.getTaxRate() / 100;
+                        }
+                    }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+        return taxRate;
     }
 
     private float getTaxAmountInPrice(String productId) {
