@@ -1,117 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.ivy.ui.DisplayAsset.DisplayAssetActivity">
 
-  <include
-      android:id="@+id/toolbar"
-      layout="@layout/material_tool_bar"
-      />
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
 
-  <ExpandableListView
-      android:id="@+id/listview_assets"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_below="@+id/toolbar"
-      android:layout_above="@+id/layout_status"
-      >
-
-  </ExpandableListView>
-
-<LinearLayout
-    android:id="@+id/layout_status"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_above="@+id/footer"
-    android:padding="@dimen/dimen_5dp"
-    android:background="@color/green_productivity"
-    >
-    <TextView
-        android:id="@+id/textview_status"
+    <ExpandableListView
+        android:id="@+id/listview_assets"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/advantage"
-        android:textColor="@color/white"/>
-</LinearLayout>
-  <RelativeLayout
-      android:id="@+id/footer"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:background="?attr/customFooterBackgroundColor"
-      android:minHeight="@dimen/footer_height"
-      android:orientation="horizontal"
-      android:padding="@dimen/dimen_5dp">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/expo_status_rl"
+        android:layout_below="@+id/toolbar">
+
+    </ExpandableListView>
+
     <RelativeLayout
+        android:id="@+id/expo_status_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="2dp">
-      <LinearLayout
-          android:id="@+id/layout_company_value"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_centerVertical="true"
-          android:orientation="vertical"
-          android:visibility="visible">
+        android:layout_above="@+id/layout_status">
 
-      <TextView
-          android:id="@+id/label_company_name"
-          style="@style/TextViewFooterLabel"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:gravity="start"
-          android:text="Company" />
-
-        <TextView
-            android:id="@+id/textview_company_count"
-            style="@style/TextViewFooterValue"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/expo_question_tv"
+            style="@style/TextViewCaptionNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/zero" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/_5sdp"
+            android:gravity="center|start"
+            android:layout_toStartOf="@+id/rg_expo_status"
+            android:layout_toLeftOf="@+id/rg_expo_status"
+            android:text="@string/exposition_status" />
 
-
-      </LinearLayout>
-
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_centerVertical="true"
-          android:orientation="vertical"
-          android:visibility="visible"
-          android:layout_toRightOf="@+id/layout_company_value"
-          android:layout_marginLeft="@dimen/dimen_10dp"
-          >
-
-        <TextView
-            android:id="@+id/label_other"
-            style="@style/TextViewFooterLabel"
+        <RadioGroup
+            android:id="@+id/rg_expo_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="start"
-            android:text="@string/other" />
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/_5sdp"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textview_other_count"
-            style="@style/TextViewFooterValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/zero" />
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/expo_status_yes"
+                style="?attr/radio_button_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_8sdp"
+                android:button="@drawable/radio_btn_yes"
+                android:text="@string/yes" />
 
-
-      </LinearLayout>
-
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/expo_status_no"
+                style="?attr/radio_button_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_8sdp"
+                android:button="@drawable/radio_btn_no"
+                android:text="@string/no" />
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/expo_status_none"
+                style="?attr/radio_button_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_8sdp"
+                android:button="@drawable/radio_btn_none"
+                android:text="@string/not_applicable" />
+        </RadioGroup>
     </RelativeLayout>
-    <Button
-        android:id="@+id/btn_save"
-        style="?attr/roundedCustomButtonSmall_Configured"
-        android:layout_width="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:text="@string/save"
-        android:textAllCaps="false" />
-  </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footer"
+        android:background="@color/green_productivity"
+        android:padding="@dimen/dimen_5dp">
+
+        <TextView
+            android:id="@+id/textview_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/advantage"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/customFooterBackgroundColor"
+        android:minHeight="@dimen/footer_height"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp">
+
+            <LinearLayout
+                android:id="@+id/layout_company_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/label_company_name"
+                    style="@style/TextViewFooterLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="Company" />
+
+                <TextView
+                    android:id="@+id/textview_company_count"
+                    style="@style/TextViewFooterValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/zero" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:layout_toRightOf="@+id/layout_company_value"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/label_other"
+                    style="@style/TextViewFooterLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="@string/other" />
+
+                <TextView
+                    android:id="@+id/textview_other_count"
+                    style="@style/TextViewFooterValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/zero" />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_save"
+            style="?attr/roundedCustomButtonSmall_Configured"
+            android:layout_width="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/save"
+            android:textAllCaps="false" />
+    </RelativeLayout>
 </RelativeLayout>

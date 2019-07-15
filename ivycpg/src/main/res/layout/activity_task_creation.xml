@@ -150,7 +150,7 @@
                 android:drawableEnd="@drawable/ic_arrow_drop_down"
                 android:ems="10"
                 android:gravity="top"
-                android:hint="@string/plain_select"
+                android:hint="@string/select_retailer"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLines="1"

@@ -3515,7 +3515,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             productSearch.setProductNameOnBar(holder.pname);
 
                         if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
-                            dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.shelfPcsQty);
+                            dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.srpEdit,true,12);
                             dialogCustomKeyBoard.show();
                             dialogCustomKeyBoard.setCancelable(false);
 
@@ -3565,7 +3565,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         holder.srpEdit.setSelection(qty.length());
                     }
                     if (!"".equals(qty)) {
-                        if (SDUtil.isValidDecimal(qty, 8, 2)) {
+                        boolean validateSRPEdit = isValidateSRPEdit(qty, holder);
+                        if (SDUtil.isValidDecimal(qty, 8, 2)
+                                && validateSRPEdit) {
 
                             holder.productObj.setSrp(SDUtil.convertToFloat(SDUtil.format(SDUtil.convertToFloat(qty), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
 
@@ -3574,7 +3576,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             float osrp = holder.productObj.getOutersize() * SDUtil.convertToFloat(qty);
                             holder.productObj.setOsrp(SDUtil.convertToFloat(SDUtil.format(osrp, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+
+                            if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP
+                                    && mSchedule != null)
+                                mSchedule.notifyDataSetChanged();
                         } else {
+                            if (!validateSRPEdit
+                                    && bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP)
+                                showMessage(String.format(getString(R.string.srp_must_be_less_than_of_mrp),holder.productObj.getMRP()));
+
                             holder.srpEdit.setText(qty.length() > 1 ? qty
                                     .substring(0, qty.length() - 1) : "0");
                         }
@@ -3834,7 +3844,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             });
         }
 
+    }
 
+    private boolean isValidateSRPEdit(String qty, ViewHolder holder) {
+       return !bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP
+               || (SDUtil.convertToFloat(SDUtil.format(SDUtil.convertToFloat(qty), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0))
+               <= holder.productObj.getMRP());
     }
 
     private void calculateSO(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {

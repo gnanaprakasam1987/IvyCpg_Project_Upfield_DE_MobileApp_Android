@@ -385,7 +385,7 @@
     <string name="select_link">Select Link</string>
     <string name="would_you_like_add_reason_to_close_task">Would you like to close this task?</string>
     <string name="task_reason_updated_successfully">Reason updated successfully…</string>
-    <string name="select_retailer">Select Retails</string>
+    <string name="select_retailer">Select Retailer</string>
     <string name="visit_date">Visit Date Selection</string>
     <string name="mark_as_executed">Mark as execute</string>
     <string name="mark_as_un_executed">Mark as un executed</string>
@@ -401,4 +401,7 @@
     <string name="order_type">Order Type</string>
     <string name="profile_view">Profile View</string>
     <string name="do_u_want_close">Do you want to Close?</string>
+    <string name="exposition_status">Exposition Status</string>
+    <string name="not_applicable">Not Applicable</string>
+    <string name="srp_must_be_less_than_of_mrp">Seller price must be less than of MRP: %.0f</string>
 </resources>

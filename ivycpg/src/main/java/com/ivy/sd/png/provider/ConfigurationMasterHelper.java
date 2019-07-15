@@ -725,7 +725,7 @@ public class ConfigurationMasterHelper {
 
     public boolean SHOW_STK_ORD_SRP = true;
 
-    public boolean SHOW_STK_ORD_SRP_EDT;
+
     public boolean SHOW_STK_QTY_IN_ORDER;
     public boolean SHOW_D1;
     public boolean SHOW_D2;
@@ -1050,6 +1050,10 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_REJECT_SALES_RETURN_DELIVERY = "DEL01";
     public boolean IS_SR_DELIVERY_REJECT;
+
+    private static final String CODE_SHOW_STK_ORD_SRP_EDT = "SRPEDIT";
+    public boolean SHOW_STK_ORD_SRP_EDT;
+    public boolean SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP;
 
     //int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
@@ -4107,6 +4111,8 @@ public class ConfigurationMasterHelper {
             SELLER_SKU_WISE_KPI_CODES = "";
 
             SHOW_LASTVISIT_GRAPH = false;
+            SHOW_STK_ORD_SRP_EDT = false;
+            SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -4203,12 +4209,26 @@ public class ConfigurationMasterHelper {
                         SHOW_INDICATIVE_ORDER = true;
                     else if (temp.equals("CO"))
                         SHOW_CLEANED_ORDER = true;
-                    else if (temp.equals("SRPEDT"))
-                        SHOW_STK_ORD_SRP_EDT = true;
                     else if (temp.equals("STKQTY"))
                         SHOW_STK_QTY_IN_ORDER = true;
                 }
             }
+
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_STK_ORD_SRP_EDT) + " and Flag=1 and ForSwitchSeller = 0";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    SHOW_STK_ORD_SRP_EDT = true;
+                    if (c.getInt(0) == 1)
+                        SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP = true;
+                }
+                c.close();
+            }
+
+
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode=" + bmodel.QT(CODE_SHOW_REMARKS_STK_ORD) + " and Flag=1 and ForSwitchSeller = 0";

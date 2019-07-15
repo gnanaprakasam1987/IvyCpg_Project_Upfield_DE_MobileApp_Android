@@ -13,7 +13,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -26,6 +25,7 @@ import java.util.concurrent.Callable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
@@ -1036,6 +1036,113 @@ public class SerializedAssetHelper {
     /**
      * Download unique POSM available
      */
+    Observable<ArrayList<AssetAddDetailBO>> fetchAddAssets(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                try {
+                    db.openDataBase();
+                    StringBuilder accountGroupId = new StringBuilder();
+
+                    Cursor c = db.selectSQL("select groupid from AccountGroupDetail where retailerid=" + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID());
+                    if (c != null) {
+                        if (c.moveToNext()) {
+                            if (accountGroupId.length() > 0)
+                                accountGroupId.append(",");
+                            accountGroupId.append(c.getString(0));
+                        }
+                        c.close();
+                    }
+                    return accountGroupId.toString();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return "";
+            }
+        }).flatMap(new Function<String, SingleSource<?>>() {
+            @Override
+            public SingleSource<?> apply(String groupIds) throws Exception {
+                return Single.fromCallable(new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {
+                        try {
+                            StringBuilder mappingAssetIds = new StringBuilder();
+                            Cursor c = db.selectSQL("select AssetId from SerializedAssetMasterMapping where AccoutGroupId in(" + groupIds + ")");
+                            if (c != null) {
+                                if (c.moveToNext()) {
+                                    if (mappingAssetIds.length() > 0)
+                                        mappingAssetIds.append(",");
+                                    mappingAssetIds.append(c.getString(0));
+                                }
+                                c.close();
+                            }
+                            return mappingAssetIds.toString();
+                        } catch (Exception e) {
+                            Commons.printException(e);
+                        }
+                        return "";
+                    }
+                });
+            }
+        }).flatMapObservable(new Function<Object, ObservableSource<? extends ArrayList<AssetAddDetailBO>>>() {
+            @Override
+            public ObservableSource<? extends ArrayList<AssetAddDetailBO>> apply(Object assetIDs) throws Exception {
+                return Observable.fromCallable(new Callable<ArrayList<AssetAddDetailBO>>() {
+                    @Override
+                    public ArrayList<AssetAddDetailBO> call() throws Exception {
+                        ArrayList<AssetAddDetailBO> posmList = new ArrayList<>();
+                        try {
+                            String assetIdCond = "";
+                            if (!assetIDs.toString().isEmpty())
+                                assetIdCond = " Where AssetId in(" + assetIDs + ")";
+
+                            String sb = "select distinct AssetId,AssetName,ifnull(vendorid,''),ifnull(modelid,''),capacity,ifnull(assettype,'') from SerializedAssetMaster" + assetIdCond;
+
+
+                            Cursor c = db.selectSQL(sb);
+                            if (c.getCount() > 0) {
+                                Vector<AssetAddDetailBO> mAssetSpinner = new Vector<>();
+                                while (c.moveToNext()) {
+                                    AssetAddDetailBO assetBO = new AssetAddDetailBO();
+                                    assetBO.setPOSMId(c.getString(0));
+                                    assetBO.setPOSMDescription(c.getString(1));
+                                    assetBO.setVendorId(c.getString(2));
+                                    assetBO.setModelId(c.getString(3));
+                                    assetBO.setCapacity(c.getString(4));
+                                    assetBO.setTypeId(c.getString(5));
+                                    mAssetSpinner.add(assetBO);
+                                    posmList.add(assetBO);
+
+                                }
+                            }
+
+                            //download exsisiting asset serial no from transaction table
+                            String sb1 = "select serialNum from AssetAddDelete";
+                            c = db.selectSQL(sb1);
+                            if (c.getCount() > 0) {
+                                while (c.moveToNext()) {
+                                    mUniqueSerialNo.put(c.getString(0), c.getString(0));
+                                }
+                            }
+
+                            c.close();
+                            db.closeDB();
+                            return posmList;
+
+                        } catch (Exception e) {
+                            Commons.printException("" + e);
+                            db.closeDB();
+                        }
+                        return new ArrayList<>();
+                    }
+                });
+            }
+        });
+    }
+
+
     public ArrayList<AssetAddDetailBO> downloadUniqueAssets(Context mContext) {
 
         ArrayList<AssetAddDetailBO> posmList = new ArrayList<>();
@@ -1303,7 +1410,7 @@ public class SerializedAssetHelper {
 
 
             String values = id + "," + StringUtils.getStringQueryParam(assets.getPOSM()) + "," + StringUtils.getStringQueryParam(assets.getSNO()) + ","
-                    + StringUtils.getStringQueryParam( assets.getNFCTagId() == null? "" : assets.getNFCTagId())
+                    + StringUtils.getStringQueryParam(assets.getNFCTagId() == null ? "" : assets.getNFCTagId())
                     + "," + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                     + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + StringUtils.getStringQueryParam("T") + "," +
                     StringUtils.getStringQueryParam(assets.getReasonId()) + ","

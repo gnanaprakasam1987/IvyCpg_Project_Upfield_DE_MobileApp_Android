@@ -2,11 +2,6 @@ package com.ivy.cpg.view.serializedAsset;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +10,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 
 import com.ivy.cpg.view.asset.bo.AssetAddDetailBO;
 import com.ivy.sd.png.asean.view.R;
@@ -31,6 +32,7 @@ import java.util.GregorianCalendar;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class SerializedAssetRequestActivity extends IvyBaseActivityNoActionBar {
@@ -187,10 +189,27 @@ public class SerializedAssetRequestActivity extends IvyBaseActivityNoActionBar {
         }
     }
 
+    /**
+     * Preparing screen
+     */
+
+    private void downloadAddAssets() {
+        posmList = new ArrayList<>();
+        new CompositeDisposable()
+                .add(assetTrackingHelper.fetchAddAssets(this)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<ArrayList<AssetAddDetailBO>>() {
+                            @Override
+                            public void accept(ArrayList<AssetAddDetailBO> assetAddDetailBOS) throws Exception {
+
+                                posmList.addAll(assetAddDetailBOS);
+                            }
+                        }));
+    }
+
     private void loadData() {
-
-        posmList = assetTrackingHelper.downloadUniqueAssets(getApplicationContext());
-
+        downloadAddAssets();
         mAssetSpinAdapter = new ArrayAdapter<>(
                 this, R.layout.autocompelete_bluetext_layout, posmList);
         mAssetSpinAdapter
