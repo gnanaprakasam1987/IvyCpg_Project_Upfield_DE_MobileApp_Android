@@ -468,7 +468,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                     return sstr.getTaskDueDate().compareToIgnoreCase(fstr.getTaskDueDate());
             });
         }
-        getIvyView().updateListData(taskList);
+        ((TaskContract.TaskListView)getIvyView()).updateSortList();
     }
 
     @Override

@@ -795,11 +795,11 @@ public class TaskPresenterTest {
         given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
-
         taskPresenter.orderBySortList(mockTaskListData, TaskConstant.TASK_TITLE_ASC, true);
         testScheduler.triggerActions();
+
         Collections.sort(mockTaskListData, (fstr, sstr) -> fstr.getTasktitle().compareToIgnoreCase(sstr.getTasktitle()));
-        then(parentView).should().updateListData(mockTaskListData);
+        then((TaskContract.TaskListView)parentView).should().updateSortList();
 
     }
 
@@ -813,11 +813,11 @@ public class TaskPresenterTest {
         given(mDataManager.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
-
         taskPresenter.orderBySortList(mockTaskListData, TaskConstant.TASK_TITLE_DESC, false);
         testScheduler.triggerActions();
+
         Collections.sort(mockTaskListData, (sstr, fstr) -> sstr.getTasktitle().compareToIgnoreCase(fstr.getTasktitle()));
-        then(parentView).should().updateListData(mockTaskListData);
+        then((TaskContract.TaskListView)parentView).should().updateSortList();
 
     }
 
@@ -836,7 +836,7 @@ public class TaskPresenterTest {
         testScheduler.triggerActions();
 
         Collections.sort(mockTaskListData, (fstr, sstr) -> fstr.getTaskCategoryDsc().compareToIgnoreCase(sstr.getTaskCategoryDsc()));
-        then(parentView).should().updateListData(mockTaskListData);
+        then((TaskContract.TaskListView)parentView).should().updateSortList();
 
     }
 
@@ -854,7 +854,7 @@ public class TaskPresenterTest {
         testScheduler.triggerActions();
 
         Collections.sort(mockTaskListData, (sstr, fstr) -> sstr.getTaskCategoryDsc().compareToIgnoreCase(fstr.getTaskCategoryDsc()));
-        then(parentView).should().updateListData(mockTaskListData);
+        then((TaskContract.TaskListView)parentView).should().updateSortList();
 
     }
 
@@ -872,7 +872,7 @@ public class TaskPresenterTest {
         testScheduler.triggerActions();
 
         Collections.sort(mockTaskListData, (fstr, sstr) -> fstr.getTaskDueDate().compareToIgnoreCase(sstr.getTaskDueDate()));
-        then(parentView).should().updateListData(mockTaskListData);
+        then((TaskContract.TaskListView)parentView).should().updateSortList();
 
     }
 
@@ -889,7 +889,7 @@ public class TaskPresenterTest {
         testScheduler.triggerActions();
 
         Collections.sort(mockTaskListData, (sstr, fstr) -> sstr.getTaskDueDate().compareToIgnoreCase(fstr.getTaskDueDate()));
-        then(parentView).should().updateListData(mockTaskListData);
+        then((TaskContract.TaskListView)parentView).should().updateSortList();
 
     }
 
