@@ -2034,7 +2034,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (bmodel.configurationMasterHelper.IS_STK_DIGIT)
                         holder.shelfCaseQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
 
-                    ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.shelfCaseTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.shelfCaseTitle))

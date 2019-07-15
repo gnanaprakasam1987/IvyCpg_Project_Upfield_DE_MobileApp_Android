@@ -58,27 +58,27 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
     private static final String FILTER_CODE_PURCHASED = "Filt05";
     private static final String FILTER_CODE_INITIATIVE = "Filt06";
     private static final String FILTER_CODE_ALLOCATION = "Filt07";
-    private static final String FILTER_CODE_IN_STOCK = "Filt08";
+    private static final String FILTER_CODE_WAREHOUSE_STOCK = "Filt08";
     private static final String FILTER_CODE_PROMO = "Filt09";
     private static final String FILTER_CODE_MUSTSELL = "Filt10";
     private static final String FILTER_CODE_FOCUSBRAND = "Filt11";
     private static final String FILTER_CODE_FOCUSBRAND2 = "Filt12";
-    private static final String FILTER_CODE_SIH = "Filt13";
-    private static final String FILTER_CODE_OOS = "Filt14";
-    private static final String FILTER_CODE_NMUSTSELL = "Filt16";
-    private static final String FILTER_CODE_STOCK = "Filt17";
-    private static final String FILTER_CODE_DISCOUNT = "Filt18";
+    private static final String FILTER_CODE_VAN_STOCK = "Filt13";
+    private static final String FILTER_CODE_OUT_OF_STOCK = "Filt14";
+    private static final String FILTER_CODE_NON_MUSTSELL = "Filt16";
+    private static final String FILTER_CODE_SHELF_STOCK = "Filt17";
+    private static final String FILTER_CODE_DISCOUNTABLE_PRODUCTS = "Filt18";
     public static final String FILTER_CODE_SUGGESTED_ORDER = "Filt25";
     private static final String FILTER_CODE_DEAD_PRODUCTS = "Filt15";
     private static final String FILTER_CODE_COMMON = "Filt01";
-    private static final String FILTER_CODE_COMPETITOR = "Filt23";
+    private static final String FILTER_CODE_COMPETITOR_PRODUCTS = "Filt23";
     private static final String FILTER_CODE_FOCUSBRAND3 = "Filt20";
-    private static final String FILTER_CODE_DRUG_PROD = "Filt28";
+    private static final String FILTER_CODE_DRUG_PRODUCTS = "Filt28";
     private static final String FILTER_CODE_FOCUSBRAND4 = "Filt21";
-    private static final String FILTER_CODE_SMP = "Filt22";
+    private static final String FILTER_CODE_SMALL_PACK_PRODUCTS = "Filt22";
     private static final String FILTER_CODE_NEAR_EXPIRY = "Filt19";
-    private static final String FILTER_CODE_SHELF = "Filt24";
-    private static final String FILTER_CODE_TRADEPROMOTION = "Filt31";
+    private static final String FILTER_CODE_SHELF_STOCK_1 = "Filt24";
+    private static final String FILTER_CODE_TRADE_PROMOTION = "Filt31";
 
     private final String GENERAL = "General";
 
@@ -302,17 +302,21 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
     private boolean isValidProductForCurrentScreen(ProductMasterBO productMasterBO){
 
 
+        // Common Checks..
         if(!configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&productMasterBO.getIsSaleable() == 0)
             return false;
 
+        OrderHelper orderHelper = OrderHelper.getInstance(context);
+        if (configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                !productMasterBO.getParentHierarchy().contains("/" + productHelper.getmSelectedGlobalProductId() + "/"))
+            return false;
+
+
+
+            // Order Screen specific checks..
             if (SCREEN_CODE_ORDER.equals(current_screen_code)) {
 
                 if (configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productMasterBO.getGroupid() == 0)
-                    return false;
-
-                OrderHelper orderHelper = OrderHelper.getInstance(context);
-                if (configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
-                        !productMasterBO.getParentHierarchy().contains("/" + productHelper.getmSelectedGlobalProductId() + "/"))
                     return false;
 
                 if (configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY) {
@@ -362,27 +366,26 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_INITIATIVE) && ret.getIsInitiativeProduct() == 1)
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_COMMON) && applyCommonFilterConfig(ret))
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_SBD_GAPS) && (ret.isRPS() && !ret.isSBDAcheived()))
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_IN_STOCK) && ret.getWSIH() > 0)
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_WAREHOUSE_STOCK) && ret.getWSIH() > 0)
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_ALLOCATION) && ret.isAllocation() == 1 && configurationMasterHelper.IS_SIH_VALIDATION)
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_PROMO) && ret.isPromo())
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_MUSTSELL) && ret.getIsMustSell() == 1)
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_FOCUSBRAND) && ret.getIsFocusBrand() == 1)
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_FOCUSBRAND2) && ret.getIsFocusBrand2() == 1)
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_SIH) && ret.getSIH() > 0)
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_OOS) && ret.getOos() == 0)
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_NMUSTSELL) && ret.getIsNMustSell() == 1)
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_DISCOUNT) && ret.getIsDiscountable() == 1)
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_STOCK) && (ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfPiece() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfCase() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfOuter() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getWHPiece() > 0 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getWHCase() > 0 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getWHOuter() > 0 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getAvailability() > -1))
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_VAN_STOCK) && ret.getSIH() > 0)
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_OUT_OF_STOCK) && ret.getOos() == 0)
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_NON_MUSTSELL) && ret.getIsNMustSell() == 1)
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_DISCOUNTABLE_PRODUCTS) && ret.getIsDiscountable() == 1)
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_NEAR_EXPIRY) && ret.getIsNearExpiryTaggedProduct() == 1)
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_FOCUSBRAND3) && ret.getIsFocusBrand3() == 1)
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_FOCUSBRAND4) && ret.getIsFocusBrand4() == 1)
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_SMP) && ret.getIsSMP() == 1)
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_COMPETITOR) && ret.getOwn() == 0)
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_SHELF) && (ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfCase() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfPiece() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfOuter() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getAvailability() > -1))
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_SMALL_PACK_PRODUCTS) && ret.getIsSMP() == 1)
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_COMPETITOR_PRODUCTS) && ret.getOwn() == 0)
+                || ((selectedFilter.equalsIgnoreCase(FILTER_CODE_SHELF_STOCK)||selectedFilter.equalsIgnoreCase(FILTER_CODE_SHELF_STOCK_1)) && (ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfCase() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfPiece() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfOuter() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getAvailability() > -1))
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_SUGGESTED_ORDER) && ret.getSoInventory() > 0)
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_DRUG_PROD) && ret.getIsDrug() == 1)
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_DRUG_PRODUCTS) && ret.getIsDrug() == 1)
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_DEAD_PRODUCTS) && ret.getmDeadProduct() == 1)
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_TRADEPROMOTION) && ret.getmTradePromotion() == 1);
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_TRADE_PROMOTION) && ret.getmTradePromotion() == 1);
     }
 
     private boolean applyCommonFilterConfig(ProductMasterBO ret) {
@@ -392,13 +395,13 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
 
                 return (bo.getConfigCode().equals(FILTER_CODE_SBD) && ret.isRPS()) || (bo.getConfigCode().equals(FILTER_CODE_SBD_GAPS) && ret.isRPS() && !ret.isSBDAcheived()) || (bo.getConfigCode().equals(FILTER_CODE_ORDERED) && (ret.getOrderedPcsQty() > 0 || ret.getOrderedCaseQty() > 0 || ret.getOrderedOuterQty() > 0))
                         || (bo.getConfigCode().equals(FILTER_CODE_PURCHASED) && ret.getIsPurchased() == 1) || (bo.getConfigCode().equals(FILTER_CODE_INITIATIVE) && ret.getIsInitiativeProduct() == 1) || (bo.getConfigCode().equals(FILTER_CODE_ALLOCATION) && ret.isAllocation() == 1 && configurationMasterHelper.IS_SIH_VALIDATION)
-                        || (bo.getConfigCode().equals(FILTER_CODE_IN_STOCK) && ret.getWSIH() > 0) || (bo.getConfigCode().equals(FILTER_CODE_PROMO) && ret.isPromo()) || (bo.getConfigCode().equals(FILTER_CODE_MUSTSELL) && ret.getIsMustSell() == 1)
-                        || (bo.getConfigCode().equals(FILTER_CODE_FOCUSBRAND)) || (bo.getConfigCode().equals(FILTER_CODE_FOCUSBRAND2) && ret.getIsFocusBrand2() == 1) || (bo.getConfigCode().equals(FILTER_CODE_SIH) && ret.getSIH() > 0) || (bo.getConfigCode().equals(FILTER_CODE_OOS) && ret.getOos() == 0)
-                        || (bo.getConfigCode().equals(FILTER_CODE_NMUSTSELL) && ret.getIsNMustSell() == 1) || (bo.getConfigCode().equals(FILTER_CODE_STOCK) && (ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfPiece() > -1
+                        || (bo.getConfigCode().equals(FILTER_CODE_WAREHOUSE_STOCK) && ret.getWSIH() > 0) || (bo.getConfigCode().equals(FILTER_CODE_PROMO) && ret.isPromo()) || (bo.getConfigCode().equals(FILTER_CODE_MUSTSELL) && ret.getIsMustSell() == 1)
+                        || (bo.getConfigCode().equals(FILTER_CODE_FOCUSBRAND)) || (bo.getConfigCode().equals(FILTER_CODE_FOCUSBRAND2) && ret.getIsFocusBrand2() == 1) || (bo.getConfigCode().equals(FILTER_CODE_VAN_STOCK) && ret.getSIH() > 0) || (bo.getConfigCode().equals(FILTER_CODE_OUT_OF_STOCK) && ret.getOos() == 0)
+                        || (bo.getConfigCode().equals(FILTER_CODE_NON_MUSTSELL) && ret.getIsNMustSell() == 1) || (bo.getConfigCode().equals(FILTER_CODE_SHELF_STOCK) && (ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfPiece() > -1
                         || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfCase() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfOuter() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getWHPiece() > 0
                         || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getWHCase() > 0 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getWHOuter() > 0 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getAvailability() > -1))
-                        || (bo.getConfigCode().equals(FILTER_CODE_DISCOUNT) && ret.getIsDiscountable() == 1) || (bo.getConfigCode().equals(FILTER_CODE_DRUG_PROD) && ret.getIsDrug() == 1)
-                        || (bo.getConfigCode().equals(FILTER_CODE_DEAD_PRODUCTS) && ret.getmDeadProduct() == 1) || (bo.getConfigCode().equals(FILTER_CODE_TRADEPROMOTION) && ret.getmTradePromotion() == 1);
+                        || (bo.getConfigCode().equals(FILTER_CODE_DISCOUNTABLE_PRODUCTS) && ret.getIsDiscountable() == 1) || (bo.getConfigCode().equals(FILTER_CODE_DRUG_PRODUCTS) && ret.getIsDrug() == 1)
+                        || (bo.getConfigCode().equals(FILTER_CODE_DEAD_PRODUCTS) && ret.getmDeadProduct() == 1) || (bo.getConfigCode().equals(FILTER_CODE_TRADE_PROMOTION) && ret.getmTradePromotion() == 1);
 
             }
         }
@@ -514,18 +517,18 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
                         break;
                     } else {
                         if (bModel.getAppDataProvider().getRetailMaster().getIsVansales() == 1) {
-                            if (specialFilterList.get(i).getConfigCode().equals(FILTER_CODE_SIH)) {
+                            if (specialFilterList.get(i).getConfigCode().equals(FILTER_CODE_VAN_STOCK)) {
                                 defaultFilter = specialFilterList.get(i).getConfigCode();
                                 break;
-                            } else if (!specialFilterList.get(i).getConfigCode().equals(FILTER_CODE_IN_STOCK)) {
+                            } else if (!specialFilterList.get(i).getConfigCode().equals(FILTER_CODE_WAREHOUSE_STOCK)) {
                                 defaultFilter = specialFilterList.get(i).getConfigCode();
                                 break;
                             }
                         } else {
-                            if (specialFilterList.get(i).getConfigCode().equals(FILTER_CODE_IN_STOCK)) {
+                            if (specialFilterList.get(i).getConfigCode().equals(FILTER_CODE_WAREHOUSE_STOCK)) {
                                 defaultFilter = specialFilterList.get(i).getConfigCode();
                                 break;
-                            } else if (!specialFilterList.get(i).getConfigCode().equals(FILTER_CODE_SIH)) {
+                            } else if (!specialFilterList.get(i).getConfigCode().equals(FILTER_CODE_VAN_STOCK)) {
                                 defaultFilter = specialFilterList.get(i).getConfigCode();
                                 break;
                             }
