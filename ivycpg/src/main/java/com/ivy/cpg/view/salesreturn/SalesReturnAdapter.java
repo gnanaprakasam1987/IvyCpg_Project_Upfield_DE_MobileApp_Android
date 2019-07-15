@@ -21,6 +21,7 @@ import com.ivy.sd.png.view.CustomKeyBoard;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -30,7 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class SalesReturnAdapter extends RecyclerView.Adapter<SalesReturnAdapter.MyViewHolder>  {
 
 
-    private final ArrayList<ProductMasterBO> items;
+    private final Vector<ProductMasterBO> items;
     private CustomKeyBoard dialogCustomKeyBoard;
     private Context context;
     private ProductMasterBO productMasterBO;
@@ -41,7 +42,7 @@ public class SalesReturnAdapter extends RecyclerView.Adapter<SalesReturnAdapter.
     private File appImageFolderPath;
     private SalesReturnHelper helper;
 
-    SalesReturnAdapter(ArrayList<ProductMasterBO> items, Context context, BusinessModel bmodel, RequestManager glide) {
+    SalesReturnAdapter(Vector<ProductMasterBO> items, Context context, BusinessModel bmodel, RequestManager glide) {
 
         this.context=context;
         this.items = items;
@@ -105,7 +106,11 @@ public class SalesReturnAdapter extends RecyclerView.Adapter<SalesReturnAdapter.
             int total = 0;
             for (SalesReturnReasonBO obj : productMasterBO.getSalesReturnReasonList())
                 total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
-            String strTotal = context.getResources().getString(R.string.total) + ": " +Integer.toString(total);
+
+            String strTotal =Integer.toString(total);
+            if(helper.IS_SHOW_SR_CATALOG) {
+                strTotal = context.getResources().getString(R.string.total) + ": " +Integer.toString(total);
+            }
             holder.total.setText(strTotal);
 
             holder.layout_row.setOnClickListener(new View.OnClickListener() {
@@ -122,41 +127,43 @@ public class SalesReturnAdapter extends RecyclerView.Adapter<SalesReturnAdapter.
                 }
             });
 
-            holder.pdt_image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    bmodel.selectedPdt = holder.productBO;
+            if(helper.IS_SHOW_SR_CATALOG) {
+                holder.pdt_image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bmodel.selectedPdt = holder.productBO;
 
                    /* Intent i = new Intent(context, ProductDetailsCatalogActivity.class);
                     context.startActivity(i);*/
-                }
-            });
+                    }
+                });
 
-            if (holder.pdt_image != null) {
+                if (holder.pdt_image != null) {
 
-                File mFile = new File(
-                        appImageFolderPath
-                                + "/"
-                                + DataMembers.CATALOG + "/" + holder.productBO.getProductCode() + ".jpg");
-                if (!mFile.exists())
-                    mFile = new File(
+                    File mFile = new File(
                             appImageFolderPath
                                     + "/"
-                                    + DataMembers.CATALOG + "/" + holder.productBO.getProductCode() + ".png");
+                                    + DataMembers.CATALOG + "/" + holder.productBO.getProductCode() + ".jpg");
+                    if (!mFile.exists())
+                        mFile = new File(
+                                appImageFolderPath
+                                        + "/"
+                                        + DataMembers.CATALOG + "/" + holder.productBO.getProductCode() + ".png");
 
-                Uri path;
-                if (Build.VERSION.SDK_INT >= 24) {
-                    path = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", mFile);
-                } else {
-                    path = Uri.fromFile(mFile);
+                    Uri path;
+                    if (Build.VERSION.SDK_INT >= 24) {
+                        path = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", mFile);
+                    } else {
+                        path = Uri.fromFile(mFile);
+                    }
+                    //Glide.with(getApplicationContext())
+                    glide.load(path)
+                            .error(ContextCompat.getDrawable(context.getApplicationContext(), R.drawable.no_image_available))
+                            .dontAnimate()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(holder.pdt_image);
+
                 }
-                //Glide.with(getApplicationContext())
-                glide.load(path)
-                        .error(ContextCompat.getDrawable(context.getApplicationContext(), R.drawable.no_image_available))
-                        .dontAnimate()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(holder.pdt_image);
-
             }
 
         }

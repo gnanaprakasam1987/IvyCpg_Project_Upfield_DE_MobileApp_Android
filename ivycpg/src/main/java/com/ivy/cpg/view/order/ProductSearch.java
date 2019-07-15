@@ -302,17 +302,21 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
     private boolean isValidProductForCurrentScreen(ProductMasterBO productMasterBO){
 
 
+        // Common Checks..
         if(!configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&productMasterBO.getIsSaleable() == 0)
             return false;
 
+        OrderHelper orderHelper = OrderHelper.getInstance(context);
+        if (configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                !productMasterBO.getParentHierarchy().contains("/" + productHelper.getmSelectedGlobalProductId() + "/"))
+            return false;
+
+
+
+            // Order Screen specific checks..
             if (SCREEN_CODE_ORDER.equals(current_screen_code)) {
 
                 if (configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productMasterBO.getGroupid() == 0)
-                    return false;
-
-                OrderHelper orderHelper = OrderHelper.getInstance(context);
-                if (configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
-                        !productMasterBO.getParentHierarchy().contains("/" + productHelper.getmSelectedGlobalProductId() + "/"))
                     return false;
 
                 if (configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY) {
