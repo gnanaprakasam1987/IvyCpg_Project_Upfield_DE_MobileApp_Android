@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/round_dialog_bg"
@@ -15,9 +16,10 @@
         android:adjustViewBounds="true"
         android:padding="6dp"
         android:tag="@string/attachment"
-        android:text="@string/attachment" />
+        android:text="@string/attachment"
+        tools:ignore="MissingConstraints" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/attachmentRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,4 +48,4 @@
             android:textColor="@color/black_bg1" />
 
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
