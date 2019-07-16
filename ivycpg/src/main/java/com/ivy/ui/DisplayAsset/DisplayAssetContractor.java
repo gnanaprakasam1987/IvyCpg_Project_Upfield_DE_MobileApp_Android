@@ -8,7 +8,8 @@ public interface DisplayAssetContractor {
 
         void setView(DisplayAssetContractor.View view);
         void refreshStatus();
-        boolean saveDisplayAssets(Context context);
+        boolean saveDisplayAssets(Context context,String expositionStatus);
+        String getLastExposStatus(Context context);
     }
 
     interface View{

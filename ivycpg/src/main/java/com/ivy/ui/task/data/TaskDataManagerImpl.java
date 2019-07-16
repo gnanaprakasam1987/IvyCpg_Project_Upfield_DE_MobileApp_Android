@@ -319,7 +319,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             uID = StringUtils.getStringQueryParam(dataManager.getUser().getUserid()
                                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                         else
-                            uID = StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID()
+                            uID = StringUtils.getStringQueryParam(taskDataBO.getRid()
                                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
 

@@ -7,86 +7,87 @@ import com.ivy.sd.png.bo.CompanyBO;
 
 import java.util.HashMap;
 
-public class DisplayAssetPresenterImpl implements DisplayAssetContractor.presenter{
+public class DisplayAssetPresenterImpl implements DisplayAssetContractor.presenter {
 
     private DisplayAssetHelper displayAssetHelper;
     public DisplayAssetContractor.View assetView;
-    private String displayAssetStatus="";
+    private String displayAssetStatus = "";
+    private String expositionStatus = "";
 
-    private double ownCompanyScore,otherCompanyMaxScore;
+    private double ownCompanyScore, otherCompanyMaxScore;
 
-    public DisplayAssetPresenterImpl(DisplayAssetHelper displayAssetHelper){
+    public DisplayAssetPresenterImpl(DisplayAssetHelper displayAssetHelper) {
 
-        this.displayAssetHelper=displayAssetHelper;
+        this.displayAssetHelper = displayAssetHelper;
 
     }
 
     @Override
     public void setView(DisplayAssetContractor.View view) {
-        assetView=view;
+        assetView = view;
     }
 
 
     @Override
     public void refreshStatus() {
 
-        HashMap<Integer,Double> totalWeightageCompanywise=new HashMap<>();
+        HashMap<Integer, Double> totalWeightageCompanywise = new HashMap<>();
         // int totalOwnCompanyCount=0;
-        double ownCompanyScore=0;
-        String ownCompanyName="";
+        double ownCompanyScore = 0;
+        String ownCompanyName = "";
 
-        for(AssetTrackingBO assetTrackingBO:displayAssetHelper.getDisplayAssetList()){
-            for(CompanyBO companyBO:assetTrackingBO.getCompanyList()){
-                if(companyBO.getIsOwn()==1){
+        for (AssetTrackingBO assetTrackingBO : displayAssetHelper.getDisplayAssetList()) {
+            for (CompanyBO companyBO : assetTrackingBO.getCompanyList()) {
+                if (companyBO.getIsOwn() == 1) {
                     // totalOwnCompanyCount+=companyBO.getQuantity();
-                    ownCompanyScore+=(companyBO.getQuantity()*assetTrackingBO.getWeightage());
+                    ownCompanyScore += (companyBO.getQuantity() * assetTrackingBO.getWeightage());
 
-                    ownCompanyName=companyBO.getCompetitorName();
-                }
-                else {
-                    double weightage=0;
-                    if(totalWeightageCompanywise.get(companyBO.getCompetitorid())!=null)
-                        weightage=totalWeightageCompanywise.get(companyBO.getCompetitorid());
+                    ownCompanyName = companyBO.getCompetitorName();
+                } else {
+                    double weightage = 0;
+                    if (totalWeightageCompanywise.get(companyBO.getCompetitorid()) != null)
+                        weightage = totalWeightageCompanywise.get(companyBO.getCompetitorid());
 
-                    totalWeightageCompanywise.put(companyBO.getCompetitorid(),weightage+(companyBO.getQuantity()*assetTrackingBO.getWeightage()));
+                    totalWeightageCompanywise.put(companyBO.getCompetitorid(), weightage + (companyBO.getQuantity() * assetTrackingBO.getWeightage()));
                 }
             }
         }
 
-        double otherCompanyMaxScore=0;
-        for(int companyId:totalWeightageCompanywise.keySet()){
+        double otherCompanyMaxScore = 0;
+        for (int companyId : totalWeightageCompanywise.keySet()) {
 
-            if(totalWeightageCompanywise.get(companyId)>otherCompanyMaxScore)
-                otherCompanyMaxScore=totalWeightageCompanywise.get(companyId);
+            if (totalWeightageCompanywise.get(companyId) > otherCompanyMaxScore)
+                otherCompanyMaxScore = totalWeightageCompanywise.get(companyId);
         }
 
-        int flag=0;
-        if(otherCompanyMaxScore<ownCompanyScore){
-            flag=1;
-            displayAssetStatus="ADVANTAGE";
+        int flag = 0;
+        if (otherCompanyMaxScore < ownCompanyScore) {
+            flag = 1;
+            displayAssetStatus = "ADVANTAGE";
+        } else if (ownCompanyScore != 0 && (otherCompanyMaxScore == ownCompanyScore)) {
+            flag = 2;
+            displayAssetStatus = "EQUAL";
+        } else if (otherCompanyMaxScore > ownCompanyScore) {
+            flag = 3;
+            displayAssetStatus = "DISADVANTAGE";
         }
-        else if(ownCompanyScore!=0&&(otherCompanyMaxScore==ownCompanyScore)){
-            flag=2;
-            displayAssetStatus="EQUAL";
-        }
-        else if(otherCompanyMaxScore>ownCompanyScore){
-            flag=3;
-            displayAssetStatus="DISADVANTAGE";
-        }
-
-
-        this.ownCompanyScore=ownCompanyScore;
-        this.otherCompanyMaxScore=otherCompanyMaxScore;
-        assetView.updateStatus(ownCompanyName,ownCompanyScore,otherCompanyMaxScore,flag);
+        this.ownCompanyScore = ownCompanyScore;
+        this.otherCompanyMaxScore = otherCompanyMaxScore;
+        assetView.updateStatus(ownCompanyName, ownCompanyScore, otherCompanyMaxScore, flag);
 
     }
 
     @Override
-    public boolean saveDisplayAssets(Context context) {
+    public boolean saveDisplayAssets(Context context, String expositionStatus) {
 
 
-        return displayAssetHelper.saveDisplayAsset(context,getDisplayAssetStatus(),ownCompanyScore,otherCompanyMaxScore);
+        return displayAssetHelper.saveDisplayAsset(context, getDisplayAssetStatus(), ownCompanyScore, otherCompanyMaxScore, expositionStatus);
 
+    }
+
+    @Override
+    public String getLastExposStatus(Context context) {
+        return displayAssetHelper.fetchLastExpositionStatus(context);
     }
 
     public String getDisplayAssetStatus() {

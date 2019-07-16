@@ -283,7 +283,7 @@ public class OutletTimeStampHelper {
                     + "," + QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
                     + "," + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()== null ? "": bmodel.retailerMasterBO.getIsDeviated()))
                     + "," + QT(String.valueOf(bmodel.getOrderValue()))
-                    + "," + QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()))
+                    + "," + QT(String.valueOf(getTotalLines(context)))
                     + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
 
             if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
@@ -350,7 +350,7 @@ public class OutletTimeStampHelper {
                     + ", Battery = " + getBatteryPercentage(context)
                     + ", IsLocationEnabled = " + QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
                     + ", IsDeviated = " + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()==null?"":bmodel.retailerMasterBO.getIsDeviated()))
-                    + ", lpc = " + bmodel.retailerMasterBO.getTotalLines()
+                    + ", lpc = " + getTotalLines(context)
                     + "  WHERE RetailerID = '"
                     + bmodel.retailerMasterBO.getRetailerID()
                     + "' AND TimeIn = '" + timeIn + "'";
@@ -639,5 +639,31 @@ public class OutletTimeStampHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+    private int getTotalLines(Context context) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db.selectSQL("select sum(LinesPerCall)from "
+                    + DataMembers.tbl_orderHeader + " where retailerid="
+                    + QT(bmodel.retailerMasterBO.getRetailerID()) +
+                    " AND upload='N' and invoicestatus=0");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    int i = c.getInt(0);
+                    c.close();
+                    db.closeDB();
+                    return i;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return 0;
     }
 }

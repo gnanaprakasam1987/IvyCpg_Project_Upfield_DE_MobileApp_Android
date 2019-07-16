@@ -231,6 +231,41 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/ll_srp_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingEnd="@dimen/padding_l"
+                    android:paddingStart="@dimen/padding_l">
+
+                    <TextView
+                        android:id="@+id/srp_edit_title"
+                        style="@style/TextViewListItemCaption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/padding_rb"
+                        android:tag="srp"
+                        android:text="@string/srp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/font_small" />
+
+                    <TextView
+                        android:id="@+id/srp_edit_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical|end"
+                        android:maxLength="5"
+                        android:padding="@dimen/padding_rb"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/highlight_small"
+                        tools:text="@string/zero" />
+
+                </LinearLayout>
+
+
             </LinearLayout>
 
             <ImageButton

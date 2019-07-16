@@ -73,6 +73,9 @@ public class SalesReturnHelper {
     private static final String CODE_SR_INVOICE_NO_HISTORY = "SR22";
     public boolean IS_SHOW_SR_INVOICE_NO_HISTORY;
 
+    private static final String CODE_SR_CATALOG = "SR24";
+    public boolean IS_SHOW_SR_CATALOG;
+
 
     public static final String CREDIT_TYPE = "CREDIT";
 
@@ -413,6 +416,18 @@ public class SalesReturnHelper {
                 }
                 c.close();
             }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SR_CATALOG) + " and Flag=1 and ForSwitchSeller = 0";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.IS_SHOW_SR_CATALOG = true;
+                }
+                c.close();
+            }
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);

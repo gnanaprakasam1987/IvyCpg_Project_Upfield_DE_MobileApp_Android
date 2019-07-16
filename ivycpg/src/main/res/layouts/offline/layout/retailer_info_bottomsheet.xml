@@ -14,7 +14,7 @@
     app:cardCornerRadius="@dimen/card_margin"
     app:cardElevation="@dimen/card_margin"
     app:contentPadding="@dimen/dimens_4dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRetailerInfo"

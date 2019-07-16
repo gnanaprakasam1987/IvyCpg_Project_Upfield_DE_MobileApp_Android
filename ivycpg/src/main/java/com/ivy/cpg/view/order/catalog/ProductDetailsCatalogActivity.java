@@ -20,6 +20,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -57,7 +58,7 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         mProductIdList = getIntent().getStringArrayListExtra("ProductIdList");
         ImageView pdt_image_details = findViewById(R.id.pdt_image_details);
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
+            if (FileUtils.isFileExisting(getImageFilePath(bmodel.selectedPdt.getProductCode()))) {
 
                 File prd = new File(getImageFilePath(bmodel.selectedPdt.getProductCode()));
                 Glide.with(getApplicationContext())
