@@ -18,10 +18,13 @@ import com.ivy.ui.profile.attribute.IProfileAttributeContract;
 import com.ivy.ui.profile.attribute.di.DaggerProfileAttributeComponent;
 import com.ivy.ui.profile.attribute.di.ProfileAttributeModule;
 import com.ivy.ui.profile.attribute.presenter.ProfileAttributePresenterImpl;
+import com.ivy.ui.profile.view.ProfileBaseBo;
 import com.ivy.utils.view.OnSingleClickListener;
 import com.stepstone.stepper.BlockingStep;
 import com.stepstone.stepper.StepperLayout;
 import com.stepstone.stepper.VerificationError;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,13 +61,6 @@ public class ProfileAttributeFragment extends BaseFragment
     @Override
     public void init(View view) {
         dynamicViewLayout = view.findViewById(R.id.dynamic_layout);
-
-        view.findViewById(R.id.profile_attrib_save).setOnClickListener(new OnSingleClickListener() {
-            @Override
-            public void onSingleClick(View v) {
-                saveAttribute();
-            }
-        });
     }
 
     @Override
@@ -77,7 +73,7 @@ public class ProfileAttributeFragment extends BaseFragment
         profileAttributePresenter.prepareAttributeList();
     }
 
-    private void saveAttribute(){
+    private void saveAttribute(boolean isSave){
 
         ArrayList<AttributeBO> childMasterList = new ArrayList<>();
 
@@ -110,10 +106,17 @@ public class ProfileAttributeFragment extends BaseFragment
                 filteredAttributeIds.remove(childMasterBo.getAttributeId());
         }
 
-        if (filteredAttributeIds.size() > 0)
-            profileAttributePresenter.saveAttribute(new ArrayList<>(filteredAttributeIds.values()));
-        else
-            showMessage("No Data To Save");
+//        if (filteredAttributeIds.size() > 0)
+//            profileAttributePresenter.saveAttribute(new ArrayList<>(filteredAttributeIds.values()));
+//        else
+//            showMessage("No Data To Save");
+
+        ProfileBaseBo profileBaseBo = new ProfileBaseBo();
+        profileBaseBo.setStatus(isSave?"Save":"Update");
+        profileBaseBo.setFieldName("Attribute");
+        profileBaseBo.setAttributeList(new ArrayList<>(filteredAttributeIds.values()));
+
+        EventBus.getDefault().post(profileBaseBo);
     }
 
     @Override
@@ -350,11 +353,13 @@ public class ProfileAttributeFragment extends BaseFragment
 
     @Override
     public void onNextClicked(StepperLayout.OnNextClickedCallback callback) {
+        saveAttribute(false);
         callback.goToNextStep();
     }
 
     @Override
     public void onCompleteClicked(StepperLayout.OnCompleteClickedCallback callback) {
+        saveAttribute(true);
         callback.complete();
     }
 

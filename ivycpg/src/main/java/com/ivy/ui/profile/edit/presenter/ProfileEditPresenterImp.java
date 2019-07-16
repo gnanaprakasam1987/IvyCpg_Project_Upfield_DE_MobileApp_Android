@@ -599,6 +599,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     }
 
+    @Override
     public void setProfileValues(final boolean isSave) {
 
         if (profileConfig.get(0).getConfigCode().equals(ProfileConstant.PROFILE_60) &&

@@ -1,40 +1,37 @@
 package com.ivy.ui.profile.view;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.ivy.core.base.presenter.BasePresenter;
-import com.ivy.core.base.view.BaseFragment;
-import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.ui.profile.DaggerProfileComponent;
-import com.ivy.ui.profile.IProfileContractor;
-import com.ivy.ui.profile.ProfileConstant;
-import com.ivy.ui.profile.ProfileModule;
-import com.ivy.ui.profile.edit.IProfileEditContract;
-import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
-import com.ivy.ui.profile.edit.di.ProfileEditModule;
-import com.stepstone.stepper.StepperLayout;
-import com.stepstone.stepper.VerificationError;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
+import com.ivy.core.base.presenter.BasePresenter;
+import com.ivy.core.base.view.BaseFragment;
+import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.ui.profile.IProfileContractor;
+import com.ivy.ui.profile.ProfileConstant;
+import com.ivy.ui.profile.di.DaggerProfileComponent;
+import com.ivy.ui.profile.di.ProfileModule;
+import com.stepstone.stepper.StepperLayout;
+import com.stepstone.stepper.VerificationError;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 import javax.inject.Inject;
 
-public class ProfileBaseFragment extends BaseFragment implements StepperLayout.StepperListener,IProfileContractor.IProfileView {
+public class ProfileBaseFragment extends BaseFragment
+        implements StepperLayout.StepperListener,IProfileContractor.IProfileView {
 
     private BusinessModel bmodel;
     private boolean isFromEditProfileView;
@@ -207,5 +204,23 @@ public class ProfileBaseFragment extends BaseFragment implements StepperLayout.S
     @Override
     public void showFailureMessage() {
         showMessage("Save Failed");
+    }
+
+    @Override
+    public void showAlert() {
+        showAlertDialog(getResources().getString(R.string.profile_updated_scccess));
+    }
+
+    private void showAlertDialog(String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(msg);
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                ((Activity) context).finish();
+            }
+        });
+        applyAlertDialogTheme(getActivity(), builder);
     }
 }

@@ -1,4 +1,4 @@
-package com.ivy.ui.profile;
+package com.ivy.ui.profile.di;
 
 import com.ivy.core.di.component.IvyAppComponent;
 import com.ivy.core.di.scope.PerActivity;
