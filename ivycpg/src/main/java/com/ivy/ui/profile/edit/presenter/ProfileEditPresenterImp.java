@@ -4,9 +4,11 @@ package com.ivy.ui.profile.edit.presenter;
 import android.annotation.SuppressLint;
 import android.util.SparseArray;
 
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.OnLifecycleEvent;
+
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
@@ -27,13 +29,11 @@ import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.create.model.ContractStatus;
-import com.ivy.ui.profile.data.ChannelWiseAttributeList;
 import com.ivy.ui.profile.data.ProfileDataManager;
 import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.di.Profile;
+import com.ivy.ui.profile.view.ProfileBaseBo;
 import com.ivy.utils.AppUtils;
-import com.ivy.utils.DateTimeUtils;
-import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
@@ -46,8 +46,6 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.OnLifecycleEvent;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.BiFunction;
@@ -240,181 +238,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
                 }));
     }
-
-
-    private void getAtrributeList() {
-        getCompositeDisposable().add(Observable.zip(
-                mProfileDataManager.downloadCommonAttributeList(),
-                mProfileDataManager.downloadChannelWiseAttributeList(),
-                mProfileDataManager.downloadAttributeListForRetailer(retailerMasterBO.getRetailerID()),
-                mProfileDataManager.downloadEditAttributeList(retailerMasterBO.getRetailerID()),
-                mProfileDataManager.downloadRetailerChildAttribute(),
-                new Function5<ArrayList<Integer>, ChannelWiseAttributeList, ArrayList<NewOutletAttributeBO>,
-                        ArrayList<NewOutletAttributeBO>, ArrayList<NewOutletAttributeBO>, Boolean>() {
-                    @Override
-                    public Boolean apply(
-                            ArrayList<Integer> commonAttributeList,
-                            ChannelWiseAttributeList channelWiseAttributeModel,
-                            ArrayList<NewOutletAttributeBO> attributeListForRetailer,
-                            ArrayList<NewOutletAttributeBO> editedAttributeList,
-                            ArrayList<NewOutletAttributeBO> attributeBOArrayListChild) throws Exception {
-
-                        mCommonAttributeList = commonAttributeList;
-                        //Below both list come from ChannelWiseAtttributeModel.class
-                        mAttributeListByLocationID = channelWiseAttributeModel.getAttributeListByLocationID();
-                        mAttributeBOListByLocationID = channelWiseAttributeModel.getAttributeBOListByLocationID();
-                        //Below both function just update in retailer MasterBo for future use
-                        retailerMasterBO.setAttributeBOArrayList(attributeListForRetailer);
-                        mEditAttributeList = editedAttributeList;
-                        mAttributeChildList = attributeBOArrayListChild;
-                        return true;
-                    }
-                })
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<Boolean>() {
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Commons.print(e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        downloadAttributeParent();
-                    }
-                }));
-
-    }
-
-
-    private HashMap<Integer, ArrayList<NewOutletAttributeBO>> getAttributeBOListByLocationID() {
-        return mAttributeBOListByLocationID;
-    }
-
-
-    private void downloadAttributeParent() {
-        getCompositeDisposable().add(mProfileDataManager.downloadAttributeParentList(mAttributeChildList)
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<NewOutletAttributeBO>>() {
-                    @Override
-                    public void onNext(ArrayList<NewOutletAttributeBO> attributeParentList) {
-                        mAttributeParentList = attributeParentList;
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.println("ProfileEditPresenterImp.." + e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        getAttributeMap();
-                        updateUserMasterAttribute();
-                    }
-                }));
-    }
-
-
-    private void updateUserMasterAttribute() {
-        getCompositeDisposable().add(Observable.zip(
-                mProfileDataManager.updateRetailerMasterAttribute(mEditAttributeList, mAttributeChildList, mAttributeParentList),
-                mProfileDataManager.updateRetailerMasterAttribute(retailerMasterBO.getAttributeBOArrayList(), mAttributeChildList, mAttributeParentList),
-                new BiFunction<ArrayList<NewOutletAttributeBO>, ArrayList<NewOutletAttributeBO>, Boolean>() {
-                    @Override
-                    public Boolean apply(ArrayList<NewOutletAttributeBO> mTempList,
-                                         ArrayList<NewOutletAttributeBO> mattributeList) throws Exception {
-                        mAttributeList = mattributeList;
-                        getTempList(mTempList);
-                        return true;
-                    }
-                })
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<Boolean>() {
-                    @Override
-                    public void onNext(Boolean o) {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Commons.print(e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        getProfileEditDetails();
-                    }
-                })
-        );
-    }
-
-
-    private void getTempList(ArrayList<NewOutletAttributeBO> tempList) {
-        try {
-            if (!tempList.isEmpty()) {
-                int size = mAttributeList.size();
-                if (mAttributeList.size() > 0) {
-                    ArrayList<NewOutletAttributeBO> newOutletAttributeBOS = new ArrayList<>();
-                    newOutletAttributeBOS.addAll(mAttributeList);
-                    for (int i = 0; i < tempList.size(); i++) {
-                        for (int j = 0; j < size; j++) {
-                            if (newOutletAttributeBOS.get(j).getParentId() == tempList.get(i).getParentId()
-                                    && newOutletAttributeBOS.get(j).getAttrId() == tempList.get(i).getAttrId()
-                                    && tempList.get(i).getStatus().equalsIgnoreCase(ProfileConstant.D)) {
-                                for (int k = 0; k < mAttributeList.size(); k++)
-                                    if (mAttributeList.get(k).getParentId() == tempList.get(i).getParentId()
-                                            && mAttributeList.get(k).getAttrId() == tempList.get(i).getAttrId()
-                                            && tempList.get(i).getStatus().equalsIgnoreCase(ProfileConstant.D))
-                                        mAttributeList.remove(j);
-                            } else {
-                                if (j == size - 1) mAttributeList.add(tempList.get(i));
-                            }
-                        }
-                    }
-                } else mAttributeList.addAll(tempList);
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-
-    public void getAttributeMap() {
-        try {
-            attribMap = new HashMap<>();
-            ArrayList<NewOutletAttributeBO> tempList;
-            for (NewOutletAttributeBO parent : mAttributeParentList) {
-                tempList = new ArrayList<>();
-                for (NewOutletAttributeBO child : mAttributeChildList) {
-                    if (parent.getAttrId() == child.getParentId()) {
-                        tempList.add(child);
-                    }
-                }
-                attribMap.put(parent.getAttrName(), tempList);
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-
-    public ArrayList<NewOutletAttributeBO> getRetailerAttribute() {
-        if (attributeList == null) {
-            attributeList = new ArrayList<>();
-        }
-        return attributeList;
-    }
-
-    public void setRetailerAttribute(ArrayList<NewOutletAttributeBO> list) {
-        this.attributeList = list;
-    }
-
 
     @Override
     public void validateOTP(String type, String value) {
@@ -773,113 +596,112 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     @Override
     public void saveUpdatedProfileEdit() {
-        try {
-            if (doValidateProdileEdit()) {
-                if (profileConfig.get(0).getConfigCode().equals(ProfileConstant.PROFILE_60) &&
-                        (profileConfig.get(0).isFlag() == 1) &&
-                        (profileConfig.get(0).getModule_Order() == 1)) {
-                    if (configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
-                        if ((lat.equals("") || SDUtil.convertToDouble(lat) == 0 || longitude.equals("")
-                                || SDUtil.convertToDouble(longitude) == 0)
-                                || (configurationMasterHelper.retailerLocAccuracyLvl != 0
-                                && LocationUtil.accuracy > configurationMasterHelper.retailerLocAccuracyLvl)) {
-                            getIvyView().showMessage(R.string.location_not_captured);
-                        }
-                    }
-                }
-                saveEditProfile();
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
+
     }
 
-    private void saveEditProfile() {
+    public void setProfileValues(final boolean isSave) {
+
+        if (profileConfig.get(0).getConfigCode().equals(ProfileConstant.PROFILE_60) &&
+                (profileConfig.get(0).isFlag() == 1) &&
+                (profileConfig.get(0).getModule_Order() == 1)) {
+            if (configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
+                if ((lat.equals("") || SDUtil.convertToDouble(lat) == 0 || longitude.equals("")
+                        || SDUtil.convertToDouble(longitude) == 0)
+                        || (configurationMasterHelper.retailerLocAccuracyLvl != 0
+                        && LocationUtil.accuracy > configurationMasterHelper.retailerLocAccuracyLvl)) {
+                    getIvyView().showMessage(R.string.location_not_captured);
+                }
+            }
+        }
 
         getIvyView().showLoading();
 
-        getCompositeDisposable().add(mProfileDataManager.downloadPriorityProductsForRetailerUpdate(retailerMasterBO.getRetailerID())
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
-                    @Override
-                    public void onNext(ArrayList<String> mProducts) {
+        setNearByRetailers(getIvyView().getSelectedIds());
 
-                        ArrayList<StandardListBO> tempList = new ArrayList<>();
-                        ArrayList<String> products = mProducts;
+        getCompositeDisposable().add(Observable.zip(mProfileDataManager.downloadPriorityProductsForRetailerUpdate(retailerMasterBO.getRetailerID()),
+                mProfileDataManager.getNearbyRetailerIds(retailerMasterBO.getRetailerID()),
+                new BiFunction<ArrayList<String>, ArrayList<String>, Boolean>() {
+                    @Override
+                    public Boolean apply(ArrayList<String> priorityProdList, ArrayList<String> nearbyRetailersList) throws Exception {
+
+//                        Set Priority Product List
+                        ArrayList<StandardListBO> priorityProducts = new ArrayList<>();
+                        ArrayList<String> products = priorityProdList;
                         if (products == null)
-                            products = new ArrayList<String>();
+                            products = new ArrayList<>();
                         if (getIvyView().getSelectedPriorityProductList() != null) {
                             for (StandardListBO bo : getIvyView().getSelectedPriorityProductList()) {
                                 if (!products.contains(bo.getListID())) {
                                     bo.setStatus("N");
-                                    tempList.add(bo);
+                                    priorityProducts.add(bo);
                                 }
                             }
                         }
                         if (mPriorityProductList != null) {
-                            if (tempList.size() > 0) {
+                            if (priorityProducts.size() > 0) {
                                 for (StandardListBO bo : mPriorityProductList) {
                                     if (products.contains(bo.getListID())) {
                                         bo.setStatus(ProfileConstant.D);
-                                        tempList.add(bo);
+                                        priorityProducts.add(bo);
                                     }
                                 }
                             }
                         }
 
-                        setSelectedPrioProducts(tempList); //step 2
+                        setSelectedPrioProducts(priorityProducts);
+
+
+//                        Update NearBy Retailers
+                        final HashMap<String, String> nearByRetailers = new HashMap<>();
+                        if (getNearByRetailers().size() > 0) {
+                            for (RetailerMasterBO bo : getNearByRetailers()) {
+                                nearByRetailers.put(bo.getRetailerID(), "N");
+                            }
+                        }
+
+                        if (nearbyRetailersList != null) {
+                            if (nearByRetailers.size() > 0) {
+                                for (String id : nearbyRetailersList) {
+                                    if (nearByRetailers.get(id) != null) {
+                                        nearByRetailers.remove(id);
+                                    } else {
+                                        nearByRetailers.put(id, "D");
+                                    }
+                                }
+                            }
+                        }
+
+                        setNearByRetailerList(nearByRetailers);
+
+                        return true;
+                    }
+                }).subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Commons.print(e.getMessage());
+
                     }
 
                     @Override
                     public void onComplete() {
-                        setNearByRetailers(getIvyView().getSelectedIds()); //step 1
-                        setValues();//step3
-                        updateProfileEdit();//step4
-
+                        setValues();
+                        prepareProfileEditValues(isSave);
                     }
-                }));
+                })
+        );
     }
 
-    private String tid;
-    private boolean isData = false;
-    private String currentDate;
-
-    private void updateProfileEdit() {
-
-        currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
-        tid = userMasterHelper.getUserMasterBO().getUserid()
-                + "" + retailerMasterBO.getRetailerID()
-                + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
-
-        getCompositeDisposable().add(mProfileDataManager.checkHeaderAvailablility(retailerMasterBO.getRetailerID(), currentDate)
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<String>() {
-                               @Override
-                               public void accept(String response) throws Exception {
-                                   if (!StringUtils.isNullOrEmpty(response))
-                                       tid = response;
-                                   prepareProfileEditValues();
-                               }
-                           }, new Consumer<Throwable>() {
-                               @Override
-                               public void accept(Throwable throwable) throws Exception {
-                                   Commons.print(throwable.getMessage());
-                                   prepareProfileEditValues();
-                               }
-                           }
-                ));
-    }
-
-    private void prepareProfileEditValues() {
+    private void prepareProfileEditValues(boolean isSave) {
 
         ArrayList<ConfigureBO> retailerFieldList = new ArrayList<>();
+        ArrayList<StandardListBO> priorityProdList = new ArrayList<>();
+        HashMap<String, String> nearByRetailerMapList = new HashMap<>();
 
         for (ConfigureBO configBO : profileConfig) {
             String conficCode = configBO.getConfigCode();
@@ -964,7 +786,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         }
                         break;
                     case ProfileConstant.PHOTO_CAPTURE:
-                        updatePhotoCapture(configBO);
+                        configBO.setRefId(retailerMasterBO.getAddressid());
+                        retailerFieldList.add(configBO);
                         break;
                     case ProfileConstant.RFiled1:
                         if (!configBO.getMenuNumber().equals("")) {
@@ -1019,7 +842,10 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         getRetailerProfileObject(configBO,retailerMasterBO.getCreditDays()+"",retailerFieldList);
                         break;
                     case ProfileConstant.PROFILE_60:
-                        updateProfileImage(configBO);
+                        if (!configBO.getMenuNumber().equals("")) {
+                            configBO.setRefId(retailerMasterBO.getRetailerID());
+                            getRetailerProfileObject(configBO, retailerMasterBO.getProfileImagePath() + "", retailerFieldList);
+                        }
                         break;
                     case ProfileConstant.GSTN:
                         configBO.setRefId(retailerMasterBO.getRetailerID());
@@ -1070,10 +896,12 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         getRetailerProfileObject(configBO,retailerMasterBO.getCountry(),retailerFieldList);
                         break;
                     case ProfileConstant.NEARBYRET:
-                        updateNearByRetailer();
+                        nearByRetailerMapList.clear();
+                        nearByRetailerMapList.putAll(getNearByRetailerList());
                         break;
                     case ProfileConstant.PRIORITYPRODUCT:
-                        updatePriorityProduct();
+                        priorityProdList.clear();
+                        priorityProdList.addAll(getSelectedPrioProducts());
                         break;
                     case ProfileConstant.DISTRICT:
                         configBO.setRefId(retailerMasterBO.getAddressid());
@@ -1098,271 +926,34 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             }
         }
 
-        if (configurationMasterHelper.IS_CONTACT_TAB) {
-            /*Check the RetailerContactList if any changes happened update it*/
-            if (newOutletHelper.getRetailerContactList().size() > 0) {
-                for (RetailerContactBo retailerContactBo : newOutletHelper.getRetailerContactList()) {
-                    if (retailerContactBo.getStatus().equalsIgnoreCase("U")
-                            || retailerContactBo.getStatus().equalsIgnoreCase("I")
-                            || retailerContactBo.getStatus().equalsIgnoreCase("D")) {
-                        updateRetailerContactEditList();
-                        break;
-                    }
-                }
-            }
-            /*inset the RetailerContactList */
-            getCompositeDisposable().add(mProfileDataManager.insertRetailerContactEdit(tid,
-                    retailerMasterBO.getRetailerID(),
-                    newOutletHelper.getRetailerContactList())
-                    .subscribeOn(getSchedulerProvider().io())
-                    .observeOn(getSchedulerProvider().ui())
-                    .subscribe(new Consumer<Boolean>() {
-                                   @Override
-                                   public void accept(Boolean response) throws Exception {
-                                   }
-                               }, new Consumer<Throwable>() {
-                                   @Override
-                                   public void accept(Throwable throwable) throws Exception {
-                                       Commons.print(throwable.getMessage());
-                                   }
-                               }
-                    ));
-        }
+        HashMap<String,Object> profileMapObject = new HashMap<>();
 
-        /*if (!isData)
-            getIvyView().hideLoading();
-        else
-            updateHeaderList();*/
-        updateHeaderList();
+        if (!retailerFieldList.isEmpty())
+            profileMapObject.put("ProfileFields",retailerFieldList);
+
+        if (!priorityProdList.isEmpty())
+            profileMapObject.put("Priority",priorityProdList);
+
+        if (!nearByRetailerMapList.isEmpty())
+            profileMapObject.put("NearByRetailer",nearByRetailerMapList);
+
+        ProfileBaseBo profileBaseBo = new ProfileBaseBo();
+        profileBaseBo.setStatus(isSave?"Save":"Update");
+        profileBaseBo.setFieldName("Profile");
+        profileBaseBo.setProfileFields(profileMapObject);
+
+        getIvyView().updateProfileData(profileBaseBo);
 
     }
 
-    private void updateRetailerContactEditList() {
-        String mCustomquery = StringUtils.getStringQueryParam("CONTACTEDIT")
-                + "," + StringUtils.getStringQueryParam("1")
-                + "," + retailerMasterBO.getRetailerID()
-                + "," + retailerMasterBO.getRetailerID() + ")";
-        insertRow("CONTACTEDIT", retailerMasterBO.getRetailerID(), mCustomquery);
+    private HashMap<String, String> nearByRetailerList = new HashMap<>();
+
+    private HashMap<String, String> getNearByRetailerList() {
+        return nearByRetailerList;
     }
 
-
-    private ArrayList<NewOutletAttributeBO> updateRetailerMasterAttribute(ArrayList<NewOutletAttributeBO> list) {
-
-        //Load Child Attribute list which parent is not zero
-        ArrayList<NewOutletAttributeBO> childList = mAttributeChildList;
-        if (childList == null) {
-            childList = new ArrayList<>();
-        }
-
-        //Load Parent Attribute List which Parent id is zero
-        ArrayList<NewOutletAttributeBO> parentList = mAttributeParentList;
-        if (parentList == null) {
-            parentList = new ArrayList<>();
-        }
-
-        ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
-        int attribID;
-        int tempAttribID;
-        int parentID;
-        int tempParentID = 0;
-        String attribName = "";
-        String attribHeader = "";
-        int levelId;
-        String status;
-        NewOutletAttributeBO tempBO;
-        for (NewOutletAttributeBO attributeBO : list) {
-            tempBO = new NewOutletAttributeBO();
-            attribID = attributeBO.getAttrId();
-            status = attributeBO.getStatus();
-            levelId = attributeBO.getLevelId();
-            for (int i = childList.size() - 1; i >= 0; i--) {
-                NewOutletAttributeBO attributeBO1 = childList.get(i);
-                tempAttribID = attributeBO1.getAttrId();
-                if (attribID == tempAttribID) {
-                    attribName = attributeBO1.getAttrName();
-                    tempParentID = attributeBO1.getParentId();
-                    continue;
-                }
-                if (tempAttribID == tempParentID)
-                    tempParentID = attributeBO1.getParentId();
-            }
-
-            for (NewOutletAttributeBO attributeBO2 : parentList) {
-                parentID = attributeBO2.getAttrId();
-                if (tempParentID == parentID)
-                    attribHeader = attributeBO2.getAttrName();
-            }
-            tempBO.setAttrId(attribID);
-            tempBO.setParentId(tempParentID);
-            tempBO.setAttrName(attribName);
-            tempBO.setAttrParent(attribHeader);
-            tempBO.setStatus(status);
-            tempBO.setLevelId(levelId);
-            tempList.add(tempBO);
-        }
-        return tempList;
-    }
-
-
-    private void updateRetailerMasterAttributeList() {
-        if (getIvyView().getSelectedAttribList().size() != 0) {
-            ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
-            ArrayList<NewOutletAttributeBO> attributeList = updateRetailerMasterAttribute(getRetailerAttribute());
-            ArrayList<NewOutletAttributeBO> attList = updateRetailerMasterAttribute(retailerMasterBO.getAttributeBOArrayList());
-            NewOutletAttributeBO tempBO1;
-            NewOutletAttributeBO tempBO2 = null;
-            if (attributeList.size() > 0) {
-                for (int i = 0; i < attributeList.size(); i++) {
-                    tempBO1 = attributeList.get(i);
-                    if (attList.size() > 0) {
-                        boolean isDiffParent = true;
-                        ArrayList<Integer> porcessedAttributes = new ArrayList<>();
-                        for (int j = 0; j < attList.size(); j++) {
-                            tempBO2 = attList.get(j);
-                            if (tempBO1.getParentId() == tempBO2.getParentId()) {
-                                if (tempBO1.getAttrId() != tempBO2.getAttrId()) {
-                                    tempBO1.setStatus("N");
-                                    tempList.add(tempBO1);
-                                    tempBO2.setStatus("D");
-                                    tempList.add(tempBO2);
-                                    isDiffParent = false;
-                                    porcessedAttributes.add(tempBO2.getAttrId());
-                                }
-                            }
-
-                        }
-                        /**
-                         * add attribute list while change parent id
-                         * isDiffParent
-                         * true - parentId is mismatched
-                         * false - parentId is matched
-                         * add previous attribute data
-                         * which is not available in processedAttribute list
-                         *
-                         */
-                        if (isDiffParent) {
-                            tempBO1.setStatus("N");
-                            tempList.add(tempBO1);
-
-                            for (NewOutletAttributeBO bo : attList) {
-                                if (!porcessedAttributes.contains(bo.getAttrId())) {
-                                    assert tempBO2 != null;
-                                    tempBO2.setStatus("D");
-                                    tempList.add(tempBO2);
-                                }
-                            }
-                        }
-
-                    } else {
-                        tempBO1.setStatus("N");
-                        tempList.add(tempBO1);
-                    }
-                }
-            } else {
-                for (int j = 0; j < attList.size(); j++) {
-                    tempBO2 = attList.get(j);
-                    tempBO2.setStatus("D");
-                    tempList.add(tempBO2);
-                }
-            }
-            getCompositeDisposable().add(mProfileDataManager.updateRetailerMasterAttribute(tid, retailerMasterBO.getRetailerID(), tempList)
-                    .subscribeOn(getSchedulerProvider().io())
-                    .observeOn(getSchedulerProvider().ui())
-                    .subscribe(new Consumer<Boolean>() {
-                                   @Override
-                                   public void accept(Boolean response) throws Exception {
-                                       isData = response;
-                                   }
-                               }, new Consumer<Throwable>() {
-                                   @Override
-                                   public void accept(Throwable throwable) throws Exception {
-                                       getIvyView().hideLoading();
-                                       Commons.print(throwable.getMessage());
-                                   }
-                               }
-                    ));
-        }
-
-    }
-
-
-    private void updatePriorityProduct() {
-        getCompositeDisposable().add(mProfileDataManager.updateRetailerEditPriorityProducts(tid,
-                retailerMasterBO.getRetailerID(), getSelectedPrioProducts())
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
-                               @Override
-                               public void accept(Boolean response) throws Exception {
-                                   isData = response;
-                               }
-                           }, new Consumer<Throwable>() {
-                               @Override
-                               public void accept(Throwable throwable) throws Exception {
-                                   getIvyView().hideLoading();
-                                   Commons.print(throwable.getMessage());
-                               }
-                           }
-                ));
-
-    }
-
-
-    private void updateNearByRetailer() {
-
-        final HashMap<String, String> temp = new HashMap<>();
-        if (getNearByRetailers().size() > 0) {
-            isData = true;
-            for (RetailerMasterBO bo : getNearByRetailers()) {
-                temp.put(bo.getRetailerID(), "N");
-            }
-        }
-        getCompositeDisposable().add(mProfileDataManager.getNearbyRetailerIds(retailerMasterBO.getRetailerID())
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
-                    @Override
-                    public void onNext(ArrayList<String> nearbyRetailerIds) {
-                        if (nearbyRetailerIds != null) {
-                            if (temp.size() > 0) {
-                                for (String id : nearbyRetailerIds) {
-                                    if (temp.get(id) != null) {
-                                        temp.remove(id);
-                                    } else {
-                                        temp.put(id, "D");
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Commons.print(e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        getCompositeDisposable().add(mProfileDataManager.updateNearByRetailers(tid, retailerMasterBO.getRetailerID(), temp)
-                                .subscribeOn(getSchedulerProvider().io())
-                                .observeOn(getSchedulerProvider().ui())
-                                .subscribe(new Consumer<Boolean>() {
-                                               @Override
-                                               public void accept(Boolean response) throws Exception {
-                                                   isData = response;
-                                               }
-                                           }, new Consumer<Throwable>() {
-                                               @Override
-                                               public void accept(Throwable throwable) throws Exception {
-                                                   getIvyView().hideLoading();
-                                                   Commons.print(throwable.getMessage());
-                                               }
-                                           }
-                                ));
-                    }
-                }));
-
-
+    private void setNearByRetailerList(HashMap<String, String> nearByRetailerList) {
+        this.nearByRetailerList = nearByRetailerList;
     }
 
     private void getRetailerProfileObject(ConfigureBO configBO, String field,ArrayList<ConfigureBO> retailerFieldList){
@@ -1380,114 +971,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             retailerFieldList.add(configBO);
         }
     }
-
-    private void updateProfileImage(ConfigureBO configBO) {
-        if (!configBO.getMenuNumber().equals("")) {
-            if ((retailerMasterBO.getProfileImagePath() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-                FileUtils.checkFileExist(configBO.getMenuNumber() + "", retailerMasterBO.getRetailerID(), false);
-
-            } else if ((!(retailerMasterBO.getProfileImagePath() + "").equals(configBO.getMenuNumber())
-                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
-                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
-                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String imagePath = "Profile" + "/" + userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
-                        + "/" + userMasterHelper.getUserMasterBO().getUserid()
-                        + "/" + configBO.getMenuNumber();
-                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode()) + "," + StringUtils.getStringQueryParam(imagePath) + ","
-                        + retailerMasterBO.getRetailerID() + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO, mCustomquery);
-                FileUtils.checkFileExist(configBO.getMenuNumber() + "", retailerMasterBO.getRetailerID(), false);
-            }
-
-        }
-
-    }
-
-    private void updatePhotoCapture(ConfigureBO configBO) {
-
-        String imagePath = "Profile" + "/" + userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
-                + "/" + userMasterHelper.getUserMasterBO().getUserid() + "/" + configBO.getMenuNumber();
-        String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode()) + ","
-                + StringUtils.getStringQueryParam(imagePath) + "," + retailerMasterBO.getAddressid() + "," + retailerMasterBO.getRetailerID() + ")";
-        insertRow(configBO, mCustomquery);
-
-        FileUtils.checkFileExist(AppUtils.latlongImageFileName + "", retailerMasterBO.getRetailerID(), true);
-    }
-
-    private void insertRow(ConfigureBO configBO, String mCustomquery) {
-        insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-    }
-
-    private void updateHeaderList() {
-
-        getCompositeDisposable().add(mProfileDataManager.updateRetailer(tid, retailerMasterBO.getRetailerID(), currentDate)
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
-                               @Override
-                               public void accept(Boolean response) throws Exception {
-                                   if (response) {
-                                       AppUtils.latlongImageFileName = "";
-                                       lat = "";
-                                       longitude = "";
-                                   }
-                                   getIvyView().hideLoading();
-                                   getIvyView().showAlert();
-                               }
-                           }, new Consumer<Throwable>() {
-                               @Override
-                               public void accept(Throwable throwable) throws Exception {
-                                   getIvyView().hideLoading();
-                                   Commons.print(throwable.getMessage());
-                               }
-                           }
-                ));
-
-    }
-
-
-    private void deletePreviousRow(String configCode, String RetailerId) {
-        getCompositeDisposable().add(mProfileDataManager.deleteQuery(configCode, RetailerId)
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
-                               @Override
-                               public void accept(Boolean response) throws Exception {
-                                   isData = response;
-                               }
-                           }, new Consumer<Throwable>() {
-                               @Override
-                               public void accept(Throwable throwable) throws Exception {
-                                   getIvyView().hideLoading();
-                                   Commons.print(throwable.getMessage());
-                               }
-                           }
-                ));
-    }
-
-    private void insertRow(String configCode, String RetailerId, String mCustomquery) {
-
-        getCompositeDisposable().add(mProfileDataManager.insertNewRow(configCode, RetailerId, tid, mCustomquery)
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
-                               @Override
-                               public void accept(Boolean response) throws Exception {
-                                   isData = response;
-                               }
-                           }, new Consumer<Throwable>() {
-                               @Override
-                               public void accept(Throwable throwable) throws Exception {
-                                   getIvyView().hideLoading();
-                                   Commons.print(throwable.getMessage());
-                               }
-                           }
-                ));
-    }
-
 
     public void setSelectedPrioProducts(ArrayList<StandardListBO> selectedPrioProducts) {
         this.selectedPrioProducts = selectedPrioProducts;
@@ -1973,7 +1456,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         }
     }
 
-
     private boolean isValidGSTINWithPAN(CharSequence target) {
         for (int index = 0; index < profileConfig.size(); index++) {
             if (profileConfig.get(index).getConfigCode().equalsIgnoreCase(ProfileConstant.PAN_NUMBER)) {
@@ -1983,7 +1465,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         }
         return true;
     }
-
 
     @Override
     public void verifyOTP(final String mType, final String mValue) {

@@ -34,6 +34,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.profile.view.ProfileBaseBo;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
@@ -1279,11 +1280,27 @@ public class ContactCreationFragment extends IvyBaseFragment implements Contacts
 
     @Override
     public void onNextClicked(StepperLayout.OnNextClickedCallback callback) {
+
+        ProfileBaseBo profileBaseBo = new ProfileBaseBo();
+        profileBaseBo.setStatus("Update");
+        profileBaseBo.setFieldName("Contact");
+        profileBaseBo.setContactList(contactList);
+
+        EventBus.getDefault().post(profileBaseBo);
+
         callback.goToNextStep();
     }
 
     @Override
     public void onCompleteClicked(StepperLayout.OnCompleteClickedCallback callback) {
+
+        ProfileBaseBo profileBaseBo = new ProfileBaseBo();
+        profileBaseBo.setStatus("Save");
+        profileBaseBo.setFieldName("Contact");
+        profileBaseBo.setContactList(contactList);
+
+        EventBus.getDefault().post(profileBaseBo);
+
         callback.complete();
     }
 

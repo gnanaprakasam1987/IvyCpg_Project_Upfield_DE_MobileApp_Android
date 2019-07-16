@@ -37,12 +37,15 @@ import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.create.NewRetailerConstant;
 import com.ivy.ui.profile.create.di.NewRetailer;
 import com.ivy.ui.profile.create.model.ContactTitle;
 import com.ivy.ui.profile.create.model.ContractStatus;
 import com.ivy.ui.profile.create.model.PaymentType;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
 
 import org.json.JSONArray;
@@ -2629,6 +2632,140 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                 return null;
             }
         });
+    }
+
+    @Override
+    public Single<Boolean> saveEditProfileField(HashMap<String,Object> retailerProfileField,String tid){
+
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                try {
+
+                    ArrayList<ConfigureBO> profileFieldList = new ArrayList<>();
+                    if (retailerProfileField.get("ProfileFields") != null && retailerProfileField.get("ProfileFields") instanceof ArrayList<?>)
+                        profileFieldList = (ArrayList<ConfigureBO>) retailerProfileField.get("ProfileFields");
+
+                    profileFieldInsert(profileFieldList, tid);
+
+
+
+                    ArrayList<StandardListBO> priorityProdList = new ArrayList<>();
+                    if (retailerProfileField.get("Priority") != null && retailerProfileField.get("Priority") instanceof ArrayList<?>)
+                        priorityProdList = (ArrayList<StandardListBO>) retailerProfileField.get("Priority");
+
+                    priorityProductInsert(priorityProdList, tid);
+
+
+
+                    HashMap<String,String> nearbyRetailerList = new HashMap<>();
+                    if (retailerProfileField.get("NearByRetailer") != null && retailerProfileField.get("NearByRetailer") instanceof ArrayList<?>)
+                        nearbyRetailerList = (HashMap<String,String>) retailerProfileField.get("NearByRetailer");
+
+                    nearByRetailerInsert(nearbyRetailerList, tid);
+
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+
+
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> saveEditContactData(HashMap<String, Object> retailerProfileField, String tid) {
+        return null;
+    }
+
+    @Override
+    public Single<Boolean> saveEditAttributeData(HashMap<String, Object> retailerProfileField, String tid) {
+        return null;
+    }
+
+    @Override
+    public Single<Boolean> saveEditHeaderData(HashMap<String, Object> retailerProfileField, String tid) {
+        return null;
+    }
+
+    private void nearByRetailerInsert(HashMap<String, String> nearbyRetailerList, String tid) {
+        dbUtil.deleteSQL("RrtNearByEditRequest", " tid =" + StringUtils.getStringQueryParam(tid), false);
+
+        if (nearbyRetailerList != null)
+            for (String id : nearbyRetailerList.keySet()) {
+                String Q = "insert into RrtNearByEditRequest (tid,rid,nearbyrid,status,upload)" +
+                        "values (" + StringUtils.getStringQueryParam(tid) + "," + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID())
+                        + "," + id + "," + StringUtils.getStringQueryParam(nearbyRetailerList.get(id)) + ",'N')";
+                dbUtil.executeQ(Q);
+            }
+    }
+
+    private void priorityProductInsert(ArrayList<StandardListBO> priorityProdList, String tid) {
+        dbUtil.deleteSQL("RetailerEditPriorityProducts", " RetailerId ="
+                + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID()), false);
+
+        if (priorityProdList != null)
+            for (StandardListBO bo : priorityProdList) {
+                String Q = "insert into RetailerEditPriorityProducts (tid,RetailerId,productId,levelid,status,upload)" +
+                        "values (" + StringUtils.getStringQueryParam(tid)
+                        + "," + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID())
+                        + "," + SDUtil.convertToInt(bo.getListID())
+                        + "," + StringUtils.getStringQueryParam(bo.getListCode())
+                        + "," + StringUtils.getStringQueryParam(bo.getStatus()) + ",'N')";
+                dbUtil.executeQ(Q);
+            }
+    }
+
+    private void profileFieldInsert(ArrayList<ConfigureBO> profileFieldList, String tid) {
+        for (ConfigureBO retaileProfileField : profileFieldList) {
+
+            String value = "";
+            boolean isInsert =  true;
+
+            if (retaileProfileField.isDeleteRow())
+                isInsert = false;
+
+            if (retaileProfileField.getConfigCode().equals(ProfileConstant.PHOTO_CAPTURE)) {
+
+                value = "Profile" + "/" + dataManager.getUser().getDownloadDate().replace("/", "")
+                        + "/" + dataManager.getUser().getUserid() + "/" + retaileProfileField.getMenuNumber();
+
+                FileUtils.checkFileExist(AppUtils.latlongImageFileName + "", dataManager.getRetailMaster().getRetailerID(), true);
+
+            }else if(retaileProfileField.getConfigCode().equals(ProfileConstant.PROFILE_60)){
+
+                if (isInsert) {
+                    value = "Profile" + "/" + dataManager.getUser().getDownloadDate().replace("/", "")
+                            + "/" + dataManager.getUser().getUserid() + "/" + retaileProfileField.getMenuNumber();
+
+                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code ="
+                            + getStringQueryParam(retaileProfileField.getConfigCode())
+                            + "and RetailerId=" + dataManager.getRetailMaster().getRetailerID(), false);
+                }
+
+                FileUtils.checkFileExist(retaileProfileField.getMenuNumber() + "", dataManager.getRetailMaster().getRetailerID(), false);
+
+            }else{
+                value = retaileProfileField.getMenuNumber();
+            }
+
+            if (isInsert) {
+                String mCustomQuery = StringUtils.getStringQueryParam(retaileProfileField.getConfigCode()) + ","
+                        + StringUtils.getStringQueryParam(value) + "," + retaileProfileField.getRefId() + "," + dataManager.getRetailMaster().getRetailerID() + ")";
+
+                final String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)"
+                        + "values (" + getStringQueryParam(tid) + "," + mCustomQuery;
+
+                dbUtil.executeQ(insertquery);
+            }else
+                dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code ="
+                        + getStringQueryParam(retaileProfileField.getConfigCode())
+                        + "and RetailerId=" + dataManager.getRetailMaster().getRetailerID(), false);
+
+        }
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 import com.ivy.ui.profile.create.model.ContractStatus;
+import com.ivy.ui.profile.view.ProfileBaseBo;
 
 
 import java.util.ArrayList;
@@ -127,6 +128,8 @@ public interface IProfileEditContract {
 
         void checkRegex(String regex);
 
+        void updateProfileData(ProfileBaseBo retailerProfileField);
+
     }
 
     @PerActivity
@@ -208,6 +211,8 @@ public interface IProfileEditContract {
         boolean checkRegex(int menuNumber, String typedText);
 
         boolean doValidateProdileEdit();
+
+        void setProfileValues(boolean isSave);
 
     }
 }

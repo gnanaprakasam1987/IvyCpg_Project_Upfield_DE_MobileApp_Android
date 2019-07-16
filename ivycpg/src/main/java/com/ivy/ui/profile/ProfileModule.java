@@ -2,6 +2,9 @@ package com.ivy.ui.profile;
 
 
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.ui.profile.data.IProfileDataManager;
+import com.ivy.ui.profile.data.ProfileDataManager;
+import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 
@@ -37,6 +40,11 @@ public class ProfileModule {
     @PerActivity
     IProfileContractor.IProfilePresenter<IProfileContractor.IProfileView> profilePresenter(ProfilePresenterImpl<IProfileContractor.IProfileView> profilePresenter) {
         return profilePresenter;
+    }
+
+    @Provides
+    ProfileDataManager profileDataManager(ProfileDataManagerImpl profileDataManager){
+        return profileDataManager;
     }
 
 }

@@ -8,11 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.ui.profile.DaggerProfileComponent;
+import com.ivy.ui.profile.IProfileContractor;
 import com.ivy.ui.profile.ProfileConstant;
+import com.ivy.ui.profile.ProfileModule;
+import com.ivy.ui.profile.edit.IProfileEditContract;
+import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
+import com.ivy.ui.profile.edit.di.ProfileEditModule;
 import com.stepstone.stepper.StepperLayout;
 import com.stepstone.stepper.VerificationError;
 
@@ -22,7 +29,12 @@ import java.util.Objects;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
-public class ProfileBaseFragment extends BaseFragment implements StepperLayout.StepperListener {
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import javax.inject.Inject;
+
+public class ProfileBaseFragment extends BaseFragment implements StepperLayout.StepperListener,IProfileContractor.IProfileView {
 
     private BusinessModel bmodel;
     private boolean isFromEditProfileView;
@@ -33,6 +45,9 @@ public class ProfileBaseFragment extends BaseFragment implements StepperLayout.S
     private Context context;
     private String retailerId="";
     private boolean isShowAttribute;
+
+    @Inject
+    IProfileContractor.IProfilePresenter<IProfileContractor.IProfileView> profilePresenter;
 
     @Override
     public void onAttach(Context context) {
@@ -45,7 +60,11 @@ public class ProfileBaseFragment extends BaseFragment implements StepperLayout.S
 
     @Override
     public void initializeDi() {
-
+        DaggerProfileComponent.builder()
+                .ivyAppComponent(((BusinessModel) context).getComponent())
+                .profileModule(new ProfileModule(this))
+                .build().inject(this);
+        setBasePresenter((BasePresenter) profilePresenter);
     }
 
     @Override
@@ -131,6 +150,8 @@ public class ProfileBaseFragment extends BaseFragment implements StepperLayout.S
     @Override
     public void onCompleted(View completeButton) {
         Toast.makeText(getActivity(), "onCompleted", Toast.LENGTH_SHORT).show();
+
+
     }
 
     @Override
@@ -146,5 +167,45 @@ public class ProfileBaseFragment extends BaseFragment implements StepperLayout.S
     @Override
     public void onReturn() {
         Toast.makeText(getActivity(), "onReturn", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    private ProfileBaseBo profileFieldsBo = new ProfileBaseBo();
+
+    @Subscribe
+    public void onMessageEvent(Object retailerProfileField) {
+        ProfileBaseBo profileBaseBo = (ProfileBaseBo)retailerProfileField;
+
+        if (profileBaseBo.getFieldName().equalsIgnoreCase("Profile"))
+            this.profileFieldsBo.setProfileFields(profileBaseBo.getProfileFields());
+        else if (profileBaseBo.getFieldName().equalsIgnoreCase("Contact"))
+            this.profileFieldsBo.setContactList(profileBaseBo.getContactList());
+        else if (profileBaseBo.getFieldName().equalsIgnoreCase("Attribute"))
+            this.profileFieldsBo.setAttributeList(profileBaseBo.getAttributeList());
+
+        if (profileBaseBo.getStatus().equalsIgnoreCase("Save"))
+            profilePresenter.saveProfileData(profileFieldsBo);
+    }
+
+    @Override
+    public void showSuccessMessage() {
+        showMessage("Saved Successfully");
+    }
+
+    @Override
+    public void showFailureMessage() {
+        showMessage("Save Failed");
     }
 }

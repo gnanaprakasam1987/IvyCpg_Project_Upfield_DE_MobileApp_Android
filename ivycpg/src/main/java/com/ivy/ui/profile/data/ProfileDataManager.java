@@ -146,6 +146,14 @@ public interface ProfileDataManager {
 
     Single<Boolean> clearExistingOrder();
 
+    Single<Boolean> saveEditProfileField(HashMap<String,Object> retailerProfileField,String tid);
+
+    Single<Boolean> saveEditContactData(HashMap<String,Object> retailerProfileField,String tid);
+
+    Single<Boolean> saveEditAttributeData(HashMap<String,Object> retailerProfileField,String tid);
+
+    Single<Boolean> saveEditHeaderData(HashMap<String,Object> retailerProfileField,String tid);
+
     void closeDB();
 
 
