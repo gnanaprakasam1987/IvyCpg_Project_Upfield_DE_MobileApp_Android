@@ -81,11 +81,11 @@ public interface INewRetailerContract {
 
         void createRouteSpinner(boolean mandatory, int mNumber, String mName, String configCode);
 
-        void createLocation1Spinner(boolean mandatory, int mNumber, String mName, String configCode, boolean isLocation1);
+        void createLocationSpinner(boolean mandatory, int mNumber, String mName, String configCode, boolean isLocation1);
+
+        void createLocation1Spinner(boolean mandatory, int mNumber, String mName, String configCode);
 
         void createLocation2Spinner(boolean mandatory, int mNumber, String mName, String configCode);
-
-        void createLocation3Spinner(boolean mandatory, int mNumber, String mName, String configCode);
 
         void createPaymentType(boolean mandatory, int mNumber, String mName, String configCode);
 
@@ -136,13 +136,13 @@ public interface INewRetailerContract {
 
         String getContactPersonTitle(boolean option);
 
-        ArrayAdapter<LocationBO> getLocationAdapter1();
+        ArrayList<LocationBO> getLocationAdapter();
 
-        ArrayAdapter<LocationBO> getLocationAdapter2();
+        ArrayList<LocationBO> getLocationAdapter1();
 
-        ArrayAdapter<LocationBO> getLocationAdapter3();
+        ArrayList<LocationBO> getLocationAdapter2();
 
-        ArrayAdapter<BeatMasterBO> getRouteAdapter();
+        ArrayList<BeatMasterBO> getRouteAdapter();
 
 
         void updateContactPersonSelectedTitle(int menuNumber, int position, String value, String spinnerKey);
@@ -155,12 +155,6 @@ public interface INewRetailerContract {
 
         void updatePriorityProductAutoCompleteTextView(String values, boolean enable);
 
-        boolean validateLatLong();
-
-        boolean validatePriorityProduct(String menuName);
-
-        boolean validateNearbyRetailer(String menuName);
-
         boolean isWeekChecked();
 
         boolean isDayChecked();
@@ -172,8 +166,6 @@ public interface INewRetailerContract {
         void showAlertMessage();
 
         void showSuccessMessage();
-
-        void onCreateDialogNew(int flag);
 
         void showDistributorChangedDialog();
 
@@ -192,6 +184,10 @@ public interface INewRetailerContract {
         String getDynamicEditTextValues(int mNumber);
 
         String getDynamicTextViewValues(int mNumber);
+
+        String getSelectedPriorityProducts();
+
+        String getSelectedNearByRetailers();
 
         String getContactPersonTitleOption(NewRetailerConstant.ContactTitleOption contactTitleOption);
 
@@ -217,7 +213,7 @@ public interface INewRetailerContract {
 
         SpinnerBO getSubChannelSpinnerSelectedItem();
 
-        LocationBO getLocation1();
+        LocationBO getSelectedLocation(String locationConfigName);
 
         PaymentType getPaymentType();
 
@@ -238,6 +234,10 @@ public interface INewRetailerContract {
         /* Show Error Contracts */
 
         void showMandatoryErrorMessage(int position,String menu);
+
+        void showPriorityProductsMandatoryMessage(String menuName);
+
+        void showNearByRetailersMandatory(String menuName);
 
         void setDynamicEditTextFocus(int mNumber);
 
@@ -266,6 +266,8 @@ public interface INewRetailerContract {
         void showEmptyContactStatusError();
 
         void setRequestFocusWithErrorMessage(String key, String errorMessage);
+
+        void setSpinnerPosition(String configName, int position);
 
         /* Show Error Contracts End**/
 
@@ -326,13 +328,19 @@ public interface INewRetailerContract {
 
         int getSpinnerSelectedItem(String configCode);
 
+        void getSelectedLocation2Position();
+
+        void getSelectedLocation1Position();
+
+        void getSelectedLocationPosition();
+
         ArrayList<BeatMasterBO> getCurrentUserRoutes();
+
+        ArrayList<LocationBO> getLocationList();
 
         ArrayList<LocationBO> getLocation1List();
 
         ArrayList<LocationBO> getLocation2List();
-
-        ArrayList<LocationBO> getLocation3List();
 
         ArrayList<PaymentType> getRetailerPaymentTypeList();
 

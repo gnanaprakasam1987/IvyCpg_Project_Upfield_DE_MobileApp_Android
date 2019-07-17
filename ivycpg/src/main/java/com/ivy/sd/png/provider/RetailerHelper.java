@@ -105,6 +105,14 @@ public class RetailerHelper {
     }
 
 
+    /**
+     * @deprecated
+     * @see {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getParentLevelName(int, boolean)}
+     * @param locid
+     * @param isParent
+     * @return
+     */
+    @Deprecated
     public String[] getParentLevelName(int locid, boolean isParent) {
         String[] parentLevel = new String[3];
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);

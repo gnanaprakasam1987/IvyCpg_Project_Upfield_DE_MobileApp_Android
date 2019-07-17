@@ -3,7 +3,6 @@ package com.ivy.ui.profile.create.view;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -31,6 +30,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -106,6 +106,7 @@ import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 import static com.ivy.ui.profile.create.NewRetailerConstant.DAY_TEXT_LABEL;
+import static com.ivy.ui.profile.create.NewRetailerConstant.LOCATION;
 import static com.ivy.ui.profile.create.NewRetailerConstant.WEEK_TEXT_LABEL;
 
 
@@ -117,6 +118,7 @@ public class NewOutletFragmentNew extends BaseFragment
     public static final int NEW_RETAILER_ORDER_CREATION = 1000;
     public static final int NEW_RETAILER_OPPORTUNITY_PRODUCTS = 1002;
     private static final int LOCATION_REQUEST_CODE = 1001;
+
     @Inject
     INewRetailerContract.INewRetailerPresenter<INewRetailerContract.INewRetailerView> mNewRetailerPresenter;
 
@@ -146,25 +148,22 @@ public class NewOutletFragmentNew extends BaseFragment
     private LinearLayout.LayoutParams commonsparams3;
     private LinearLayout.LayoutParams weight1;
     private LinearLayout.LayoutParams spinnerMargin;
-    private LinearLayout.LayoutParams paramsAttrib;
-    private LinearLayout.LayoutParams paramsAttribSpinner;
     private LinearLayout.LayoutParams mandatoryTextViewParams;
     private LinearLayout.LayoutParams params;
     private LinearLayout.LayoutParams latlongTextViewWeight;
     private LinearLayout.LayoutParams weight2;
 
 
-    private ArrayAdapter<DistributorMasterBO> distributorTypeAdapter;
+    private ArrayAdapter<LocationBO> locationAdapter;
     private ArrayAdapter<LocationBO> locationAdapter1;
     private ArrayAdapter<LocationBO> locationAdapter2;
-    private ArrayAdapter<LocationBO> locationAdapter3;
     private ArrayAdapter<BeatMasterBO> routeAdapter;
     private ArrayAdapter<ChannelBO> channelAdapter;
     private ArrayAdapter<SpinnerBO> subChannelAdapter;
 
     private ArrayList<InputFilter> inputFilters = null;
     private ArrayList<StandardListBO> priorityProductIDList;
-    private ArrayList<DistributorMasterBO> mDistributorTypeMasterList = new ArrayList<>();
+    private ArrayList<DistributorMasterBO> mDistributorTypeMasterList;
 
 
     private int screenWidth = 0;
@@ -178,20 +177,19 @@ public class NewOutletFragmentNew extends BaseFragment
     private String routeMenuName = "";
     private String imageName;
     private String weekNoStr = null;
-    private String checkedDaysAll = null;
     private String beatName = null;
     private String PHOTO_PATH = "";
 
 
-    private SparseArray<AppCompatEditText> editTextHashMap = new SparseArray<>();
+    private SparseArray<AppCompatEditText> editTextHashMap;
 
-    private SparseArray<TextView> textViewHashMap = new SparseArray<>();
+    private SparseArray<TextView> textViewHashMap;
 
-    private SparseArray<AppCompatCheckBox> daysCheckBoxHashMap = new SparseArray<>();
+    private SparseArray<AppCompatCheckBox> daysCheckBoxHashMap;
 
-    private SparseArray<AppCompatCheckBox> weekNoCheckBox = new SparseArray<>();
+    private SparseArray<AppCompatCheckBox> weekNoCheckBox;
 
-    private HashMap<String, MaterialSpinner> spinerHashMap = new HashMap<>();
+    private HashMap<String, MaterialSpinner> spinnerHashMap = new HashMap<>();
 
 
     private ArrayList<String> imageNameList;
@@ -251,7 +249,6 @@ public class NewOutletFragmentNew extends BaseFragment
     @Override
     public int getScreenMode() {
         return screenMode;
-
     }
 
     @Override
@@ -385,34 +382,61 @@ public class NewOutletFragmentNew extends BaseFragment
 
 
     @Override
-    public ArrayAdapter<LocationBO> getLocationAdapter1() {
-        if (locationAdapter1 != null) return locationAdapter1;
+    public ArrayList<LocationBO> getLocationAdapter() {
+        if (locationAdapter != null) {
+            ArrayList<LocationBO> locationBOS = new ArrayList<>();
+            for (int i = 0; i < locationAdapter.getCount(); i++) {
+                locationBOS.add(locationAdapter.getItem(i));
+            }
+            return locationBOS;
+        }
         return null;
     }
 
     @Override
-    public ArrayAdapter<LocationBO> getLocationAdapter2() {
-        if (locationAdapter2 != null) return locationAdapter2;
+    public ArrayList<LocationBO> getLocationAdapter1() {
+        if (locationAdapter1 != null) {
+            ArrayList<LocationBO> locationBOS = new ArrayList<>();
+            for (int i = 0; i < locationAdapter1.getCount(); i++) {
+                locationBOS.add(locationAdapter1.getItem(i));
+            }
+            return locationBOS;
+        }
+
         return null;
     }
 
 
     @Override
-    public ArrayAdapter<LocationBO> getLocationAdapter3() {
-        if (locationAdapter3 != null) return locationAdapter3;
+    public ArrayList<LocationBO> getLocationAdapter2() {
+
+        if (locationAdapter2 != null) {
+            ArrayList<LocationBO> locationBOS = new ArrayList<>();
+            for (int i = 0; i < locationAdapter2.getCount(); i++) {
+                locationBOS.add(locationAdapter2.getItem(i));
+            }
+            return locationBOS;
+        }
+
         return null;
     }
 
     @Override
-    public ArrayAdapter<BeatMasterBO> getRouteAdapter() {
-        if (routeAdapter != null) return routeAdapter;
+    public ArrayList<BeatMasterBO> getRouteAdapter() {
+        if (routeAdapter != null) {
+            ArrayList<BeatMasterBO> beatMasterBOS = new ArrayList<>();
+            for (int i = 0; i < routeAdapter.getCount(); i++) {
+                beatMasterBOS.add(routeAdapter.getItem(i));
+            }
+            return beatMasterBOS;
+        }
         return null;
     }
 
 
     @Override
     public void updateContactPersonSelectedTitle(int menuNumber, int position, String value, String spinnerKey) {
-        spinerHashMap.get(spinnerKey).setSelection(position);
+        spinnerHashMap.get(spinnerKey).setSelection(position);
         editTextHashMap.get(menuNumber + NewRetailerConstant.CONTACT_PERSON_OTHERNAME_KEY).setText(value);
     }
 
@@ -452,7 +476,7 @@ public class NewOutletFragmentNew extends BaseFragment
             mNewRetailerPresenter.getChannelSelectedItem(menuNumber);
 
         }
-        spinerHashMap.put(NewRetailerConstant.CHANNEL, channel);
+        spinnerHashMap.put(NewRetailerConstant.CHANNEL, channel);
 
     }
 
@@ -468,7 +492,7 @@ public class NewOutletFragmentNew extends BaseFragment
         ArrayAdapter<ContractStatus> contractStatusAdapter = (ArrayAdapter<ContractStatus>) getArrayAdapter(mContractStatusList);
         contractSpinner.setAdapter(contractStatusAdapter);
 
-        spinerHashMap.put(NewRetailerConstant.CONTRACT, contractSpinner);
+        spinnerHashMap.put(NewRetailerConstant.CONTRACT, contractSpinner);
 
     }
 
@@ -482,7 +506,7 @@ public class NewOutletFragmentNew extends BaseFragment
         subChannelAdapter.add(new SpinnerBO(0, getResources().getString(R.string.select_str) + menuName));
         subChannel.setAdapter(subChannelAdapter);
 
-        spinerHashMap.put(NewRetailerConstant.SUBCHANNEL, subChannel);
+        spinnerHashMap.put(NewRetailerConstant.SUBCHANNEL, subChannel);
     }
 
 
@@ -501,53 +525,48 @@ public class NewOutletFragmentNew extends BaseFragment
 
         route.setAdapter(routeAdapter);
 
-        spinerHashMap.put(NewRetailerConstant.ROUTE, route);
+        spinnerHashMap.put(NewRetailerConstant.ROUTE, route);
 
     }
 
     @Override
-    public void createLocation1Spinner(boolean mandatory, int mNumber, String mName, String configCode,
-                                       boolean isLocation1) {
-        MaterialSpinner location1 = createNewMaterialSpinner(mandatory, mNumber, mName, configCode);
+    public void createLocationSpinner(boolean mandatory, int mNumber, String mName, String configCode,
+                                      boolean isLocation1) {
+        MaterialSpinner location = createNewMaterialSpinner(mandatory, mNumber, mName, configCode);
 
-        ArrayList<LocationBO> mLocationMasterList1 = new ArrayList<>();
-        mLocationMasterList1.add(0, new LocationBO(0,
+        ArrayList<LocationBO> mLocationMasterList = new ArrayList<>();
+        mLocationMasterList.add(0, new LocationBO(0,
                 getResources().getString(R.string.select_str) + " " + mName));
-        if (mNewRetailerPresenter.getLocation1List() != null)
-            mLocationMasterList1.addAll(mNewRetailerPresenter.getLocation1List());
+        if (mNewRetailerPresenter.getLocationList() != null)
+            mLocationMasterList.addAll(mNewRetailerPresenter.getLocationList());
 
-        locationAdapter1 = (ArrayAdapter<LocationBO>) getArrayAdapter(mLocationMasterList1);
-        location1.setAdapter(locationAdapter1);
+        locationAdapter = (ArrayAdapter<LocationBO>) getArrayAdapter(mLocationMasterList);
+        location.setAdapter(locationAdapter);
+
+        spinnerHashMap.put(NewRetailerConstant.LOCATION, location);
 
         if (!isLocation1) {
-            if (screenMode == NewRetailerConstant.MenuType.VIEW.getMenuType()
-                    || screenMode == NewRetailerConstant.MenuType.EDIT.getMenuType()) {
-                location1.setSelection(mNewRetailerPresenter.getSpinnerSelectedItem(configCode));
-                if (screenMode == NewRetailerConstant.MenuType.VIEW.getMenuType())
-                    location1.setEnabled(false);
-            }
+            defaultLocationSpinner(NewRetailerConstant.LOCATION);
         }
-
-        spinerHashMap.put(NewRetailerConstant.LOCATION, location1);
     }
 
     @Override
-    public void createLocation2Spinner(boolean mandatory, int mNumber, String mName, String configCode) {
-        MaterialSpinner location2 = createNewMaterialSpinner(mandatory, mNumber, mName, configCode);
+    public void createLocation1Spinner(boolean mandatory, int mNumber, String mName, String configCode) {
+        MaterialSpinner location = createNewMaterialSpinner(mandatory, mNumber, mName, configCode);
 
-        ArrayList<LocationBO> mLocationMasterList2 = new ArrayList<>();
-        mLocationMasterList2.add(0, new LocationBO(0,
+        ArrayList<LocationBO> mLocationMasterList = new ArrayList<>();
+        mLocationMasterList.add(0, new LocationBO(0,
                 getResources().getString(R.string.select_str) + " " + mName));
-        if (mNewRetailerPresenter.getLocation2List() != null)
-            mLocationMasterList2.addAll(mNewRetailerPresenter.getLocation2List());
+        if (mNewRetailerPresenter.getLocation1List() != null)
+            mLocationMasterList.addAll(mNewRetailerPresenter.getLocation1List());
 
-        locationAdapter2 = (ArrayAdapter<LocationBO>) getArrayAdapter(mLocationMasterList2);
+        locationAdapter1 = (ArrayAdapter<LocationBO>) getArrayAdapter(mLocationMasterList);
 
-        location2.setAdapter(locationAdapter2);
+        location.setAdapter(locationAdapter1);
 
-        spinerHashMap.get(NewRetailerConstant.LOCATION).setAdapter(locationAdapter2);
+        spinnerHashMap.get(NewRetailerConstant.LOCATION).setAdapter(locationAdapter1);
 
-        location2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        location.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int pos, long id) {
                 LocationBO tempBo = (LocationBO) parent.getSelectedItem();
@@ -560,22 +579,24 @@ public class NewOutletFragmentNew extends BaseFragment
 
         });
 
-        spinerHashMap.put(NewRetailerConstant.LOCATION1, location2);
+        spinnerHashMap.put(NewRetailerConstant.LOCATION1, location);
+        defaultLocationSpinner(NewRetailerConstant.LOCATION1);
 
     }
 
     @Override
-    public void createLocation3Spinner(boolean mandatory, int mNumber, String mName, String configCode) {
+    public void createLocation2Spinner(boolean mandatory, int mNumber, String mName, String configCode) {
         MaterialSpinner location3 = createNewMaterialSpinner(mandatory, mNumber, mName, configCode);
 
         ArrayList<LocationBO> mLocationMasterList3 = new ArrayList<>();
         mLocationMasterList3.add(0, new LocationBO(0,
                 getResources().getString(R.string.select_str) + " " + mName));
-        if (mNewRetailerPresenter.getLocation3List() != null)
-            mLocationMasterList3.addAll(mNewRetailerPresenter.getLocation3List());
+        if (mNewRetailerPresenter.getLocation2List() != null)
+            mLocationMasterList3.addAll(mNewRetailerPresenter.getLocation2List());
 
-        locationAdapter3 = (ArrayAdapter<LocationBO>) getArrayAdapter(mLocationMasterList3);
-        location3.setAdapter(locationAdapter3);
+        locationAdapter2 = (ArrayAdapter<LocationBO>) getArrayAdapter(mLocationMasterList3);
+        location3.setAdapter(locationAdapter2);
+
 
         location3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -589,7 +610,10 @@ public class NewOutletFragmentNew extends BaseFragment
             }
 
         });
-        spinerHashMap.put(NewRetailerConstant.LOCATION2, location3);
+
+        spinnerHashMap.put(NewRetailerConstant.LOCATION2, location3);
+
+        defaultLocationSpinner(NewRetailerConstant.LOCATION2);
 
     }
 
@@ -607,35 +631,38 @@ public class NewOutletFragmentNew extends BaseFragment
 
         paymentType.setAdapter(retailerPaymentTypeAdapter);
 
-        spinerHashMap.put(NewRetailerConstant.PAYMENTTYPE, paymentType);
+        spinnerHashMap.put(NewRetailerConstant.PAYMENTTYPE, paymentType);
 
     }
 
-    private DistributorMasterBO tempBo;
+    private DistributorMasterBO selectedDistributor;
 
     @Override
     public void createDistributor(boolean mandatory, int mNumber, String mName, String configCode) {
 
         MaterialSpinner distributorSpinner = createNewMaterialSpinner(mandatory, mNumber, mName, configCode);
 
+        if (mDistributorTypeMasterList == null)
+            mDistributorTypeMasterList = new ArrayList<>();
+
         mDistributorTypeMasterList.add(0, new DistributorMasterBO("0", getResources().getString(R.string.select_str) + " " + mName));
         if (mNewRetailerPresenter.getDistributorTypeMasterList() != null)
             mDistributorTypeMasterList.addAll(mNewRetailerPresenter.getDistributorTypeMasterList());
 
-        distributorTypeAdapter = (ArrayAdapter<DistributorMasterBO>) getArrayAdapter(mDistributorTypeMasterList);
+        ArrayAdapter<DistributorMasterBO> distributorTypeAdapter = (ArrayAdapter<DistributorMasterBO>) getArrayAdapter(mDistributorTypeMasterList);
         distributorSpinner.setAdapter(distributorTypeAdapter);
 
         distributorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                tempBo = (DistributorMasterBO) parent.getSelectedItem();
-                mNewRetailerPresenter.getRetailerRoutes(tempBo.getDId());
+                selectedDistributor = (DistributorMasterBO) parent.getSelectedItem();
+                mNewRetailerPresenter.getRetailerRoutes(selectedDistributor.getDId());
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
             }
         });
 
-        spinerHashMap.put(NewRetailerConstant.DISTRIBUTOR, distributorSpinner);
+        spinnerHashMap.put(NewRetailerConstant.DISTRIBUTOR, distributorSpinner);
     }
 
     private MaterialSpinner createNewMaterialSpinner(boolean mandatory, int mNumber, String mName, String configCode) {
@@ -643,6 +670,7 @@ public class NewOutletFragmentNew extends BaseFragment
         materialSpinner.setId(mNumber);
         materialSpinner.setFloatingLabelText(mName);
         setSpinnerView(mandatory, materialSpinner, configCode);
+        materialSpinner.setOnItemSelectedListener(spinnerSelectedListener);
         return materialSpinner;
     }
 
@@ -659,14 +687,14 @@ public class NewOutletFragmentNew extends BaseFragment
     @Override
     public void updateRouteSpinnerData(ArrayList<BeatMasterBO> beatMasterBOS) {
 
-        if (!tempBo.getDId().equals("0")
-                && spinerHashMap.get(NewRetailerConstant.ROUTE) != null && routeAdapter != null) {
+        if (!selectedDistributor.getDId().equals("0")
+                && spinnerHashMap.get(NewRetailerConstant.ROUTE) != null && routeAdapter != null) {
 
             routeAdapter.clear();
             routeAdapter.add(new BeatMasterBO(0,
                     getActivity().getResources().getString(R.string.select_str) + " " + routeMenuName, 0));
             routeAdapter.addAll(beatMasterBOS);
-            spinerHashMap.get(NewRetailerConstant.ROUTE).setAdapter(routeAdapter);
+            spinnerHashMap.get(NewRetailerConstant.ROUTE).setAdapter(routeAdapter);
         }
     }
 
@@ -685,7 +713,7 @@ public class NewOutletFragmentNew extends BaseFragment
         ArrayAdapter<StandardListBO> taxTypeAdapter = (ArrayAdapter<StandardListBO>) getArrayAdapter(taxTypeList);
         taxTypeSpinner.setAdapter(taxTypeAdapter);
 
-        spinerHashMap.put(NewRetailerConstant.TAXTYPE, taxTypeSpinner);
+        spinnerHashMap.put(NewRetailerConstant.TAXTYPE, taxTypeSpinner);
 
     }
 
@@ -706,7 +734,7 @@ public class NewOutletFragmentNew extends BaseFragment
 
         classSpinner.setAdapter(classTypeAdapter);
 
-        spinerHashMap.put(NewRetailerConstant.CLASS, classSpinner);
+        spinnerHashMap.put(NewRetailerConstant.CLASS, classSpinner);
 
 
     }
@@ -738,7 +766,7 @@ public class NewOutletFragmentNew extends BaseFragment
         userSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (spinerHashMap.get(NewRetailerConstant.ROUTE) != null) {
+                if (spinnerHashMap.get(NewRetailerConstant.ROUTE) != null) {
                     updateBeat(userMasterBOS.get(position).getUserid());
                 }
             }
@@ -765,7 +793,7 @@ public class NewOutletFragmentNew extends BaseFragment
         ArrayAdapter<RetailerFlexBO> rField5Adapter = (ArrayAdapter<RetailerFlexBO>) getArrayAdapter(retailerFlexBOS);
         rField5Spinner.setAdapter(rField5Adapter);
 
-        spinerHashMap.put(NewRetailerConstant.RFIELD5, rField5Spinner);
+        spinnerHashMap.put(NewRetailerConstant.RFIELD5, rField5Spinner);
     }
 
 
@@ -783,7 +811,7 @@ public class NewOutletFragmentNew extends BaseFragment
         ArrayAdapter<RetailerFlexBO> rField6Adapter = (ArrayAdapter<RetailerFlexBO>) getArrayAdapter(retailerFlexBOS);
         rField6Spinner.setAdapter(rField6Adapter);
 
-        spinerHashMap.put(NewRetailerConstant.RFIELD6, rField6Spinner);
+        spinnerHashMap.put(NewRetailerConstant.RFIELD6, rField6Spinner);
     }
 
 
@@ -801,7 +829,7 @@ public class NewOutletFragmentNew extends BaseFragment
         ArrayAdapter<RetailerFlexBO> rField7Adapter = (ArrayAdapter<RetailerFlexBO>) getArrayAdapter(retailerFlexBOS);
         rField7Spinner.setAdapter(rField7Adapter);
 
-        spinerHashMap.put(NewRetailerConstant.RFIELD7, rField7Spinner);
+        spinnerHashMap.put(NewRetailerConstant.RFIELD7, rField7Spinner);
     }
 
 
@@ -820,7 +848,7 @@ public class NewOutletFragmentNew extends BaseFragment
         ArrayAdapter<RetailerFlexBO> rField4Adapter = (ArrayAdapter<RetailerFlexBO>) getArrayAdapter(retailerFlexBOS);
         rField4Spinner.setAdapter(rField4Adapter);
 
-        spinerHashMap.put(NewRetailerConstant.RFIELD4, rField4Spinner);
+        spinnerHashMap.put(NewRetailerConstant.RFIELD4, rField4Spinner);
     }
 
 
@@ -906,23 +934,11 @@ public class NewOutletFragmentNew extends BaseFragment
         if (mandatory)
             setMandatoryView(firstlayout);
 
-        TextView tinExpDataLabel = new MandatoryTextView(getActivity());
-        tinExpDataLabel.setText(mName);
-        tinExpDataLabel.setTextColor(Color.BLACK);
-        tinExpDataLabel.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        TextView tinExpDataLabel = getDateTextLabel(mName);
 
         firstlayout.addView(tinExpDataLabel, mandatoryTextViewParams);
 
-        TextView tinExpDateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
-        tinExpDateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-        tinExpDateTextView.setTextColor(Color.BLACK);
-        tinExpDateTextView.setGravity(Gravity.CENTER);
-        tinExpDateTextView.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-        tinExpDateTextView.setId(mNumber);
-        tinExpDateTextView.setText(getResources().getString(R.string.select_date));
-        tinExpDateTextView.setTypeface(tinExpDateTextView.getTypeface(), Typeface.NORMAL);
-
-        textViewHashMap.put(mNumber, tinExpDateTextView);
+        TextView tinExpDateTextView = getDateTextView(mNumber);
 
         secondlayout.addView(tinExpDateTextView, latlongTextViewWeight);
         finallayout.addView(firstlayout, mandatoryTextViewParams);
@@ -940,30 +956,35 @@ public class NewOutletFragmentNew extends BaseFragment
         tinExpDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
-                String date = tinExpDateTextView.getText().toString();
-                if (!date.equalsIgnoreCase(getResources().getString(R.string.select_date))
-                        && date.contains("/") && date.split("/").length == 3) {
-                    year = Integer.valueOf(date.split("/")[0]);
-                    month = Integer.valueOf(date.split("/")[1]) - 1;
-                    day = Integer.valueOf(date.split("/")[2]);
-                }
-                DatePickerDialog tinDatePickerDialog = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, (view, year1, month1, dayOfMonth) -> {
-                    Calendar selectedDate = new GregorianCalendar(year1, month1, dayOfMonth);
-                    if (selectedDate.after(Calendar.getInstance())) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-                        tinExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-                    } else {
-                        showMessage(getActivity().getString(R.string.select_future_date));
-                    }
-                }, year, month, day);
-
-                tinDatePickerDialog.show();
+                onDateViewClicked((TextView) v, tinExpDateTextView);
             }
         });
+    }
+
+    private void onDateViewClicked(TextView v, TextView dateTextView) {
+        final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        String date = dateTextView.getText().toString();
+        if (!date.equalsIgnoreCase(getResources().getString(R.string.select_date))
+                && date.contains("/") && date.split("/").length == 3) {
+            year = Integer.valueOf(date.split("/")[0]);
+            month = Integer.valueOf(date.split("/")[1]) - 1;
+            day = Integer.valueOf(date.split("/")[2]);
+        }
+        DatePickerDialog tinDatePickerDialog = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, (view, year1, month1, dayOfMonth) -> {
+            Calendar selectedDate = new GregorianCalendar(year1, month1, dayOfMonth);
+            if (selectedDate.after(Calendar.getInstance())) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+                v.setText(sdf.format(selectedDate.getTime()));
+                v.setError(null);
+            } else {
+                showMessage(getActivity().getString(R.string.select_future_date));
+            }
+        }, year, month, day);
+
+        tinDatePickerDialog.show();
     }
 
 
@@ -979,27 +1000,14 @@ public class NewOutletFragmentNew extends BaseFragment
         if (mandatory)
             setMandatoryView(firstlayout);
 
-        TextView drugLicenseLabel = new MandatoryTextView(getActivity());
-        drugLicenseLabel.setText(mName);
-        drugLicenseLabel.setTextColor(Color.BLACK);
-        drugLicenseLabel.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        TextView drugLicenseLabel = getDateTextLabel(mName);
 
         firstlayout.addView(drugLicenseLabel, mandatoryTextViewParams);
 
-        TextView dlExpDateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
-        dlExpDateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-        dlExpDateTextView.setTextColor(Color.BLACK);
-        dlExpDateTextView.setGravity(Gravity.CENTER);
-        dlExpDateTextView.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-        dlExpDateTextView.setId(mNumber);
-        dlExpDateTextView.setFocusable(true);
-        dlExpDateTextView.setFocusableInTouchMode(true);
-        dlExpDateTextView.setText(getResources().getString(R.string.select_date));
-        dlExpDateTextView.setTypeface(dlExpDateTextView.getTypeface(), Typeface.NORMAL);
-
-        textViewHashMap.put(mNumber, dlExpDateTextView);
+        TextView dlExpDateTextView = getDateTextView(mNumber);
 
         secondlayout.addView(dlExpDateTextView, latlongTextViewWeight);
+
         finallayout.addView(firstlayout, mandatoryTextViewParams);
         finallayout.addView(secondlayout, weight2);
 
@@ -1015,29 +1023,7 @@ public class NewOutletFragmentNew extends BaseFragment
         dlExpDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
-                String date = dlExpDateTextView.getText().toString();
-                if (!date.equalsIgnoreCase(getResources().getString(R.string.select_date))
-                        && date.contains("/") && date.split("/").length == 3) {
-                    year = Integer.valueOf(date.split("/")[0]);
-                    month = Integer.valueOf(date.split("/")[1]) - 1;
-                    day = Integer.valueOf(date.split("/")[2]);
-                }
-
-                DatePickerDialog dlDatePickerDialog = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, (view, year1, month1, dayOfMonth) -> {
-                    Calendar selectedDate = new GregorianCalendar(year1, month1, dayOfMonth);
-                    if (selectedDate.after(Calendar.getInstance())) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-                        dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-                    } else {
-                        showMessage(getActivity().getString(R.string.select_future_date));
-                    }
-                }, year, month, day);
-
-                dlDatePickerDialog.show();
+                onDateViewClicked((TextView) v, dlExpDateTextView);
 
             }
         });
@@ -1056,26 +1042,12 @@ public class NewOutletFragmentNew extends BaseFragment
         if (mandatory)
             setMandatoryView(firstlayout);
 
-        TextView foodLicenceLabel = new MandatoryTextView(getActivity());
-        foodLicenceLabel.setText(mName);
-        foodLicenceLabel.setTextColor(Color.BLACK);
-        foodLicenceLabel.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        textViewHashMap.put(mNumber, foodLicenceLabel);
+        TextView foodLicenceLabel = getDateTextLabel(mName);
 
         firstlayout.addView(foodLicenceLabel, mandatoryTextViewParams);
 
-        TextView flExpDateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
-        flExpDateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-        flExpDateTextView.setTextColor(Color.BLACK);
-        flExpDateTextView.setGravity(Gravity.CENTER);
-        flExpDateTextView.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-        flExpDateTextView.setId(mNumber);
-        flExpDateTextView.setText(getResources().getString(R.string.select_date));
-        flExpDateTextView.setFocusableInTouchMode(true);
-        flExpDateTextView.setFocusable(true);
-        flExpDateTextView.setTypeface(flExpDateTextView.getTypeface(), Typeface.NORMAL);
+        TextView flExpDateTextView = getDateTextView(mNumber);
 
-        textViewHashMap.put(mNumber, flExpDateTextView);
 
         secondlayout.addView(flExpDateTextView, latlongTextViewWeight);
         finallayout.addView(firstlayout, mandatoryTextViewParams);
@@ -1093,33 +1065,38 @@ public class NewOutletFragmentNew extends BaseFragment
         flExpDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
-                String date = flExpDateTextView.getText().toString();
-                if (!date.equalsIgnoreCase(getResources().getString(R.string.select_date))
-                        && date.contains("/") && date.split("/").length == 3) {
-                    year = Integer.valueOf(date.split("/")[0]);
-                    month = Integer.valueOf(date.split("/")[1]) - 1;
-                    day = Integer.valueOf(date.split("/")[2]);
-                }
-
-                DatePickerDialog flDatePickerDialog = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, (view, year1, month1, dayOfMonth) -> {
-                    Calendar selectedDate = new GregorianCalendar(year1, month1, dayOfMonth);
-                    if (selectedDate.after(Calendar.getInstance())) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-                        flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-                    } else {
-                        showMessage(getActivity().getString(R.string.select_future_date));
-                    }
-                }, year, month, day);
-
-                flDatePickerDialog.show();
+                onDateViewClicked((TextView) v, flExpDateTextView);
 
 
             }
         });
+    }
+
+    private TextView getDateTextLabel(String mName) {
+        TextView foodLicenceLabel = new MandatoryTextView(getActivity());
+        foodLicenceLabel.setText(mName);
+        foodLicenceLabel.setTextColor(Color.BLACK);
+        foodLicenceLabel.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        return foodLicenceLabel;
+    }
+
+    private TextView getDateTextView(int mNumber) {
+        TextView dateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
+        dateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+        dateTextView.setTextColor(Color.BLACK);
+        dateTextView.setGravity(Gravity.CENTER);
+        dateTextView.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+        dateTextView.setId(mNumber);
+        dateTextView.setText(getResources().getString(R.string.select_date));
+        dateTextView.setFocusableInTouchMode(true);
+        dateTextView.setFocusable(true);
+        dateTextView.setTypeface(dateTextView.getTypeface(), Typeface.NORMAL);
+
+        if (textViewHashMap == null)
+            textViewHashMap = new SparseArray<>();
+        textViewHashMap.put(mNumber, dateTextView);
+
+        return dateTextView;
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1158,8 +1135,8 @@ public class NewOutletFragmentNew extends BaseFragment
                         long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
                         if (clickDuration < NewRetailerConstant.MAX_CLICK_DURATION) {
 
-                            if (!mNewRetailerPresenter.getOutlet().getDistid().equals("0"))
-                                mNewRetailerPresenter.getLinkRetailerList(SDUtil.convertToInt(mNewRetailerPresenter.getOutlet().getDistid()));
+                            if (!getDistributorSpinnerSelectedItem().getDId().equals("0"))
+                                mNewRetailerPresenter.getLinkRetailerList(SDUtil.convertToInt(getDistributorSpinnerSelectedItem().getDId()));
                             else
                                 showMessage(getResources().getString(R.string.please_select_a_Distributor_to_download));
 
@@ -1339,6 +1316,17 @@ public class NewOutletFragmentNew extends BaseFragment
     }
 
     @Override
+    public String getSelectedPriorityProducts() {
+        return priorityProductAutoCompleteTextView.getText().toString();
+    }
+
+    @Override
+    public String getSelectedNearByRetailers() {
+        return nearbyAutoCompleteTextView.getText().toString();
+    }
+
+
+    @Override
     public void setDynamicEditTextFocus(int mNumber) {
         AppCompatEditText value = editTextHashMap.get(mNumber);
         if (value != null) {
@@ -1350,6 +1338,17 @@ public class NewOutletFragmentNew extends BaseFragment
     public void showMandatoryErrorMessage(int position, String menu) {
         editTextHashMap.get(position).setError(menu + " " + getString(R.string.menu_mandatory_message));
     }
+
+    @Override
+    public void showPriorityProductsMandatoryMessage(String menuName) {
+        priorityProductAutoCompleteTextView.setError(menuName + " " + getString(R.string.menu_mandatory_message));
+    }
+
+    @Override
+    public void showNearByRetailersMandatory(String menuName) {
+        nearbyAutoCompleteTextView.setError(menuName + " " + getString(R.string.menu_mandatory_message));
+    }
+
 
     @Override
     public void showLengthMisMatchError(int position, String menuName, int minLength) {
@@ -1387,48 +1386,13 @@ public class NewOutletFragmentNew extends BaseFragment
 
 
     @Override
-    public boolean validateLatLong() {
-        if (latLongTextView.getText().toString().startsWith("0.0")) {
-            latLongTextView.setFocusableInTouchMode(true);
-            latLongTextView.requestFocus();
-            showMessage(R.string.choose_location);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean validatePriorityProduct(String menuName) {
-        if (priorityProductIDList.size() == 0) {
-            if (priorityProductAutoCompleteTextView.getText().toString().trim().length() == 0) {
-                priorityProductAutoCompleteTextView.requestFocus();
-                priorityProductAutoCompleteTextView.setError(getResources().getString(R.string.enter) + " " + menuName);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean validateNearbyRetailer(String menuName) {
-        if (nearbyAutoCompleteTextView.getText().toString().trim().length() == 0) {
-            nearbyAutoCompleteTextView.requestFocus();
-            nearbyAutoCompleteTextView.setError(getResources().getString(R.string.enter) + " " + menuName);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
     public SpinnerBO getSubChannelSpinnerSelectedItem() {
-        return (SpinnerBO) spinerHashMap.get(NewRetailerConstant.SUBCHANNEL).getSelectedItem();
+        return (SpinnerBO) spinnerHashMap.get(NewRetailerConstant.SUBCHANNEL).getSelectedItem();
     }
 
     @Override
     public DistributorMasterBO getDistributorSpinnerSelectedItem() {
-        return (DistributorMasterBO) spinerHashMap.get(NewRetailerConstant.DISTRIBUTOR).getSelectedItem();
+        return (DistributorMasterBO) spinnerHashMap.get(NewRetailerConstant.DISTRIBUTOR).getSelectedItem();
     }
 
     @Override
@@ -1437,18 +1401,20 @@ public class NewOutletFragmentNew extends BaseFragment
     }
 
     @Override
-    public LocationBO getLocation1() {
-        return (LocationBO) spinerHashMap.get(NewRetailerConstant.LOCATION).getSelectedItem();
+    public LocationBO getSelectedLocation(String locationConfigName) {
+        if (spinnerHashMap.containsKey(locationConfigName))
+            return (LocationBO) spinnerHashMap.get(locationConfigName).getSelectedItem();
+        else return null;
     }
 
     @Override
     public ContractStatus getContractSpinnerSelectedItem() {
-        return (ContractStatus) spinerHashMap.get(NewRetailerConstant.CONTRACT).getSelectedItem();
+        return (ContractStatus) spinnerHashMap.get(NewRetailerConstant.CONTRACT).getSelectedItem();
     }
 
     @Override
     public PaymentType getPaymentType() {
-        return (PaymentType) spinerHashMap.get(NewRetailerConstant.PAYMENTTYPE).getSelectedItem();
+        return (PaymentType) spinnerHashMap.get(NewRetailerConstant.PAYMENTTYPE).getSelectedItem();
     }
 
     @Override
@@ -1499,42 +1465,42 @@ public class NewOutletFragmentNew extends BaseFragment
 
     @Override
     public RetailerFlexBO getRField5Spinner() {
-        return (RetailerFlexBO) spinerHashMap.get(NewRetailerConstant.RFIELD5).getSelectedItem();
+        return (RetailerFlexBO) spinnerHashMap.get(NewRetailerConstant.RFIELD5).getSelectedItem();
     }
 
     @Override
     public RetailerFlexBO getRField6Spinner() {
-        return (RetailerFlexBO) spinerHashMap.get(NewRetailerConstant.RFIELD6).getSelectedItem();
+        return (RetailerFlexBO) spinnerHashMap.get(NewRetailerConstant.RFIELD6).getSelectedItem();
     }
 
     @Override
     public RetailerFlexBO getRField7Spinner() {
-        return (RetailerFlexBO) spinerHashMap.get(NewRetailerConstant.RFIELD7).getSelectedItem();
+        return (RetailerFlexBO) spinnerHashMap.get(NewRetailerConstant.RFIELD7).getSelectedItem();
     }
 
     @Override
     public RetailerFlexBO getRField4Spinner() {
-        return (RetailerFlexBO) spinerHashMap.get(NewRetailerConstant.RFIELD7).getSelectedItem();
+        return (RetailerFlexBO) spinnerHashMap.get(NewRetailerConstant.RFIELD7).getSelectedItem();
     }
 
     @Override
     public StandardListBO getTaxTypeSpinner() {
-        return (StandardListBO) spinerHashMap.get(NewRetailerConstant.TAXTYPE).getSelectedItem();
+        return (StandardListBO) spinnerHashMap.get(NewRetailerConstant.TAXTYPE).getSelectedItem();
     }
 
     @Override
     public StandardListBO getClassTypeSpinner() {
-        return (StandardListBO) spinerHashMap.get(NewRetailerConstant.CLASS).getSelectedItem();
+        return (StandardListBO) spinnerHashMap.get(NewRetailerConstant.CLASS).getSelectedItem();
     }
 
     @Override
     public BeatMasterBO getRouteSpinner() {
-        return (BeatMasterBO) spinerHashMap.get(NewRetailerConstant.ROUTE).getSelectedItem();
+        return (BeatMasterBO) spinnerHashMap.get(NewRetailerConstant.ROUTE).getSelectedItem();
     }
 
     @Override
     public UserMasterBO getUserSpinner() {
-        return (UserMasterBO) spinerHashMap.get(NewRetailerConstant.USER).getSelectedItem();
+        return (UserMasterBO) spinnerHashMap.get(NewRetailerConstant.USER).getSelectedItem();
     }
 
     @Override
@@ -1551,22 +1517,42 @@ public class NewOutletFragmentNew extends BaseFragment
             showMessage(R.string.saved_successfully);
             doFinishActivity();
         } else
-            onCreateDialogNew(2);
+            showAlert("", getString(R.string.saved_successfully), () -> detachFragment());
     }
 
 
     @Override
     public int getSpinnerSelectedItemPosition(String key) {
-        return spinerHashMap.get(key).getSelectedItemPosition();
+        return spinnerHashMap.get(key).getSelectedItemPosition();
     }
+
+    private AdapterView.OnItemSelectedListener spinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            TextView errorText = (TextView) view;
+            if (errorText.getCurrentTextColor() == Color.RED)
+                errorText.setTextColor(Color.BLACK);
+
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
 
     @Override
     public void setRequestFocusWithErrorMessage(String key, String errorMessage) {
-        spinerHashMap.get(key).requestFocus();
-        TextView errorText = (TextView) spinerHashMap.get(key).getSelectedView();
-        errorText.setError("");
+        spinnerHashMap.get(key).requestFocus();
+        TextView errorText = (TextView) spinnerHashMap.get(key).getSelectedView();
         errorText.setTextColor(Color.RED);
-        errorText.setText(getResources().getString(R.string.select_str) + errorMessage);
+    }
+
+    @Override
+    public void setSpinnerPosition(String configName, int position) {
+        if (spinnerHashMap.containsKey(configName))
+            spinnerHashMap.get(configName).setSelection(position);
     }
 
     @Override
@@ -1597,7 +1583,7 @@ public class NewOutletFragmentNew extends BaseFragment
 
     @Override
     public ChannelBO getChannelSpinnerSelectedItem() {
-        return (ChannelBO) spinerHashMap.get(NewRetailerConstant.CHANNEL).getSelectedItem();
+        return (ChannelBO) spinnerHashMap.get(NewRetailerConstant.CHANNEL).getSelectedItem();
     }
 
     @Override
@@ -1698,6 +1684,8 @@ public class NewOutletFragmentNew extends BaseFragment
         week.setTextColor(Color.BLACK);
         week.setText(getResources().getString(R.string.week) + ":");
         weekText.addView(week, mandatoryTextViewParams);
+        if (textViewHashMap == null)
+            textViewHashMap = new SparseArray<>();
         textViewHashMap.put(WEEK_TEXT_LABEL, week);
 
         weekLayout.addView(weekText);
@@ -1710,6 +1698,14 @@ public class NewOutletFragmentNew extends BaseFragment
     private void setWeekAttributeSet(int j, TableRow weekTableRow) {
 
         AppCompatCheckBox weekCheckBox = new AppCompatCheckBox(getActivity());
+        weekCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                textViewHashMap.get(WEEK_TEXT_LABEL).setError(null);
+            }
+        });
+        if (weekNoCheckBox == null)
+            weekNoCheckBox = new SparseArray<>();
         weekNoCheckBox.put(j, weekCheckBox);
 
         if (screenWidth > 520) {
@@ -1786,7 +1782,9 @@ public class NewOutletFragmentNew extends BaseFragment
         day.setTextColor(Color.BLACK);
         day.setText(getResources().getString(R.string.day) + ":");
         daystext.addView(day, mandatoryTextViewParams);
-        textViewHashMap.put(DAY_TEXT_LABEL,day);
+        if (textViewHashMap == null)
+            textViewHashMap = new SparseArray<>();
+        textViewHashMap.put(DAY_TEXT_LABEL, day);
 
         dayLayout.addView(daystext);
         dayLayout.addView(daysTableLayout, params);
@@ -1796,6 +1794,15 @@ public class NewOutletFragmentNew extends BaseFragment
     private void setDaysAttributeSet(int position, String checkBoxNameValue, TableRow daysRow) {
 
         AppCompatCheckBox daysCheckbox = new AppCompatCheckBox(getActivity());
+        daysCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (textViewHashMap.get(DAY_TEXT_LABEL).getError() != null)
+                    textViewHashMap.get(DAY_TEXT_LABEL).setError(null);
+            }
+        });
+        if (daysCheckBoxHashMap == null)
+            daysCheckBoxHashMap = new SparseArray<>();
         daysCheckBoxHashMap.put(position, daysCheckbox);
 
         if (position >= 4) {
@@ -1839,7 +1846,7 @@ public class NewOutletFragmentNew extends BaseFragment
             if (subChannelMaster.get(i).getSubchannelid() == outlet.getSubChannel()) {
                 for (int j = 0; j < channelAdapter.getCount(); j++) {
                     if (channelAdapter.getItem(j).getChannelId() == subChannelMaster.get(i).getChannelid()) {
-                        spinerHashMap.get(menuNumber).setSelection(j);
+                        spinnerHashMap.get(menuNumber).setSelection(j);
                         break;
                     }
                 }
@@ -1851,7 +1858,10 @@ public class NewOutletFragmentNew extends BaseFragment
 
     @Override
     public void updateSelectedItems(int position, StandardListBO standardListBO) {
-        priorityProductIDList.clear();
+        if (priorityProductIDList == null)
+            priorityProductIDList = new ArrayList<>();
+        else
+            priorityProductIDList.clear();
 
         priorityProductIDList.add(standardListBO);
         priorityProductAutoCompleteTextView.postDelayed(new Runnable() {
@@ -1872,8 +1882,10 @@ public class NewOutletFragmentNew extends BaseFragment
 
     @Override
     public void updatePriorityProducts(ArrayList<StandardListBO> mPriorityProductList) {
-        priorityProductIDList = new ArrayList<>();
-        priorityProductIDList.clear();
+        if (priorityProductIDList == null)
+            priorityProductIDList = new ArrayList<>();
+        else
+            priorityProductIDList.clear();
         StringBuffer sb = new StringBuffer();
         for (StandardListBO standardListBO : mPriorityProductList) {
             if (standardListBO.isChecked()) {
@@ -1923,60 +1935,6 @@ public class NewOutletFragmentNew extends BaseFragment
                 mNewRetailerPresenter.clearOrdersAndSaveOutlet();
             }
         });
-
-    }
-
-    @Override
-    public void onCreateDialogNew(int flag) {
-        switch (flag) {
-            case 1:
-                AlertDialog.Builder builderGPS = new AlertDialog.Builder(getActivity())
-                        .setIcon(null)
-                        .setTitle(getResources().getString(R.string.enable_gps))
-                        .setPositiveButton(getResources().getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        Intent myIntent = new Intent(
-                                                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                        startActivity(myIntent);
-                                    }
-                                });
-                applyAlertDialogTheme(getActivity(), builderGPS);
-                break;
-            case 2:
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(getResources().getString(R.string.saved_successfully))
-                        .setPositiveButton(getResources().getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        detachFragment();
-                                    }
-                                });
-                applyAlertDialogTheme(getActivity(), builder);
-                break;
-            case 3:
-                builder = new AlertDialog.Builder(getActivity())
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(getString(R.string.new_outlet_order))
-                        .setPositiveButton(getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-
-
-                                    }
-                                })
-                        .setNegativeButton(getString(R.string.cancel),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-                                    }
-                                });
-                applyAlertDialogTheme(getActivity(), builder);
-                break;
-        }
     }
 
     @Override
@@ -1994,14 +1952,7 @@ public class NewOutletFragmentNew extends BaseFragment
         else
             titleText = getResources().getString(R.string.are_you_sure_to_close_without_savingthe_data);
 
-        CommonDialog commonDialog = new CommonDialog(getActivity(), getString(R.string.error), titleText, getString(R.string.ok), new CommonDialog.PositiveClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
-                mNewRetailerPresenter.deleteNewRetailerSurvey();
-            }
-        });
-
-        commonDialog.show();
+        showAlert(getString(R.string.error), titleText, () -> mNewRetailerPresenter.deleteNewRetailerSurvey());
 
     }
 
@@ -2263,67 +2214,58 @@ public class NewOutletFragmentNew extends BaseFragment
             }
         routeAdapter = (ArrayAdapter<BeatMasterBO>) getArrayAdapter(beatMasterBOS);
 
-        spinerHashMap.get(NewRetailerConstant.ROUTE).setAdapter(routeAdapter);
+        spinnerHashMap.get(NewRetailerConstant.ROUTE).setAdapter(routeAdapter);
     }
 
 
     private void updateLocationAdapter2(int parentId) {
         ArrayList<LocationBO> locationList = new ArrayList<>();
-        for (LocationBO locationBO : mNewRetailerPresenter.getLocation2List()) {
-            if (parentId == locationBO.getParentId()) {
-                locationList.add(locationBO);
-            }
-        }
 
-        locationAdapter2 = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, locationList);
-        if (locationAdapter2.getCount() > 0) {
-            if (!locationAdapter2.getItem(0).getLocName().toLowerCase().contains(getActivity().getResources()
-                    .getString(R.string.select_str)))
-                locationAdapter2.insert(new LocationBO(0, getActivity()
-                        .getResources().getString(R.string.select_str)), 0);
-        } else
-            locationAdapter2.insert(new LocationBO(0, getActivity()
-                    .getResources().getString(R.string.select_str)), 0);
-        spinerHashMap.get(NewRetailerConstant.LOCATION1).setAdapter(locationAdapter2);
+        locationList.add(new LocationBO(0, getString(R.string.select_str)));
 
-
-        if (screenMode == NewRetailerConstant.MenuType.VIEW.getMenuType() || screenMode == NewRetailerConstant.MenuType.EDIT.getMenuType()) {
-            spinerHashMap.get(NewRetailerConstant.LOCATION1).setSelection(mNewRetailerPresenter.getSpinnerSelectedItem(NewRetailerConstant.LOCATION1));
-            if (screenMode == NewRetailerConstant.MenuType.VIEW.getMenuType())
-                spinerHashMap.get(NewRetailerConstant.LOCATION1).setEnabled(false);
-        }
-
-    }
-
-
-    private void updateLocationAdapter1(int parentId) {
-        ArrayList<LocationBO> locationList = new ArrayList<>();
         for (LocationBO locationBO : mNewRetailerPresenter.getLocation1List()) {
             if (parentId == locationBO.getParentId()) {
                 locationList.add(locationBO);
             }
         }
-        locationAdapter1 = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, locationList);
-        if (locationAdapter1.getCount() > 0) {
-            if (!locationAdapter1.getItem(0).getLocName().toLowerCase().contains(getActivity().getResources()
-                    .getString(R.string.select_str)))
-                locationAdapter1.insert(new LocationBO(0, getActivity()
-                        .getResources().getString(R.string.select_str)), 0);
-        } else
-            locationAdapter1.insert(new LocationBO(0, getActivity()
-                    .getResources().getString(R.string.select_str)), 0);
 
-        spinerHashMap.get(NewRetailerConstant.LOCATION).setAdapter(locationAdapter1);
+        locationAdapter1 = (ArrayAdapter<LocationBO>) getArrayAdapter(locationList);
 
+        spinnerHashMap.get(NewRetailerConstant.LOCATION1).setAdapter(locationAdapter1);
+
+
+        defaultLocationSpinner(NewRetailerConstant.LOCATION1);
+
+    }
+
+    private void defaultLocationSpinner(String configName) {
         if (screenMode == NewRetailerConstant.MenuType.VIEW.getMenuType() || screenMode == NewRetailerConstant.MenuType.EDIT.getMenuType()) {
-            spinerHashMap.get(NewRetailerConstant.LOCATION)
-                    .setSelection(mNewRetailerPresenter
-                            .getSpinnerSelectedItem(NewRetailerConstant.LOCATION));
+            switch (configName) {
+                case LOCATION: {
+                    mNewRetailerPresenter.getSelectedLocationPosition();
+                }
+            }
+
+            spinnerHashMap.get(configName).setSelection(mNewRetailerPresenter.getSpinnerSelectedItem(configName));
             if (screenMode == NewRetailerConstant.MenuType.VIEW.getMenuType())
-                spinerHashMap.get(NewRetailerConstant.LOCATION).setEnabled(false);
+                spinnerHashMap.get(configName).setEnabled(false);
         }
+    }
+
+
+    private void updateLocationAdapter1(int parentId) {
+        ArrayList<LocationBO> locationList = new ArrayList<>();
+        locationList.add(new LocationBO(0, getString(R.string.select_str)));
+        for (LocationBO locationBO : mNewRetailerPresenter.getLocationList()) {
+            if (parentId == locationBO.getParentId()) {
+                locationList.add(locationBO);
+            }
+        }
+        locationAdapter = (ArrayAdapter<LocationBO>) getArrayAdapter(locationList);
+
+        spinnerHashMap.get(NewRetailerConstant.LOCATION).setAdapter(locationAdapter);
+
+        defaultLocationSpinner(NewRetailerConstant.LOCATION);
 
     }
 
@@ -2337,16 +2279,16 @@ public class NewOutletFragmentNew extends BaseFragment
 
         subChannelAdapter = (ArrayAdapter<SpinnerBO>) getArrayAdapter(subchannelBOS);
 
-        spinerHashMap.get(NewRetailerConstant.SUBCHANNEL).setAdapter(subChannelAdapter);
+        spinnerHashMap.get(NewRetailerConstant.SUBCHANNEL).setAdapter(subChannelAdapter);
 
 
         if (screenMode == NewRetailerConstant.MenuType.VIEW.getMenuType()
                 || screenMode == NewRetailerConstant.MenuType.EDIT.getMenuType()) {
             if (screenMode == NewRetailerConstant.MenuType.VIEW.getMenuType())
-                spinerHashMap.get(NewRetailerConstant.SUBCHANNEL).setEnabled(false);
+                spinnerHashMap.get(NewRetailerConstant.SUBCHANNEL).setEnabled(false);
             for (int i = 0; i < subChannelAdapter.getCount(); i++) {
                 if (subChannelAdapter.getItem(i).getId() == mNewRetailerPresenter.getSubChannel())
-                    spinerHashMap.get(NewRetailerConstant.SUBCHANNEL).setSelection(i);
+                    spinnerHashMap.get(NewRetailerConstant.SUBCHANNEL).setSelection(i);
             }
         }
 
@@ -2379,13 +2321,13 @@ public class NewOutletFragmentNew extends BaseFragment
         spinnerMargin = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        paramsAttrib = new LinearLayout.LayoutParams(
-                0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams paramsAttrib = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT);
         paramsAttrib.weight = .7f;
         paramsAttrib.setMargins(0, 5, 10, 0);
 
-        paramsAttribSpinner = new LinearLayout.LayoutParams(
-                0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        LinearLayout.LayoutParams paramsAttribSpinner = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
         paramsAttribSpinner.weight = 2.3f;
 
         mandatoryTextViewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -2458,6 +2400,9 @@ public class NewOutletFragmentNew extends BaseFragment
         if (isMandatory)
             setMandatoryView(contactCreationLL);
 
+        if (editTextHashMap == null)
+            editTextHashMap = new SparseArray<>();
+
         TextInputLayout titleWrapper = contactCreationLL.findViewById(R.id.titleWrapper);
         AppCompatEditText contatTitleEt = contactCreationLL.findViewById(R.id.contactOther);
         editTextHashMap.put(menuNumber + NewRetailerConstant.CONTACT_PERSON_OTHERNAME_KEY, contatTitleEt);
@@ -2480,7 +2425,7 @@ public class NewOutletFragmentNew extends BaseFragment
 
         if (isContactTitle) {
             contactCreationLL.findViewById(R.id.contactTitleSpinner).setVisibility(View.VISIBLE);
-            spinerHashMap.put(spinnerKey, contactCreationLL.findViewById(R.id.contactTitleSpinner));
+            spinnerHashMap.put(spinnerKey, contactCreationLL.findViewById(R.id.contactTitleSpinner));
             getTitleSpinnerView(titleWrapper, isUppercaseLetter, menuNumber, menuName, configCode, spinnerKey);
 
         }
@@ -2506,7 +2451,7 @@ public class NewOutletFragmentNew extends BaseFragment
         setContactEditTextAttributes(editTextHashMap.get(menuNumber + NewRetailerConstant.CONTACT_PERSON_OTHERNAME_KEY),
                 titleWrapper, isUppercaseLetter, getResources().getString(R.string.contact_title), mConfigCode);
 
-        MaterialSpinner contactTitleSpinner = spinerHashMap.get(spinnerKey);
+        MaterialSpinner contactTitleSpinner = spinnerHashMap.get(spinnerKey);
         contactTitleSpinner.setId(menuNumber);
         contactTitleSpinner.setFloatingLabelText(menuName);
 
@@ -2664,6 +2609,8 @@ public class NewOutletFragmentNew extends BaseFragment
         else
             mEditTextInputLayout.addView(appCompatEditText, weight1);
 
+        if (editTextHashMap == null)
+            editTextHashMap = new SparseArray<>();
         editTextHashMap.put(menuNumber, appCompatEditText);
 
         addTextWatcher(menuNumber, mConfigCode, isUppercaseLetter, creditPeriod);
