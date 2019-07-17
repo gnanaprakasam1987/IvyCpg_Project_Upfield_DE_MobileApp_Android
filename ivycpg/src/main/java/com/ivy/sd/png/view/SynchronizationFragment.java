@@ -42,8 +42,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -277,7 +275,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                             uploadPresenter.updateIsWithImageStatus(true);
 
                         }
-                        syncStatus(1);
+                        updateSyncButtonStatus(1);
 
                     }
                 });
@@ -310,7 +308,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
 
                         }
-                        syncStatus(1);
+                        updateSyncButtonStatus(1);
                     }
                 });
 
@@ -563,7 +561,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         }
 
 
-        syncStatus(2);
+        updateSyncButtonStatus(2);
         txtPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -573,9 +571,9 @@ public class SynchronizationFragment extends IvyBaseFragment
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().length() < 1 || s.toString().equals("")) {
-                    syncStatus(2);
+                    updateSyncButtonStatus(2);
                 } else {
-                    syncStatus(1);
+                    updateSyncButtonStatus(1);
                 }
             }
 
@@ -589,10 +587,12 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     }
 
-    private void syncStatus(int btn_count) {
+    private void updateSyncButtonStatus(int btn_count) {
+
         TypedArray type_arr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         int text_color = type_arr.getColor(R.styleable.MyTextView_textColor, 0);
         int background_color = type_arr.getColor(R.styleable.MyTextView_accentcolor, 0);
+
         if (!aws || txtPassword.getText().toString().length() > 0) {
             if (btn_count == 1) {
                 if ((uploadPresenter.checkDataForSync() || withPhotosCheckBox.isChecked() || dayCloseCheckBox.isChecked()
@@ -816,14 +816,13 @@ public class SynchronizationFragment extends IvyBaseFragment
         return handler;
     }
 
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             bmodel = (BusinessModel) context.getApplicationContext();
             isClicked = false;
             setDayCloseEnableDisable();
             SyncDownloadStatusDialog sdsd;
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            Window window;
             switch (msg.what) {
 
                 case DataMembers.NOTIFY_DATABASE_NOT_SAVED:
@@ -949,6 +948,12 @@ public class SynchronizationFragment extends IvyBaseFragment
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
+                    break;
+                case DataMembers.NOTIFY_URL_NOT_CONFIGURED:
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.url_not_mapped), 0);
                     break;
                 case DataMembers.NOTIFY_UPLOADED_IMAGE:
                     withPhotosCheckBox.setChecked(false);
@@ -1680,7 +1685,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         } else {
             dayCloseCheckBox.setEnabled(true);
         }
-        syncStatus(1);
+        updateSyncButtonStatus(1);
     }
 
     private void updateLastSync() {

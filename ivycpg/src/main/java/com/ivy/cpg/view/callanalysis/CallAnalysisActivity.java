@@ -1885,6 +1885,14 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
                     return true;
+
+                case DataMembers.NOTIFY_URL_NOT_CONFIGURED:
+                    dismissProgressDialog();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
+                    return true;
+
                 case DataMembers.NOTIFY_UPLOADED_IMAGE:
                     if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT)
                         presenter.loadRetailerSelectionScreen();

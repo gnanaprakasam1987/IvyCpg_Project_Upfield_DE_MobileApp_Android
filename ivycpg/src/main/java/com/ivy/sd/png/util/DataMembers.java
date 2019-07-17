@@ -128,6 +128,7 @@ public class DataMembers {
     public static final int NOTIFY_FILE_UPLOADED_FAILED_IN_AMAZON = 696969;
 
 
+    // Different Type of upload
     public static final int SYNCUPLOAD = 5;
     public static final int SYNCSIHUPLOAD = -30;
     public static final int SYNCUPLOADRETAILERWISE = 217;

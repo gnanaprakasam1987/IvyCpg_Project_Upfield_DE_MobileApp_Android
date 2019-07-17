@@ -689,7 +689,10 @@ public class MyThread extends Thread {
                 } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-                } else {
+                } else if (status == UploadHelper.UPLOAD_STATUS.URL_NOTFOUND) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_URL_NOT_CONFIGURED);
+                }else {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
                 }
@@ -722,7 +725,10 @@ public class MyThread extends Thread {
                 } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-                } else {
+                }else if (status == UploadHelper.UPLOAD_STATUS.URL_NOTFOUND) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_URL_NOT_CONFIGURED);
+                }  else {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
                 }
@@ -754,7 +760,10 @@ public class MyThread extends Thread {
                 } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-                } else {
+                } else if (status == UploadHelper.UPLOAD_STATUS.URL_NOTFOUND) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_URL_NOT_CONFIGURED);
+                }else {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
                 }
@@ -786,7 +795,9 @@ public class MyThread extends Thread {
                 } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-
+                }else if (status == UploadHelper.UPLOAD_STATUS.URL_NOTFOUND) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_URL_NOT_CONFIGURED);
                 } else {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
@@ -819,8 +830,10 @@ public class MyThread extends Thread {
                 } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-
-                } else {
+                } else if (status == UploadHelper.UPLOAD_STATUS.URL_NOTFOUND) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_URL_NOT_CONFIGURED);
+                }else {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
                 }
@@ -852,6 +865,9 @@ public class MyThread extends Thread {
                 } else if (status == UploadHelper.UPLOAD_STATUS.TOKEN_ERROR) {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
+                }else if (status == UploadHelper.UPLOAD_STATUS.URL_NOTFOUND) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_URL_NOT_CONFIGURED);
                 } else {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
@@ -874,7 +890,7 @@ public class MyThread extends Thread {
                     DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
         } else if (uploadStatus == UploadHelper.UPLOAD_STATUS.URL_NOTFOUND) {
             handler.sendEmptyMessage(
-                    DataMembers.NOTIFY_UPLOAD_ERROR);
+                    DataMembers.NOTIFY_URL_NOT_CONFIGURED);
         }else {
             handler.sendEmptyMessage(
                     DataMembers.NOTIFY_UPLOAD_ERROR);

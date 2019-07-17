@@ -39,16 +39,6 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     private boolean isWithImage;
     public boolean isFromCallAnalysis;
 
-    private static final int UPLOAD_ALL = 0;
-    private static final int RETAILER_WISE_UPLOAD = 1;
-    private static final int UPLOAD_WITH_IMAGES = 2;
-    private static final int UPLOAD_STOCK_IN_HAND = 3;
-    private static final int UPLOAD_STOCK_APPLY = 4;
-    private static final int UPLOAD_LOYALTY_POINTS = 6;
-    private static final int UPLOAD_ORDER_DELIVERY_STATUS = 7;
-    private static final int UPLOAD_PICK_LIST = 8;
-    private static final int UPLOAD_TRIP = 9;
-
 
     public UploadPresenterImpl(Context mContext, BusinessModel mBModel, SyncContractor.SyncView view
             , UploadHelper mUploadHelper, VanUnLoadModuleHelper mVanUnloadHelper) {
@@ -210,29 +200,28 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     @Override
     public void upload() {
 
-        if (mUploadHelper.checkSIHTable()
-                && !mBModel.synchronizationHelper.getUploadUrl(UploadHelper.UPLOAD_SIH_URL_CODE).isEmpty())
-            startSync(UPLOAD_STOCK_IN_HAND);
-        else if (mUploadHelper.checkStockTable()
-                && !mBModel.synchronizationHelper.getUploadUrl(UploadHelper.UPLOAD_STOCK_APPLY_URL_CODE).isEmpty())
-            startSync(UPLOAD_STOCK_APPLY);
-        else if (mBModel.synchronizationHelper.checkLoyaltyPoints()
-                && !mBModel.synchronizationHelper.getUploadUrl(UploadHelper.UPLOAD_LOYALTY_URL_CODE).isEmpty())
-            startSync(UPLOAD_LOYALTY_POINTS);
-        else if (mBModel.synchronizationHelper.checkPickListData()
-                && !mBModel.synchronizationHelper.getUploadUrl(UploadHelper.UPLOAD_PICKLIST_URL_CODE).isEmpty())
-            startSync(UPLOAD_PICK_LIST);
+        if (AttendanceHelper.getInstance(mContext).hasInOutAttendanceEnabled(mContext.getApplicationContext()))
+            AttendanceHelper.getInstance(mContext).updateAttendaceDetailInTime(mContext.getApplicationContext());
+
+        view.showProgressUploading();
+
+        if (mUploadHelper.checkSIHTable())
+            new MyThread((Activity) mContext, DataMembers.SYNCSIHUPLOAD, isFromCallAnalysis).start();
+        else if (mUploadHelper.checkStockTable())
+            new MyThread((Activity) mContext, DataMembers.SYNCSTKAPPLYUPLOAD, isFromCallAnalysis).start();
+        else if (mBModel.synchronizationHelper.checkLoyaltyPoints())
+            new MyThread((Activity) mContext, DataMembers.SYNCLYTYPTUPLOAD, isFromCallAnalysis).start();
+        else if (mBModel.synchronizationHelper.checkPickListData())
+            new MyThread((Activity) mContext, DataMembers.SYNCPICKLISTUPLOAD, isFromCallAnalysis).start();
         else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
                 && !isDayClosed) {
-            startSync(RETAILER_WISE_UPLOAD);
-        } else if (mBModel.synchronizationHelper.checkOrderDeliveryStatusTable()
-                && !mBModel.synchronizationHelper.getUploadUrl(UploadHelper.UPLOAD_ORDR_DEL_URL_CODE).isEmpty()) {
-            startSync(UPLOAD_ORDER_DELIVERY_STATUS);
-        }else if (mBModel.synchronizationHelper.checkTripData()
-                && !mBModel.synchronizationHelper.getUploadUrl(UploadHelper.UPLOAD_TRIP_URL_CODE).isEmpty())
-            startSync(UPLOAD_TRIP);
+            new MyThread((Activity) mContext, DataMembers.SYNCUPLOADRETAILERWISE, isFromCallAnalysis).start();
+        } else if (mBModel.synchronizationHelper.checkOrderDeliveryStatusTable()) {
+            new MyThread((Activity) mContext, DataMembers.SYNC_ORDER_DELIVERY_STATUS_UPLOAD, isFromCallAnalysis).start();
+        }else if (mBModel.synchronizationHelper.checkTripData())
+            new MyThread((Activity) mContext, DataMembers.SYNC_TRIP, isFromCallAnalysis).start();
         else if (mUploadHelper.checkDataForSync()) {
-            startSync(UPLOAD_ALL);
+            new MyThread((Activity) mContext, DataMembers.SYNCUPLOAD, isFromCallAnalysis).start();
         } else {
             view.showNoDataExist();
         }
@@ -240,41 +229,20 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
 
     @Override
     public void uploadImages() {
-        startSync(UPLOAD_WITH_IMAGES);
-    }
 
-    private void startSync(int callFlag) {
-        Commons.print(" callFlag : " + callFlag);
         if (AttendanceHelper.getInstance(mContext).hasInOutAttendanceEnabled(mContext.getApplicationContext()))
             AttendanceHelper.getInstance(mContext).updateAttendaceDetailInTime(mContext.getApplicationContext());
 
         view.showProgressUploading();
 
-        if (callFlag == UPLOAD_ALL)
-            new MyThread((Activity) mContext, DataMembers.SYNCUPLOAD, isFromCallAnalysis).start();
-        else if (callFlag == RETAILER_WISE_UPLOAD)
-            new MyThread((Activity) mContext, DataMembers.SYNCUPLOADRETAILERWISE, isFromCallAnalysis).start();
-        else if (callFlag == UPLOAD_WITH_IMAGES) {
-            if (mBModel.configurationMasterHelper.IS_AZURE_CLOUD_STORAGE) {
-                new MyThread((Activity) mContext,DataMembers.AZURE_IMAGE_UPLOAD).start();
-            }else if (mBModel.configurationMasterHelper.IS_S3_CLOUD_STORAGE) {
-                new MyThread((Activity) mContext,
-                        DataMembers.AMAZONIMAGE_UPLOAD, isFromCallAnalysis).start();
-            }
-        } else if (callFlag == UPLOAD_STOCK_IN_HAND)
-            new MyThread((Activity) mContext, DataMembers.SYNCSIHUPLOAD, isFromCallAnalysis).start();
-        else if (callFlag == UPLOAD_STOCK_APPLY)
-            new MyThread((Activity) mContext, DataMembers.SYNCSTKAPPLYUPLOAD, isFromCallAnalysis).start();
-        else if (callFlag == UPLOAD_LOYALTY_POINTS)
-            new MyThread((Activity) mContext, DataMembers.SYNCLYTYPTUPLOAD, isFromCallAnalysis).start();
-        else if (callFlag == UPLOAD_PICK_LIST)
-            new MyThread((Activity) mContext, DataMembers.SYNCPICKLISTUPLOAD, isFromCallAnalysis).start();
-        else if (callFlag == UPLOAD_TRIP)
-            new MyThread((Activity) mContext, DataMembers.SYNC_TRIP, isFromCallAnalysis).start();
-        else if (callFlag == UPLOAD_ORDER_DELIVERY_STATUS)
-            new MyThread((Activity) mContext, DataMembers.SYNC_ORDER_DELIVERY_STATUS_UPLOAD, isFromCallAnalysis).start();
-
+        if (mBModel.configurationMasterHelper.IS_AZURE_CLOUD_STORAGE) {
+            new MyThread((Activity) mContext,DataMembers.AZURE_IMAGE_UPLOAD).start();
+        }else if (mBModel.configurationMasterHelper.IS_S3_CLOUD_STORAGE) {
+            new MyThread((Activity) mContext,
+                    DataMembers.AMAZONIMAGE_UPLOAD, isFromCallAnalysis).start();
+        }
     }
+
 
     @Override
     public boolean isDayClosed() {
