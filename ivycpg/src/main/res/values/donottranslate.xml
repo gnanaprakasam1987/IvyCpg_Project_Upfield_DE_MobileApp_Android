@@ -404,4 +404,5 @@
     <string name="close_paused_visit_to_sync">Close paused visit to Sync</string>
     <string name="exposition_status">Exposition Status</string>
     <string name="not_applicable">Not Applicable</string>
+    <string name="srp_must_be_less_than_of_mrp">Seller price must be less than of MRP: %.0f</string>
 </resources>

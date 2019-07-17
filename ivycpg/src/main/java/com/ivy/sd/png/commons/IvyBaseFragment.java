@@ -75,9 +75,8 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
 
     public void setScreenTitle(String title) {
 
-        mScreenTitleTV = (TextView) getActivity().findViewById(R.id.tv_toolbar_title);
+        mScreenTitleTV = getActivity().findViewById(R.id.tv_toolbar_title);
         if (mScreenTitleTV != null) {
-           // mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
             mScreenTitleTV.setText(title);
         }
     }

@@ -13,20 +13,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -50,6 +36,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -184,6 +185,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private RequestManager glide;
     private StockCheckHelper stockCheckHelper;
+    private int lastSelectedPos = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1709,6 +1711,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             String  strDistValue = sbdAchievement + "/" + bmodel.getAppDataProvider().getRetailMaster()
                     .getSbdDistributionTarget();
             distValue.setText(strDistValue);
+
+            if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP
+                    && lastSelectedPos != -1)
+                adapter.notifyItemChanged(lastSelectedPos);
         }
     }
 
@@ -2219,6 +2225,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                             dialogCustomKeyBoard.show();
                             dialogCustomKeyBoard.setCancelable(false);
 
+                            lastSelectedPos = getAdapterPosition();
                             //Grab the window of the dialog, and change the width
                             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                             Window window = dialogCustomKeyBoard.getWindow();
