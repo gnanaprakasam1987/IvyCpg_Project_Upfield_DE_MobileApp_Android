@@ -1,5 +1,7 @@
 package com.ivy.ui.profile.create.presenter;
 
+import android.location.Location;
+
 import com.android.volley.TimeoutError;
 import com.ivy.core.data.beat.BeatDataManager;
 import com.ivy.core.data.channel.ChannelDataManager;
@@ -17,6 +19,7 @@ import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.CensusLocationBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -38,6 +41,7 @@ import com.ivy.ui.profile.create.NewOutletTestDataFactory;
 import com.ivy.ui.profile.create.NewRetailerConstant;
 import com.ivy.ui.profile.create.model.ContactTitle;
 import com.ivy.ui.profile.create.model.ContractStatus;
+import com.ivy.ui.profile.create.model.LocationLevel;
 import com.ivy.ui.profile.create.model.PaymentType;
 import com.ivy.ui.profile.data.ProfileDataManager;
 import com.ivy.ui.survey.data.SurveyDataManager;
@@ -55,6 +59,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 
@@ -93,6 +98,9 @@ import static com.ivy.ui.profile.create.NewRetailerConstant.FOOD_LICENCE_NUM;
 import static com.ivy.ui.profile.create.NewRetailerConstant.GST_NO;
 import static com.ivy.ui.profile.create.NewRetailerConstant.IN_SEZ;
 import static com.ivy.ui.profile.create.NewRetailerConstant.LATLONG;
+import static com.ivy.ui.profile.create.NewRetailerConstant.LOCATION;
+import static com.ivy.ui.profile.create.NewRetailerConstant.LOCATION1;
+import static com.ivy.ui.profile.create.NewRetailerConstant.LOCATION2;
 import static com.ivy.ui.profile.create.NewRetailerConstant.MOBILE;
 import static com.ivy.ui.profile.create.NewRetailerConstant.NEARBYRET;
 import static com.ivy.ui.profile.create.NewRetailerConstant.PAN_NUMBER;
@@ -103,11 +111,23 @@ import static com.ivy.ui.profile.create.NewRetailerConstant.PINCODE;
 import static com.ivy.ui.profile.create.NewRetailerConstant.PLAN;
 import static com.ivy.ui.profile.create.NewRetailerConstant.PRIORITYPRODUCT;
 import static com.ivy.ui.profile.create.NewRetailerConstant.REGION;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD10;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD11;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD12;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD13;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD14;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD15;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD16;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD17;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD18;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD19;
 import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD3;
 import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD4;
 import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD5;
 import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD6;
 import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD7;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD8;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD9;
 import static com.ivy.ui.profile.create.NewRetailerConstant.ROUTE;
 import static com.ivy.ui.profile.create.NewRetailerConstant.STATE;
 import static com.ivy.ui.profile.create.NewRetailerConstant.STORENAME;
@@ -159,9 +179,6 @@ public class NewOutletPresenterImplTest {
     private ChannelDataManager channelDataManager;
 
     @Mock
-    private RetailerHelper retailerHelper;
-
-    @Mock
     private NewOutletHelper newOutletHelper;
 
     @Mock
@@ -193,86 +210,11 @@ public class NewOutletPresenterImplTest {
                 mockConfigurationMasterHelper,
                 view,
                 profileDataManager, beatDataManager,
-                retailerHelper, newOutletHelper,
+                newOutletHelper,
                 distributorDataManager,
                 userDataManager, channelDataManager,
                 retailerDataManager, surveyDataManager,
                 synchronizationDataManager);
-    }
-
-    @Test
-    public void testFetchData() {
-
-        given(view.getScreenMode()).willReturn(NewRetailerConstant.MenuType.VIEW.getMenuType());
-
-        given(view.getRetailerId()).willReturn("1");
-
-        given(profileDataManager.getNewRetailers())
-                .willReturn(Observable.fromCallable(new Callable<ArrayList<NewOutletBO>>() {
-                    @Override
-                    public ArrayList<NewOutletBO> call() throws Exception {
-                        return NewOutletTestDataFactory.getNewRetailerList();
-                    }
-                }));
-        given(profileDataManager.getImageTypeList())
-                .willReturn(Observable.fromCallable(new Callable<Vector<NewOutletBO>>() {
-                    @Override
-                    public Vector<NewOutletBO> call() throws Exception {
-                        return new Vector<NewOutletBO>();
-                    }
-                }));
-        getProfileDataPreConditions(NewOutletTestDataFactory.getProfileConfig());
-
-        given(dataManager.getUser()).willReturn(NewOutletTestDataFactory.getUser());
-
-        given(channelMasterHelper.getChannelMaster()).willReturn(null);
-
-        given(subChannelMasterHelper.getSubChannelMaster()).willReturn(null);
-
-        given(channelDataManager.fetchChannels()).willReturn(Observable.fromCallable(new Callable<ArrayList<ChannelBO>>() {
-            @Override
-            public ArrayList<ChannelBO> call() throws Exception {
-                return new ArrayList<ChannelBO>();
-            }
-        }));
-
-        given(channelDataManager.fetchSubChannels()).willReturn(Observable.fromCallable(new Callable<ArrayList<SubchannelBO>>() {
-            @Override
-            public ArrayList<SubchannelBO> call() throws Exception {
-                return new ArrayList<SubchannelBO>();
-            }
-        }));
-
-        given(beatDataManager.fetchBeats()).willReturn(Observable.fromCallable(new Callable<ArrayList<BeatMasterBO>>() {
-            @Override
-            public ArrayList<BeatMasterBO> call() throws Exception {
-                return new ArrayList<BeatMasterBO>();
-            }
-        }));
-
-
-        mPresenter.loadInitialData();
-        testScheduler.triggerActions();
-
-        then(view).should().showLoading();
-
-        //---Validate downloaded data start----
-
-
-        then(view).should().showNoLocationsError();
-
-        //---Validate downloaded data end----
-
-
-        //---prepare view based on configuration
-
-        then(view).should().createLocation1Spinner(false,
-                3, null, "LOCATION", false);
-
-        then(view).should().createNearByRetailerView(null, false);
-
-
-        then(view).should().hideLoading();
     }
 
     private void getProfileDataPreConditions(ArrayList<ConfigureBO> testProfileConfig) {
@@ -403,7 +345,7 @@ public class NewOutletPresenterImplTest {
         mPresenter.getSavedOutletData();
         testScheduler.triggerActions();
 
-        assertNull(mPresenter.getOutlet());
+        assertEquals(mPresenter.getOutlet().getOutletName(),"");
     }
 
 
@@ -719,6 +661,7 @@ public class NewOutletPresenterImplTest {
 
 
     }
+
 
     @Test
     public void testContactCreationWithTitle() {
@@ -1095,6 +1038,195 @@ public class NewOutletPresenterImplTest {
         then(view).should(order).hideLoading();
         then(view).shouldHaveNoMoreInteractions();
     }
+
+    @Test
+    public void testLocationCreationWithEmptyLocation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(NewRetailerConstant.LOCATION);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+
+        given(profileDataManager.getLocationListByLevId())
+                .willReturn(Observable.fromCallable(LinkedHashMap::new));
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).showNoLocationsError();
+        then(view).should(order).createLocationSpinner(false,0, "Config_Menu",   NewRetailerConstant.LOCATION, false);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+
+    }
+
+
+    @Test
+    public void testLocationCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(NewRetailerConstant.LOCATION);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+
+        given(profileDataManager.getLocationListByLevId())
+                .willReturn(Observable.fromCallable(() -> {
+                    LinkedHashMap<Integer, ArrayList<LocationBO>> locationMap = new LinkedHashMap();
+                    ArrayList<LocationBO> locationBOS = new ArrayList<>();
+                    locationBOS.add(new LocationBO());
+                    locationMap.put(0, locationBOS);
+                    return locationMap;
+                }));
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).createLocationSpinner(false,0, "Config_Menu",   NewRetailerConstant.LOCATION, false);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+
+    }
+
+    @Test
+    public void testLocation1CreationWithEmptyLocation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LOCATION1);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+
+        given(profileDataManager.getLocationListByLevId())
+                .willReturn(Observable.fromCallable(LinkedHashMap::new));
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).showNoLocationsError();
+        then(view).should(order).createLocation1Spinner(false,0, "Config_Menu",   LOCATION1);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+
+    }
+
+    @Test
+    public void testLocation1Creation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LOCATION1);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+
+        given(profileDataManager.getLocationListByLevId())
+                .willReturn(Observable.fromCallable(() -> {
+                    LinkedHashMap<Integer, ArrayList<LocationBO>> locationMap = new LinkedHashMap();
+                    ArrayList<LocationBO> locationBOS = new ArrayList<>();
+                    locationBOS.add(new LocationBO());
+                    locationMap.put(0, locationBOS);
+                    locationMap.put(1,locationBOS);
+                    return locationMap;
+                }));
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).createLocation1Spinner(false,0, "Config_Menu",   LOCATION1);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+
+    }
+
+
+    @Test
+    public void testLocation2CreationWithEmptyLocation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LOCATION2);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+
+        given(profileDataManager.getLocationListByLevId())
+                .willReturn(Observable.fromCallable(LinkedHashMap::new));
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).showNoLocationsError();
+        then(view).should(order).createLocation2Spinner(false,0, "Config_Menu",   LOCATION2);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+
+    }
+
+    @Test
+    public void testLocation2Creation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LOCATION2);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+
+        given(profileDataManager.getLocationListByLevId())
+                .willReturn(Observable.fromCallable(() -> {
+                    LinkedHashMap<Integer, ArrayList<LocationBO>> locationMap = new LinkedHashMap();
+                    ArrayList<LocationBO> locationBOS = new ArrayList<>();
+                    locationBOS.add(new LocationBO());
+                    locationMap.put(0, locationBOS);
+                    locationMap.put(1,locationBOS);
+                    locationMap.put(2,locationBOS);
+                    return locationMap;
+                }));
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).createLocation2Spinner(false,0, "Config_Menu",   LOCATION2);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+
+    }
+
 
     @Test
     public void testRouteCreationWithEmptyBeats() {
@@ -1843,6 +1975,306 @@ public class NewOutletPresenterImplTest {
     }
 
     @Test
+    public void testRField8EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD8);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD8);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testRField9EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD9);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD9);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testRField10EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD10);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD10);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testRField11EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD11);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD11);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testRField12EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD12);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD12);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testRField13EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD13);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD13);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testRField14EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD14);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD14);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testRField15EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD15);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD15);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testRField16EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD16);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD16);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testRField17EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD17);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD17);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testRField18EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD18);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD18);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testRField19EditTextCreation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD19);
+        storeName.setMenuName("Config_Menu");
+        storeName.setMandatory(0);
+        storeName.setRegex("abcdef");
+        testProfileConfig.add(storeName);
+
+        getProfileDataPreConditions(testProfileConfig);
+
+        mPresenter.loadInitialData();
+        testScheduler.triggerActions();
+
+        InOrder order = inOrder(view);
+        then(view).should(order).showLoading();
+        then(view).should(order).getChannelId();
+        then(view).should(order).addLengthFilter("abcdef");
+        then(view).should(order).addRegexFilter("abcdef");
+        then(view).should(order).createRFieldEditText(0, "Config_Menu", false, false, RFIELD19);
+        then(view).should(order).hideLoading();
+        then(view).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
     public void testPlanCreation() {
         ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
         ConfigureBO storeName = new ConfigureBO();
@@ -2429,17 +2861,17 @@ public class NewOutletPresenterImplTest {
 
         ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
         ConfigureBO storeName = new ConfigureBO();
-        storeName.setConfigCode(NewRetailerConstant.LOCATION2);
+        storeName.setConfigCode(LOCATION2);
         storeName.setMenuName(null);
         storeName.setMandatory(1);
         testProfileConfig.add(storeName);
 
-        given(view.getSpinnerSelectedItemPosition(NewRetailerConstant.LOCATION2)).willReturn(0);
+        given(view.getSpinnerSelectedItemPosition(LOCATION2)).willReturn(0);
 
         mPresenter.setProfileConfig(testProfileConfig);
         mPresenter.isValidRetailer();
 
-        then(view).should().setRequestFocusWithErrorMessage(NewRetailerConstant.LOCATION2, null);
+        then(view).should().setRequestFocusWithErrorMessage(LOCATION2, null);
     }
 
     @Test
@@ -2447,17 +2879,17 @@ public class NewOutletPresenterImplTest {
 
         ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
         ConfigureBO storeName = new ConfigureBO();
-        storeName.setConfigCode(NewRetailerConstant.LOCATION1);
+        storeName.setConfigCode(LOCATION1);
         storeName.setMenuName(null);
         storeName.setMandatory(1);
         testProfileConfig.add(storeName);
 
-        given(view.getSpinnerSelectedItemPosition(NewRetailerConstant.LOCATION1)).willReturn(0);
+        given(view.getSpinnerSelectedItemPosition(LOCATION1)).willReturn(0);
 
         mPresenter.setProfileConfig(testProfileConfig);
         mPresenter.isValidRetailer();
 
-        then(view).should().setRequestFocusWithErrorMessage(NewRetailerConstant.LOCATION1, null);
+        then(view).should().setRequestFocusWithErrorMessage(LOCATION1, null);
     }
 
     @Test
@@ -2691,6 +3123,44 @@ public class NewOutletPresenterImplTest {
     }
 
     @Test
+    public void testEmptyPriorityProducts(){
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(PRIORITYPRODUCT);
+        storeName.setMenuName("Priority Product");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+
+        given(view.getSelectedPriorityProducts()).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().showPriorityProductsMandatoryMessage("Priority Product");
+    }
+
+
+    @Test
+    public void testEmptyNearByRetailers(){
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(NEARBYRET);
+        storeName.setMenuName("NearByRetailers");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+
+        given(view.getSelectedNearByRetailers()).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().showNearByRetailersMandatory("NearByRetailers");
+    }
+
+
+    @Test
     public void testNoWeeksSelected(){
         ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
         ConfigureBO storeName = new ConfigureBO();
@@ -2819,6 +3289,237 @@ public class NewOutletPresenterImplTest {
         then(view).should().setDynamicEditTextFocus(0);
         then(view).should().showMandatoryErrorMessage(0, "RFIELD3");
     }
+
+    @Test
+    public void testValidateEmptyRfield8() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD8);
+        storeName.setMenuName("RFIELD8");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD8");
+    }
+
+    @Test
+    public void testValidateEmptyRfield9() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD9);
+        storeName.setMenuName("RFIELD9");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD9");
+    }
+
+    @Test
+    public void testValidateEmptyRfield10() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD10);
+        storeName.setMenuName("RFIELD10");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD10");
+    }
+
+    @Test
+    public void testValidateEmptyRfield11() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(NewRetailerConstant.RFIELD11);
+        storeName.setMenuName("RFIELD11");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD11");
+    }
+
+    @Test
+    public void testValidateEmptyRfield12() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD12);
+        storeName.setMenuName("RFIELD12");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD12");
+    }
+
+    @Test
+    public void testValidateEmptyRfield13() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(NewRetailerConstant.RFIELD13);
+        storeName.setMenuName("RFIELD13");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD13");
+    }
+
+
+    @Test
+    public void testValidateEmptyRfield14() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD14);
+        storeName.setMenuName("RFIELD14");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD14");
+    }
+
+    @Test
+    public void testValidateEmptyRfield15() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD15);
+        storeName.setMenuName("RFIELD15");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD15");
+    }
+
+    @Test
+    public void testValidateEmptyRfield16() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD16);
+        storeName.setMenuName("RFIELD16");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD16");
+    }
+
+    @Test
+    public void testValidateEmptyRfield17() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD17);
+        storeName.setMenuName("RFIELD17");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD17");
+    }
+
+    @Test
+    public void testValidateEmptyRfield18() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD18);
+        storeName.setMenuName("RFIELD18");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD18");
+    }
+
+
+    @Test
+    public void testValidateEmptyRfield19() {
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD19);
+        storeName.setMenuName("RFIELD19");
+        storeName.setMandatory(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().setDynamicEditTextFocus(0);
+        then(view).should().showMandatoryErrorMessage(0, "RFIELD19");
+    }
+
 
     @Test
     public void testValidateEmptyCreditlimit() {
@@ -3189,6 +3890,24 @@ public class NewOutletPresenterImplTest {
     }
 
     @Test
+    public void validateInvalidLatLong(){
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LATLONG);
+        storeName.setMenuName("LAT LONG");
+        storeName.setMandatory(1);
+        storeName.setHasLink(1);
+        testProfileConfig.add(storeName);
+
+        given(view.getSelectedLatLong()).willReturn("0.0,0.0");
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.isValidRetailer();
+
+        then(view).should().showMessage(R.string.choose_location);
+    }
+
+    @Test
     public void testGetOutletData() {
 
         NewOutletBO newOutletBO = new NewOutletBO();
@@ -3226,6 +3945,19 @@ public class NewOutletPresenterImplTest {
         newOutletBO.setCountry("India");
         newOutletBO.setDistrict("Kancheepuram");
 
+        newOutletBO.setRfield8("rfield8");
+        newOutletBO.setRfield9("rfield9");
+        newOutletBO.setRfield10("rfield10");
+        newOutletBO.setRfield11("rfield11");
+        newOutletBO.setRfield12("rfield12");
+        newOutletBO.setRfield13("rfield13");
+        newOutletBO.setRfield14("rfield14");
+        newOutletBO.setRfield15("rfield15");
+        newOutletBO.setRfield16("rfield16");
+        newOutletBO.setRfield17("rfield17");
+        newOutletBO.setRfield18("rfield18");
+        newOutletBO.setRfield19("rfield19");
+
         mPresenter.setOutlet(newOutletBO);
 
         assertEquals(mPresenter.getOutletData(STORENAME), "Ivy Mobility");
@@ -3262,6 +3994,18 @@ public class NewOutletPresenterImplTest {
         assertEquals(mPresenter.getOutletData(COUNTRY), "India");
         assertEquals(mPresenter.getOutletData(DISTRICT), "Kancheepuram");
         assertEquals(mPresenter.getOutletData(""), "");
+        assertEquals(mPresenter.getOutletData(RFIELD8), "rfield8");
+        assertEquals(mPresenter.getOutletData(RFIELD9), "rfield9");
+        assertEquals(mPresenter.getOutletData(RFIELD10), "rfield10");
+        assertEquals(mPresenter.getOutletData(RFIELD11), "rfield11");
+        assertEquals(mPresenter.getOutletData(RFIELD12), "rfield12");
+        assertEquals(mPresenter.getOutletData(RFIELD13), "rfield13");
+        assertEquals(mPresenter.getOutletData(RFIELD14), "rfield14");
+        assertEquals(mPresenter.getOutletData(RFIELD15), "rfield15");
+        assertEquals(mPresenter.getOutletData(RFIELD16), "rfield16");
+        assertEquals(mPresenter.getOutletData(RFIELD17), "rfield17");
+        assertEquals(mPresenter.getOutletData(RFIELD18), "rfield18");
+        assertEquals(mPresenter.getOutletData(RFIELD19), "rfield19");
 
 
     }
@@ -3601,6 +4345,45 @@ public class NewOutletPresenterImplTest {
 
     }
 
+
+    @Test
+    public void getSelectedRoute() {
+        ArrayList<BeatMasterBO> beatMasterBOS = new ArrayList<>();
+        BeatMasterBO beatMasterBO = new BeatMasterBO(0, "Mr",1);
+        beatMasterBOS.add(beatMasterBO);
+        beatMasterBO = new BeatMasterBO(1, "Mrs",0);
+        beatMasterBOS.add(beatMasterBO);
+        beatMasterBO = new BeatMasterBO(2, "Other",1);
+        beatMasterBOS.add(beatMasterBO);
+
+        NewOutletBO outletBO = new NewOutletBO();
+        outletBO.setRouteid(1);
+
+        given(view.getRouteAdapter()).willReturn(beatMasterBOS);
+
+        mPresenter.setOutlet(outletBO);
+
+        assertEquals(mPresenter.getSpinnerSelectedItem(ROUTE), 1);
+
+    }
+
+    @Test
+    public void getSelectedBeatNotPresent() {
+        ArrayList<BeatMasterBO> beatMasterBOS = new ArrayList<>();
+        BeatMasterBO beatMasterBO = new BeatMasterBO(0, "Mr",1);
+        beatMasterBOS.add(beatMasterBO);
+
+        NewOutletBO outletBO = new NewOutletBO();
+        outletBO.setRouteid(1);
+
+        given(view.getRouteAdapter()).willReturn(beatMasterBOS);
+
+        mPresenter.setOutlet(outletBO);
+
+        assertEquals(mPresenter.getSpinnerSelectedItem(ROUTE), 0);
+
+    }
+
     @Test
     public void getSelectedUser() {
         ArrayList<UserMasterBO> userMasterList = new ArrayList<>();
@@ -3775,6 +4558,85 @@ public class NewOutletPresenterImplTest {
 
         assertEquals(mPresenter.getSpinnerSelectedItem(RFIELD7), 0);
 
+    }
+
+    @Test
+    public void testGetSelectedLocation(){
+
+        mPresenter.setLeastlocId(1);
+        ArrayList<LocationBO> locationBOS = new ArrayList<>();
+        LocationBO locationBO = new LocationBO(0,"Hello");
+        locationBOS.add(locationBO);
+        locationBO = new LocationBO(1,"Hello1");
+        locationBOS.add(locationBO);
+        locationBO = new LocationBO(2,"Hello2");
+        locationBOS.add(locationBO);
+
+        given(view.getLocationAdapter()).willReturn(locationBOS);
+
+        mPresenter.getSelectedLocationPosition();
+
+        then(view).should().setSpinnerPosition(LOCATION,1);
+    }
+
+    @Test
+    public void testGetSelectedLocation1(){
+
+        mPresenter.setLeastlocId(1);
+
+        ArrayList<LocationBO> locationBOS = new ArrayList<>();
+        LocationBO locationBO = new LocationBO(0,"Hello");
+        locationBOS.add(locationBO);
+        locationBO = new LocationBO(1,"Hello1");
+        locationBOS.add(locationBO);
+        locationBO = new LocationBO(2,"Hello2");
+        locationBOS.add(locationBO);
+
+        given(profileDataManager.getParentLevelName(1,true)).willReturn(Single.fromCallable(() -> {
+            LocationLevel locationLevel = new LocationLevel();
+            locationLevel.setLocationId(2);
+            return locationLevel;
+        }));
+        given(view.getLocationAdapter1()).willReturn(locationBOS);
+
+        mPresenter.getSelectedLocation1Position();
+        testScheduler.triggerActions();
+
+        then(view).should().setSpinnerPosition(LOCATION1,2);
+    }
+
+    @Test
+    public void testGetSelectedLocation2(){
+
+
+        mPresenter.setLeastlocId(1);
+
+        ArrayList<LocationBO> locationBOS = new ArrayList<>();
+        LocationBO locationBO = new LocationBO(0,"Hello");
+        locationBOS.add(locationBO);
+        locationBO = new LocationBO(1,"Hello1");
+        locationBOS.add(locationBO);
+        locationBO = new LocationBO(2,"Hello2");
+        locationBOS.add(locationBO);
+
+        given(profileDataManager.getParentLevelName(1,true)).willReturn(Single.fromCallable(() -> {
+            LocationLevel locationLevel = new LocationLevel();
+            locationLevel.setLocationId(2);
+            return locationLevel;
+        }));
+
+        given(profileDataManager.getParentLevelName(2,true)).willReturn(Single.fromCallable(() -> {
+            LocationLevel locationLevel = new LocationLevel();
+            locationLevel.setLocationId(0);
+            return locationLevel;
+        }));
+
+        given(view.getLocationAdapter2()).willReturn(locationBOS);
+
+        mPresenter.getSelectedLocation2Position();
+        testScheduler.triggerActions();
+
+        then(view).should().setSpinnerPosition(LOCATION2,0);
     }
 
     @Test
@@ -4932,6 +5794,510 @@ public class NewOutletPresenterImplTest {
     }
 
     @Test
+    public void testBuildOutletWithEmptyRField8() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD8);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield8(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField8() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD8);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield8(), "Reliance");
+
+    }
+
+    @Test
+    public void testBuildOutletWithEmptyRField9() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD9);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield9(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField9() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD9);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield9(), "Reliance");
+
+    }
+
+    @Test
+    public void testBuildOutletWithEmptyRField10() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD10);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield3(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField10() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD10);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield10(), "Reliance");
+
+    }
+
+    @Test
+    public void testBuildOutletWithEmptyRField11() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD11);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield11(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField11() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD11);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield11(), "Reliance");
+
+    }
+
+    @Test
+    public void testBuildOutletWithEmptyRField12() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD12);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield12(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField12() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD12);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield12(), "Reliance");
+
+    }
+
+    @Test
+    public void testBuildOutletWithEmptyRField13() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD13);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield13(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField13() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD13);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield13(), "Reliance");
+
+    }
+
+    @Test
+    public void testBuildOutletWithEmptyRField14() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD14);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield14(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField14() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD14);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield14(), "Reliance");
+
+    }
+
+    @Test
+    public void testBuildOutletWithEmptyRField15() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD15);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield15(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField15() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD15);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield15(), "Reliance");
+
+    }
+
+    @Test
+    public void testBuildOutletWithEmptyRField16() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD16);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield16(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField16() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD16);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield16(), "Reliance");
+
+    }
+
+    @Test
+    public void testBuildOutletWithEmptyRField17() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD17);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield17(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField17() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD17);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield17(), "Reliance");
+
+    }
+
+    @Test
+    public void testBuildOutletWithEmptyRField18() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD18);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield18(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField18() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD18);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield18(), "Reliance");
+
+    }
+
+    @Test
+    public void testBuildOutletWithEmptyRField19() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD19);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield19(), "");
+
+    }
+
+    @Test
+    public void testBuildOutletWithRField19() {
+        mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
+
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(RFIELD19);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getDynamicEditTextValues(0)).willReturn("Reliance");
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getRfield19(), "Reliance");
+
+    }
+
+    @Test
     public void testBuildOutletWithTaxType() {
         mockConfigurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = false;
 
@@ -6000,6 +7366,118 @@ public class NewOutletPresenterImplTest {
 
         assertEquals(mPresenter.getOutlet().getContractStatuslovid(), 0);
     }
+
+
+    @Test
+    public void testBuildOutletWithLocation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LOCATION);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getSelectedLocation(LOCATION)).willReturn(new LocationBO(100, "beat"));
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getLocid(), 100);
+    }
+
+    @Test
+    public void testBuildOutletWithoutLocation() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LOCATION);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getSelectedLocation(LOCATION)).willReturn(null);
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getLocid(), 0);
+    }
+
+    @Test
+    public void testBuildOutletWithLocation1() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LOCATION1);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getSelectedLocation(LOCATION1)).willReturn(new LocationBO(100, "beat"));
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getLoc1id(), 100);
+    }
+
+    @Test
+    public void testBuildOutletWithoutLocation1() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LOCATION1);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getSelectedLocation(LOCATION1)).willReturn(null);
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getLoc1id(), 0);
+    }
+
+
+    @Test
+    public void testBuildOutletWithLocation2() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LOCATION2);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getSelectedLocation(LOCATION2)).willReturn(new LocationBO(100, "beat"));
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getLoc2id(), 100);
+    }
+
+    @Test
+    public void testBuildOutletWithoutLocation2() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LOCATION2);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        given(view.getSelectedLocation(LOCATION2)).willReturn(null);
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getLoc2id(), 0);
+    }
+
+
 
     @Test
     public void testRetailerAlreadyExists() {

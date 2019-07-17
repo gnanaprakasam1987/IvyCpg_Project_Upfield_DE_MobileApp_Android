@@ -1,7 +1,6 @@
 package com.ivy.ui.profile.create.presenter;
 
 
-import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
@@ -41,7 +40,6 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
-import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -49,6 +47,7 @@ import com.ivy.ui.profile.create.INewRetailerContract;
 import com.ivy.ui.profile.create.NewRetailerConstant;
 import com.ivy.ui.profile.create.model.ContactTitle;
 import com.ivy.ui.profile.create.model.ContractStatus;
+import com.ivy.ui.profile.create.model.LocationLevel;
 import com.ivy.ui.profile.create.model.PaymentType;
 import com.ivy.ui.profile.data.ProfileDataManager;
 import com.ivy.ui.profile.edit.di.Profile;
@@ -116,11 +115,23 @@ import static com.ivy.ui.profile.create.NewRetailerConstant.PINCODE;
 import static com.ivy.ui.profile.create.NewRetailerConstant.PLAN;
 import static com.ivy.ui.profile.create.NewRetailerConstant.PRIORITYPRODUCT;
 import static com.ivy.ui.profile.create.NewRetailerConstant.REGION;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD10;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD11;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD12;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD13;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD14;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD15;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD16;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD17;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD18;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD19;
 import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD3;
 import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD4;
 import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD5;
 import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD6;
 import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD7;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD8;
+import static com.ivy.ui.profile.create.NewRetailerConstant.RFIELD9;
 import static com.ivy.ui.profile.create.NewRetailerConstant.ROUTE;
 import static com.ivy.ui.profile.create.NewRetailerConstant.STATE;
 import static com.ivy.ui.profile.create.NewRetailerConstant.STORENAME;
@@ -146,7 +157,6 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
 
     /*Helper class */
     private ConfigurationMasterHelper configurationMasterHelper;
-    private RetailerHelper retailerHelper;
 
     private NewOutletBO outlet;
     public ArrayList<ConfigureBO> profileConfig = new ArrayList<>();
@@ -186,7 +196,6 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
 
     private boolean isLocation1 = false;
     private boolean isUppercaseLetter;
-    private boolean isValid = true;
     private boolean isLatLongEnabled;
 
     /**
@@ -196,7 +205,6 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
     private boolean isContactTitleEnabled = false;
     private boolean isSubChannelEnabled = false;
     private boolean isLocationEnabled = false;
-    @VisibleForTesting
     boolean isRouteEnabled = false;
     private boolean isUserEnabled = false;
     private boolean isPaymentTypeEnabled = false;
@@ -223,7 +231,6 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                                   V view,
                                   ProfileDataManager profileDataManager,
                                   BeatDataManager beatDataManager,
-                                  @Profile RetailerHelper retailerHelper,
                                   @Profile NewOutletHelper newOutletHelper,
                                   @DistributorInfo DistributorDataManager distributorDataManager,
                                   @UserInfo UserDataManager userDataManager,
@@ -237,7 +244,6 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
         this.userDataManager = userDataManager;
         this.configurationMasterHelper = configurationMasterHelper;
         this.beatDataManager = beatDataManager;
-        this.retailerHelper = retailerHelper;
         this.newOutletHelper = newOutletHelper;
         this.channelDataManager = channelDataManager;
         this.retailerDataManager = retailerDataManager;
@@ -287,6 +293,8 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                             for (NewOutletBO newOutletBO : arrayList)
                                 if (getIvyView().getRetailerId().equalsIgnoreCase(newOutletBO.getRetailerId())) {
                                     setOutlet(newOutletBO);
+                                    leastlocId = newOutletBO.getLocid();
+
                                     if (newOutletBO.getImageName() != null)
                                         getIvyView().setImageNameList(newOutletBO.getImageName());
 
@@ -337,9 +345,12 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                                 isContactTitleEnabled = true;
                             else if (configureBO.getConfigCode().equalsIgnoreCase(CONTRACT))
                                 isContactStatusEnabled = true;
-                            else if (configureBO.getConfigCode().equalsIgnoreCase(LOCATION) || configureBO.getConfigCode().equalsIgnoreCase(LOCATION1) || configureBO.getConfigCode().equalsIgnoreCase(LOCATION2))
+                            else if (configureBO.getConfigCode().equalsIgnoreCase(LOCATION) || configureBO.getConfigCode().equalsIgnoreCase(LOCATION2))
                                 isLocationEnabled = true;
-                            else if (configureBO.getConfigCode().equalsIgnoreCase(ROUTE))
+                            else if (configureBO.getConfigCode().equalsIgnoreCase(LOCATION1)) {
+                                isLocationEnabled = true;
+                                isLocation1 = true;
+                            } else if (configureBO.getConfigCode().equalsIgnoreCase(ROUTE))
                                 isRouteEnabled = true;
                             else if (configureBO.getConfigCode().equalsIgnoreCase(USER))
                                 isUserEnabled = true;
@@ -521,8 +532,6 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                             mContractStatusList.addAll(contractStatuses);
                         }
 
-
-                        validateMasters();
                         prepareView();
                     }
 
@@ -539,30 +548,6 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                 }));
     }
 
-    private void validateMasters() {
-
-        for (int i = 0; i < profileConfig.size(); i++)
-            switch (profileConfig.get(i).getConfigCode()) {
-                case NewRetailerConstant.LOCATION:
-                    if (outlet != null)
-                        leastlocId = outlet.getLocid();
-                    if (mLocationListByLevId.get(0) == null || mLocationListByLevId.get(0).size() == 0)
-                        getIvyView().showNoLocationsError();
-                    break;
-                case NewRetailerConstant.LOCATION1:
-                    isLocation1 = true;
-                    if (getLocation2List().size() == 0)
-                        getIvyView().showNoLocationsError();
-                    break;
-                case NewRetailerConstant.LOCATION2:
-                    if (getLocation3List().size() == 0)
-                        getIvyView().showNoLocationsError();
-                    break;
-                default:
-                    break;
-            }
-
-    }
 
     private void prepareView() {
 
@@ -695,7 +680,19 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                     getIvyView().createUserSpinner(mandatory, position, mName, configCode);
                     break;
                 }
-                case RFIELD3: {
+                case RFIELD3:
+                case RFIELD8:
+                case RFIELD9:
+                case RFIELD10:
+                case RFIELD11:
+                case RFIELD12:
+                case RFIELD13:
+                case RFIELD14:
+                case RFIELD15:
+                case RFIELD16:
+                case RFIELD17:
+                case RFIELD18:
+                case RFIELD19: {
                     addLengthAndRegexFilters(position);
                     getIvyView().createRFieldEditText(position, mName, mandatory,
                             isUppercaseLetter, configCode);
@@ -785,128 +782,47 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                     getIvyView().createNearByRetailerView(mName, mandatory);
                     break;
                 }
-
-
+                case LOCATION: {
+                    if (getLocationList().isEmpty())
+                        getIvyView().showNoLocationsError();
+                    getIvyView().createLocationSpinner(mandatory, position, mName, configCode, isLocation1);
+                    break;
+                }
+                case LOCATION1: {
+                    if (getLocation1List().isEmpty())
+                        getIvyView().showNoLocationsError();
+                    getIvyView().createLocation1Spinner(mandatory, position, mName, configCode);
+                    break;
+                }
+                case LOCATION2: {
+                    if (getLocation2List().isEmpty())
+                        getIvyView().showNoLocationsError();
+                    getIvyView().createLocation2Spinner(mandatory, position, mName, configCode);
+                    break;
+                }
             }
-
-            /*if (STORENAME.equalsIgnoreCase(configCode)
-                    || NewRetailerConstant.ADDRESS1.equalsIgnoreCase(configCode)
-                    || NewRetailerConstant.ADDRESS2.equalsIgnoreCase(configCode)
-                    || ADDRESS3.equalsIgnoreCase(configCode)
-                    || NewRetailerConstant.CITY.equalsIgnoreCase(configCode)
-                    || NewRetailerConstant.STATE.equalsIgnoreCase(configCode)
-                    || NewRetailerConstant.PAN_NUMBER.equalsIgnoreCase(configCode)
-                    || NewRetailerConstant.DRUG_LICENSE_NUM.equalsIgnoreCase(configCode)
-                    || NewRetailerConstant.FOOD_LICENCE_NUM.equalsIgnoreCase(configCode)
-                    || NewRetailerConstant.REGION.equalsIgnoreCase(configCode)
-                    || NewRetailerConstant.COUNTRY.equalsIgnoreCase(configCode)
-                    || NewRetailerConstant.DISTRICT.equalsIgnoreCase(configCode)) {
-                getIvyView().createNewRetailerDetailsField(position, mName, mandatory, isUppercaseLetter, configCode);
-
-            } else if (NewRetailerConstant.CONTACT_PERSON1.equalsIgnoreCase(configCode)) {
-                getIvyView().createNewRetailerContactPersonOne(position, mName, mandatory,
-                        isUppercaseLetter, configCode, isContactTitleEnabled);
-            } else if (CONTACT_PERSON2.equalsIgnoreCase(configCode)) {
-                getIvyView().createNewRetailerContactPersonTwo(position, mName, mandatory,
-                        isUppercaseLetter, configCode, isContactTitleEnabled);
-            } else if (NewRetailerConstant.CREDITPERIOD.equalsIgnoreCase(configCode)) {
-                getIvyView().createNewRetailerCreditPeriod(position, mName, mandatory,
-                        isUppercaseLetter, configCode);
-            } else if (NewRetailerConstant.EMAIL.equalsIgnoreCase(configCode)) {
-                getIvyView().createNewRetailerContactEmail(position, mName, mandatory,
-                        isUppercaseLetter, configCode);
-            } else if (PHNO1.equalsIgnoreCase(configCode)
-                    || PHNO2.equalsIgnoreCase(configCode)
-                    || CREDITLIMIT.equalsIgnoreCase(configCode)
-                    || FAX.equalsIgnoreCase(configCode)
-                    || MOBILE.equalsIgnoreCase(configCode)) {
-                getIvyView().createNewRetailerContactType(position, mName, mandatory,
-                        isUppercaseLetter, configCode);
-            } else if (NewRetailerConstant.CHANNEL.equalsIgnoreCase(configCode)) {
-                if (channelMasterList == null || channelMasterList.isEmpty())
-                    getIvyView().showNoChannelsError();
-                getIvyView().createChannelSpinner(mandatory, position, mName);
-            } else if (NewRetailerConstant.SUBCHANNEL.equalsIgnoreCase(configCode)) {
-                if (subChannelMasterList == null || subChannelMasterList.isEmpty())
-                    getIvyView().showNoSubChannelsError();
-                getIvyView().createSubChannelSpinner(mandatory, position, mName);
-            } else
-            if (CONTRACT.equalsIgnoreCase(configCode)) {
-                getIvyView().createContactSpinner(mandatory, position, mName, configCode);
-            } else if (NewRetailerConstant.ROUTE.equalsIgnoreCase(configCode)) {
-                if (beatMaster == null || beatMaster.isEmpty())
-                    getIvyView().showNoBeatsError();
-                getIvyView().createRouteSpinner(mandatory, position, mName, configCode);
-            } else*/
-            if (NewRetailerConstant.LOCATION.equalsIgnoreCase(configCode)) {
-                getIvyView().createLocation1Spinner(mandatory, position, mName, configCode, isLocation1);
-            } else if (NewRetailerConstant.LOCATION1.equalsIgnoreCase(configCode)) {
-                getIvyView().createLocation2Spinner(mandatory, position, mName, configCode);
-            } else if (NewRetailerConstant.LOCATION2.equalsIgnoreCase(configCode)) {
-                getIvyView().createLocation3Spinner(mandatory, position, mName, configCode);
-            } /*else if (NewRetailerConstant.PAYMENTTYPE.equalsIgnoreCase(configCode)) {
-                if (paymentTypeList == null || paymentTypeList.isEmpty())
-                    getIvyView().showPaymentTypeListEmptyError();
-                getIvyView().createPaymentType(mandatory, position, mName, configCode);
-            } else if (NewRetailerConstant.DISTRIBUTOR.equalsIgnoreCase(configCode)) {
-                if (mDistributorTypeMasterList == null || mDistributorTypeMasterList.isEmpty())
-                    getIvyView().showDistributorTypeMasterEmptyError();
-                getIvyView().createDistributor(mandatory, position, mName, configCode);
-            } else if (NewRetailerConstant.TAXTYPE.equalsIgnoreCase(configCode)) {
-                getIvyView().createTaxTypeSpinner(mandatory, position, mName, configCode);
-            } else if (PRIORITYPRODUCT.equalsIgnoreCase(configCode)) {
-                getIvyView().createPriorityProductSpinner(mandatory, position, mName, configCode, hasLink);
-            } else if (NewRetailerConstant.CLASS.equalsIgnoreCase(configCode)) {
-                getIvyView().createClassTypeSpinner(mandatory, position, mName, configCode);
-            } else if (NewRetailerConstant.USER.equalsIgnoreCase(configCode)) {
-                if (mUserList == null || mUserList.isEmpty())
-                    getIvyView().showNoUsersError();
-                getIvyView().createUserSpinner(mandatory, position, mName, configCode);
-            }  else if (RFIELD4.equalsIgnoreCase(configCode) && hasLink == 1) {
-                getIvyView().createRField4Spinner(mandatory, position, mName, configCode);
-            }else if (NewRetailerConstant.RFIELD5.equalsIgnoreCase(configCode) && hasLink == 1) {
-                getIvyView().createRField5Spinner(mandatory, position, mName, configCode);
-            } else if (RFIELD6.equalsIgnoreCase(configCode) && hasLink == 1) {
-                getIvyView().createRField6Spinner(mandatory, position, mName, configCode);
-            } else if (RFIELD7.equalsIgnoreCase(configCode) && hasLink == 1) {
-                getIvyView().createRField7Spinner(mandatory, position, mName, configCode);
-            }else if (RFIELD4.equalsIgnoreCase(configCode) && hasLink == 0
-                    || RFIELD5.equalsIgnoreCase(configCode) && hasLink == 0
-                    || RFIELD6.equalsIgnoreCase(configCode) && hasLink == 0
-                    || RFIELD7.equalsIgnoreCase(configCode) && hasLink == 0) {
-                getIvyView().createRFieldEditText(position, mName, mandatory,
-                        isUppercaseLetter, configCode);
-            }else if (RFIELD3.equalsIgnoreCase(configCode)) {
-                getIvyView().createRFieldEditText(position, mName, mandatory,
-                        isUppercaseLetter, configCode);
-            }  else if (NewRetailerConstant.PLAN.equalsIgnoreCase(configCode)) {
-                getIvyView().createDaysAndWeeks(mandatory);
-            } else if (NewRetailerConstant.TIN_NUM.equalsIgnoreCase(configCode)) {
-                getIvyView().createTinNum(position, mName, mandatory,
-                        isUppercaseLetter, configCode);
-            } else if (PINCODE.equalsIgnoreCase(configCode)) {
-                getIvyView().createPinCode(position, mName, mandatory,
-                        isUppercaseLetter, configCode);
-            }  else if (NewRetailerConstant.GST_NO.equalsIgnoreCase(configCode)) {
-                getIvyView().createGstNo(position, mName, mandatory,
-                        isUppercaseLetter, configCode);
-            } else if (LATLONG.equalsIgnoreCase(configCode)) {
-                isLatLongEnabled = true;
-                getIvyView().createLatLongTextView(position);
-            } else if (TIN_EXP_DATE.equalsIgnoreCase(configCode)) {
-                getIvyView().createTinExpDataTextView(position, mName, mandatory);
-            } else if (DRUG_LICENSE_EXP_DATE.equalsIgnoreCase(configCode)) {
-                getIvyView().createDrugLicenseExpDataTextView(position, mName, mandatory);
-            } else if (NewRetailerConstant.FOOD_LICENCE_EXP_DATE.equalsIgnoreCase(configCode)) {
-                getIvyView().createFoodLicenceExpDataTextView(position, mName, mandatory);
-            } else if (IN_SEZ.equalsIgnoreCase(configCode)) {
-                getIvyView().createSezCheckBox(mName, mandatory);
-                break;
-            }*/
         }
 
         getIvyView().hideLoading();
 
+    }
+
+    @Override
+    public ArrayList<LocationBO> getLocationList() {
+
+        return mLocationListByLevId.size() >= 1 && mLocationListByLevId.get(0) != null ? mLocationListByLevId.get(0) : new ArrayList<>();
+    }
+
+    @Override
+    public ArrayList<LocationBO> getLocation1List() {
+
+        return mLocationListByLevId.size() >= 2 && mLocationListByLevId.get(1) != null ? mLocationListByLevId.get(1) : new ArrayList<>();
+    }
+
+    @Override
+    public ArrayList<LocationBO> getLocation2List() {
+
+        return mLocationListByLevId.size() >= 3 && mLocationListByLevId.get(2) != null ? mLocationListByLevId.get(2) : new ArrayList<>();
     }
 
 
@@ -997,6 +913,30 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                 return outlet.getPincode();
             case RFIELD3:
                 return outlet.getRfield3();
+            case RFIELD8:
+                return outlet.getRfield8();
+            case RFIELD9:
+                return outlet.getRfield9();
+            case RFIELD10:
+                return outlet.getRfield10();
+            case RFIELD11:
+                return outlet.getRfield11();
+            case RFIELD12:
+                return outlet.getRfield12();
+            case RFIELD13:
+                return outlet.getRfield13();
+            case RFIELD14:
+                return outlet.getRfield14();
+            case RFIELD15:
+                return outlet.getRfield15();
+            case RFIELD16:
+                return outlet.getRfield16();
+            case RFIELD17:
+                return outlet.getRfield17();
+            case RFIELD18:
+                return outlet.getRfield18();
+            case RFIELD19:
+                return outlet.getRfield19();
             case RFIELD5:
                 return outlet.getRfield5();
             case RFIELD6:
@@ -1111,18 +1051,6 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                 defaultValue = getSelectedDistributor();
                 break;
 
-            case NewRetailerConstant.LOCATION2:
-                defaultValue = getLocation2();
-                break;
-
-            case NewRetailerConstant.LOCATION1:
-                defaultValue = getLocation1();
-                break;
-
-            case NewRetailerConstant.LOCATION:
-                defaultValue = getLocationValues();
-                break;
-
             case CONTRACT:
                 defaultValue = getContact();
                 break;
@@ -1178,23 +1106,6 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
         else return new ArrayList<>();
     }
 
-    @Override
-    public ArrayList<LocationBO> getLocation1List() {
-
-        return mLocationListByLevId.size() >= 1 && mLocationListByLevId.get(0) != null ? mLocationListByLevId.get(0) : new ArrayList<>();
-    }
-
-    @Override
-    public ArrayList<LocationBO> getLocation2List() {
-
-        return mLocationListByLevId.size() >= 2 && mLocationListByLevId.get(1) != null ? mLocationListByLevId.get(1) : new ArrayList<>();
-    }
-
-    @Override
-    public ArrayList<LocationBO> getLocation3List() {
-
-        return mLocationListByLevId.size() >= 3 && mLocationListByLevId.get(2) != null ? mLocationListByLevId.get(2) : new ArrayList<>();
-    }
 
     @Override
     public ArrayList<PaymentType> getRetailerPaymentTypeList() {
@@ -2113,6 +2024,54 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                     outlet.setRfield3(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     break;
                 }
+                case RFIELD8: {
+                    outlet.setRfield8(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
+                case RFIELD9: {
+                    outlet.setRfield9(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
+                case RFIELD10: {
+                    outlet.setRfield10(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
+                case RFIELD11: {
+                    outlet.setRfield11(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
+                case RFIELD12: {
+                    outlet.setRfield12(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
+                case RFIELD13: {
+                    outlet.setRfield13(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
+                case RFIELD14: {
+                    outlet.setRfield14(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
+                case RFIELD15: {
+                    outlet.setRfield15(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
+                case RFIELD16: {
+                    outlet.setRfield16(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
+                case RFIELD17: {
+                    outlet.setRfield17(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
+                case RFIELD18: {
+                    outlet.setRfield18(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
+                case RFIELD19: {
+                    outlet.setRfield19(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
                 case CREDITPERIOD: {
                     outlet.setCreditDays(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     break;
@@ -2321,6 +2280,32 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                     }
                     break;
                 }
+                case PLAN: {
+                    outlet.setVisitDays(getIvyView().getSelectedDays());
+                    outlet.setWeekNo(getIvyView().getSelectedWeeks());
+                    break;
+                }
+                case LOCATION: {
+                    if (getIvyView().getSelectedLocation(LOCATION) != null)
+                        outlet.setLocid(getIvyView().getSelectedLocation(LOCATION).getLocId());
+                    else
+                        outlet.setLocid(0);
+                    break;
+                }
+                case LOCATION1: {
+                    if (getIvyView().getSelectedLocation(LOCATION1) != null)
+                        outlet.setLoc1id(getIvyView().getSelectedLocation(LOCATION1).getLocId());
+                    else
+                        outlet.setLoc1id(0);
+                    break;
+                }
+                case LOCATION2: {
+                    if (getIvyView().getSelectedLocation(LOCATION2) != null)
+                        outlet.setLoc2id(getIvyView().getSelectedLocation(LOCATION2).getLocId());
+                    else
+                        outlet.setLoc2id(0);
+                    break;
+                }
 
             }
 
@@ -2370,18 +2355,6 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                     outlet.setContact2titlelovid("0");
                 }
 
-            } else if (NewRetailerConstant.LOCATION.equalsIgnoreCase(configCode)) {
-                if (getLocation1List().size() > 0) {
-                    try {
-                        outlet.setLocid(getIvyView().getLocation1().getLocId());
-                    } catch (Exception e) {
-                        outlet.setLocid(0);
-                        Commons.printException(e);
-                    }
-                }
-            } else if (NewRetailerConstant.PLAN.equalsIgnoreCase(configCode)) {
-                outlet.setVisitDays(getIvyView().getSelectedDays());
-                outlet.setWeekNo(getIvyView().getSelectedWeeks());
             } else if (LATLONG.equalsIgnoreCase(configCode)) {
                 outlet.setNewOutletlattitude(lattitude);
                 outlet.setNewOutletLongitude(longitude);
@@ -2393,7 +2366,7 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
 
     @Override
     public boolean isValidRetailer() {
-        isValid = true;
+        boolean isValid = true;
         for (int i = 0; i < profileConfig.size(); i++) {
 
             String configCode = profileConfig.get(i).getConfigCode();
@@ -2527,18 +2500,18 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                     getIvyView().setRequestFocusWithErrorMessage(NewRetailerConstant.PAYMENTTYPE, menuName);
                     isValid = false;
                 }
-            } else if (NewRetailerConstant.PLAN.equalsIgnoreCase(configCode) && mandatory) {
+            } else if (NewRetailerConstant.PLAN.equalsIgnoreCase(configCode)) {
                 if (!getIvyView().isWeekChecked()) {
                     getIvyView().showSelectPlanError(WEEK_TEXT_LABEL);
                     isValid = false;
                 }
-                if(!getIvyView().isDayChecked()){
+                if (!getIvyView().isDayChecked()) {
                     getIvyView().showSelectPlanError(DAY_TEXT_LABEL);
                     isValid = false;
                 }
             } else if (LATLONG.equalsIgnoreCase(configCode) && mandatory) {
                 if (getIvyView().getSelectedLatLong().startsWith("0.0")) {
-                    getIvyView().showMessage("");
+                    getIvyView().showMessage(R.string.choose_location);
                     isValid = false;
                 }
             } else if (NewRetailerConstant.EMAIL.equalsIgnoreCase(configCode)) {
@@ -2559,7 +2532,7 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
             } else if (NewRetailerConstant.TIN_NUM.equalsIgnoreCase(configCode) && mandatory) {
                 if (!doCommonValidate(i, menuName))
                     isValid = false;
-            } else if (TIN_EXP_DATE.equalsIgnoreCase(configCode) && mandatory) {
+            } else if (TIN_EXP_DATE.equalsIgnoreCase(configCode)) {
                 if (!isValidDateFormat(getIvyView().getDynamicTextViewValues(i))) {
                     getIvyView().showInvalidDateError(i, menuName);
                     isValid = false;
@@ -2567,7 +2540,12 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
             } else if (PINCODE.equalsIgnoreCase(configCode) && mandatory) {
                 if (!doCommonValidate(i, menuName))
                     isValid = false;
-            } else if (RFIELD3.equalsIgnoreCase(configCode) && mandatory) {
+            } else if ((RFIELD3.equalsIgnoreCase(configCode) || RFIELD8.equalsIgnoreCase(configCode) || RFIELD9.equalsIgnoreCase(configCode)
+                    || RFIELD10.equalsIgnoreCase(configCode) || RFIELD10.equalsIgnoreCase(configCode) || RFIELD11.equalsIgnoreCase(configCode)
+                    || RFIELD12.equalsIgnoreCase(configCode) || RFIELD13.equalsIgnoreCase(configCode) || RFIELD14.equalsIgnoreCase(configCode)
+                    || RFIELD15.equalsIgnoreCase(configCode) || RFIELD16.equalsIgnoreCase(configCode) || RFIELD17.equalsIgnoreCase(configCode)
+                    || RFIELD18.equalsIgnoreCase(configCode) || RFIELD19.equalsIgnoreCase(configCode))
+                    && mandatory) {
                 if (!doCommonValidate(i, menuName))
                     isValid = false;
             } else if (RFIELD5.equalsIgnoreCase(configCode) && mandatory) {
@@ -2611,23 +2589,21 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                 if (getIvyView().getSpinnerSelectedItemPosition(NewRetailerConstant.TAXTYPE) == 0) {
                     getIvyView().setRequestFocusWithErrorMessage(NewRetailerConstant.TAXTYPE, menuName);
                     isValid = false;
-                    break;
                 }
             } else if (NewRetailerConstant.CLASS.equalsIgnoreCase(configCode) && mandatory) {
                 if (getIvyView().getSpinnerSelectedItemPosition(NewRetailerConstant.CLASS) == 0) {
                     getIvyView().setRequestFocusWithErrorMessage(NewRetailerConstant.CLASS, menuName);
                     isValid = false;
-                    break;
                 }
             } else if (PRIORITYPRODUCT.equalsIgnoreCase(configCode) && mandatory) {
-                if (getIvyView().validatePriorityProduct(menuName)) {
+                if (getIvyView().getSelectedPriorityProducts().isEmpty()) {
+                    getIvyView().showPriorityProductsMandatoryMessage(menuName);
                     isValid = false;
-                    break;
                 }
             } else if (NewRetailerConstant.NEARBYRET.equalsIgnoreCase(configCode) && mandatory) {
-                if (getIvyView().validateNearbyRetailer(menuName)) {
+                if (getIvyView().getSelectedNearByRetailers().isEmpty()) {
+                    getIvyView().showNearByRetailersMandatory(menuName);
                     isValid = false;
-                    break;
                 }
             } else if (NewRetailerConstant.GST_NO.equalsIgnoreCase(configCode)) {
                 if (mandatory && !doCommonValidate(i, menuName))
@@ -2652,12 +2628,12 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
             } else if (NewRetailerConstant.FOOD_LICENCE_NUM.equalsIgnoreCase(configCode) && mandatory) {
                 if (!doCommonValidate(i, menuName))
                     isValid = false;
-            } else if (DRUG_LICENSE_EXP_DATE.equalsIgnoreCase(configCode) && mandatory) {
+            } else if (DRUG_LICENSE_EXP_DATE.equalsIgnoreCase(configCode)) {
                 if (!isValidDateFormat(getIvyView().getDynamicTextViewValues(i))) {
                     getIvyView().showInvalidDateError(i, menuName);
                     isValid = false;
                 }
-            } else if (NewRetailerConstant.FOOD_LICENCE_EXP_DATE.equalsIgnoreCase(configCode) && mandatory) {
+            } else if (NewRetailerConstant.FOOD_LICENCE_EXP_DATE.equalsIgnoreCase(configCode)) {
                 if (!isValidDateFormat(getIvyView().getDynamicTextViewValues(i))) {
                     getIvyView().showInvalidDateError(i, menuName);
                     isValid = false;
@@ -2767,51 +2743,63 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
         return 0;
     }
 
-    private int getLocation2() {
-        if (outlet.getLocid() != 0) {
-            String[] loc2 = retailerHelper.getParentLevelName(leastlocId, true);
-            int loc2id = SDUtil.convertToInt(loc2[0]);
+    @Override
+    public void getSelectedLocation2Position() {
+        if (leastlocId != 0) {
+            getCompositeDisposable().add(mProfileDataManager.getParentLevelName(leastlocId, true)
+                    .flatMap((Function<LocationLevel, SingleSource<LocationLevel>>)
+                            locationLevel -> mProfileDataManager.getParentLevelName(locationLevel.getLocationId(), true))
+                    .subscribeOn(getSchedulerProvider().io())
+                    .observeOn(getSchedulerProvider().ui())
+                    .subscribe(locationLevel -> {
+                        int i = 0;
+                        if (getIvyView().getLocationAdapter2() != null) {
+                            for (; i < getIvyView().getLocationAdapter2().size(); i++) {
+                                if (getIvyView().getLocationAdapter2().get(i).getLocId() == locationLevel.getLocationId()) {
+                                    break;
+                                }
+                            }
+                        }
+                        getIvyView().setSpinnerPosition(LOCATION2, i);
+                    }));
 
-            String[] loc3 = retailerHelper.getParentLevelName(loc2id, true);
-            int loc3id = SDUtil.convertToInt(loc3[0]);
+        }
 
-            if (view.getLocationAdapter3() != null) {
-                for (int i = 0; i < view.getLocationAdapter3().getCount(); i++) {
-                    if (view.getLocationAdapter3().getItem(i).getLocId() == loc3id) {
-                        return i;
+    }
+
+    @Override
+    public void getSelectedLocation1Position() {
+
+        getCompositeDisposable().add(mProfileDataManager.getParentLevelName(leastlocId, true)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(locationLevel -> {
+                    int i = 0;
+                    if (getIvyView().getLocationAdapter1() != null) {
+                        for (; i < getIvyView().getLocationAdapter1().size(); i++) {
+                            if (getIvyView().getLocationAdapter1().get(i).getLocId() == locationLevel.getLocationId()) {
+                                break;
+                            }
+                        }
                     }
-                }
-            }
-        }
-        return 0;
+                    getIvyView().setSpinnerPosition(LOCATION1, i);
+                }));
     }
 
-    private int getLocation1() {
-        String[] loc2 = retailerHelper.getParentLevelName(
-                leastlocId, true);
-
-        int loc2id = 0;
-        if (loc2[0] != null)
-            loc2id = SDUtil.convertToInt(loc2[0]);
-
-        if (view.getLocationAdapter2() != null) {
-            for (int i = 0; i < view.getLocationAdapter2().getCount(); i++) {
-                if (view.getLocationAdapter2().getItem(i).getLocId() == loc2id) {
-                    return i;
-                }
-            }
-        }
-        return 0;
+    void setLeastlocId(int leastlocId) {
+        this.leastlocId = leastlocId;
     }
 
-    private int getLocationValues() {
+    @Override
+    public void getSelectedLocationPosition() {
+        int i = 0;
         if (view.getLocationAdapter1() != null)
-            for (int i = 0; i < view.getLocationAdapter1().getCount(); i++) {
-                if (view.getLocationAdapter1().getItem(i).getLocId() == leastlocId) {
-                    return i;
+            for (; i < view.getLocationAdapter().size(); i++) {
+                if (view.getLocationAdapter().get(i).getLocId() == leastlocId) {
+                    break;
                 }
             }
-        return 0;
+        getIvyView().setSpinnerPosition(LOCATION, i);
     }
 
     private int getContact() {
@@ -2852,8 +2840,8 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
 
     private int getSelectedRoute() {
         if (view.getRouteAdapter() != null) {
-            for (int i = 0; i < view.getRouteAdapter().getCount(); i++) {
-                if (view.getRouteAdapter().getItem(i).getBeatId() == outlet.getRouteid()) {
+            for (int i = 0; i < view.getRouteAdapter().size(); i++) {
+                if (view.getRouteAdapter().get(i).getBeatId() == outlet.getRouteid()) {
                     return i;
                 }
             }
