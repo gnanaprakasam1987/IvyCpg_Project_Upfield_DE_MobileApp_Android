@@ -726,7 +726,7 @@ public class RetailerHelper {
     public void downloadRetailerTarget(String code,DBUtil db) {
 
         try {
-            db.openDataBase();
+
             String sb = "select rk.retailerid,rk.interval,rkd.target,rk.kpiid,rkd.kpiparamlovid,rkd.achievement from RetailerKPI rk" +
                     " inner join RetailerKPIDetail rkd on rk.kpiid = rkd.kpiid INNER JOIN StandardListMaster SM" +
                     " ON SM.listid = rkd.KPIParamLovId where SM.listcode=" + bmodel.QT(code);
