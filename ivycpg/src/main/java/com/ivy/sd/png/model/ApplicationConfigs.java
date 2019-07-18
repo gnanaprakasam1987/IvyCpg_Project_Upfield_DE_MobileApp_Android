@@ -5,7 +5,9 @@ import com.ivy.sd.png.asean.view.BuildConfig;
 public interface
 ApplicationConfigs {
 
-    String DB_NAME = "ivycpg_v20_new_table";
+//    String DB_NAME = "ivycpg_v20";
+
+    String DB_NAME = "ivycpg_v20_sfdc_sandbox";
 
     boolean withActivation = BuildConfig.ACTIVATION;
 

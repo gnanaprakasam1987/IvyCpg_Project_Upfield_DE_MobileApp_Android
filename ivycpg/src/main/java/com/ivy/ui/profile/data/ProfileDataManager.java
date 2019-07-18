@@ -17,6 +17,7 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.ui.profile.create.model.ContractStatus;
 import com.ivy.ui.profile.create.model.ContactTitle;
+import com.ivy.ui.profile.create.model.LocationLevel;
 import com.ivy.ui.profile.create.model.PaymentType;
 
 import java.util.ArrayList;
@@ -134,6 +135,8 @@ public interface ProfileDataManager {
     Single<Boolean> setUpOrderScreen();
 
     Single<Boolean> clearExistingOrder();
+
+    Single<LocationLevel> getParentLevelName(int locid, boolean isParent);
 
     Single<Boolean> saveEditProfileField(HashMap<String,?> retailerProfileField,String tid);
 

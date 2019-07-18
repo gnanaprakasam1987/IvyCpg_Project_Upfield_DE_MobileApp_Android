@@ -1533,6 +1533,7 @@ public class ProductHelper {
                     oldBatchId.put(c.getString(0), c.getInt(1));
                     oldBatchBasePrice.put(c.getString(0), c.getDouble(3));
                 }
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {

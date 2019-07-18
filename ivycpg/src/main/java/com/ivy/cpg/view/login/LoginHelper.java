@@ -167,6 +167,9 @@ public class LoginHelper {
                 }
             }
 
+            if(c!=null)
+                c.close();
+
         } catch (Exception e) {
             db.closeDB();
             Commons.printException(e);

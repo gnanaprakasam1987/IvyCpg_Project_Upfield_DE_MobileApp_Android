@@ -172,6 +172,7 @@ public class CollectionHelper {
      * Load credit note form CreditNote table.
      */
     public void loadCreditNote() {
+        Cursor c = null;
         try {
             creditNoteList = new ArrayList<>();
             creditNoteList.clear();
@@ -179,7 +180,7 @@ public class CollectionHelper {
             );
             db.createDataBase();
             db.openDataBase();
-            Cursor c = db
+             c = db
                     .selectSQL("SELECT id, refno, Actualamount, retailerid, isused,creditnotetype,AppliedAmount,refid FROM CreditNote");
             if (c != null) {
                 while (c.moveToNext()) {
@@ -209,6 +210,10 @@ public class CollectionHelper {
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
+        }finally {
+            // this gets called even if there is an exception somewhere above
+            if(c != null)
+                c.close();
         }
     }
 

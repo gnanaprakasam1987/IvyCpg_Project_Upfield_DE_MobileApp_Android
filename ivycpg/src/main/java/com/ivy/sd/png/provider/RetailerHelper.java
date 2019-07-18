@@ -105,6 +105,14 @@ public class RetailerHelper {
     }
 
 
+    /**
+     * @deprecated
+     * @see {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getParentLevelName(int, boolean)}
+     * @param locid
+     * @param isParent
+     * @return
+     */
+    @Deprecated
     public String[] getParentLevelName(int locid, boolean isParent) {
         String[] parentLevel = new String[3];
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
@@ -726,7 +734,7 @@ public class RetailerHelper {
     public void downloadRetailerTarget(String code,DBUtil db) {
 
         try {
-            db.openDataBase();
+
             String sb = "select rk.retailerid,rk.interval,rkd.target,rk.kpiid,rkd.kpiparamlovid,rkd.achievement from RetailerKPI rk" +
                     " inner join RetailerKPIDetail rkd on rk.kpiid = rkd.kpiid INNER JOIN StandardListMaster SM" +
                     " ON SM.listid = rkd.KPIParamLovId where SM.listcode=" + bmodel.QT(code);

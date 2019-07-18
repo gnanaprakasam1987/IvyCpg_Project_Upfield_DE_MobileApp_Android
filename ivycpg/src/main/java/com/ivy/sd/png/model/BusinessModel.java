@@ -755,7 +755,7 @@ public class BusinessModel extends Application {
         return mApplicationComponent;
     }
 
-    private void enableDisableChatReceiver(boolean isenableReceiver){
+    private void enableDisableChatReceiver(boolean isenableReceiver) {
 
         PackageManager pm = getPackageManager();
         ComponentName compName =
@@ -1797,7 +1797,7 @@ public class BusinessModel extends Application {
      */
     private void updateRetailerPriceGRP(RetailerMasterBO retObj, DBUtil db) {
 
-        Cursor c =null;
+        Cursor c = null;
         try {
 
             int distId = 0;
@@ -1819,11 +1819,12 @@ public class BusinessModel extends Application {
                 if (c.moveToNext())
                     retObj.setGroupId(c.getInt(0));
             }
-            if (c != null) {c.close();
-}
+            if (c != null) {
+                c.close();
+            }
         } catch (Exception e) {
             Commons.printException("Exception ", e);
-        }finally {
+        } finally {
             if (c != null) {
                 c.close();
             }
@@ -1841,25 +1842,25 @@ public class BusinessModel extends Application {
         try {
             Cursor c;
             c = db.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.getStringQueryParam(retObj.getRetailerID()));
-            if (c != null)
+            if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext())
                         retObj.setTotalPlanned(c.getCount());
-
-                    c.close();
                 }
+                c.close();
+            }
 
 
             c = db.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + getStringQueryParam(retObj.getRetailerID()) + " LIMIT 1");
-            if (c != null)
+            if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext())
                         retObj.setTotalVisited(c.getCount());
-
-                    c.close();
                 }
+                c.close();
+            }
         } catch (Exception ignore) {
-
+            Commons.printException(ignore);
         }
 
     }
