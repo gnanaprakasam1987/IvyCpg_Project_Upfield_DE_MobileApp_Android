@@ -115,7 +115,7 @@ public interface INewRetailerContract {
 
         void createGstNo(int mNumber, String mName, boolean mandatory, boolean isUppercaseLetter, String configCode);
 
-        void createLatLongTextView(int mNumber);
+        void createLatLongTextView(String mName, int mNumber);
 
         void createTinExpDataTextView(int mNumber, String mName, boolean mandatory);
 

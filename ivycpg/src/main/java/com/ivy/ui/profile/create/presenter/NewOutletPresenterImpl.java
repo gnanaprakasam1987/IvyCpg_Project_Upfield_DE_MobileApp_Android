@@ -759,7 +759,7 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                 }
                 case LATLONG: {
                     isLatLongEnabled = true;
-                    getIvyView().createLatLongTextView(position);
+                    getIvyView().createLatLongTextView(mName,position);
                     break;
                 }
                 case TIN_EXP_DATE: {
@@ -2306,6 +2306,13 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                         outlet.setLoc2id(0);
                     break;
                 }
+                case LATLONG:{
+                    if(lattitude!=0 && longitude!=0) {
+                        outlet.setNewOutletlattitude(lattitude);
+                        outlet.setNewOutletLongitude(longitude);
+                    }
+                    break;
+                }
 
             }
 
@@ -2355,10 +2362,7 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                     outlet.setContact2titlelovid("0");
                 }
 
-            } else if (LATLONG.equalsIgnoreCase(configCode)) {
-                outlet.setNewOutletlattitude(lattitude);
-                outlet.setNewOutletLongitude(longitude);
-            } else if (PRIORITYPRODUCT.equalsIgnoreCase(configCode)) {
+            }  else if (PRIORITYPRODUCT.equalsIgnoreCase(configCode)) {
                 outlet.setPriorityProductList(priorityProductIDList);
             }
         }
@@ -2511,7 +2515,7 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                 }
             } else if (LATLONG.equalsIgnoreCase(configCode) && mandatory) {
                 if (getIvyView().getSelectedLatLong().startsWith("0.0")) {
-                    getIvyView().showMessage(R.string.choose_location);
+                    getIvyView().showInvalidDateError(i,menuName);
                     isValid = false;
                 }
             } else if (NewRetailerConstant.EMAIL.equalsIgnoreCase(configCode)) {

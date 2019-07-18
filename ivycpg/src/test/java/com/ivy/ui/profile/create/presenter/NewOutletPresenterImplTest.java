@@ -2387,7 +2387,7 @@ public class NewOutletPresenterImplTest {
         InOrder order = inOrder(view);
         then(view).should(order).showLoading();
         then(view).should(order).getChannelId();
-        then(view).should(order).createLatLongTextView(0);
+        then(view).should(order).createLatLongTextView("Config_Menu",0);
         then(view).should(order).hideLoading();
         then(view).shouldHaveNoMoreInteractions();
     }
@@ -3904,7 +3904,7 @@ public class NewOutletPresenterImplTest {
         mPresenter.setProfileConfig(testProfileConfig);
         mPresenter.isValidRetailer();
 
-        then(view).should().showMessage(R.string.choose_location);
+        then(view).should().showInvalidDateError(0,"LAT LONG");
     }
 
     @Test
@@ -7475,6 +7475,26 @@ public class NewOutletPresenterImplTest {
         mPresenter.saveNewRetailer();
 
         assertEquals(mPresenter.getOutlet().getLoc2id(), 0);
+    }
+
+    @Test
+    public void testBuildOutletWithLatLong() {
+        ArrayList<ConfigureBO> testProfileConfig = new ArrayList<>();
+        ConfigureBO storeName = new ConfigureBO();
+        storeName.setConfigCode(LATLONG);
+        storeName.setMenuName("Config_Menu");
+        testProfileConfig.add(storeName);
+
+        mPresenter.setProfileConfig(testProfileConfig);
+        mPresenter.setOutlet(new NewOutletBO());
+
+        mPresenter.updateLatitude(12.00);
+        mPresenter.updateLongitude(71.00);
+
+        mPresenter.saveNewRetailer();
+
+        assertEquals(mPresenter.getOutlet().getNewOutletlattitude(), 12.00,0);
+        assertEquals(mPresenter.getOutlet().getNewOutletLongitude(), 71.00,0);
     }
 
 
