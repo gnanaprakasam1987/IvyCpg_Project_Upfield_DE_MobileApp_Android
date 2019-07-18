@@ -294,6 +294,17 @@ negative button and neutral button -->
     </style>
     <!-- DatePicker Button -->
 
+    <!-- Location Button -->
+    <style name="locationButton" parent="Base.Widget.AppCompat.Button">
+        <item name="android:background">@drawable/edittext_bottom_border</item>
+        <item name="android:drawableLeft">@drawable/ic_add_location_black_24dp</item>
+        <item name="android:textColor">@color/date_picker_text_color</item>
+        <item name="android:textSize">@dimen/date_picker_text_size</item>
+        <item name="android:drawablePadding">@dimen/date_picker_drawable_padding</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+    <!-- Location Button -->
+
     <!-- keypad Buttons -->
     <style name="ButtonKeyPad" parent="Base.Widget.AppCompat.Button">
         <item name="android:background">@drawable/ripple_keyboard_button_corner</item>
