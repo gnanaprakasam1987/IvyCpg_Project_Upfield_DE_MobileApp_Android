@@ -1,17 +1,11 @@
 package com.ivy.ui.reports.dynamicreport.view;
 
 import android.app.AlertDialog;
-import android.arch.lifecycle.LifecycleObserver;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 
+import com.google.android.material.tabs.TabLayout;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.asean.view.R;
@@ -37,6 +32,11 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleObserver;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

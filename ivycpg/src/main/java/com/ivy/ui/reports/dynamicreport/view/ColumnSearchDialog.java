@@ -3,7 +3,6 @@ package com.ivy.ui.reports.dynamicreport.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatSpinner;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,6 +17,8 @@ import com.ivy.ui.reports.dynamicreport.model.DynamicReportBO;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
+
+import androidx.appcompat.widget.AppCompatSpinner;
 
 public class ColumnSearchDialog extends Dialog {
 
@@ -94,7 +95,7 @@ public class ColumnSearchDialog extends Dialog {
             public void onClick(View v) {
                 String search_text = et_search.getText().toString();
                 if (dynamicReportBO != null) {
-                    if (!StringUtils.isEmptyString(search_text)) {
+                    if (!StringUtils.isNullOrEmpty(search_text)) {
                         dynamicReportBO.setSearchText(search_text);
                         dialogListener.onColumnSearch(false);
                         menuIconListener.changeMenuTint(false);

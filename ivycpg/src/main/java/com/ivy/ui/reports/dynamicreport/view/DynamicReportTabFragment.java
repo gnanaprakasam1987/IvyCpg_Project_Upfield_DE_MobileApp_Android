@@ -2,8 +2,6 @@ package com.ivy.ui.reports.dynamicreport.view;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.ColorUtils;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -32,6 +30,7 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import androidx.core.graphics.ColorUtils;
 import butterknife.BindView;
 
 public class DynamicReportTabFragment extends BaseFragment implements BaseIvyView, DynamicReportFragmentNew.DialogListener {

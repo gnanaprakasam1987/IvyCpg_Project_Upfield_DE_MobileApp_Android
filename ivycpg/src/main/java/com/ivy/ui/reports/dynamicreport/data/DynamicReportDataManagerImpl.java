@@ -45,7 +45,7 @@ public class DynamicReportDataManagerImpl implements DynamicReportDataManager {
                     initDb();
                     HashMap<String, HashMap<String, DynamicReportBO>> displayFields = new HashMap<>();
                     LinkedHashMap<String, DynamicReportBO> valueMap = new LinkedHashMap<>();
-                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname,displayname,fieldname,align,length from RawDataReportFieldDefinition where menucode=" + StringUtils.QT(menucode) + " order by reportname,fieldname");
+                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname,displayname,fieldname,align,length from RawDataReportFieldDefinition where menucode=" + StringUtils.getStringQueryParam(menucode) + " order by reportname,fieldname");
                     if (cursor != null) {
                         String reportname = "";
                         while (cursor.moveToNext()) {
@@ -92,19 +92,19 @@ public class DynamicReportDataManagerImpl implements DynamicReportDataManager {
                     HashMap<String, HashMap<String, HashMap<String, String>>> dataMap = new HashMap<>();
                     HashMap<String, HashMap<String, String>> reportWiseMap = new HashMap<>();
                     String reportNames="";
-                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname from RawDataReportFieldDefinition where menucode=" + StringUtils.QT(menucode));
+                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname from RawDataReportFieldDefinition where menucode=" + StringUtils.getStringQueryParam(menucode));
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
-                            reportNames += StringUtils.QT(cursor.getString(0)) + ",";
+                            reportNames += StringUtils.getStringQueryParam(cursor.getString(0)) + ",";
                         }
 
                         cursor.close();
                     }
 
-                    if (!StringUtils.isEmptyString(reportNames))
+                    if (!StringUtils.isNullOrEmpty(reportNames))
                         reportNames = reportNames.substring(0, reportNames.length()-1);
 
-                    cursor = mDbUtil.selectSQL("select * from RawDataReportDetail where rid=" + StringUtils.QT(rid) + " and reportname in(" + reportNames + ")");
+                    cursor = mDbUtil.selectSQL("select * from RawDataReportDetail where rid=" + StringUtils.getStringQueryParam(rid) + " and reportname in(" + reportNames + ")");
                     if (cursor != null) {
                         int count = 0;
                         String reportname = "";
@@ -149,7 +149,7 @@ public class DynamicReportDataManagerImpl implements DynamicReportDataManager {
                 try {
                     initDb();
                     ArrayList<String> tabList = new ArrayList<>();
-                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname from RawDataReportFieldDefinition where menucode=" + StringUtils.QT(menucode) + " order by fieldname");
+                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname from RawDataReportFieldDefinition where menucode=" + StringUtils.getStringQueryParam(menucode) + " order by fieldname");
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
                             tabList.add(cursor.getString(0));

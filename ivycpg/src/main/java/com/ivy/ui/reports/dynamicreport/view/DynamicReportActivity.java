@@ -2,7 +2,6 @@ package com.ivy.ui.reports.dynamicreport.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.ivy.core.base.presenter.BaseIvyPresenter;
@@ -16,6 +15,8 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import javax.inject.Inject;
+
+import androidx.appcompat.widget.Toolbar;
 
 public class DynamicReportActivity extends BaseActivity implements BaseIvyView {
 

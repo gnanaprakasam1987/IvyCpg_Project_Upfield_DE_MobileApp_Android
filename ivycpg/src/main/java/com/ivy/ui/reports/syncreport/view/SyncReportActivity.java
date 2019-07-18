@@ -1,12 +1,13 @@
 package com.ivy.ui.reports.syncreport.view;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
+
+import androidx.appcompat.widget.Toolbar;
 
 public class SyncReportActivity extends IvyBaseActivityNoActionBar {
 

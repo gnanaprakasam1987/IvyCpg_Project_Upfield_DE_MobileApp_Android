@@ -1,8 +1,5 @@
 package com.ivy.ui.reports.dynamicreport.adapter;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
@@ -11,6 +8,10 @@ import com.ivy.ui.reports.dynamicreport.view.DynamicReportTabFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 public class DynamicReportPagerAdapter extends FragmentStatePagerAdapter {
 

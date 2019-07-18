@@ -1,6 +1,5 @@
 package com.ivy.ui.reports.dynamicreport.presenter;
 
-import android.arch.lifecycle.LifecycleObserver;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
@@ -16,6 +15,7 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import androidx.lifecycle.LifecycleObserver;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function3;
