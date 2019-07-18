@@ -5,6 +5,7 @@ import android.database.Cursor;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.reports.dynamicreport.model.DynamicReportBO;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -36,23 +37,33 @@ public class DynamicReportDataManagerImpl implements DynamicReportDataManager {
     }
 
     @Override
-    public Observable<HashMap<String, HashMap<String, String>>> fetchDisplayFields(String menucode) {
-        return Observable.fromCallable(new Callable<HashMap<String, HashMap<String, String>>>() {
+    public Observable<HashMap<String, HashMap<String, DynamicReportBO>>> fetchDisplayFields(String menucode) {
+        return Observable.fromCallable(new Callable<HashMap<String, HashMap<String, DynamicReportBO>>>() {
             @Override
-            public HashMap<String, HashMap<String, String>> call() throws Exception {
+            public HashMap<String, HashMap<String, DynamicReportBO>> call() throws Exception {
                 try {
                     initDb();
-                    HashMap<String, HashMap<String, String>> displayFields = new HashMap<>();
-                    LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
-                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname,displayname,fieldname from RawDataReportFieldDefinition where menucode=" + StringUtils.QT(menucode) + " order by reportname,fieldname");
+                    HashMap<String, HashMap<String, DynamicReportBO>> displayFields = new HashMap<>();
+                    LinkedHashMap<String, DynamicReportBO> valueMap = new LinkedHashMap<>();
+                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname,displayname,fieldname,align,length from RawDataReportFieldDefinition where menucode=" + StringUtils.QT(menucode) + " order by reportname,fieldname");
                     if (cursor != null) {
                         String reportname = "";
                         while (cursor.moveToNext()) {
+                            DynamicReportBO reportBO = new DynamicReportBO();
                             if (!reportname.isEmpty() && !reportname.equals(cursor.getString(0))) {
                                 displayFields.put(reportname, valueMap);
                                 valueMap = new LinkedHashMap<>();
                             }
-                            valueMap.put(cursor.getString(2), cursor.getString(1));
+                            reportBO.setReportName(cursor.getString(0));
+                            reportBO.setDisplayName(cursor.getString(1));
+                            reportBO.setFieldName(cursor.getString(2));
+                            reportBO.setAlign(cursor.getString(3));
+                            reportBO.setLength(cursor.getInt(4));
+                            reportBO.setSelected(false);
+                            reportBO.setSearched(false);
+                            reportBO.setSorted(false);
+                            reportBO.setSearchText("");
+                            valueMap.put(cursor.getString(2), reportBO);
                             reportname = cursor.getString(0);
 
                             if (cursor.isLast()) {
@@ -72,7 +83,7 @@ public class DynamicReportDataManagerImpl implements DynamicReportDataManager {
     }
 
     @Override
-    public Observable<HashMap<String, HashMap<String, HashMap<String, String>>>> fetchReportData(String rid) {
+    public Observable<HashMap<String, HashMap<String, HashMap<String, String>>>> fetchReportData(String rid, String menucode) {
         return Observable.fromCallable(new Callable<HashMap<String, HashMap<String, HashMap<String, String>>>>() {
             @Override
             public HashMap<String, HashMap<String, HashMap<String, String>>> call() throws Exception {
@@ -80,7 +91,20 @@ public class DynamicReportDataManagerImpl implements DynamicReportDataManager {
                     initDb();
                     HashMap<String, HashMap<String, HashMap<String, String>>> dataMap = new HashMap<>();
                     HashMap<String, HashMap<String, String>> reportWiseMap = new HashMap<>();
-                    Cursor cursor = mDbUtil.selectSQL("select * from RawDataReportDetail where rid=" + StringUtils.QT(rid));
+                    String reportNames="";
+                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname from RawDataReportFieldDefinition where menucode=" + StringUtils.QT(menucode));
+                    if (cursor != null) {
+                        while (cursor.moveToNext()) {
+                            reportNames += StringUtils.QT(cursor.getString(0)) + ",";
+                        }
+
+                        cursor.close();
+                    }
+
+                    if (!StringUtils.isEmptyString(reportNames))
+                        reportNames = reportNames.substring(0, reportNames.length()-1);
+
+                    cursor = mDbUtil.selectSQL("select * from RawDataReportDetail where rid=" + StringUtils.QT(rid) + " and reportname in(" + reportNames + ")");
                     if (cursor != null) {
                         int count = 0;
                         String reportname = "";
