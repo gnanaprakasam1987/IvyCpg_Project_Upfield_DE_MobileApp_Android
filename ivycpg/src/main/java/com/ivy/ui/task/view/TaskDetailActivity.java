@@ -4,10 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +15,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -441,7 +442,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     }
 
     private void showDeleteAlert() {
-        showAlert("", getString(R.string.do_you_want_to_delete_the_note),
+        showAlert("", getString(R.string.do_you_want_to_delete_the_task),
                 () -> taskPresenter.deleteTask(taskDetailBo.getTaskId(), taskDetailBo.getTaskOwner(), taskDetailBo.getServerTask()),
                 () -> {
                 });
@@ -547,6 +548,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     @Override
     public void setUpFilterList(HashMap<String, ArrayList<FilterBo>> filterListHashMap) {
+
+    }
+
+    @Override
+    public void updateSortList() {
 
     }
 

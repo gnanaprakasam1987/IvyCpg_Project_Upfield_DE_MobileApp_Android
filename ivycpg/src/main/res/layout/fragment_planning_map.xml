@@ -88,7 +88,7 @@
                     android:visibility="visible" />
             </LinearLayout>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -155,7 +155,7 @@
 
                     </LinearLayout>
 
-                    <android.support.constraint.ConstraintLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraint_legends"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -271,10 +271,10 @@
                             app:layout_constraintStart_toEndOf="@+id/img_legend_cancelled"
                             app:layout_constraintTop_toBottomOf="@+id/tv_legend_non_productive" />
 
-                    </android.support.constraint.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
         </RelativeLayout>
@@ -427,7 +427,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -445,7 +445,7 @@
         app:fabSize="mini"
         app:pressedTranslationZ="12dp" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -463,7 +463,7 @@
         app:fabSize="mini"
         app:pressedTranslationZ="12dp" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -481,7 +481,7 @@
         app:fabSize="mini"
         app:pressedTranslationZ="12dp" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

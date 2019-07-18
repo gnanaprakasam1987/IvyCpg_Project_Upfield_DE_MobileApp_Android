@@ -3,9 +3,9 @@ package com.ivy.cpg.view.order.catalog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +20,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -57,7 +58,7 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         mProductIdList = getIntent().getStringArrayListExtra("ProductIdList");
         ImageView pdt_image_details = findViewById(R.id.pdt_image_details);
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
+            if (FileUtils.isFileExisting(getImageFilePath(bmodel.selectedPdt.getProductCode()))) {
 
                 File prd = new File(getImageFilePath(bmodel.selectedPdt.getProductCode()));
                 Glide.with(getApplicationContext())

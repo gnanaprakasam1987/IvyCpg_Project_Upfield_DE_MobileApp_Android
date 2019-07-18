@@ -47,6 +47,11 @@
     <color name="list_item_values_text_color">#252525</color>
 
 
+    <!-- Home Screen Burger Menu background color-->
+    <color name="list_view_bg_blue">#19293D</color>
+    <color name="burger_menu_header_blue">#152131</color>
+
+
     <!--**************************************************************************************-->
 
     <!--common-->
@@ -94,7 +99,7 @@
     <color name="highlighter">#08597b</color>
     <color name="colorPrimaryAlpha">#96175fab</color>
 
-    <color name="burgermenu_line_color">#0A3225</color>
+    <color name="burgermenu_line_color">#175fab</color>
 
     <color name="divider_view_color">#f1f1f1</color>
 

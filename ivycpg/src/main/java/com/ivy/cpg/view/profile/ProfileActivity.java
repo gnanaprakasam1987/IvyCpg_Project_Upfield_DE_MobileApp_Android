@@ -22,18 +22,18 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -61,14 +61,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.profile.otpValidation.OTPValidationHelper;
 import com.ivy.cpg.view.profile.otpValidation.RetailerSequenceSkipDialog;
-import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
@@ -2277,7 +2278,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
         protected void onPostExecute(Boolean result) {
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 ArrayList<String> userRetailerTranUrlList = bmodel.synchronizationHelper.getUserRetailerTranDownloadurlList();
                 if (!userRetailerTranUrlList.isEmpty()) {
                     bmodel.synchronizationHelper.downloadUserRetailerTranFromUrl(bmodel
@@ -2424,7 +2425,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         switch (method) {
             case SynchronizationHelper.USER_RETAILER_TRAN_DOWNLOAD_INSERT:
                 if (errorCode != null && errorCode
-                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     bmodel.synchronizationHelper
                             .downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE, selectedUserId);
                     selectedUserId = "";

@@ -3,14 +3,16 @@ package com.ivy.ui.task.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.constraint.Group;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
+
+import androidx.constraintlayout.widget.Group;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -392,7 +394,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             if (!deletedImageId.isEmpty())
                 deletedImageId = deletedImageId + ",";
 
-            deletedImageId += StringUtils.QT(imageId);
+            deletedImageId += StringUtils.getStringQueryParam(imageId);
         }
     };
 
@@ -416,7 +418,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         mode = getTaskMode();
         retSelectionAutoCompTxt.setVisibility(View.GONE);
         optionTextView.setText(getString(R.string.Seller));
-        peerUserRb.setVisibility(View.VISIBLE);
+        if (!peerUserMasterArrayAdapter.isEmpty())
+            peerUserRb.setVisibility(View.VISIBLE);
         handleLinkUserVisibility(View.GONE);
         handleProductLevelVisibility(View.GONE);
     }
@@ -580,8 +583,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskBo.setTaskCategoryID(mSelectedCategoryID);
         taskBo.setMode(mode);
 
-        taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId,deletedImageId);
+        taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId, deletedImageId);
     }
+
 
     private int getSelectedUserId() {
 

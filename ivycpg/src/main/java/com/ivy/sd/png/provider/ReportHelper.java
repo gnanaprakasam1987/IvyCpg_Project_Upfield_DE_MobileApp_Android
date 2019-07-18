@@ -1911,9 +1911,9 @@ public class ReportHelper {
 
         if (isInvoice) {
             sb.append("inner join SchemeMaster SM ON SM.SchemeID = SFP.SchemeID ");
-            sb.append("where invoiceid=" + StringUtils.QT(id) + " and SM.IsOnInvoice = '1'");
+            sb.append("where invoiceid=" + StringUtils.getStringQueryParam(id) + " and SM.IsOnInvoice = '1'");
         } else // Order Report
-            sb.append("where OrderID=" + StringUtils.QT(id));
+            sb.append("where OrderID=" + StringUtils.getStringQueryParam(id));
         Cursor c = db.selectSQL(sb.toString());
         if (c != null) {
             SchemeProductBO schemeProductBO;

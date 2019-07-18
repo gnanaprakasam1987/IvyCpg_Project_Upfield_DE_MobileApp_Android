@@ -4,9 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -133,7 +134,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                     String key = (String) itr.next();
                     if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                         String errorCode = headerObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                             bmodel.synchronizationHelper
                                     .parseJSONAndInsert(headerObject, false);
                         }
@@ -147,7 +148,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                     String key = (String) itr.next();
                     if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                         String errorCode = headerObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                             bmodel.synchronizationHelper
                                     .parseJSONAndInsert(headerObject, false);
                         }
@@ -164,9 +165,9 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             progressDialogue.dismiss();
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 if (errorCode
-                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     loadDataToViews();
 
                 } else {

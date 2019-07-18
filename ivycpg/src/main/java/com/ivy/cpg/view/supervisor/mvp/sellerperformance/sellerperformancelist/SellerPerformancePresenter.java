@@ -4,7 +4,7 @@ package com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;

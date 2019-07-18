@@ -1,10 +1,10 @@
 package com.ivy.cpg.view.retailercontact;
 
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -188,7 +188,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
 
             String salutation = "";
             if (contactMenuMap.get(CODE_CONTACTSALUTATION) != null ){
-                if (StringUtils.isEmptyString(retailerContactBo.getSalutationTitle()))
+                if (StringUtils.isNullOrEmpty(retailerContactBo.getSalutationTitle()))
                     salutation = retailerContactBo.getSalutationTitle();
             }
 
@@ -215,7 +215,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
                 holder.textCEmail.setVisibility(View.GONE);
 
             if (contactMenuMap.get(CODE_CONTACTDESIGNATION) != null) {
-                if (StringUtils.isEmptyString(retailerContactBo.getTitle()))
+                if (StringUtils.isNullOrEmpty(retailerContactBo.getTitle()))
                     holder.title.setText(retailerContactBo.getTitle());
                 else
                     holder.title.setVisibility(View.GONE);

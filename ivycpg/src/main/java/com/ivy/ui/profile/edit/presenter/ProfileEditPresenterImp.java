@@ -2,19 +2,19 @@ package com.ivy.ui.profile.edit.presenter;
 
 
 import android.annotation.SuppressLint;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.OnLifecycleEvent;
 import android.util.SparseArray;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
-import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -27,10 +27,10 @@ import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.ui.profile.ProfileConstant;
+import com.ivy.ui.profile.create.model.ContractStatus;
 import com.ivy.ui.profile.data.ChannelWiseAttributeList;
-import com.ivy.ui.profile.data.IProfileDataManager;
+import com.ivy.ui.profile.data.ProfileDataManager;
 import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.di.Profile;
 import com.ivy.utils.AppUtils;
@@ -59,7 +59,7 @@ import io.reactivex.observers.DisposableObserver;
 public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditView>
         extends BasePresenter<V> implements IProfileEditContract.ProfileEditPresenter<V> {
 
-    private IProfileDataManager mProfileDataManager;
+    private ProfileDataManager mProfileDataManager;
 
     /*Helper Usage for ProfileEdit Fragment */
     private ConfigurationMasterHelper configurationMasterHelper;
@@ -70,7 +70,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private RetailerHelper retailerHelper;
 
 
-    private ArrayList<NewOutletBO> mContactStatus;
+    private ArrayList<ContractStatus> mContractStatuses;
     private LinkedHashMap<Integer, ArrayList<LocationBO>> mLocationListByLevId;
     private HashMap<String, String> mPreviousProfileChanges;
     private Vector<RetailerMasterBO> mDownloadLinkRetailer;
@@ -124,7 +124,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                    CompositeDisposable compositeDisposable,
                                    ConfigurationMasterHelper configurationMasterHelper,
                                    V view,
-                                   IProfileDataManager profileDataManager,
+                                   ProfileDataManager profileDataManager,
                                    @Profile UserMasterHelper userMasterHelper,
                                    @Profile RetailerMasterBO retailerMasterBO,
                                    @Profile ChannelMasterHelper channelMasterHelper,
@@ -194,19 +194,19 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 mProfileDataManager.getLinkRetailer(),
                 getContractData(),
                 new Function5<
-                        ArrayList<NewOutletBO>,
+                        ArrayList<ContractStatus>,
                         LinkedHashMap<Integer, ArrayList<LocationBO>>,
                         HashMap<String, String>,
                         Vector<RetailerMasterBO>,
                         Boolean, Boolean>() {
                     @Override
                     public Boolean apply(
-                            ArrayList<NewOutletBO> contactStatus,
+                            ArrayList<ContractStatus> contractStatuses,
                             LinkedHashMap<Integer, ArrayList<LocationBO>> locationListByLevId,
                             HashMap<String, String> previousProfileChanges,
                             Vector<RetailerMasterBO> downloadLinkRetailer,
                             Boolean aBoolean) throws Exception {
-                        mContactStatus = contactStatus;
+                        mContractStatuses = contractStatuses;
                         mLocationListByLevId = locationListByLevId;
                         mPreviousProfileChanges = previousProfileChanges;
                         mDownloadLinkRetailer = downloadLinkRetailer;
@@ -220,7 +220,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
                            /* System.out.println("mContactTitleSize-->" + mContactTitle.size());
-                            System.out.println("mContactStatusSize-->" + mContactStatus.size());
+                            System.out.println("mContactStatusSize-->" + mContractStatuses.size());
                             System.out.println("mLocationListByLevIdize-->" + mLocationListByLevId.size());
                             System.out.println("mPreviousProfileChangesSize-->" + mPreviousProfileChanges.size());
                             System.out.println("mDownloadLinkRetailerSize-->" + mDownloadLinkRetailer.size());*/
@@ -497,9 +497,9 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     @Override
-    public ArrayList<NewOutletBO> getContractStatusList(String listName) {
-        mContactStatus.add(0, new NewOutletBO(0, listName));
-        return mContactStatus;
+    public ArrayList<ContractStatus> getContractStatusList(String listName) {
+        mContractStatuses.add(0, new ContractStatus(0, listName));
+        return mContractStatuses;
     }
 
     @Override
@@ -864,7 +864,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 .subscribe(new Consumer<String>() {
                                @Override
                                public void accept(String response) throws Exception {
-                                   if (!StringUtils.isEmptyString(response))
+                                   if (!StringUtils.isNullOrEmpty(response))
                                        tid = response;
                                    prepareProfileEditValues();
                                }
@@ -1057,8 +1057,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private void updateRetailerContactEditList() {
-        String mCustomquery = StringUtils.QT("CONTACTEDIT")
-                + "," + StringUtils.QT("1")
+        String mCustomquery = StringUtils.getStringQueryParam("CONTACTEDIT")
+                + "," + StringUtils.getStringQueryParam("1")
                 + "," + retailerMasterBO.getRetailerID()
                 + "," + retailerMasterBO.getRetailerID() + ")";
         insertRow("CONTACTEDIT", retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1294,8 +1294,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getAddressid()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1311,8 +1311,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getAddressid()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1328,8 +1328,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getAddressid()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1345,8 +1345,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getAddressid()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1362,8 +1362,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getAddressid()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1379,8 +1379,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getRetailerID()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1396,8 +1396,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getRetailerID()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1413,8 +1413,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getRetailerID()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1430,8 +1430,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getRetailerID()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1447,8 +1447,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getRetailerID()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1465,8 +1465,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getRetailerID()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1482,8 +1482,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getRetailerID()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1505,7 +1505,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         + "/" + userMasterHelper.getUserMasterBO().getUserid()
                         + "/" + configBO.getMenuNumber();
                 deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode()) + "," + StringUtils.QT(imagePath) + ","
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode()) + "," + StringUtils.getStringQueryParam(imagePath) + ","
                         + retailerMasterBO.getRetailerID() + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
                 FileUtils.checkFileExist(configBO.getMenuNumber() + "", retailerMasterBO.getRetailerID(), false);
@@ -1524,8 +1524,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getRetailerID()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1542,8 +1542,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber()))))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1560,8 +1560,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1579,8 +1579,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1598,8 +1598,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1617,8 +1617,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1636,8 +1636,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1655,8 +1655,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1673,8 +1673,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getAddressid()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1686,8 +1686,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
         String imagePath = "Profile" + "/" + userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
                 + "/" + userMasterHelper.getUserMasterBO().getUserid() + "/" + configBO.getMenuNumber();
-        String mCustomquery = StringUtils.QT(configBO.getConfigCode()) + ","
-                + StringUtils.QT(imagePath) + "," + retailerMasterBO.getAddressid() + "," + retailerMasterBO.getRetailerID() + ")";
+        String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode()) + ","
+                + StringUtils.getStringQueryParam(imagePath) + "," + retailerMasterBO.getAddressid() + "," + retailerMasterBO.getRetailerID() + ")";
         insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
 
         FileUtils.checkFileExist(AppUtils.latlongImageFileName + "", retailerMasterBO.getRetailerID(), true);
@@ -1702,8 +1702,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getAddressid()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1720,8 +1720,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getAddressid()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1738,8 +1738,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1756,8 +1756,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1773,8 +1773,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getAddressid()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1790,8 +1790,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getAddressid()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1805,8 +1805,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
             } else if ((!(retailerMasterBO.getContractLovid() + "").equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1820,8 +1820,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
             } else if ((!retailerMasterBO.getState().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getAddressid()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1835,8 +1835,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
             } else if ((!retailerMasterBO.getCity().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getAddressid()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1854,8 +1854,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1869,8 +1869,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
             } else if ((!retailerMasterBO.getAddress1().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getAddressid()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1887,8 +1887,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getAddressid()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1905,8 +1905,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                     && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-                String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                        + "," + StringUtils.QT(configBO.getMenuNumber())
+                String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                        + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getAddressid()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -1923,8 +1923,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
-            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
-                    + "," + StringUtils.QT(configBO.getMenuNumber())
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
                     + "," + retailerMasterBO.getAddressid()
                     + "," + retailerMasterBO.getRetailerID() + ")";
             insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
@@ -2160,7 +2160,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 }
             } else if (profileConfig.get(i).getModule_Order() == 1) {
                 try {
-                    if (!StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                    if (!StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                         int length = getIvyView().getDynamicEditTextValues(i).length();
                         if (length < profileConfig.get(i).getMaxLengthNo() ||
                                 !StringUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex())) {
@@ -2193,31 +2193,31 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             for (int i = 0; i < size; i++) {
                 String configCode = profileConfig.get(i).getConfigCode();
                 if (configCode.equals(ProfileConstant.STORENAME) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.ADDRESS1) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.ADDRESS2) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.ADDRESS3) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.CONTACT_NUMBER) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
@@ -2234,11 +2234,11 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
                 } else if (configCode.equals(ProfileConstant.CONTRACT) && profileConfig.get(i).getModule_Order() == 1) {
                     profileConfig.get(i).setMenuNumber("0");
-                    if (mContactStatus != null)
+                    if (mContractStatuses != null)
                         profileConfig.get(i).setMenuNumber(getIvyView().getContractSpinnerSelectedItemListId() + "");
 
                 } else if (configCode.equals(ProfileConstant.LATTITUDE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(lat)) {
+                    if (StringUtils.isNullOrEmpty(lat)) {
                         profileConfig.get(i).setMenuNumber("0.0");
                     } else {
                         //converting big decimal value while Exponential value occur
@@ -2249,7 +2249,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         profileConfig.get(i).setMenuNumber(lattiTude);
                     }
                 } else if (configCode.equals(ProfileConstant.LONGITUDE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(longitude)) {
+                    if (StringUtils.isNullOrEmpty(longitude)) {
                         profileConfig.get(i).setMenuNumber("0.0");
                     } else {
                         //converting big decimal value while Exponential value occur
@@ -2299,44 +2299,44 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         }
                     }
                 } else if (configCode.equals(ProfileConstant.CITY) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                    if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     }
                 } else if (configCode.equals(ProfileConstant.STATE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                    if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     }
                 } else if (configCode.equals(ProfileConstant.CREDITPERIOD) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                    if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("0");
                     } else {
                         profileConfig.get(i).setMenuNumber(getIvyView().getDynamicEditTextValues(i));
                     }
                 } else if (configCode.equals(ProfileConstant.RFiled1) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                    if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     }
                 } else if (configCode.equals(ProfileConstant.RField2) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                    if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     }
                 } else if (configCode.equals(ProfileConstant.CREDIT_INVOICE_COUNT) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                    if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     }
                 } else if (configCode.equals(ProfileConstant.RField4) && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                        if (StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                        if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
                             profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
@@ -2350,7 +2350,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
                 } else if (configCode.equals(ProfileConstant.RFIELD5) && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                        if (StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                        if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
                             profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
@@ -2364,7 +2364,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
                 } else if (configCode.equals(ProfileConstant.RFIELD6) && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                        if (StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                        if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
                             profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
@@ -2378,7 +2378,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
                 } else if (configCode.equals(ProfileConstant.RFIELD7) && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                        if (StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                        if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
                             profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
@@ -2397,7 +2397,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         profileConfig.get(i).setMenuNumber(imageFileName);
                     }
                 } else if (configCode.equals(ProfileConstant.GSTN) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                    if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
@@ -2410,25 +2410,25 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
                 } else if (configCode.equals(ProfileConstant.PAN_NUMBER) && profileConfig.get(i).getModule_Order() == 1) {
 
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.FOOD_LICENCE_NUM) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.DRUG_LICENSE_NUM) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.FOOD_LICENCE_EXP_DATE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))) ||
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))) ||
                             getIvyView().getFoodLicenceExpDateValue().equalsIgnoreCase("Select Date")) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
@@ -2436,7 +2436,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                 AppUtils.validateInput(getIvyView().getFoodLicenceExpDateValue())));
                     }
                 } else if (configCode.equals(ProfileConstant.DRUG_LICENSE_EXP_DATE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))) ||
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))) ||
                             getIvyView().getDrugLicenceExpDateValue().equalsIgnoreCase("Select Date")) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
@@ -2445,37 +2445,37 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
 
                 } else if (configCode.equals(ProfileConstant.EMAIL) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.MOBILE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.FAX) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.REGION) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.COUNTRY) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.DISTRICT) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
@@ -2575,7 +2575,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     @Override
                     public void accept(String s) throws Exception {
 
-                        /* if(!AppUtils.isEmptyString(s)){
+                        /* if(!AppUtils.isNullOrEmpty(s)){
                          *//*switch (mType) {
                             case "MOBILE":
                                 if (mValue != null && !mValue.isEmpty() && mValue.length() == 10)
@@ -2604,11 +2604,11 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 .subscribe(new Consumer<Boolean>() {
                                @Override
                                public void accept(Boolean response) throws Exception {
-                                   if (response && !StringUtils.isEmptyString(imagePath)) {
+                                   if (response && !StringUtils.isNullOrEmpty(imagePath)) {
                                        imgPaths = imagePath.split("/");
                                        path = imgPaths[imgPaths.length - 1];
                                        getIvyView().imageViewOnClick(userMasterHelper.getUserMasterBO().getUserid(), path, response);
-                                   } else if (!StringUtils.isEmptyString(imagePath)) {
+                                   } else if (!StringUtils.isNullOrEmpty(imagePath)) {
                                        imgPaths = imagePath.split("/");
                                        path = imgPaths[imgPaths.length - 1];
                                        getIvyView().imageViewOnClick(userMasterHelper.getUserMasterBO().getUserid(), path, response);
@@ -2633,11 +2633,11 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 .subscribe(new Consumer<Boolean>() {
                                @Override
                                public void accept(Boolean response) throws Exception {
-                                   if (response && !StringUtils.isEmptyString(imagePath)) {
+                                   if (response && !StringUtils.isNullOrEmpty(imagePath)) {
                                        imgPaths = imagePath.split("/");
                                        path = imgPaths[imgPaths.length - 1];
                                        getIvyView().createImageView(path);
-                                   } else if (!StringUtils.isEmptyString(imagePath)) {
+                                   } else if (!StringUtils.isNullOrEmpty(imagePath)) {
                                        imgPaths = imagePath.split("/");
                                        path = imgPaths[imgPaths.length - 1];
                                        getIvyView().createImageView(userMasterHelper.getUserMasterBO().getUserid(), path);
@@ -2663,7 +2663,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 !comparConfigerCode(mConfigCode, ProfileConstant.GSTN)) {   /*EMAIL, PenNumber,GST*/
             //regex
             getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
-            //getIvyView().checkRegex(profileConfig.get(mNumber).getRegex());
+            //getIvyView().addRegexFilter(profileConfig.get(mNumber).getRegex());
         }
 
         if (comparConfigerCode(mConfigCode, ProfileConstant.PAN_NUMBER)) {  /*PanNumber*/
@@ -2856,7 +2856,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private void prepareDrugLiceneExpDate() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getDLNoExpDate()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getDLNoExpDate()))
             retailerMasterBO.setDLNoExpDate("Select Date");
         String text = retailerMasterBO.getDLNoExpDate();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -2867,7 +2867,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private void prepareFoodLiceneExpDate() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getFoodLicenceExpDate()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getFoodLicenceExpDate()))
             retailerMasterBO.setFoodLicenceExpDate("Select Date");
         String text = retailerMasterBO.getFoodLicenceExpDate();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -2878,7 +2878,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareCountry() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getCountry()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getCountry()))
             retailerMasterBO.setCountry("");
         String text = retailerMasterBO.getCountry();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -2889,7 +2889,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareRegion() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getRegion()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getRegion()))
             retailerMasterBO.setRegion("");
         String text = retailerMasterBO.getRegion();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -2900,7 +2900,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareFAX() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getFax()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getFax()))
             retailerMasterBO.setFax("");
         String text = retailerMasterBO.getFax();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -2911,7 +2911,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareMobile() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getMobile()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getMobile()))
             retailerMasterBO.setMobile("");
         String text = retailerMasterBO.getMobile();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -2922,7 +2922,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareEmail() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getEmail()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getEmail()))
             retailerMasterBO.setEmail("");
         String text = retailerMasterBO.getEmail();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -2933,7 +2933,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareDrugLicenseNumber() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getDLNo()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getDLNo()))
             retailerMasterBO.setDLNo("");
         String text = retailerMasterBO.getDLNo();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -2945,7 +2945,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     private void prepareFoodLicenceNumber() {
 
-        if (StringUtils.isEmptyString(retailerMasterBO.getFoodLicenceNo()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getFoodLicenceNo()))
             retailerMasterBO.setFoodLicenceNo("");
         String text = retailerMasterBO.getFoodLicenceNo();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -2957,7 +2957,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void preparePanNumber() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getPanNumber()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getPanNumber()))
             retailerMasterBO.setPanNumber("");
         String text = retailerMasterBO.getPanNumber();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -2978,7 +2978,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareStorName() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getRetailerName()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getRetailerName()))
             retailerMasterBO.setRetailerName("");
         String retailderName = retailerMasterBO.getRetailerName() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -2990,7 +2990,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareAddress1() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getAddress1()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getAddress1()))
             retailerMasterBO.setAddress1("");
         String text = retailerMasterBO.getAddress1() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -3001,7 +3001,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareAddress2() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getAddress2()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getAddress2()))
             retailerMasterBO.setAddress2("");
         String text = retailerMasterBO.getAddress2() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -3012,7 +3012,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareAddress3() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getAddress3()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getAddress3()))
             retailerMasterBO.setAddress3("");
         String text = retailerMasterBO.getAddress3() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -3023,7 +3023,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareCity() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getCity()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getCity()))
             retailerMasterBO.setCity("");
         String text = retailerMasterBO.getCity() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -3035,7 +3035,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareState() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getState()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getState()))
             retailerMasterBO.setState("");
         String text = retailerMasterBO.getState() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -3047,7 +3047,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void preparePincode() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getPincode()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getPincode()))
             retailerMasterBO.setPincode("");
         String text = retailerMasterBO.getPincode() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -3059,7 +3059,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void prepareContectNumber() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getContactnumber()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getContactnumber()))
             retailerMasterBO.setContactnumber("");
         String text = retailerMasterBO.getContactnumber() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -3079,7 +3079,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private void prepareDistrict() {
-        if (StringUtils.isEmptyString(retailerMasterBO.getDistrict()))
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getDistrict()))
             retailerMasterBO.setDistrict("");
         String text = retailerMasterBO.getDistrict();
         if (mPreviousProfileChanges.get(configCode) != null)

@@ -150,7 +150,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         ",IFNULL(dwp.VisitStatus,''),cancelReasonId,planStatus " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
-                        " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER' and dwp.Date=" + StringUtils.QT(date);
+                        " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER' and dwp.Date=" + StringUtils.getStringQueryParam(date);
                 try {
 
                     initDb();

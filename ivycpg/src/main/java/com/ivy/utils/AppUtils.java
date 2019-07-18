@@ -11,10 +11,10 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.Html;
 import android.text.InputFilter;
 import android.util.DisplayMetrics;
@@ -41,7 +41,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +54,9 @@ public class AppUtils {
 
     private AppUtils() {
 
+    }
+    public static boolean isStringsEqual(String configCode, String configCodeFromDB) {
+        return configCode.equalsIgnoreCase(configCodeFromDB);
     }
 
     public static String validateInput(String input) {
@@ -218,7 +220,7 @@ public class AppUtils {
 
 
     /**
-     * Generate a value suitable for use in {@link #setId(int)}.
+     * Generate a value suitable for use in {@link View#setId(int)}.
      * This value will not collide with ID values generated at build time by aapt for R.id.
      *
      * @return a generated ID value
@@ -318,6 +320,66 @@ public class AppUtils {
         };
     }
 
+    public static String getErrorMessageByErrorCode(Context context,String errorCode){
+        switch (errorCode){
+            case "E01":
+                return context.getString(R.string.error_e01);
+            case "E02":
+                return context.getString(R.string.error_e02);
+            case "E03":
+                return context.getString(R.string.error_e03);
+            case "E04":
+                return context.getString(R.string.error_e04);
+            case "E05":
+                return context.getString(R.string.error_e05);
+            case "E06":
+                return context.getString(R.string.error_e06);
+            case "E07":
+                return context.getString(R.string.error_e07);
+            case "E08":
+                return context.getString(R.string.error_e08);
+            case "E09":
+                return context.getString(R.string.error_e09);
+            case "E10":
+                return context.getString(R.string.error_e10);
+            case "E11":
+                return context.getString(R.string.error_e11);
+            case "E12":
+                return context.getString(R.string.error_e12);
+            case "E13":
+                return context.getString(R.string.error_e13);
+            case "E14":
+                return context.getString(R.string.error_e14);
+            case "E15":
+                return context.getString(R.string.error_e15);
+            case "E18":
+                return context.getString(R.string.error_e18);
+            case "E19":
+                return context.getString(R.string.error_e19);
+            case "E20":
+                return context.getString(R.string.error_e20);
+            case "E21":
+                return context.getString(R.string.error_e21);
+            case "E23":
+                return context.getString(R.string.error_e23);
+            case "E24":
+                return context.getString(R.string.error_e24);
+            case "E25":
+                return context.getString(R.string.user_account_locked);
+            case "E26":
+                return context.getString(R.string.error_e26);
+            case "E27":
+                return context.getString(R.string.error_e27);
+            case "E31":
+                return context.getString(R.string.error_e31);
+            case "E32":
+                return context.getString(R.string.error_e21);
+            case "E100":
+                return context.getString(R.string.error_e100);
+        }
+
+        return "";
+    }
     /**
      * Used to share file's through email
      * @param context - Activity context

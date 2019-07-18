@@ -5,18 +5,38 @@
     android:gravity="center_vertical"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvPromoHeader"
-        style="@style/TextViewListItemPrimary"
+    <LinearLayout
+        android:id="@+id/ll_attachment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:maxLines="2"
-        android:paddingTop="@dimen/_10sdp"
-        android:paddingLeft="@dimen/_7sdp"
-        android:text="@string/promotion"
-        android:visibility="gone" />
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvPromoHeader"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:paddingLeft="@dimen/_7sdp"
+            android:paddingTop="@dimen/_10sdp"
+            android:text="@string/promotion" />
+
+        <ImageButton
+            android:id="@+id/imgAttachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/_7sdp"
+            android:paddingTop="@dimen/_10sdp"
+            android:src="@drawable/ic_attach_file_black_24dp"
+            android:tint="@color/light_gray" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -261,7 +281,8 @@
                 android:layout_marginLeft="@dimen/dimens_6dp"
                 android:layout_marginStart="@dimen/dimens_6dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/price_label"

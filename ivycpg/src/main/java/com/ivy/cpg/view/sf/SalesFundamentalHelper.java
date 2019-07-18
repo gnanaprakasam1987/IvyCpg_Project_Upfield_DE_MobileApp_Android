@@ -474,7 +474,7 @@ public class SalesFundamentalHelper {
 
             String query = "select Uid,refid from " + modName
                     + "_Tracking_Header  where RetailerId="
-                    + StringUtils.QT(mBModel.retailerMasterBO.getRetailerID());
+                    + StringUtils.getStringQueryParam(mBModel.retailerMasterBO.getRetailerID());
             query += " and (upload='N' OR refid!=0)";
 
             Cursor cursor = db.selectSQL(query);
@@ -482,14 +482,14 @@ public class SalesFundamentalHelper {
             if (cursor.getCount() > 0) {
                 cursor.moveToNext();
                 db.deleteSQL(modName + "_Tracking_Header",
-                        "Uid=" + StringUtils.QT(cursor.getString(0)), false);
+                        "Uid=" + StringUtils.getStringQueryParam(cursor.getString(0)), false);
                 db.deleteSQL(modName + "_Tracking_Detail",
-                        "Uid=" + StringUtils.QT(cursor.getString(0)), false);
+                        "Uid=" + StringUtils.getStringQueryParam(cursor.getString(0)), false);
                 if (modName.equals("SOS")) {
                     db.deleteSQL(modName + "_Tracking_Parent_Detail", "Uid="
-                            + StringUtils.QT(cursor.getString(0)), false);
+                            + StringUtils.getStringQueryParam(cursor.getString(0)), false);
                     db.deleteSQL(DataMembers.tbl_SOS__Block_Tracking_Detail,
-                            "Uid=" + StringUtils.QT(cursor.getString(0)), false);
+                            "Uid=" + StringUtils.getStringQueryParam(cursor.getString(0)), false);
                 }
                 refId = cursor.getString(1);
                 // uid = cursor.getString(0);
@@ -497,12 +497,12 @@ public class SalesFundamentalHelper {
             cursor.close();
             // Inserting Header in Tables
 
-            headerValues = StringUtils.QT(uid)
+            headerValues = StringUtils.getStringQueryParam(uid)
                     + "," + mBModel.getAppDataProvider().getRetailMaster().getRetailerID()
-                    + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                    + "," + StringUtils.QT(mBModel.getNote())
-                    + "," + StringUtils.QT(refId)
-                    + "," + StringUtils.QT(mBModel.getAppDataProvider().getRetailMaster().getRidSF())
+                    + "," + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + "," + StringUtils.getStringQueryParam(mBModel.getNote())
+                    + "," + StringUtils.getStringQueryParam(refId)
+                    + "," + StringUtils.getStringQueryParam(mBModel.getAppDataProvider().getRetailMaster().getRidSF())
                     + "," + mBModel.getAppDataProvider().getUniqueId();
 
             db.insertSQL(modName + "_Tracking_Header", headerColumns,
@@ -519,7 +519,7 @@ public class SalesFundamentalHelper {
                         if ((!sosBo.getLocations().get(i).getParentTotal().equals("0")
                                 && !sosBo.getLocations().get(i).getParentTotal().equals("0.0"))
                                 || sosBo.getLocations().get(i).getAudit() != 2) {
-                            detailValues = StringUtils.QT(uid)
+                            detailValues = StringUtils.getStringQueryParam(uid)
                                     + "," + sosBo.getProductID()
                                     + "," + mBModel.getAppDataProvider().getRetailMaster().getRetailerID()
                                     + "," + sosBo.getNorm()
@@ -529,14 +529,14 @@ public class SalesFundamentalHelper {
                                     + "," + sosBo.getLocations().get(i).getPercentage()
                                     + "," + sosBo.getLocations().get(i).getGap()
                                     + "," + (sosBo.getLocations().get(i).getReasonId() == -1 ? 0 : sosBo.getLocations().get(i).getReasonId())
-                                    + "," + StringUtils.QT(sosBo.getLocations().get(i).getImageName())
+                                    + "," + StringUtils.getStringQueryParam(sosBo.getLocations().get(i).getImageName())
                                     + "," + sosBo.getIsOwn()
                                     + "," + sosBo.getParentID()
                                     + "," + sosBo.getLocations().get(i).getAudit()
                                     + "," + sosBo.getMappingId()
                                     + "," + sosBo.getLocations().get(i).getLocationId()
-                                    + "," + StringUtils.QT(sosBo.getLocations().get(i).getImgName())
-                                    + "," + StringUtils.QT(sosBo.getLocations().get(i).getRemarks());
+                                    + "," + StringUtils.getStringQueryParam(sosBo.getLocations().get(i).getImgName())
+                                    + "," + StringUtils.getStringQueryParam(sosBo.getLocations().get(i).getRemarks());
 
                             db.insertSQL(modName + "_Tracking_Detail",
                                     detailColumns, detailValues);
@@ -552,14 +552,14 @@ public class SalesFundamentalHelper {
                                         .getShelfDetailForSOS().get(mKey1);
 
                             if (hashMap != null) {
-                                mParentDetailValues = StringUtils.QT(uid)
+                                mParentDetailValues = StringUtils.getStringQueryParam(uid)
                                         + "," + sosBo.getParentID()
                                         + "," + hashMap.get(ShelfShareHelper.BLOCK_COUNT)
                                         + "," + hashMap.get(ShelfShareHelper.SHELF_COUNT)
                                         + "," + hashMap.get(ShelfShareHelper.SHELF_LENGTH)
                                         + "," + hashMap.get(ShelfShareHelper.EXTRA_LENGTH)
                                         + "," + sosBo.getLocations().get(i).getParentTotal()
-                                        + "," + StringUtils.QT(mBModel.getAppDataProvider().getRetailMaster().getRetailerID())
+                                        + "," + StringUtils.getStringQueryParam(mBModel.getAppDataProvider().getRetailMaster().getRetailerID())
                                         + "," + sosBo.getLocations().get(i).getLocationId();
 
 
@@ -572,7 +572,7 @@ public class SalesFundamentalHelper {
                                 } else {
                                     cursor = db.selectSQL("SELECT * FROM " + modName
                                             + "_Tracking_Parent_Detail WHERE Uid = "
-                                            + StringUtils.QT(uid) + " AND PId = "
+                                            + StringUtils.getStringQueryParam(uid) + " AND PId = "
                                             + sosBo.getParentID() + " and locid=" + locid1);
                                     if (cursor.getCount() == 0) {
                                         db.insertSQL(modName
@@ -593,7 +593,7 @@ public class SalesFundamentalHelper {
                                         + "," + 0
                                         + "," + 0
                                         + "," + sosBo.getLocations().get(i).getParentTotal()
-                                        + "," + StringUtils.QT(mBModel.getAppDataProvider().getRetailMaster().getRetailerID())
+                                        + "," + StringUtils.getStringQueryParam(mBModel.getAppDataProvider().getRetailMaster().getRetailerID())
                                         + "," + sosBo.getLocations().get(i).getLocationId();
 
                                 if (count > 0 && !mKey1.equals(tempkey)) {
@@ -605,7 +605,7 @@ public class SalesFundamentalHelper {
                                 } else {
                                     cursor = db.selectSQL("SELECT * FROM " + modName
                                             + "_Tracking_Parent_Detail WHERE Uid = "
-                                            + StringUtils.QT(uid) + " AND PId = "
+                                            + StringUtils.getStringQueryParam(uid) + " AND PId = "
                                             + sosBo.getParentID() + " and locid=" + locid1);
                                     if (cursor.getCount() == 0) {
                                         db.insertSQL(modName
@@ -648,12 +648,12 @@ public class SalesFundamentalHelper {
                                     ShelfShareBO ssBO = blockHashMap.get(key);
                                     if (ssBO.getFirstCell().equals(
                                             sosBo1.getProductName())) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + "," + sosBo1.getParentID()
                                                 + "," + sosBo1.getProductID()
                                                 + "," + key
                                                 + "," + "1"
-                                                + "," + StringUtils.QT(mBModel.getAppDataProvider().getRetailMaster().getRetailerID())
+                                                + "," + StringUtils.getStringQueryParam(mBModel.getAppDataProvider().getRetailMaster().getRetailerID())
                                                 + "," + sosBo1.getLocations().get(i).getLocationId();
 
                                         db.insertSQL(
@@ -663,7 +663,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equals(
                                             sosBo1.getProductName())) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -674,7 +674,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -685,7 +685,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getThirdCell().equals(
                                             sosBo1.getProductName())) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -696,7 +696,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -707,7 +707,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFourthCell().equals(
                                             sosBo1.getProductName())) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -718,7 +718,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -743,7 +743,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "1"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -754,7 +754,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -765,7 +765,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -787,7 +787,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -809,7 +809,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -823,7 +823,7 @@ public class SalesFundamentalHelper {
                                     //saving Extra shelf details **/
                                     if (ssBO.getFirstCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -834,7 +834,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "1"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -845,7 +845,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -856,7 +856,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -867,7 +867,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getThirdCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -878,7 +878,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -889,7 +889,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFourthCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
                                                 + sosBo1.getParentID()
                                                 + ","
@@ -899,7 +899,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -934,7 +934,7 @@ public class SalesFundamentalHelper {
                     for (int i = 0; i < sodBo.getLocations().size(); i++) {
                         if (!sodBo.getLocations().get(i).getParentTotal().equals("0")
                                 && !sodBo.getLocations().get(i).getParentTotal().equals("0.0") || sodBo.getLocations().get(i).getAudit() != 2) {
-                            detailValues = StringUtils.QT(uid) + ","
+                            detailValues = StringUtils.getStringQueryParam(uid) + ","
                                     + sodBo.getProductID() + ","
                                     + mBModel.getAppDataProvider().getRetailMaster().getRetailerID()
                                     + "," + sodBo.getNorm() + ","
@@ -942,10 +942,10 @@ public class SalesFundamentalHelper {
                                     + sodBo.getLocations().get(i).getTarget() + "," + sodBo.getLocations().get(i).getActual()
                                     + "," + sodBo.getLocations().get(i).getPercentage() + ","
                                     + sodBo.getLocations().get(i).getGap() + "," + sodBo.getLocations().get(i).getReasonId()
-                                    + "," + StringUtils.QT(sodBo.getLocations().get(i).getImageName()) + ","
+                                    + "," + StringUtils.getStringQueryParam(sodBo.getLocations().get(i).getImageName()) + ","
                                     + sodBo.getIsOwn() + "," + sodBo.getParentID() + "," + sodBo.getLocations().get(i).getAudit() + "," + sodBo.getMappingId()
                                     + "," + sodBo.getLocations().get(i).getLocationId()
-                                    + "," + StringUtils.QT(sodBo.getLocations().get(i).getImgName());
+                                    + "," + StringUtils.getStringQueryParam(sodBo.getLocations().get(i).getImgName());
 
                             db.insertSQL(modName + "_Tracking_Detail",
                                     detailColumns, detailValues);
@@ -962,7 +962,7 @@ public class SalesFundamentalHelper {
                                         .getShelfDetailForSOD().get(mKey);
 
                             if (hashMap != null) {
-                                mParentDetailValues = StringUtils.QT(uid)
+                                mParentDetailValues = StringUtils.getStringQueryParam(uid)
                                         + ","
                                         + sodBo.getParentID()
                                         + ","
@@ -978,7 +978,7 @@ public class SalesFundamentalHelper {
                                         + ","
                                         + sodBo.getLocations().get(i).getParentTotal()
                                         + ","
-                                        + StringUtils.QT(mBModel.getAppDataProvider().getRetailMaster()
+                                        + StringUtils.getStringQueryParam(mBModel.getAppDataProvider().getRetailMaster()
                                         .getRetailerID()) + "," + sodBo.getLocations().get(i).getLocationId();
                                 if (count > 0 && !mKey.equals(tempkey)) {
                                     db.insertSQL(modName
@@ -989,7 +989,7 @@ public class SalesFundamentalHelper {
                                 } else {
                                     cursor = db.selectSQL("SELECT * FROM " + modName
                                             + "_Tracking_Parent_Detail WHERE Uid = "
-                                            + StringUtils.QT(uid) + " AND PId = "
+                                            + StringUtils.getStringQueryParam(uid) + " AND PId = "
                                             + sodBo.getParentID() + " and LocId=" + locid);
 
                                     if (cursor.getCount() == 0) {
@@ -1003,7 +1003,7 @@ public class SalesFundamentalHelper {
                                     }
                                 }
                             } else {
-                                mParentDetailValues = StringUtils.QT(uid)
+                                mParentDetailValues = StringUtils.getStringQueryParam(uid)
                                         + ","
                                         + sodBo.getParentID()
                                         + ","
@@ -1017,7 +1017,7 @@ public class SalesFundamentalHelper {
                                         + ","
                                         + sodBo.getLocations().get(i).getParentTotal()
                                         + ","
-                                        + StringUtils.QT(mBModel.getAppDataProvider().getRetailMaster()
+                                        + StringUtils.getStringQueryParam(mBModel.getAppDataProvider().getRetailMaster()
                                         .getRetailerID()) + "," + sodBo.getLocations().get(i).getLocationId();
 
                                 if (count > 0 && !mKey.equals(tempkey)) {
@@ -1029,7 +1029,7 @@ public class SalesFundamentalHelper {
                                 } else {
                                     cursor = db.selectSQL("SELECT * FROM " + modName
                                             + "_Tracking_Parent_Detail WHERE Uid = "
-                                            + StringUtils.QT(uid) + " AND PId = "
+                                            + StringUtils.getStringQueryParam(uid) + " AND PId = "
                                             + sodBo.getParentID() + " and LocId=" + locid);
 
                                     if (cursor.getCount() == 0) {
@@ -1076,7 +1076,7 @@ public class SalesFundamentalHelper {
                                     ShelfShareBO ssBO = blockHashMap.get(key);
                                     if (ssBO.getFirstCell().equals(
                                             sodBo1.getProductName())) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1087,7 +1087,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "1"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1098,7 +1098,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equals(
                                             sodBo1.getProductName())) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1109,7 +1109,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1120,7 +1120,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getThirdCell().equals(
                                             sodBo1.getProductName())) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1131,7 +1131,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1142,7 +1142,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFourthCell().equals(
                                             sodBo1.getProductName())) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1153,7 +1153,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1166,7 +1166,7 @@ public class SalesFundamentalHelper {
                                     //Extra Block Details **/
                                     if (ssBO.getFirstCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1177,7 +1177,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "1"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1188,7 +1188,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1199,7 +1199,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1210,7 +1210,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getThirdCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1221,7 +1221,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1232,7 +1232,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFourthCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1243,7 +1243,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1254,7 +1254,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFirstCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1265,7 +1265,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "1"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1276,7 +1276,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1287,7 +1287,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1298,7 +1298,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getThirdCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1309,7 +1309,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1320,7 +1320,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFourthCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = StringUtils.QT(uid)
+                                        mBlockDetailValues = StringUtils.getStringQueryParam(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1331,7 +1331,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + StringUtils.QT(mBModel
+                                                + StringUtils.getStringQueryParam(mBModel
                                                 .getAppDataProvider().getRetailMaster()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1352,7 +1352,7 @@ public class SalesFundamentalHelper {
             } else if (modName.equals("SOSKU")) {
                 for (SOSKUBO soskuBO : getSOSKUList()) {
                     if (soskuBO.getParentTotal() > 0) {
-                        detailValues = StringUtils.QT(uid) + ","
+                        detailValues = StringUtils.getStringQueryParam(uid) + ","
                                 + soskuBO.getProductID() + ","
                                 + mBModel.getAppDataProvider().getRetailMaster().getRetailerID()
                                 + "," + soskuBO.getNorm() + ","
@@ -1362,13 +1362,13 @@ public class SalesFundamentalHelper {
                                 + soskuBO.getPercentage() + ","
                                 + soskuBO.getGap() + ","
                                 + soskuBO.getReasonId() + ","
-                                + StringUtils.QT(soskuBO.getImageName()) + ","
+                                + StringUtils.getStringQueryParam(soskuBO.getImageName()) + ","
                                 + soskuBO.getIsOwn() + ","
                                 + soskuBO.getParentID() + ","
                                 + 0 + ","
                                 + soskuBO.getMappingId() + ","
                                 + 0 + ","
-                                + StringUtils.QT(soskuBO.getImgName());
+                                + StringUtils.getStringQueryParam(soskuBO.getImgName());
 
                         db.insertSQL(modName + "_Tracking_Detail",
                                 detailColumns, detailValues);
@@ -1482,7 +1482,7 @@ public class SalesFundamentalHelper {
                     + mBModel.getRetailerMasterBO().getRetailerID()
                     + " and (upload='N' OR refid!=0)";
             /*
-             * + " AND Date = " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+             * + " AND Date = " + mBModel.getStringQueryParam(SDUtil.now(SDUtil.DATE_GLOBAL));
              */
 
             Cursor headerCursor = db.selectSQL(sql);
@@ -2046,15 +2046,15 @@ public class SalesFundamentalHelper {
         try {
             db.openDataBase();
 
-            String query = "select Uid from  SOS_Tracking_Header where retailerid=" + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + " and date=" + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            String query = "select Uid from  SOS_Tracking_Header where retailerid=" + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + " and date=" + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cursor = db.selectSQL(query);
 
             if (cursor.getCount() > 0) {
                 if (cursor.moveToNext()) {
                     db.deleteSQL("SOS_Tracking_Header",
-                            "uid=" + StringUtils.QT(cursor.getString(0)), false);
+                            "uid=" + StringUtils.getStringQueryParam(cursor.getString(0)), false);
                     db.deleteSQL("SOS_Tracking_Detail",
-                            "uid=" + StringUtils.QT(cursor.getString(0)), false);
+                            "uid=" + StringUtils.getStringQueryParam(cursor.getString(0)), false);
                 }
             }
 
@@ -2075,8 +2075,8 @@ public class SalesFundamentalHelper {
             }
 
             if (isData) {
-                db.insertSQL("SOS_Tracking_Header", headerColumns, uid + "," + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                            + "," + StringUtils.QT(mBModel.getAppDataProvider().getRetailMaster().getRidSF())
+                db.insertSQL("SOS_Tracking_Header", headerColumns, uid + "," + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + "," + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                            + "," + StringUtils.getStringQueryParam(mBModel.getAppDataProvider().getRetailMaster().getRidSF())
                             + "," + mBModel.getAppDataProvider().getUniqueId());
             }
 

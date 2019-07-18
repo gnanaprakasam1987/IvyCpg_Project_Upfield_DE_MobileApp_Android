@@ -42,7 +42,7 @@
     </RelativeLayout>
 
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/productqtyCases"
         style="@style/EditText_ListItem"
         android:layout_width="0dp"
@@ -54,7 +54,7 @@
         android:gravity="center"
         android:text="@string/zero" />
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/outerproductqtyCases"
         style="@style/EditText_ListItem"
         android:layout_width="0dp"
@@ -66,7 +66,7 @@
         android:gravity="center"
         android:text="@string/zero" />
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/productqtyPieces"
         style="@style/EditText_ListItem"
         android:layout_width="0dp"

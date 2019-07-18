@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/retailer_card"
     android:layout_width="match_parent"
@@ -20,4 +20,4 @@
         android:textColor="@color/FullBlack"
         android:text="gdgvd fd dfg"
         android:layout_marginLeft="@dimen/profile_history_20dp" />
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

@@ -55,7 +55,7 @@ public class StockProposalModuleHelper {
 									+ " and upload='Y'");
 					if (stockcursor.getCount() > 0) {
 						stockcursor.moveToNext();
-						invid = StringUtils.QT(stockcursor.getString(0));
+						invid = StringUtils.getStringQueryParam(stockcursor.getString(0));
 					}
 					stockcursor.close();
 				}
@@ -82,7 +82,7 @@ public class StockProposalModuleHelper {
 							+ product.getdUomid() + "," + product.getCaseSize()
 							+ "," + product.getOuterSize() + ","
 							+ product.getdOuonid() + ","
-							+ StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+							+ StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
 					String sql = "insert into " + "StockProposalMaster" + "("
 							+ columns + ") values(" + values + ")";

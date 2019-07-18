@@ -2,10 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_space"
+    android:paddingStart="@dimen/_24sdp"
+    android:paddingEnd="@dimen/_24sdp"
     android:background="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
-    android:paddingStart="@dimen/space_betwn_icon_and_text"
-    android:paddingEnd="@dimen/space_betwn_icon_and_text">
+    >
 
 
     <TextView
@@ -22,6 +23,7 @@
     <ImageView
         android:id="@+id/list_item_icon_ib"
         style="@style/menuIconImageView"
+        android:layout_centerVertical="true"
         android:src="@drawable/icon_call" />
 
     <TextView
@@ -31,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_betwn_icon_and_text"
         android:layout_marginEnd="@dimen/dimen_2dp"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/list_item_icon_ib"
         android:gravity="center_vertical"
         android:textStyle="bold" />

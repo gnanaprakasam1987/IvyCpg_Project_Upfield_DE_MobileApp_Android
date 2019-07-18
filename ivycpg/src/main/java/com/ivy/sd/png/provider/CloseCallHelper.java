@@ -144,7 +144,7 @@ public class CloseCallHelper {
             );
             db.openDataBase();
             db.updateSQL("UPDATE RetailerVerification SET IsValidated='1' where RefId = " + RefId);
-                        /*	+ bmodel.QT(bmodel.getRetailerMasterBO()
+                        /*	+ bmodel.getStringQueryParam(bmodel.getRetailerMasterBO()
                                     .getRetailerID())
 							+ " AND  '"
 							+ formattedDate
@@ -165,7 +165,7 @@ public class CloseCallHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String id = StringUtils.QT(bmodel.getAppDataProvider().getUser()
+            String id = StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getUser()
                     .getDistributorid()
                     + ""
                     + bmodel.getAppDataProvider().getUser().getUserid()
@@ -174,25 +174,25 @@ public class CloseCallHelper {
             db.deleteSQL(
                     "Nonproductivereasonmaster",
                     "RetailerID="
-                            + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster()
+                            + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster()
                             .getRetailerID())
                             + " and DistributorID="
                             +bmodel.getAppDataProvider().getRetailMaster()
                             .getDistributorId()
                             + " and ReasonTypes="
-                            + StringUtils.QT(getStandardListId(outlet
+                            + StringUtils.getStringQueryParam(getStandardListId(outlet
                             .getReasontype())) + " and RouteID="
                             + bmodel.getAppDataProvider().getRetailMaster().getBeatID(), false);
 
             String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
             values = id + ","
-                    + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID())
+                    + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRetailerID())
                     + "," + bmodel.getAppDataProvider().getRetailMaster().getBeatID() + ","
-                    + StringUtils.QT(outlet.getDate()) + ","
-                    + StringUtils.QT(outlet.getReasonid()) + ","
-                    + StringUtils.QT(getStandardListId(outlet.getReasontype()))
-                    + "," + StringUtils.QT("N")+ "," +outlet.getDistributorID()
-                    + "," + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
+                    + StringUtils.getStringQueryParam(outlet.getDate()) + ","
+                    + StringUtils.getStringQueryParam(outlet.getReasonid()) + ","
+                    + StringUtils.getStringQueryParam(getStandardListId(outlet.getReasontype()))
+                    + "," + StringUtils.getStringQueryParam("N")+ "," +outlet.getDistributorID()
+                    + "," + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             db.closeDB();

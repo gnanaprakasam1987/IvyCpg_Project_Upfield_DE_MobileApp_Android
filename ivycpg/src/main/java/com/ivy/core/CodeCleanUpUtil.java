@@ -121,5 +121,13 @@ public class CodeCleanUpUtil {
         bmodel.setSubDMaster(subDMasterVector);
     }
 
+    public void setOrderHeaderNote(String orderHeaderNote) {
+        appDataProvider.setOrderHeaderNote(orderHeaderNote,true);
+    }
+
+    public void setBModelOrderHeaderNote(String orderHeaderNote) {
+        bmodel.setOrderHeaderNote(orderHeaderNote);
+    }
+
 
 }

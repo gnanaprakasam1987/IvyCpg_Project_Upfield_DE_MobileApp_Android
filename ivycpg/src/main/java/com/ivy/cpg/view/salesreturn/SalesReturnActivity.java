@@ -1,17 +1,22 @@
 package com.ivy.cpg.view.salesreturn;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
+import com.ivy.sd.png.model.ProductSearchCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 
-public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface,FiveLevelFilterCallBack {
+public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface,FiveLevelFilterCallBack, SalesReturnAdapter.SalesReturnInterface, ProductSearchCallBack {
 
     private Toolbar toolbar;
 
@@ -35,7 +40,7 @@ public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements B
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SalesReturnFragment fragment = (SalesReturnFragment) fm
                 .findFragmentById(R.id.sales_return_fragment);
         fragment.updateBrandText(mFilterText, id);
@@ -43,7 +48,7 @@ public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements B
 
     @Override
     public void updateGeneralText(String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SalesReturnFragment fragment = (SalesReturnFragment) fm
                 .findFragmentById(R.id.sales_return_fragment);
         fragment.updateGeneralText(mFilterText);
@@ -51,7 +56,7 @@ public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements B
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SalesReturnFragment fragment = (SalesReturnFragment) fm
                 .findFragmentById(R.id.sales_return_fragment);
         fragment.updateCancel();
@@ -59,10 +64,33 @@ public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements B
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SalesReturnFragment fragment = (SalesReturnFragment) fm
                 .findFragmentById(R.id.sales_return_fragment);
         fragment.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
+    @Override
+    public void onListItemSelected(String pid) {
+        FragmentManager fm = getSupportFragmentManager();
+        SalesReturnFragment fragment = (SalesReturnFragment) fm
+                .findFragmentById(R.id.sales_return_fragment);
+        fragment.onListItemSelected(pid);
+    }
+
+    @Override
+    public void showSalesReturnDialog(String pid) {
+        FragmentManager fm = getSupportFragmentManager();
+        SalesReturnFragment fragment = (SalesReturnFragment) fm
+                .findFragmentById(R.id.sales_return_fragment);
+        fragment.showSalesReturnDialog(pid);
+    }
+
+    @Override
+    public void productSearchResult(Vector<ProductMasterBO> searchedList) {
+        FragmentManager fm = getSupportFragmentManager();
+        SalesReturnFragment fragment = (SalesReturnFragment) fm
+                .findFragmentById(R.id.sales_return_fragment);
+        fragment.productSearchResult(searchedList);
+    }
 }

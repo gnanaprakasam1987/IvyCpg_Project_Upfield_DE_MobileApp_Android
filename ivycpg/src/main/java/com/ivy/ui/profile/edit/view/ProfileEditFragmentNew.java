@@ -14,14 +14,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.AppCompatEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -71,6 +71,7 @@ import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
 import com.ivy.ui.profile.ProfileConstant;
+import com.ivy.ui.profile.create.model.ContractStatus;
 import com.ivy.ui.profile.data.DatePickerFragment;
 import com.ivy.ui.profile.data.DatePreviewListener;
 import com.ivy.ui.profile.edit.IProfileEditContract;
@@ -321,7 +322,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public void imageViewOnClick(int userId, String path, boolean hasProfileImagePath) {
-        if (!StringUtils.isEmptyString(cameraFilePath)) {
+        if (!StringUtils.isNullOrEmpty(cameraFilePath)) {
             if (new File(cameraFilePath).exists())
                 openImage(new File(cameraFilePath));
             else
@@ -805,8 +806,7 @@ public class ProfileEditFragmentNew extends BaseFragment
     }
 
     @Override
-    public void retailersButtonOnClick(Vector<RetailerMasterBO> retailersList
-            , int VALUE_NEARBY_RETAILER_MAX) {
+    public void retailersButtonOnClick(Vector<RetailerMasterBO> retailersList, int VALUE_NEARBY_RETAILER_MAX) {
         if (retailersList != null && retailersList.size() > 0) {
             NearByRetailerDialog dialog = new NearByRetailerDialog(getActivity()
                     , VALUE_NEARBY_RETAILER_MAX, retailersList, mSelectedIds);
@@ -1165,7 +1165,7 @@ public class ProfileEditFragmentNew extends BaseFragment
     }
 
     @Override
-    public void foodxpDate(int year, int month, int day) {
+    public void foodExpiryDate(int year, int month, int day) {
         Calendar selectedDate = new GregorianCalendar(year, month, day);
         if (selectedDate.after(Calendar.getInstance())) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
@@ -1177,7 +1177,7 @@ public class ProfileEditFragmentNew extends BaseFragment
     }
 
     @Override
-    public void druckExpDate(int year, int month, int day) {
+    public void truckExpDate(int year, int month, int day) {
         Calendar selectedDate = new GregorianCalendar(year, month, day);
         if (selectedDate.after(Calendar.getInstance())) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
@@ -1288,11 +1288,11 @@ public class ProfileEditFragmentNew extends BaseFragment
                 contractSpinner.setFloatingLabelText(MName);
 
                 String listName = getResources().getString(R.string.select_str) + " " + MName;
-                ArrayList<NewOutletBO> mContactStatus = new ArrayList<>();
-                mContactStatus.addAll(profileEditPresenter.getContractStatusList(listName));
+                ArrayList<ContractStatus> mContractStatuses = new ArrayList<>();
+                mContractStatuses.addAll(profileEditPresenter.getContractStatusList(listName));
 
-                ArrayAdapter<NewOutletBO> contractStatusAdapter = new ArrayAdapter<>(getActivity()
-                        , android.R.layout.simple_spinner_item, mContactStatus);
+                ArrayAdapter<ContractStatus> contractStatusAdapter = new ArrayAdapter<>(getActivity()
+                        , android.R.layout.simple_spinner_item, mContractStatuses);
                 contractStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 contractSpinner.setAdapter(contractStatusAdapter);
                 contractSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -1303,8 +1303,8 @@ public class ProfileEditFragmentNew extends BaseFragment
                     }
                 });
 
-                for (int i = 0; i < mContactStatus.size(); i++) {
-                    if (id == mContactStatus.get(i).getListId())
+                for (int i = 0; i < mContractStatuses.size(); i++) {
+                    if (id == mContractStatuses.get(i).getListId())
                         selected_pos = i;
                 }
                 contractSpinner.setSelection(selected_pos);
@@ -2305,7 +2305,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             in = new Intent(getActivity(), MapDialogue.class);
 
         String latLag = latlongtextview.getText().toString();
-        if (!StringUtils.isEmptyString(latLag)) {
+        if (!StringUtils.isNullOrEmpty(latLag)) {
             String[] latLagList = latLag.split(",");
             double latdoub = Double.valueOf(latLagList[0]);
             double longdoub = Double.valueOf(latLagList[1]);
@@ -2386,7 +2386,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             int position = 0, setPos = 0;
             int subChannelID = getSubchannelid();
             String mPreviousProfileChanges = profileEditPresenter.getPreviousProfileChangesList(ProfileConstant.SUBCHANNEL);
-            if (!StringUtils.isEmptyString(mPreviousProfileChanges))
+            if (!StringUtils.isNullOrEmpty(mPreviousProfileChanges))
                 if (!mPreviousProfileChanges.equals(subChannelID + ""))
                     subChannelID = SDUtil.convertToInt(mPreviousProfileChanges);
             for (int i = 0; i < siz; ++i) {

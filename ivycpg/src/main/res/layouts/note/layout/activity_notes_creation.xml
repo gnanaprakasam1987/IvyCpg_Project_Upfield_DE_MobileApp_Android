@@ -9,7 +9,7 @@
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/note_title_label_tv"
         style="@style/TextViewNormalHighlight"
         android:layout_width="wrap_content"
@@ -18,7 +18,7 @@
         android:layout_margin="@dimen/_10sdp"
         android:text="@string/title" />
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/note_title_val"
         style="@style/EditTextNormal"
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
         android:textAlignment="textStart" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/note_spinner_label_tv"
         style="@style/TextViewNormalHighlight"
         android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
         android:visibility="gone"
         android:text="@string/assign_to_retailer" />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/retailer_selection_sp"
         style="@style/Widget.AppCompat.Spinner.Underlined"
         android:layout_width="match_parent"
@@ -55,7 +55,7 @@
         />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/note_desc_label_tv"
         style="@style/TextViewNormalHighlight"
         android:layout_width="match_parent"
@@ -64,7 +64,7 @@
         android:layout_margin="@dimen/_10sdp"
         android:text="@string/description" />
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/note_desc_val"
         style="@style/EditTextNormal"
         android:layout_width="match_parent"

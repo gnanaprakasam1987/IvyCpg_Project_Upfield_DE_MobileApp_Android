@@ -1,28 +1,61 @@
 package com.ivy.ui.profile.data;
 
 
+import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 
-
+import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.core.data.sync.SynchronizationDataManager;
+import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
 import com.ivy.cpg.view.retailercontact.RetailerContactBo;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
+import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.lib.rest.JSONFormatter;
+import com.ivy.sd.png.bo.AddressBO;
+import com.ivy.sd.png.bo.CensusLocationBO;
+import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
+import com.ivy.sd.png.bo.OrderHeader;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.profile.create.NewRetailerConstant;
+import com.ivy.ui.profile.create.di.NewRetailer;
+import com.ivy.ui.profile.create.model.ContactTitle;
+import com.ivy.ui.profile.create.model.ContractStatus;
+import com.ivy.ui.profile.create.model.LocationLevel;
+import com.ivy.ui.profile.create.model.PaymentType;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 
@@ -31,35 +64,477 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Function4;
 
-public class ProfileDataManagerImpl implements IProfileDataManager {
+import static com.ivy.ui.profile.create.NewRetailerConstant.MENU_NEW_RETAILER;
+import static com.ivy.utils.StringUtils.getStringQueryParam;
+import static com.ivy.utils.StringUtils.isNullOrEmpty;
 
+public class ProfileDataManagerImpl implements ProfileDataManager {
+
+    private final SurveyHelperNew surveyHelperNew;
+    private final ProductHelper productHelper;
+    private final ProductTaggingHelper productTaggingHelper;
+    private final Context context;
     private DBUtil dbUtil;
 
+    private DataManager dataManager;
+
+    private ConfigurationMasterHelper configurationMasterHelper;
+
+    private SynchronizationDataManager synchronizationDataManager;
+
     @Inject
-    public ProfileDataManagerImpl(@DataBaseInfo DBUtil dbUtil) {
+    public ProfileDataManagerImpl(@DataBaseInfo DBUtil dbUtil,
+                                  DataManager dataManager,
+                                  ConfigurationMasterHelper configurationMasterHelper,
+                                  SynchronizationDataManager synchronizationDataManager,
+                                  @NewRetailer SurveyHelperNew surveyHelperNew,
+                                  ProductHelper productHelper,
+                                  ProductTaggingHelper productTaggingHelper,
+                                  @ApplicationContext Context context) {
         this.dbUtil = dbUtil;
+        this.dataManager = dataManager;
+        this.configurationMasterHelper = configurationMasterHelper;
+        this.synchronizationDataManager = synchronizationDataManager;
+        this.surveyHelperNew = surveyHelperNew;
+        this.productHelper = productHelper;
+        this.productTaggingHelper = productTaggingHelper;
+        this.context = context;
         dbUtil.openDataBase();
 
     }
 
+    private void initDb() {
+        dbUtil.createDataBase();
+        if (dbUtil.isDbNullOrClosed())
+            dbUtil.openDataBase();
+    }
+
+    private void shutDownDb() {
+        dbUtil.closeDB();
+    }
+
+    private ArrayList<String> loadImgList(String retailerID) {
+        ArrayList<String> imgList = new ArrayList<>();
+        try {
+            Cursor c1;
+            String query = "Select ImageName from NewOutletImage where RetailerId=" + getStringQueryParam(retailerID);
+            c1 = dbUtil.selectSQL(query);
+            if (c1 != null) {
+                if (c1.getCount() > 0) {
+                    String attrName = "";
+                    while (c1.moveToNext()) {
+                        attrName = c1.getString(0).substring(c1.getString(0)
+                                .indexOf("/NO") + 1, c1.getString(0).indexOf(".jpg"));
+                        imgList.add(attrName);
+                    }
+                }
+                c1.close();
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return imgList;
+    }
+
+    /*
+    Load Edit Attributes list
+     */
+    private ArrayList<String> loadEditAttributes(String retailerID) {
+        ArrayList<String> attributeList = new ArrayList<>();
+        try {
+            Cursor c1;
+            String query = "Select AttributeId from RetailerAttribute where RetailerId=" + getStringQueryParam(retailerID);
+            c1 = dbUtil.selectSQL(query);
+            if (c1 != null) {
+                if (c1.getCount() > 0) {
+                    NewOutletAttributeBO attrBo;
+                    while (c1.moveToNext()) {
+                        attrBo = new NewOutletAttributeBO();
+                        attrBo.setAttrId(c1.getInt(0));
+                        attributeList.add(String.valueOf(attrBo.getAttrId()));
+                    }
+                }
+                c1.close();
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return attributeList;
+    }
+
 
     @Override
-    public Observable<ArrayList<NewOutletBO>> getContactTitle() {
+    public Observable<ArrayList<ConfigureBO>> getProfileConfigs(int channelId, boolean isChannelSelectionNewRetailer, String language) {
+
+        return Observable.fromCallable(new Callable<ArrayList<ConfigureBO>>() {
+            @Override
+            public ArrayList<ConfigureBO> call() throws Exception {
+                ConfigureBO ConfigureBO;
+                ArrayList<ConfigureBO> profileConfig = new ArrayList<>();
+                try {
+                    initDb();
+                    Cursor c;
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("select HHTCode, flag , MName , MNumber ,RField,haslink,RField6,Regex from HhtMenuMaster where MenuType= 'MENU_NEW_RET'");
+                    sb.append("  and Flag = 1 and lang=");
+                    sb.append(getStringQueryParam(language));
+                    if (isChannelSelectionNewRetailer) {
+                        sb.append(" and subchannelid=");
+                        sb.append(channelId);
+                        sb.append(" ");
+                    }
+                    sb.append(" order by Mnumber");
+                    c = dbUtil.selectSQL(sb.toString());
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            ConfigureBO = new ConfigureBO();
+                            ConfigureBO.setConfigCode(c.getString(0));
+                            ConfigureBO.setFlag(c.getInt(1));
+                            ConfigureBO.setMenuName(c.getString(2));
+                            ConfigureBO.setMenuNumber((c.getString(3)));
+                            ConfigureBO.setMandatory((c.getInt(4)));
+                            ConfigureBO.setHasLink(c.getInt(5));
+                            ConfigureBO.setRField6(String.valueOf(c.getInt(6)));
+                            String str = c.getString(7);
+                            if (str != null && !str.isEmpty()) {
+                                if (str.contains("<") && str.contains(">")) {
+
+                                    String minlen = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
+                                    if (!minlen.isEmpty()) {
+                                        try {
+                                            ConfigureBO.setMaxLengthNo(SDUtil.convertToInt(minlen));
+                                        } catch (Exception ex) {
+                                            Commons.printException("min len in new outlet helper", ex);
+                                        }
+                                    }
+                                }
+                            }
+                            ConfigureBO.setRegex(c.getString(7));
+                            profileConfig.add(ConfigureBO);
+                        }
+                        c.close();
+                    }
+                    shutDownDb();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+
+                return profileConfig;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<String>> downloadNearbyRetailers(String retailerId) {
+        return Observable.fromCallable(new Callable<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> call() throws Exception {
+                ArrayList<String> nearByRetailers = new ArrayList<>();
+                if(retailerId!=null) {
+                    try {
+                        initDb();
+                        String sql = "select  nearbyrid from NearByRetailers where rid=" + getStringQueryParam(retailerId);
+                        Cursor c = dbUtil.selectSQL(sql);
+                        if (c.getCount() > 0) {
+                            nearByRetailers = new ArrayList<>();
+                            while (c.moveToNext()) {
+                                nearByRetailers.add(c.getString(0));
+                            }
+                        }
+                        c.close();
+
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
+                }
+                return nearByRetailers;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<StandardListBO>> downloadClassType() {
+        return Observable.fromCallable(new Callable<ArrayList<StandardListBO>>() {
+            @Override
+            public ArrayList<StandardListBO> call() throws Exception {
+                ArrayList<StandardListBO> classTypeList = new ArrayList<>();
+                try {
+                    dbUtil.openDataBase();
+                    String sb = "select listid,listname from standardlistmaster where listtype='CLASS_TYPE'";
+                    Cursor c = dbUtil.selectSQL(sb);
+                    if (c.getCount() > 0) {
+                        StandardListBO standardListBO;
+                        while (c.moveToNext()) {
+                            standardListBO = new StandardListBO();
+                            standardListBO.setListID(c.getString(0));
+                            standardListBO.setListName(c.getString(1));
+                            classTypeList.add(standardListBO);
+                        }
+                    }
+                    c.close();
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return classTypeList;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<StandardListBO>> getTaxType() {
+        return Observable.fromCallable(new Callable<ArrayList<StandardListBO>>() {
+            @Override
+            public ArrayList<StandardListBO> call() throws Exception {
+                ArrayList<StandardListBO> taxTypeList = new ArrayList<>();
+                try {
+                    dbUtil.openDataBase();
+                    String sb = "select listid,listname from standardlistmaster where listtype='CERTIFICATE_TYPE'";
+                    Cursor c = dbUtil.selectSQL(sb);
+                    if (c.getCount() > 0) {
+                        StandardListBO standardListBO;
+                        while (c.moveToNext()) {
+                            standardListBO = new StandardListBO();
+                            standardListBO.setListID(c.getString(0));
+                            standardListBO.setListName(c.getString(1));
+                            taxTypeList.add(standardListBO);
+                        }
+                    }
+                    c.close();
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return taxTypeList;
+            }
+        });
+    }
+
+
+    @Override
+    public Observable<ArrayList<String>> getRetailerBySupplierId(String suppilerID) {
+        return Observable.fromCallable(new Callable<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> call() throws Exception {
+                ArrayList<String> mRetailerIds = new ArrayList<>();
+                try {
+                    initDb();
+                    String sb = "select distinct rid from Suppliermaster " +
+                            "where sid=" + getStringQueryParam(suppilerID);
+
+                    Cursor c = dbUtil.selectSQL(sb);
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            mRetailerIds.add(c.getString(0));
+                        }
+                        c.close();
+                    }
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    if (dbUtil != null)
+                        dbUtil.closeDB();
+                    Commons.printException("" + e);
+                    return new ArrayList<>();
+                }
+
+                return mRetailerIds;
+            }
+        });
+    }
+
+
+    @Override
+    public Observable<ArrayList<PaymentType>> getRetailerType() {
+        return Observable.fromCallable(new Callable<ArrayList<PaymentType>>() {
+            @Override
+            public ArrayList<PaymentType> call() throws Exception {
+                PaymentType retailerType;
+                ArrayList<PaymentType> retailerTypeList = new ArrayList<>();
+                try {
+
+                    dbUtil.openDataBase();
+                    Cursor c = dbUtil
+                            .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_TYPE'");
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            retailerType = new PaymentType();
+                            retailerType.setListId(c.getInt(0));
+                            retailerType.setListName(c.getString(2));
+                            retailerTypeList.add(retailerType);
+                        }
+                        c.close();
+                    }
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return retailerTypeList;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<NewOutletBO>> getNewRetailers() {
         return Observable.fromCallable(new Callable<ArrayList<NewOutletBO>>() {
             @Override
             public ArrayList<NewOutletBO> call() throws Exception {
-                ArrayList<NewOutletBO> contactTitleList = new ArrayList<>();
-                NewOutletBO contactTitle = null;
+                ArrayList<NewOutletBO> lst = new ArrayList<>();
+                try {
+
+                    Cursor c;
+
+                    String query = "select distinct RM.RetailerID,RetailerName,subchannelid,beatid,visitDays ,locationid,creditlimit,RPTypeId,tinnumber,RField3," +
+                            "distributorId,TaxTypeid,contractstatuslovid,classid,AccountId,RC1.contactname as contactName1,RC1.ContactName_LName as contactLName1,RC1.contactNumber as contactNumber1" +
+                            ",RC1.contact_title as contact_title1,RC1.contact_title_lovid as contact_title_lovid1" +
+                            ",RC2.contactname as contactName2,RC2.ContactName_LName as contactLName2,RC2.contactNumber as contactNumber2,RC2.contact_title as contact_title2,RC2.contact_title_lovid as contact_title_lovid2," +
+                            "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State,RM.RField5,RM.RField6,RM.TinExpDate," +
+                            "RM.pan_number,RM.food_licence_number,RM.food_licence_exp_date,RM.DLNo,RM.DLNoExpDate,RM.RField4,RM.RField7,RA.Mobile,RA.Region,RA.Country,RM.userid,RM.GSTNumber," +
+                            "RM.RField8,RM.RField9,RM.RField10,,RM.RField11,RM.RField12,RM.RField13,RM.RField14,RM.RField15,RM.RField16,RM.RField17,RM.RField18,RM.RField19"+
+                            " from RetailerMaster RM LEFT JOIN RetailerContact RC1 ON Rm.retailerid=RC1.retailerId AND RC1.isprimary=1" +
+                            " LEFT JOIN RetailerContact RC2 ON Rm.retailerid=RC2.retailerId AND RC2.isprimary=0" +
+                            " LEFT JOIN RetailerAddress RA ON RA.RetailerId=RM.retailerId" +
+                            " where RM.is_new='Y' and RM.upload='N' ";
+                    c = dbUtil.selectSQL(query);
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            NewOutletBO retailer;
+                            while (c.moveToNext()) {
+                                retailer = new NewOutletBO();
+                                retailer.setRetailerId(c.getString(c.getColumnIndex("RetailerID")));
+                                retailer.setOutletName(c.getString(c.getColumnIndex("RetailerName")));
+                                retailer.setSubChannel(c.getInt(c.getColumnIndex("subchannelid")));
+                                retailer.setRouteid(c.getInt(c.getColumnIndex("beatid")));
+                                retailer.setVisitDays(c.getString(c.getColumnIndex("VisitDays")));
+                                retailer.setLocid(c.getInt(c.getColumnIndex("locationid")));
+                                retailer.setCreditLimit(c.getString(c.getColumnIndex("creditlimit")));
+                                retailer.setPayment(c.getString(c.getColumnIndex("RPTypeId")));
+                                retailer.setTinno(c.getString(c.getColumnIndex("tinnumber")));
+                                retailer.setRfield3(c.getString(c.getColumnIndex("RField3")));
+                                retailer.setDistid(c.getString(c.getColumnIndex("distributorid")));
+                                retailer.setTaxTypeId(c.getString(c.getColumnIndex("TaxTypeId")));
+                                retailer.setContractStatuslovid(c.getInt(c.getColumnIndex("contractstatuslovid")));
+                                retailer.setClassTypeId(c.getString(c.getColumnIndex("classid")));
+
+                                //from retailer contact
+                                retailer.setContactpersonname(c.getString(c.getColumnIndex("contactName1")));
+                                retailer.setContactpersonnameLastName(c.getString(c.getColumnIndex("contactLName1")));
+                                retailer.setPhone(c.getString(c.getColumnIndex("contactNumber1")));
+                                retailer.setContact1title(c.getString(c.getColumnIndex("contact_title1")));
+                                retailer.setContact1titlelovid(c.getString(c.getColumnIndex("contact_title_lovid1")));
+
+                                retailer.setContactpersonname2(c.getString(c.getColumnIndex("contactName2")));
+                                retailer.setContactpersonname2LastName(c.getString(c.getColumnIndex("contactLName2")));
+                                retailer.setPhone2(c.getString(c.getColumnIndex("contactNumber2")));
+                                retailer.setContact2title(c.getString(c.getColumnIndex("contact_title2")));
+                                retailer.setContact2titlelovid(c.getString(c.getColumnIndex("contact_title_lovid2")));
+
+                                // from Retailer Address
+                                retailer.setAddress(c.getString(c.getColumnIndex("Address1")));
+                                retailer.setAddress2(c.getString(c.getColumnIndex("Address2")));
+                                retailer.setAddress3(c.getString(c.getColumnIndex("Address3")));
+                                retailer.setCity(c.getString(c.getColumnIndex("City")));
+                                retailer.setNewOutletlattitude(c.getDouble(c.getColumnIndex("Latitude")));
+                                retailer.setNewOutletLongitude(c.getDouble(c.getColumnIndex("Longitude")));
+                                retailer.setEmail(c.getString(c.getColumnIndex("Email")));
+                                retailer.setFax(c.getString(c.getColumnIndex("FaxNo")));
+                                retailer.setPincode(c.getString(c.getColumnIndex("pincode")));
+                                retailer.setState(c.getString(c.getColumnIndex("State")));
+                                retailer.setRfield5(c.getString(c.getColumnIndex("RField5")));
+                                retailer.setRfield6(c.getString(c.getColumnIndex("RField6")));
+                                retailer.setTinExpDate(c.getString(c.getColumnIndex("TinExpDate")));
+                                retailer.setPanNo(c.getString(c.getColumnIndex("pan_number")));
+                                retailer.setFoodLicenseNo(c.getString(c.getColumnIndex("food_licence_number")));
+                                retailer.setFlExpDate(c.getString(c.getColumnIndex("food_licence_exp_date")));
+                                retailer.setDrugLicenseNo(c.getString(c.getColumnIndex("DLNo")));
+                                retailer.setDlExpDate(c.getString(c.getColumnIndex("DLNoExpDate")));
+                                retailer.setrField7(c.getString(c.getColumnIndex("RField7")));
+                                retailer.setrField4(c.getString(c.getColumnIndex("RField4")));
+                                retailer.setRegion(c.getString(c.getColumnIndex("Region")));
+                                retailer.setCountry(c.getString(c.getColumnIndex("Country")));
+                                retailer.setMobile(c.getString(c.getColumnIndex("Mobile")));
+                                retailer.setUserId(c.getInt(c.getColumnIndex("userid")));
+                                retailer.setGstNum(c.getString(c.getColumnIndex("GSTNumber")));
+
+                                retailer.setRfield8(c.getString(c.getColumnIndex("RField8")));
+                                retailer.setRfield9(c.getString(c.getColumnIndex("RField9")));
+                                retailer.setRfield10(c.getString(c.getColumnIndex("RField10")));
+                                retailer.setRfield11(c.getString(c.getColumnIndex("RField11")));
+                                retailer.setRfield12(c.getString(c.getColumnIndex("RField12")));
+                                retailer.setRfield13(c.getString(c.getColumnIndex("RField13")));
+                                retailer.setRfield14(c.getString(c.getColumnIndex("RField14")));
+                                retailer.setRfield15(c.getString(c.getColumnIndex("RField15")));
+                                retailer.setRfield16(c.getString(c.getColumnIndex("RField16")));
+                                retailer.setRfield17(c.getString(c.getColumnIndex("RField17")));
+                                retailer.setRfield18(c.getString(c.getColumnIndex("RField18")));
+                                retailer.setRfield19(c.getString(c.getColumnIndex("RField19")));
+
+                                retailer.setImageName(loadImgList(retailer.getRetailerId()));
+                                retailer.setEditAttributeList(loadEditAttributes(retailer.getRetailerId()));
+                                lst.add(retailer);
+                            }
+                        }
+                        c.close();
+                    }
+
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+
+                }
+                return lst;
+            }
+        });
+    }
+
+    @Override
+    public Observable<Vector<NewOutletBO>> getImageTypeList() {
+        return Observable.fromCallable(new Callable<Vector<NewOutletBO>>() {
+            @Override
+            public Vector<NewOutletBO> call() throws Exception {
+
+                Vector<NewOutletBO> imageTypeList = new Vector<>();
+                try {
+
+                    Cursor c = dbUtil.selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_IMAGE_TYPE'");
+                    if (c.getCount() > 0) {
+                        NewOutletBO imageType;
+                        while (c.moveToNext()) {
+                            imageType = new NewOutletBO();
+                            imageType.setListId(c.getInt(0));
+                            imageType.setListName(c.getString(2));
+                            imageTypeList.add(imageType);
+                        }
+                        c.close();
+                    }
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return imageTypeList;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<ContactTitle>> getContactTitle() {
+        return Observable.fromCallable(new Callable<ArrayList<ContactTitle>>() {
+            @Override
+            public ArrayList<ContactTitle> call() throws Exception {
+                ArrayList<ContactTitle> contactTitleList = new ArrayList<>();
+                ContactTitle contactTitle = null;
                 try {
 
                     Cursor c = dbUtil.selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_CONTACT_TITLE_TYPE'");
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
-                            contactTitle = new NewOutletBO();
+                            contactTitle = new ContactTitle();
                             contactTitle.setListId(c.getInt(0));
                             contactTitle.setListName(c.getString(2));
                             contactTitleList.add(contactTitle);
@@ -77,21 +552,21 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
 
     @Override
-    public Observable<ArrayList<NewOutletBO>> getContactStatus() {
-        return Observable.fromCallable(new Callable<ArrayList<NewOutletBO>>() {
+    public Observable<ArrayList<ContractStatus>> getContactStatus() {
+        return Observable.fromCallable(new Callable<ArrayList<ContractStatus>>() {
             @Override
-            public ArrayList<NewOutletBO> call() throws Exception {
-                ArrayList<NewOutletBO> contractStatusList = new ArrayList<>();
-                NewOutletBO contactStatus;
+            public ArrayList<ContractStatus> call() throws Exception {
+                ArrayList<ContractStatus> contractStatusList = new ArrayList<>();
+                ContractStatus contractStatus;
                 try {
 
                     Cursor c = dbUtil.selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_CONTRACT_STATUS'");
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
-                            contactStatus = new NewOutletBO();
-                            contactStatus.setListId(c.getInt(0));
-                            contactStatus.setListName(c.getString(2));
-                            contractStatusList.add(contactStatus);
+                            contractStatus = new ContractStatus();
+                            contractStatus.setListId(c.getInt(0));
+                            contractStatus.setListName(c.getString(2));
+                            contractStatusList.add(contractStatus);
                         }
                         c.close();
                     }
@@ -179,19 +654,20 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     String currentDate;
                     currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
                     headerCursor = dbUtil.selectSQL("SELECT Tid FROM RetailerEditHeader" + " WHERE RetailerId = "
-                            + RetailerID + " AND Date = " + StringUtils.QT(currentDate) + " AND Upload = " + StringUtils.QT("N"));
+                            + RetailerID + " AND Date = " + getStringQueryParam(currentDate) + " AND Upload = " + getStringQueryParam("N"));
                     if (headerCursor.getCount() > 0) {
                         headerCursor.moveToNext();
                         tid = headerCursor.getString(0);
                         headerCursor.close();
                     }
                     c = dbUtil.selectSQL("select code, value from RetailerEditDetail RED INNER JOIN RetailerEditHeader REH ON REH.tid=RED.tid where REH.retailerid="
-                            + RetailerID + " and REH.tid=" + StringUtils.QT(tid));
+                            + RetailerID + " and REH.tid=" + getStringQueryParam(tid));
                     if (c != null) {
                         while (c.moveToNext()) {
                             mPreviousProfileChangesList.put(c.getString(0), c.getString(1));
                         }
                     }
+                    c.close();
 
                 } catch (Exception e) {
                     Commons.printException("" + e);
@@ -220,6 +696,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             }
                         }
                     }
+                    c.close();
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
@@ -288,6 +765,40 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         });
     }
 
+    @Override
+    public Observable<ArrayList<RetailerMasterBO>> getLinkRetailerForADistributor(int distId) {
+        return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
+            @Override
+            public ArrayList<RetailerMasterBO> call() throws Exception {
+                ArrayList<RetailerMasterBO> mLinkRetailerList = new ArrayList<>();
+                try {
+
+                    initDb();
+                    String sb = "select Distributorid ,retailerid,name,latitude,longitude,pincode from linkretailermaster where Distributorid=" + distId +
+                            " order by Distributorid";
+                    Cursor c = dbUtil.selectSQL(sb);
+                    RetailerMasterBO linkRetailerBO;
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            linkRetailerBO = new RetailerMasterBO();
+                            linkRetailerBO.setDistributorId(c.getInt(0));
+                            linkRetailerBO.setRetailerID(c.getString(1));
+                            linkRetailerBO.setRetailerName(c.getString(2));
+                            linkRetailerBO.setLatitude(c.getDouble(3));
+                            linkRetailerBO.setLongitude(c.getDouble(4));
+                            linkRetailerBO.setPincode(c.getString(5));
+                            mLinkRetailerList.add(linkRetailerBO);
+                        }
+                    }
+                    c.close();
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return mLinkRetailerList;
+            }
+        });
+    }
 
     @Override
     public Observable<ArrayList<RetailerFlexBO>> downloadRetailerFlexValues(final String type) {
@@ -297,7 +808,8 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public ArrayList<RetailerFlexBO> call() throws Exception {
                 ArrayList<RetailerFlexBO> flexValues = new ArrayList<>();
                 try {
-                    String sql = "select id,name from RetailerFlexValues where type = " + StringUtils.QT(type);
+                    initDb();
+                    String sql = "select id,name from RetailerFlexValues where type = " + getStringQueryParam(type);
                     Cursor c = dbUtil.selectSQL(sql);
                     RetailerFlexBO retailerFlexBO;
                     if (c.getCount() > 0) {
@@ -308,6 +820,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             flexValues.add(retailerFlexBO);
                         }
                     }
+                    c.close();
 
                 } catch (Exception e) {
                     Commons.printException(e);
@@ -320,19 +833,30 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
 
     @Override
-    public void saveNearByRetailers(String id, Vector<RetailerMasterBO> NearByRetailers) {
-        try {
-            dbUtil.createDataBase();
-            String columnsNew = "rid,nearbyrid,upload";
-            String values;
-            for (int j = 0; j < NearByRetailers.size(); j++) {
-                values = StringUtils.QT(id) + "," + NearByRetailers.get(j).getRetailerID() + "," + StringUtils.QT("N");
-                dbUtil.insertSQL("NearByRetailers", columnsNew, values);
-            }
+    public Single<Boolean> saveNearByRetailers(String id, ArrayList<String> nearByRetailers) {
 
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                try {
+                    initDb();
+                    String columnsNew = "rid,nearbyrid,upload";
+                    String values;
+                    for (int j = 0; j < nearByRetailers.size(); j++) {
+                        values = getStringQueryParam(id) + "," + nearByRetailers.get(j) + "," + getStringQueryParam("N");
+                        dbUtil.insertSQL("NearByRetailers", columnsNew, values);
+                    }
+                    return true;
+
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+
+                return false;
+            }
+        });
+
 
     }
 
@@ -407,6 +931,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             priorityproductList.add(standardListBO);
                         }
                     }
+                    c.close();
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -422,7 +947,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public ArrayList<String> call() throws Exception {
                 ArrayList<String> priorityproductList = new ArrayList<>();
                 try {
-                    String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + StringUtils.QT(retailerId);
+                    String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + getStringQueryParam(retailerId);
                     Cursor c = dbUtil.selectSQL(sql);
                     if (c.getCount() > 0) {
                         priorityproductList = new ArrayList<>();
@@ -430,6 +955,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             priorityproductList.add(c.getString(0));
                         }
                     }
+                    c.close();
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -445,7 +971,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public ArrayList<String> call() throws Exception {
                 ArrayList<String> priorityproductList = null;
                 try {
-                    String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + StringUtils.QT(retailerId);
+                    String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + getStringQueryParam(retailerId);
                     Cursor c = dbUtil.selectSQL(sql);
                     if (c.getCount() > 0) {
                         priorityproductList = new ArrayList<>();
@@ -453,6 +979,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             priorityproductList.add(c.getString(0));
                         }
                     }
+                    c.close();
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -469,7 +996,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         if (strings == null) {
                             ArrayList<String> priorityproductList = null;
                             try {
-                                String sql = "select ProductId from RetailerEditPriorityProducts where status = 'N' and retailerId=" + StringUtils.QT(retailerId);
+                                String sql = "select ProductId from RetailerEditPriorityProducts where status = 'N' and retailerId=" + getStringQueryParam(retailerId);
                                 Cursor c = dbUtil.selectSQL(sql);
                                 if (c.getCount() > 0) {
                                     priorityproductList = new ArrayList<>();
@@ -477,6 +1004,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                                         priorityproductList.add(c.getString(0));
                                     }
                                 }
+                                c.close();
                             } catch (Exception e) {
                                 Commons.printException("" + e);
                             }
@@ -533,10 +1061,8 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             .selectSQL("SELECT EAM.attributeid,CriteriaId,ECT.isMandatory,AttributeName FROM entityattributemaster EAM inner join EntityCriteriaType ECT ON EAM.attributeId=ECT.attributeId where parentid =0 and criteriaType='CHANNEL' and IsSystemComputed=0 order by sequence");
                     if (c != null && c.getCount() > 0) {
 
-                        mAttributeBOListByLocationID = new HashMap<>();
-
                         mAttributeListByLocationID = new HashMap<>();
-
+                        mAttributeBOListByLocationID = new HashMap<>();
                         NewOutletAttributeBO newOutletAttributeBO;
 
                         while (c.moveToNext()) {
@@ -559,7 +1085,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                                 list.add(c.getInt(0));
                                 mAttributeListByLocationID.put(c.getInt(1), list);
                             }
-
                         }
                         c.close();
                     }
@@ -730,6 +1255,68 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         });
     }
 
+    @Override
+    public Observable<Vector<ConfigureBO>> downloadNewOutletConfiguration() {
+        return Observable.fromCallable(new Callable<Vector<ConfigureBO>>() {
+            @Override
+            public Vector<ConfigureBO> call() throws Exception {
+                ConfigureBO ConfigureBO;
+                Vector<ConfigureBO> profileConfig = new Vector<>();
+               /* try {
+                    dbUtil.createDataBase();
+                    dbUtil.openDataBase();
+                    Cursor c;
+                    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+                    String language = sharedPrefs.getString("languagePref", ApplicationConfigs.LANGUAGE);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("select HHTCode, flag , MName , MNumber ,RField,haslink,RField6,Regex from HhtMenuMaster where MenuType= 'MENU_NEW_RET'");
+                    sb.append("  and Flag = 1 and lang=");
+                    sb.append(AppUtils.getStringQueryParam(language));
+                    if (configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
+                        sb.append(" and subchannelid=");
+                        sb.append(channelid);
+                        sb.append(" ");
+                    }
+                    sb.append(" order by Mnumber");
+                    c = dbUtil.selectSQL(sb.toString());
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            ConfigureBO = new ConfigureBO();
+                            ConfigureBO.setConfigCode(c.getString(0));
+                            ConfigureBO.setFlag(c.getInt(1));
+                            ConfigureBO.setMenuName(c.getString(2));
+                            ConfigureBO.setMenuNumber((c.getString(3)));
+                            ConfigureBO.setMandatory((c.getInt(4)));
+                            ConfigureBO.setHasLink(c.getInt(5));
+                            ConfigureBO.setRField6(String.valueOf(c.getInt(6)));
+                            String str = c.getString(7);
+                            if (str != null && !str.isEmpty()) {
+                                if (str.contains("<") && str.contains(">")) {
+
+                                    String minlen = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
+                                    if (!minlen.isEmpty()) {
+                                        try {
+                                            ConfigureBO.setMaxLengthNo(SDUtil.convertToInt(minlen));
+                                        } catch (Exception ex) {
+                                            Commons.printException("min len in new outlet helper", ex);
+                                        }
+                                    }
+                                }
+                            }
+                            ConfigureBO.setRegex(c.getString(7));
+                            profileConfig.add(ConfigureBO);
+                        }
+                        c.close();
+                    }
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }*/
+                return profileConfig;
+            }
+        });
+    }
+
 
     @Override
     public Observable<ArrayList<NewOutletAttributeBO>> updateRetailerMasterAttribute(
@@ -798,9 +1385,9 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             + " WHERE RetailerId = "
                             + RetailerID
                             + " AND Date = "
-                            + StringUtils.QT(currentDate)
+                            + getStringQueryParam(currentDate)
                             + " AND Upload = "
-                            + StringUtils.QT("N"));
+                            + getStringQueryParam("N"));
 
                     if (headerCursor.getCount() > 0) {
                         headerCursor.moveToNext();
@@ -823,7 +1410,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + StringUtils.QT(configCode) + "and RetailerId=" + RetailerID, false);
+                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + getStringQueryParam(configCode) + "and RetailerId=" + RetailerID, false);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -836,13 +1423,13 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     @Override
     public Single<Boolean> insertNewRow(final String configCode, final String RetailerID, String mTid, String mCustomQuery) {
 
-        final String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" + "values (" + StringUtils.QT(mTid) + "," + mCustomQuery;
+        final String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" + "values (" + getStringQueryParam(mTid) + "," + mCustomQuery;
 
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + StringUtils.QT(configCode) + "and RetailerId=" + RetailerID, false);
+                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + getStringQueryParam(configCode) + "and RetailerId=" + RetailerID, false);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -875,7 +1462,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    dbUtil.deleteSQL("RrtNearByEditRequest", " tid =" + StringUtils.QT(mTid), false);
+                    dbUtil.deleteSQL("RrtNearByEditRequest", " tid =" + getStringQueryParam(mTid), false);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -892,8 +1479,8 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             if (temp != null)
                                 for (String id : temp.keySet()) {
                                     String Q = "insert into RrtNearByEditRequest (tid,rid,nearbyrid,status,upload)" +
-                                            "values (" + StringUtils.QT(mTid) + "," + RetailerID + "," + id
-                                            + "," + StringUtils.QT(temp.get(id)) + ",'N')";
+                                            "values (" + getStringQueryParam(mTid) + "," + RetailerID + "," + id
+                                            + "," + getStringQueryParam(temp.get(id)) + ",'N')";
                                     dbUtil.executeQ(Q);
                                 }
                         } catch (Exception e) {
@@ -914,7 +1501,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public Boolean call() throws Exception {
                 try {
                     dbUtil.deleteSQL("RetailerEditPriorityProducts", " RetailerId ="
-                            + StringUtils.QT(RetailerID), false);
+                            + getStringQueryParam(RetailerID), false);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -930,11 +1517,11 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             if (selectedPrioProducts != null)
                                 for (StandardListBO bo : selectedPrioProducts) {
                                     String Q = "insert into RetailerEditPriorityProducts (tid,RetailerId,productId,levelid,status,upload)" +
-                                            "values (" + StringUtils.QT(mTid)
-                                            + "," + StringUtils.QT(RetailerID)
+                                            "values (" + getStringQueryParam(mTid)
+                                            + "," + getStringQueryParam(RetailerID)
                                             + "," + SDUtil.convertToInt(bo.getListID())
-                                            + "," + StringUtils.QT(bo.getListCode())
-                                            + "," + StringUtils.QT(bo.getStatus()) + ",'N')";
+                                            + "," + getStringQueryParam(bo.getListCode())
+                                            + "," + getStringQueryParam(bo.getStatus()) + ",'N')";
                                     dbUtil.executeQ(Q);
                                 }
                             return true;
@@ -956,7 +1543,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    dbUtil.deleteSQL("RetailerEditAttribute", " tid =" + StringUtils.QT(mTid), false);
+                    dbUtil.deleteSQL("RetailerEditAttribute", " tid =" + getStringQueryParam(mTid), false);
 
                 } catch (Exception e) {
                     Commons.printException("" + e);
@@ -973,11 +1560,11 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         try {
                             for (NewOutletAttributeBO id : tempList) {
                                 String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
-                                        "values (" + StringUtils.QT(mTid)
+                                        "values (" + getStringQueryParam(mTid)
                                         + "," + RetailerID
                                         + "," + id.getAttrId()
                                         + "," + id.getLevelId()
-                                        + "," + StringUtils.QT(id.getStatus()) + ",'N')";
+                                        + "," + getStringQueryParam(id.getStatus()) + ",'N')";
                                 dbUtil.executeQ(Q);
                             }
                         } catch (Exception e) {
@@ -994,13 +1581,13 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     public Single<Boolean> updateRetailer(final String tid, final String RetailerID, final String currentDate) {
 
         final String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
-                "values (" + StringUtils.QT(tid) + "," + RetailerID + "," + StringUtils.QT(currentDate) + ")";
+                "values (" + getStringQueryParam(tid) + "," + RetailerID + "," + getStringQueryParam(currentDate) + ")";
 
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditHeader, " Tid=" + StringUtils.QT(tid), false);
+                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditHeader, " Tid=" + getStringQueryParam(tid), false);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -1055,9 +1642,9 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    String where="RetailerId="+RetailerID;
+                    String where = "RetailerId=" + RetailerID;
 
-                    Cursor getCpidCursor = dbUtil.selectSQL("Select CPId from RetailerContactEdit where retailerId=" + StringUtils.QT(RetailerID));
+                    Cursor getCpidCursor = dbUtil.selectSQL("Select CPId from RetailerContactEdit where retailerId=" + getStringQueryParam(RetailerID));
 
                     if (getCpidCursor != null && getCpidCursor.getCount() > 0) {
                         while (getCpidCursor.moveToNext()) {
@@ -1065,7 +1652,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         }
                     }
 
-                    dbUtil.deleteSQL("RetailerContactEdit",where,false);
+                    dbUtil.deleteSQL("RetailerContactEdit", where, false);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -1083,22 +1670,22 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                                 if (retailerContactBo.getStatus().equalsIgnoreCase("U")
                                         || retailerContactBo.getStatus().equalsIgnoreCase("I")
                                         || retailerContactBo.getStatus().equalsIgnoreCase("D")) {
-                                    String value = StringUtils.QT(retailerContactBo.getTitle()) + ","
-                                            + StringUtils.QT(retailerContactBo.getContactTitleLovId()) + ","
-                                            + StringUtils.QT(retailerContactBo.getFistname()) + ","
-                                            + StringUtils.QT(retailerContactBo.getLastname()) + ","
-                                            + StringUtils.QT(retailerContactBo.getContactNumber()) + ","
-                                            + StringUtils.QT(retailerContactBo.getContactMail()) + ","
+                                    String value = getStringQueryParam(retailerContactBo.getTitle()) + ","
+                                            + getStringQueryParam(retailerContactBo.getContactTitleLovId()) + ","
+                                            + getStringQueryParam(retailerContactBo.getFistname()) + ","
+                                            + getStringQueryParam(retailerContactBo.getLastname()) + ","
+                                            + getStringQueryParam(retailerContactBo.getContactNumber()) + ","
+                                            + getStringQueryParam(retailerContactBo.getContactMail()) + ","
                                             + retailerContactBo.getIsPrimary() + ","
-                                            + StringUtils.QT(retailerContactBo.getStatus()) + ","
-                                            + StringUtils.QT(retailerContactBo.getCpId()) + ","
-                                            + StringUtils.QT(RetailerID) + ","
-                                            + StringUtils.QT(mTid)+ ","
-                                            + StringUtils.QT(retailerContactBo.getContactSalutationId())+ ","
-                                            + StringUtils.QT(retailerContactBo.getIsEmailPrimary()+"");
+                                            + getStringQueryParam(retailerContactBo.getStatus()) + ","
+                                            + getStringQueryParam(retailerContactBo.getCpId()) + ","
+                                            + getStringQueryParam(RetailerID) + ","
+                                            + getStringQueryParam(mTid) + ","
+                                            + getStringQueryParam(retailerContactBo.getContactSalutationId()) + ","
+                                            + getStringQueryParam(retailerContactBo.getIsEmailPrimary() + "");
                                     dbUtil.insertSQL("RetailerContactEdit", column, value);
 
-                                    addContactAvail(dbUtil,retailerContactBo,RetailerID,mTid);
+                                    addContactAvail(dbUtil, retailerContactBo, RetailerID, mTid);
                                 }
                             }
                         }
@@ -1110,23 +1697,273 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         });
     }
 
-    private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo,String retailerId,String Tid){
+    private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo, String retailerId, String Tid) {
         String column = "CPAId,CPId,Day,StartTime,EndTime,Tid,status,upload, RetailerID";
 
         for (RetailerContactAvailBo retailerContactAvailBo : retailerContactBo.getContactAvailList()) {
 
-            String value = StringUtils.QT(retailerContactAvailBo.getCpaid()!=null&&!retailerContactAvailBo.getCpaid().isEmpty()?retailerContactAvailBo.getCpaid():retailerId)
-                    + "," + StringUtils.QT(retailerContactBo.getCpId())
-                    + "," + StringUtils.QT(retailerContactAvailBo.getDay())
-                    + "," + StringUtils.QT(retailerContactAvailBo.getFrom())
-                    + "," + StringUtils.QT(retailerContactAvailBo.getTo())
-                    + "," + StringUtils.QT(Tid)
-                    + "," + StringUtils.QT(retailerContactAvailBo.getStatus())
-                    + "," + StringUtils.QT("N")
-                    + "," + StringUtils.QT(retailerContactBo.getRetailerID());
+            String value = StringUtils.getStringQueryParam(retailerContactAvailBo.getCpaid() != null && !retailerContactAvailBo.getCpaid().isEmpty() ? retailerContactAvailBo.getCpaid() : retailerId)
+                    + "," + StringUtils.getStringQueryParam(retailerContactBo.getCpId())
+                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getDay())
+                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getFrom())
+                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getTo())
+                    + "," + StringUtils.getStringQueryParam(Tid)
+                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getStatus())
+                    + "," + StringUtils.getStringQueryParam("N")
+                    + "," + StringUtils.getStringQueryParam(retailerContactBo.getRetailerID());
 
             db.insertSQL("ContactAvailabilityEdit", column, value);
         }
+    }
+
+    @Override
+    public Single<Boolean> deleteNewRetailer(String getId) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try {
+                    dbUtil.createDataBase();
+                    dbUtil.openDataBase();
+                    Set<String> keys = DataMembers.uploadNewRetailerColumn.keySet();
+
+                    for (String tableName : keys) {
+                        if (tableName.equals(DataMembers.tbl_nearbyRetailer) ||
+                                tableName.equals(DataMembers.tbl_retailerPotential)) {
+                            dbUtil.deleteSQL(tableName, "rid ='" + getId + "'", false);
+                        } else if (tableName.equals(DataMembers.tbl_orderHeaderRequest)) {
+                            dbUtil.executeQ("delete from " + DataMembers.tbl_orderDetailRequest + " where OrderID in (select OrderID from "
+                                    + DataMembers.tbl_orderHeaderRequest
+                                    + " where RetailerID = '" + getId + "')");
+                            dbUtil.deleteSQL(tableName, "RetailerID ='" + getId + "'", false);
+                        } else {
+                            dbUtil.deleteSQL(tableName, "RetailerID ='" + getId + "'", false);
+                        }
+                    }
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException(e);
+                    return false;
+                }
+            }
+        });
+    }
+
+    @Override
+    public Single<String> syncNewOutlet(String retailerId) {
+        final boolean[] isDayClosed = {false};
+        return synchronizationDataManager.getSyncUrl("UPLDRET").flatMap(uploadUrl -> {
+            if (isNullOrEmpty(uploadUrl))
+                return Single.fromCallable(() -> "-2");
+            return dataManager.isDayClosed()
+                    .flatMap((Function<Boolean, SingleSource<JSONObject>>) aBoolean -> {
+                        isDayClosed[0] = aBoolean;
+                        return generateBodyInformation(retailerId);
+                    }).flatMap(body -> {
+                        JSONFormatter headerInformation = getHeaderInformation(dataManager.getDeviceId(), isDayClosed[0], body);
+                        return synchronizationDataManager.uploadDataToServer(headerInformation.getDataInJson(), body.toString(), uploadUrl)
+                                .flatMap(responseVector -> Single.fromCallable(() -> {
+                                    String rid = "";
+                                    if (responseVector.size() > 0) {
+                                        for (String s : responseVector) {
+                                            JSONObject jsonObject = new JSONObject(s);
+
+                                            Iterator itr = jsonObject.keys();
+                                            while (itr.hasNext()) {
+                                                String key = (String) itr.next();
+                                                if (key.equals("RetailerId")) {
+                                                    rid = jsonObject.getString("RetailerId");
+                                                } else if (key.equals("ErrorCode")) {
+                                                    String tokenResponse = jsonObject.getString("ErrorCode");
+                                                    if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                                            || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                                            || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+                                                        return "-1";
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                    return rid;
+                                }));
+                    });
+        });
+    }
+
+
+    private Single<JSONObject> generateBodyInformation(String retailerId) {
+        return Single.fromCallable(new Callable<JSONObject>() {
+            @Override
+            public JSONObject call() throws Exception {
+                JSONObject jsonobj = new JSONObject();
+                Set<String> keys = DataMembers.uploadNewRetailerColumn.keySet();
+                for (String tableName : keys) {
+                    JSONArray jsonArray = prepareDataForNewRetailerJSONUpload(tableName,
+                            DataMembers.uploadNewRetailerColumn.get(tableName), retailerId);
+                    if (jsonArray.length() > 0)
+                        jsonobj.put(tableName, jsonArray);
+                }
+                return jsonobj;
+            }
+        });
+
+    }
+
+    private JSONFormatter getHeaderInformation(String deviceId, boolean isDayClosed, JSONObject body) {
+        JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
+        jsonFormatter.addParameter("DeviceId", deviceId);
+        jsonFormatter.addParameter("LoginId", dataManager.getUser().getLoginName());
+        jsonFormatter.addParameter("VersionCode", dataManager.getAppVersionNumber());
+        jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, dataManager.getAppVersionName());
+        jsonFormatter.addParameter("DistributorId", dataManager.getUser().getDistributorid());
+        jsonFormatter.addParameter("OrganisationId", dataManager.getUser().getOrganizationId());
+        jsonFormatter.addParameter("MobileDateTime", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+        jsonFormatter.addParameter("MobileUTCDateTime", Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+        jsonFormatter.addParameter("DataValidationKey", synchronizationDataManager.generateChecksum(body.toString()));
+
+        if (!"0".equals(dataManager.getUser().getBackupSellerID())) {
+            jsonFormatter.addParameter("UserId", dataManager.getUser().getBackupSellerID());
+            jsonFormatter.addParameter("WorkingFor", dataManager.getUser().getUserid());
+        } else {
+            jsonFormatter.addParameter("UserId", dataManager.getUser().getUserid());
+        }
+        jsonFormatter.addParameter("VanId", dataManager.getUser().getVanId());
+        String LastDayClose = "";
+        if (isDayClosed) {
+            LastDayClose = dataManager.getUser().getDownloadDate();
+        }
+        jsonFormatter.addParameter("LastDayClose", LastDayClose);
+        jsonFormatter.addParameter("BranchId", dataManager.getUser().getBranchId());
+        jsonFormatter.addParameter("DownloadedDataDate", dataManager.getUser().getDownloadDate());
+
+
+        return jsonFormatter;
+    }
+
+    @Override
+    public Single<String> uploadNewOutlet(String retailerId, String deviceId, BusinessModel businessModel,
+                                          AppDataProvider appDataProvider) {
+
+        return Single.create(new SingleOnSubscribe<String>() {
+            @Override
+            public void subscribe(SingleEmitter<String> emitter) throws Exception {
+                String rid = "";
+                try {
+                    dbUtil.createDataBase();
+                    dbUtil.openDataBase();
+
+                    JSONObject jsonobj = new JSONObject();
+                    Set<String> keys = DataMembers.uploadNewRetailerColumn.keySet();
+
+                    for (String tableName : keys) {
+                        JSONArray jsonArray = prepareDataForNewRetailerJSONUpload(tableName,
+                                DataMembers.uploadNewRetailerColumn.get(tableName), retailerId);
+                        if (jsonArray.length() > 0)
+                            jsonobj.put(tableName, jsonArray);
+                    }
+
+                    Commons.print("jsonObjData.toString():0:" + jsonobj.toString());
+
+                    JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
+                    jsonFormatter.addParameter("DeviceId", deviceId);
+                    jsonFormatter.addParameter("LoginId", appDataProvider.getUser().getLoginName());
+                    jsonFormatter.addParameter("VersionCode", businessModel.getApplicationVersionNumber());
+                    jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
+                    jsonFormatter.addParameter("DistributorId", appDataProvider.getUser().getDistributorid());
+                    jsonFormatter.addParameter("OrganisationId", appDataProvider.getUser().getOrganizationId());
+                    jsonFormatter.addParameter("MobileDateTime", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+                    jsonFormatter.addParameter("MobileUTCDateTime", Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+                    if (!"0".equals(appDataProvider.getUser().getBackupSellerID())) {
+                        jsonFormatter.addParameter("UserId", appDataProvider.getUser().getBackupSellerID());
+                        jsonFormatter.addParameter("WorkingFor", appDataProvider.getUser().getUserid());
+                    } else {
+                        jsonFormatter.addParameter("UserId", appDataProvider.getUser().getUserid());
+                    }
+                    jsonFormatter.addParameter("VanId", appDataProvider.getUser().getVanId());
+                    String LastDayClose = "";
+                    if (businessModel.synchronizationHelper.isDayClosed()) {
+                        LastDayClose = appDataProvider.getUser().getDownloadDate();
+                    }
+                    jsonFormatter.addParameter("LastDayClose", LastDayClose);
+                    jsonFormatter.addParameter("BranchId", appDataProvider.getUser().getBranchId());
+                    jsonFormatter.addParameter("DownloadedDataDate", appDataProvider.getUser().getDownloadDate());
+                    jsonFormatter.addParameter("DataValidationKey", businessModel.synchronizationHelper.generateChecksum(jsonobj.toString()));
+                    Commons.print(jsonFormatter.getDataInJson());
+                    String appendurl = businessModel.synchronizationHelper.getUploadUrl("UPLDRET");
+                    if (appendurl.length() == 0)
+                        emitter.onSuccess(2 + "");
+                    Vector<String> responseVector = businessModel.synchronizationHelper
+                            .getUploadResponse(jsonFormatter.getDataInJson(), jsonobj.toString(), appendurl);
+
+                    if (responseVector.size() > 0) {
+                        for (String s : responseVector) {
+                            JSONObject jsonObject = new JSONObject(s);
+
+                            Iterator itr = jsonObject.keys();
+                            while (itr.hasNext()) {
+                                String key = (String) itr.next();
+                                if (key.equals("RetailerId")) {
+                                    rid = jsonObject.getString("RetailerId");
+                                } else if (key.equals("ErrorCode")) {
+                                    String tokenResponse = jsonObject.getString("ErrorCode");
+                                    if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                            || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                            || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+                                        emitter.onSuccess(-1 + "");
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                } catch (SQLException | JSONException e) {
+                    Commons.printException("" + e);
+                }
+                emitter.onSuccess(rid);
+            }
+        });
+    }
+
+    private JSONArray prepareDataForNewRetailerJSONUpload(String tableName, String columns, String retailerID) {
+
+        //Message msg;
+        JSONArray ohRowsArray = new JSONArray();
+
+        try {
+            Cursor cursor;
+            String columnArray[] = columns.split(",");
+
+            String retailerColumn = "RetailerID = " + getStringQueryParam(retailerID);
+            if (tableName.equals(DataMembers.tbl_nearbyRetailer) || tableName.equals(DataMembers.tbl_retailerPotential)) {
+                retailerColumn = "rid = " + getStringQueryParam(retailerID);
+            }
+            initDb();
+
+            String sql = "select " + columns + " from " + tableName
+                    + " where upload='N' and " + retailerColumn;
+            cursor = dbUtil.selectSQL(sql);
+            if (cursor != null) {
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        JSONObject jsonObjRow = new JSONObject();
+                        int count = 0;
+                        for (String col : columnArray) {
+                            String value = cursor.getString(count);
+                            jsonObjRow.put(col, value);
+                            count++;
+                        }
+                        ohRowsArray.put(jsonObjRow);
+                    }
+                }
+
+                cursor.close();
+
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        shutDownDb();
+        return ohRowsArray;
     }
 
     private Single<Integer> getRetailerEditDetailCount(final String tid) {
@@ -1134,7 +1971,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Integer call() throws Exception {
                 try {
-                    Cursor c = dbUtil.selectSQL("SELECT code FROM " + DataMembers.tbl_RetailerEditDetail + " where Tid=" + StringUtils.QT(tid));
+                    Cursor c = dbUtil.selectSQL("SELECT code FROM " + DataMembers.tbl_RetailerEditDetail + " where Tid=" + getStringQueryParam(tid));
                     if (c != null)
                         return c.getCount();
                 } catch (Exception e) {
@@ -1150,7 +1987,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Integer call() throws Exception {
                 try {
-                    Cursor c = dbUtil.selectSQL("SELECT status FROM " + DataMembers.tbl_nearbyEditRequest + " where Tid=" + StringUtils.QT(tid));
+                    Cursor c = dbUtil.selectSQL("SELECT status FROM " + DataMembers.tbl_nearbyEditRequest + " where Tid=" + getStringQueryParam(tid));
                     if (c != null)
                         return c.getCount();
                 } catch (Exception e) {
@@ -1166,7 +2003,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Integer call() throws Exception {
                 try {
-                    Cursor c = dbUtil.selectSQL("SELECT status FROM " + DataMembers.tbl_RetailerEditPriorityProducts + " where Tid=" + StringUtils.QT(tid));
+                    Cursor c = dbUtil.selectSQL("SELECT status FROM " + DataMembers.tbl_RetailerEditPriorityProducts + " where Tid=" + getStringQueryParam(tid));
                     if (c != null)
                         return c.getCount();
                 } catch (Exception e) {
@@ -1182,7 +2019,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Integer call() throws Exception {
                 try {
-                    Cursor c = dbUtil.selectSQL("SELECT status FROM RetailerEditAttribute" + " where Tid=" + StringUtils.QT(tid));
+                    Cursor c = dbUtil.selectSQL("SELECT status FROM RetailerEditAttribute" + " where Tid=" + getStringQueryParam(tid));
                     if (c != null)
                         return c.getCount();
                 } catch (Exception e) {
@@ -1190,6 +2027,696 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                 }
                 return 0;
             }
+        });
+    }
+
+
+    public Single<Boolean> checkRetailerAlreadyAvailable(String retailerName, String pincode) {
+
+        return Single.fromCallable(() -> {
+            try {
+                Cursor c = dbUtil
+                        .selectSQL("SELECT A.pincode FROM  RetailerAddress A"
+                                + " WHERE A.RetailerId IN (SELECT RetailerId FROM RetailerMaster WHERE RetailerName = '" + retailerName + "')"
+                                + " AND A.pincode = '" + pincode + "'");
+                if (c.getCount() > 0) {
+                    c.close();
+                    return true;
+                } else
+                    c.close();
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+            return false;
+        });
+
+    }
+
+    @Override
+    public Observable<ArrayList<CensusLocationBO>> fetchCensusLocationDetails() {
+        return Observable.fromCallable(() -> {
+            int pincodeLevel = 0;
+            ArrayList<CensusLocationBO> pinCodeList = new ArrayList<>();
+            ArrayList<CensusLocationBO> pinCodeTempList = new ArrayList<>();
+            try {
+                Cursor cursor = dbUtil.selectSQL("select LevelId from CensusLocationLevel  where sequence = (select MAX(Sequence) from censuslocationlevel)");
+                if (cursor.getCount() > 0) {
+                    if (cursor.moveToNext())
+                        pincodeLevel = cursor.getInt(0);
+                }
+                cursor = dbUtil.selectSQL("select id,name,levelid,parentid,pincode from CensusLocationMaster where levelid =" + pincodeLevel);
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+                        CensusLocationBO censusBO = new CensusLocationBO();
+                        censusBO.setId(cursor.getString(0));
+                        censusBO.setLocationName(cursor.getString(1));
+                        censusBO.setLevelId(cursor.getString(2));
+                        censusBO.setParentId(cursor.getString(3));
+                        censusBO.setPincode(cursor.getString(4));
+                        pinCodeList.add(censusBO);
+                    }
+                }
+                cursor = dbUtil.selectSQL("select id,name,levelid,parentid,(select sequence from CensusLocationLevel where levelid = A.levelid)" +
+                        " as sequence from CensusLocationMaster A where levelid !=" + pincodeLevel + " order by sequence desc");
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+                        CensusLocationBO censusBO = new CensusLocationBO();
+                        censusBO.setId(cursor.getString(0));
+                        censusBO.setLocationName(cursor.getString(1));
+                        censusBO.setLevelId(cursor.getString(2));
+                        censusBO.setParentId(cursor.getString(3));
+                        pinCodeTempList.add(censusBO);
+                    }
+                }
+                cursor.close();
+
+            } catch (Exception ignored) {
+
+            }
+
+            String districtId;
+            String stateId;
+            String countryId;
+
+            for (CensusLocationBO pinCodeBO : pinCodeList) {
+                stateId = "";
+                countryId = "";
+                districtId = pinCodeBO.getParentId();
+                for (CensusLocationBO tempBO : pinCodeTempList) {
+                    if (districtId.equals(tempBO.getId())) {
+                        pinCodeBO.setDistrict(tempBO.getLocationName());
+                        stateId = tempBO.getParentId();
+                    } else if (stateId.equals(tempBO.getId())) {
+                        pinCodeBO.setState(tempBO.getLocationName());
+                        countryId = tempBO.getParentId();
+                    } else if (countryId.equals(tempBO.getId())) {
+                        pinCodeBO.setCountry(tempBO.getLocationName());
+                        break;
+                    }
+                }
+            }
+
+
+            return pinCodeList;
+        });
+    }
+
+    @Override
+    public Single<Boolean> saveNewOutletImages(String uId, NewOutletBO newOutletBO) {
+        return Single.fromCallable(() -> {
+
+            String column, value;
+
+            try {
+                for (int i = 0; i < newOutletBO.ImageId.size(); i++) {
+
+                    column = "RetailerID,ListId,ImageName,upload";
+
+                    value = getStringQueryParam(uId)
+                            + ","
+                            + newOutletBO.ImageId.get(i)
+                            + ","
+                            + getStringQueryParam("/RetailerImages/"
+                            + dataManager.getUser().getDownloadDate().replace("/", "")
+                            + "/"
+                            + dataManager.getUser().getUserid() + "/"
+                            + (newOutletBO.ImageName.get(i))) + "," + getStringQueryParam("N");
+
+                    dbUtil.insertSQL("NewOutletImage", column, value);
+                }
+
+                return true;
+            } catch (Exception ignored) {
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> deleteNewRetailerTablesForEdit(String uId, String retailerId) {
+        return Single.fromCallable(() -> {
+
+            try {
+                Cursor getCpidCursor = dbUtil.selectSQL("Select CPId from RetailerContact where retailerId=" + getStringQueryParam(retailerId));
+
+                if (getCpidCursor != null && getCpidCursor.getCount() > 0) {
+                    while (getCpidCursor.moveToNext()) {
+                        dbUtil.deleteSQL("ContactAvailability", "CPId=" + getCpidCursor.getString(0), false);
+                    }
+                }
+                dbUtil.deleteSQL("RetailerMaster", "retailerId=" + getStringQueryParam(retailerId), false);
+                dbUtil.deleteSQL("RetailerContact", "retailerId=" + getStringQueryParam(retailerId), false);
+                dbUtil.deleteSQL("RetailerAddress", "retailerId=" + getStringQueryParam(retailerId), false);
+                dbUtil.deleteSQL("RetailerAttribute", "retailerId=" + getStringQueryParam(retailerId), false);
+                dbUtil.updateSQL("Update NewRetailerSurveyResultHeader set retailerID = '" + uId + "' where retailerID = '" + retailerId + "'");
+                dbUtil.updateSQL("Update NewRetailerSurveyResultDetail set retailerID = '" + uId + "' where retailerID = '" + retailerId + "'");
+
+                return true;
+            } catch (Exception ignored) {
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> saveNewOutlet(String uId, NewOutletBO outlet) {
+        return Single.fromCallable(() -> {
+            String column, value;
+            try {
+
+                column = "RetailerID,RetailerName,channelID,subchannelid,beatid,"
+                        + DataMembers.VISIT_DAYS_COLUMN_NAME + ",LocationId," +
+                        "creditlimit,RPTypeId,tinnumber,RField3,distributorId,TaxTypeid," +
+                        "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber,RField5,RField6,TinExpDate," +
+                        "pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid," +
+                        "RField8,RField9,RField10,RField11,RField12,RField13,RField14,RField15,RField16,RField17,RField18,RField19";
+
+                int userid = outlet.getUserId();
+                if (userid == 0)
+                    userid = dataManager.getUser().getUserid();
+
+                value = getStringQueryParam(uId)
+                        + "," + getStringQueryParam(outlet.getOutletName())
+                        + "," + outlet.getChannel()
+                        + "," + outlet.getSubChannel()
+                        + "," + getStringQueryParam(outlet.getRouteid() + "")
+                        + "," + getStringQueryParam(outlet.getVisitDays())
+                        + "," + outlet.getLocid()
+                        + "," + outlet.getCreditLimit()
+                        + "," + outlet.getPayment()
+                        + "," + getStringQueryParam(outlet.getTinno())
+                        + "," + getStringQueryParam(outlet.getRfield3())
+                        + "," + getStringQueryParam(outlet.getDistid())
+                        + "," + getStringQueryParam(outlet.getTaxTypeId())
+                        + "," + outlet.getContractStatuslovid()
+                        + "," + outlet.getClassTypeId()
+                        + "," + 0
+                        + "," + getStringQueryParam("Y")
+                        + "," + getStringQueryParam("N")
+                        + "," + outlet.getCreditDays()
+                        + "," + outlet.getIsSEZ()
+                        + "," + getStringQueryParam(outlet.getGstNum())
+                        + "," + getStringQueryParam(outlet.getRfield5())
+                        + "," + getStringQueryParam(outlet.getRfield6())
+                        + "," + (outlet.getTinExpDate() == null || outlet.getTinExpDate().isEmpty() ? null : getStringQueryParam(outlet.getTinExpDate()))
+                        + "," + getStringQueryParam(outlet.getPanNo())
+                        + "," + getStringQueryParam(outlet.getFoodLicenseNo())
+                        + "," + (outlet.getFlExpDate() == null || outlet.getFlExpDate().isEmpty() ? null : getStringQueryParam(outlet.getFlExpDate()))
+                        + "," + getStringQueryParam(outlet.getDrugLicenseNo())
+                        + "," + (outlet.getDlExpDate() == null || outlet.getDlExpDate().isEmpty() ? null : getStringQueryParam(outlet.getDlExpDate()))
+                        + "," + getStringQueryParam(outlet.getrField4())
+                        + "," + getStringQueryParam(outlet.getrField7())
+                        + "," + getStringQueryParam(userid + "")
+                        + "," + getStringQueryParam(outlet.getRfield8())
+                        + "," + getStringQueryParam(outlet.getRfield9())
+                        + "," + getStringQueryParam(outlet.getRfield10())
+                        + "," + getStringQueryParam(outlet.getRfield11())
+                        + "," + getStringQueryParam(outlet.getRfield12())
+                        + "," + getStringQueryParam(outlet.getRfield13())
+                        + "," + getStringQueryParam(outlet.getRfield14())
+                        + "," + getStringQueryParam(outlet.getRfield15())
+                        + "," + getStringQueryParam(outlet.getRfield16())
+                        + "," + getStringQueryParam(outlet.getRfield17())
+                        + "," + getStringQueryParam(outlet.getRfield18())
+                        + "," + getStringQueryParam(outlet.getRfield19());
+
+
+                dbUtil.insertSQL("RetailerMaster", column, value);
+
+
+                return true;
+            } catch (Exception ignored) {
+                return false;
+            }
+
+        });
+    }
+
+    @Override
+    public Single<Boolean> saveNewOutletContactInformation(String uId, NewOutletBO outlet) {
+        return Single.fromCallable(() -> {
+            String column, value;
+            column = "RetailerID,contactname,ContactName_LName,contactNumber," +
+                    "contact_title,contact_title_lovid,IsPrimary,Email,Upload,salutationLovId,IsEmailNotificationReq,CPID";
+            try {
+                if (outlet.getContactpersonname() != null && !outlet.getContactpersonname().trim().equals("")) {
+                    value = getStringQueryParam(uId)
+                            + "," + getStringQueryParam(outlet.getContactpersonname())
+                            + "," + getStringQueryParam(outlet.getContactpersonnameLastName())
+                            + "," + getStringQueryParam(outlet.getPhone())
+                            + "," + getStringQueryParam(outlet.getContact1title())
+                            + "," + outlet.getContact1titlelovid()
+                            + "," + 1
+                            + "," + getStringQueryParam("")
+                            + "," + getStringQueryParam("N")
+                            + "," + getStringQueryParam("")
+                            + "," + getStringQueryParam("")
+                            + "," + getStringQueryParam("");
+                    dbUtil.insertSQL("RetailerContact", column, value);
+                }
+                if (outlet.getContactpersonname2() != null && !outlet.getContactpersonname2().trim().equals("")) {
+                    value = getStringQueryParam(uId)
+                            + "," + getStringQueryParam(outlet.getContactpersonname2())
+                            + "," + getStringQueryParam(outlet.getContactpersonname2LastName())
+                            + "," + getStringQueryParam(outlet.getPhone2())
+                            + "," + getStringQueryParam(outlet.getContact2title())
+                            + "," + outlet.getContact2titlelovid()
+                            + "," + 0
+                            + "," + getStringQueryParam("")
+                            + "," + getStringQueryParam("N")
+                            + "," + getStringQueryParam("")
+                            + "," + getStringQueryParam("")
+                            + "," + getStringQueryParam("");
+                    dbUtil.insertSQL("RetailerContact", column, value);
+                }
+                return true;
+            } catch (Exception ignored) {
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> saveNewOutletContactTabInformation(String uId, ArrayList<RetailerContactBo> retailerContactList) {
+        return Single.fromCallable(() -> {
+            String column, value;
+            column = "RetailerID,contactname,ContactName_LName,contactNumber," +
+                    "contact_title,contact_title_lovid,IsPrimary,Email,Upload,salutationLovId,IsEmailNotificationReq,CPID";
+            try {
+
+                for (RetailerContactBo retailerContactBo : retailerContactList) {
+
+                    value = getStringQueryParam(uId)
+                            + "," + getStringQueryParam(retailerContactBo.getFistname())
+                            + "," + getStringQueryParam(retailerContactBo.getLastname())
+                            + "," + getStringQueryParam(retailerContactBo.getContactNumber())
+                            + "," + getStringQueryParam(retailerContactBo.getTitle())
+                            + "," + getStringQueryParam(retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") ? "0" : retailerContactBo.getContactTitleLovId())
+                            + "," + retailerContactBo.getIsPrimary()
+                            + "," + getStringQueryParam(retailerContactBo.getContactMail())
+                            + "," + getStringQueryParam("N")
+                            + "," + getStringQueryParam(retailerContactBo.getContactSalutationId())
+                            + "," + getStringQueryParam(retailerContactBo.getIsEmailPrimary() + "")
+                            + "," + getStringQueryParam(retailerContactBo.getCpId());
+                    dbUtil.insertSQL("RetailerContact", column, value);
+
+                    if (retailerContactBo.getContactAvailList().size() > 0)
+                        addContactAvail(uId, retailerContactBo);
+                }
+
+                return true;
+            } catch (Exception ignored) {
+                return false;
+            }
+
+        });
+    }
+
+    private void addContactAvail(String uId, RetailerContactBo retailerContactBo) {
+        String column = "CPAId,CPId,Day,StartTime,EndTime,isLocal,upload";
+
+        for (RetailerContactAvailBo retailerContactAvailBo : retailerContactBo.getContactAvailList()) {
+
+            String value = getStringQueryParam(uId)
+                    + "," + getStringQueryParam(retailerContactBo.getCpId())
+                    + "," + getStringQueryParam(retailerContactAvailBo.getDay())
+                    + "," + getStringQueryParam(retailerContactAvailBo.getFrom())
+                    + "," + getStringQueryParam(retailerContactAvailBo.getTo())
+                    + "," + getStringQueryParam("1")
+                    + "," + getStringQueryParam("N");
+
+            dbUtil.insertSQL("ContactAvailability", column, value);
+        }
+    }
+
+    @Override
+    public Single<Boolean> saveNewOutletAddressInformation(String uId, NewOutletBO outlet) {
+        return Single.fromCallable(() -> {
+            String column, value;
+            column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
+                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile,District";
+            try {
+
+                String lattitude = (outlet.getNewOutletlattitude() + "").contains("E")
+                        ? (SDUtil.truncateDecimal(outlet.getNewOutletlattitude(), -1) + "").substring(0, 20)
+                        : ((outlet.getNewOutletlattitude() + "").length() > 20
+                        ? (outlet.getNewOutletlattitude() + "").substring(0, 20)
+                        : (outlet.getNewOutletlattitude() + ""));
+
+                String longitude = (outlet.getNewOutletLongitude() + "").contains("E")
+                        ? (SDUtil.truncateDecimal(outlet.getNewOutletLongitude(), -1) + "").substring(0, 20)
+                        : ((outlet.getNewOutletLongitude() + "").length() > 20
+                        ? (outlet.getNewOutletLongitude() + "").substring(0, 20)
+                        : (outlet.getNewOutletLongitude() + ""));
+
+                if (outlet.getmAddressByTag() != null) {
+                    for (String addressType : outlet.getmAddressByTag().keySet()) {
+                        AddressBO addressBO = outlet.getmAddressByTag().get(addressType);
+                        value = getStringQueryParam(uId)
+                                + "," + getStringQueryParam(addressBO.getAddress1())
+                                + "," + getStringQueryParam(addressBO.getAddress2())
+                                + "," + getStringQueryParam(addressBO.getAddress3())
+                                + "," + getStringQueryParam(addressBO.getPhone())
+                                + "," + getStringQueryParam(addressBO.getCity())
+                                + "," + getStringQueryParam(lattitude)
+                                + "," + getStringQueryParam(longitude)
+                                + "," + getStringQueryParam(addressBO.getEmail())
+                                + "," + getStringQueryParam(addressBO.getFax())
+                                + "," + getStringQueryParam(addressBO.getPincode())
+                                + "," + getStringQueryParam(addressBO.getState())
+                                + "," + getStringQueryParam("N")
+                                + "," + 1
+                                + "," + addressType
+                                + "," + getStringQueryParam(outlet.getRegion())
+                                + "," + getStringQueryParam(outlet.getCountry())
+                                + "," + getStringQueryParam(outlet.getMobile())
+                                + "," + getStringQueryParam(outlet.getDistrict());
+
+
+                        dbUtil.insertSQL("RetailerAddress", column, value);
+                    }
+                } else {
+
+                    value = getStringQueryParam(uId)
+                            + "," + getStringQueryParam(outlet.getAddress())
+                            + "," + getStringQueryParam(outlet.getAddress2())
+                            + "," + getStringQueryParam(outlet.getAddress3())
+                            + "," + getStringQueryParam(outlet.getPhone())
+                            + "," + getStringQueryParam(outlet.getCity())
+                            + "," + getStringQueryParam(lattitude)
+                            + "," + getStringQueryParam(longitude)
+                            + "," + getStringQueryParam(outlet.getEmail())
+                            + "," + getStringQueryParam(outlet.getFax())
+                            + "," + getStringQueryParam(outlet.getPincode())
+                            + "," + getStringQueryParam(outlet.getState())
+                            + "," + getStringQueryParam("N")
+                            + "," + 1
+                            + "," + 0
+                            + "," + getStringQueryParam(outlet.getRegion())
+                            + "," + getStringQueryParam(outlet.getCountry())
+                            + "," + getStringQueryParam(outlet.getMobile())
+                            + "," + getStringQueryParam(outlet.getDistrict());
+
+                    dbUtil.insertSQL("RetailerAddress", column, value);
+
+                }
+
+                return true;
+            } catch (Exception ignored) {
+                return false;
+            }
+
+        });
+    }
+
+    @Override
+    public Single<Boolean> savePriorityProducts(String uId, ArrayList<StandardListBO> productIdList) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                try {
+
+                    String columns = "RetailerId,ProductId,LevelId,upload";
+                    StringBuffer sb;
+                    if (productIdList != null) {
+                        for (StandardListBO bo : productIdList) {
+                            sb = new StringBuffer();
+                            sb.append(getStringQueryParam(uId));
+                            sb.append(",");
+                            sb.append(bo.getListID());
+                            sb.append(",");
+                            sb.append(bo.getListCode());
+                            sb.append(",'N'");
+                            dbUtil.insertSQL("RetailerPriorityProducts", columns, sb.toString());
+
+                        }
+                    }
+                    return true;
+                } catch (Exception ignored) {
+                    return false;
+                }
+
+
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> saveOrderDetails(String uId, OrderHeader orderHeader, ArrayList<ProductMasterBO> productMasterBOS) {
+        String id = dataManager.getUser().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                String column, value;
+
+                column = "OrderID, OrderDate, RetailerID, DistributorId, OrderValue,LinesPerCall,TotalWeight,Remarks,OrderTime";
+
+
+                value = id
+                        + "," + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                        + "," + getStringQueryParam(uId)
+                        + "," + dataManager.getUser().getDistributorid()
+                        + "," + orderHeader.getOrderValue()
+                        + "," + orderHeader.getLinesPerCall()
+                        + "," + orderHeader.getTotalWeight()
+                        + "," + getStringQueryParam(dataManager.getOrderHeaderNote())
+                        + "," + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.TIME));
+
+                try {
+                    dbUtil.insertSQL("OrderHeaderRequest", column, value);
+                    return true;
+                } catch (Exception ignored) {
+                    return false;
+                }
+
+            }
+        }).flatMap((Function<Boolean, SingleSource<Boolean>>) aBoolean -> {
+            if (!aBoolean)
+                return Single.fromCallable(() -> false);
+            else {
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        String column, value;
+
+                        column = "OrderID, ProductID, Qty,uomid,Price,LineValue, Weight,uomcount,HsnCode";
+
+                        try {
+                            for (ProductMasterBO productMasterBO : productMasterBOS) {
+                                if (productMasterBO.getOrderedPcsQty() > 0) {
+                                    value = id
+                                            + "," + getStringQueryParam(productMasterBO.getProductID())
+                                            + "," + productMasterBO.getOrderedPcsQty()
+                                            + "," + productMasterBO.getPcUomid()
+                                            + "," + productMasterBO.getSrp()
+                                            + "," + productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp()
+                                            + "," + productMasterBO.getOrderedPcsQty() * productMasterBO.getWeight()
+                                            + ",1"
+                                            + "," + getStringQueryParam(productMasterBO.getHsnCode());
+                                    dbUtil.insertSQL("OrderDetailRequest", column, value);
+                                }
+                                if (productMasterBO.getOrderedCaseQty() > 0) {
+                                    value = id
+                                            + "," + getStringQueryParam(productMasterBO.getProductID())
+                                            + "," + productMasterBO.getOrderedCaseQty()
+                                            + "," + productMasterBO.getCaseUomId()
+                                            + "," + productMasterBO.getCsrp()
+                                            + "," + productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp()
+                                            + "," + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize()) * productMasterBO.getWeight()
+                                            + "," + productMasterBO.getCaseSize()
+                                            + "," + getStringQueryParam(productMasterBO.getHsnCode());
+                                    dbUtil.insertSQL("OrderDetailRequest", column, value);
+                                }
+                                if (productMasterBO.getOrderedOuterQty() > 0) {
+                                    value = id
+                                            + "," + getStringQueryParam(productMasterBO.getProductID())
+                                            + "," + productMasterBO.getOrderedOuterQty()
+                                            + "," + productMasterBO.getOuUomid()
+                                            + "," + productMasterBO.getOsrp()
+                                            + "," + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp()
+                                            + "," + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize()) * productMasterBO.getWeight()
+                                            + "," + productMasterBO.getOutersize()
+                                            + "," + getStringQueryParam(productMasterBO.getHsnCode());
+                                    dbUtil.insertSQL("OrderDetailRequest", column, value);
+                                }
+                            }
+
+                            return true;
+                        } catch (Exception ignored) {
+                            return false;
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> saveOpportunityDetails(String uId, ArrayList<ProductMasterBO> productMasterBOS) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                String column, value;
+                column = "rid, pid, facing,IsOwn,Price";
+
+                for (ProductMasterBO productMasterBO : productMasterBOS) {
+
+                    value = getStringQueryParam(uId)
+                            + "," + getStringQueryParam(productMasterBO.getProductID())
+                            + "," + productMasterBO.getQty_klgs()
+                            + "," + productMasterBO.getOwn()
+                            + "," + productMasterBO.getOrderPricePiece();
+                    dbUtil.insertSQL("RetailerPotential", column, value);
+                }
+
+                return null;
+            }
+        });
+    }
+
+
+    @Override
+    public Single<Boolean> setupSurveyScreenData(String id) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                surveyHelperNew.setFromHomeScreen(true);
+                surveyHelperNew.downloadModuleId(NewRetailerConstant.NEW_RETAILER);
+                surveyHelperNew.downloadQuestionDetails(NewRetailerConstant.MENU_NEW_RETAILER);
+                surveyHelperNew.loadNewRetailerSurveyAnswers(id);
+
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> setUpOpportunityProductsData() {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                productTaggingHelper.downloadTaggedProducts(MENU_NEW_RETAILER);
+                productHelper.downloadCompetitorProducts("MENU_STK_ORD");
+                productTaggingHelper.downloadCompetitorTaggedProducts(MENU_NEW_RETAILER);
+
+                /* Settign color **/
+                configurationMasterHelper.downloadFilterList();
+                productHelper.updateProductColor();
+                productHelper.downloadInStoreLocations();
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> setUpOrderScreen() {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair
+                        = productHelper.downloadProducts(NewRetailerConstant.MENU_NEW_RETAILER);
+                if (genericObjectPair != null) {
+                    productHelper.setProductMaster(genericObjectPair.object1);
+                    productHelper.setProductMasterById(genericObjectPair.object2);
+                }
+
+
+                productHelper.setFilterProductLevels(productHelper
+                        .downloadFilterLevel(NewRetailerConstant.MENU_NEW_RETAILER));
+                productHelper.setFilterProductsByLevelId(productHelper
+                        .downloadFilterLevelProducts(productHelper.getFilterProductLevels(), true));
+
+
+                configurationMasterHelper.downloadProductDetailsList();
+                /* Settign color **/
+                configurationMasterHelper.downloadFilterList();
+                productHelper.updateProductColor();
+                productHelper.downloadInStoreLocations();
+
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> clearExistingOrder() {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                if (dataManager.isEditOrder()) {
+                    productHelper.clearOrderTableAndUpdateSIH();
+                }
+                productHelper.clearOrderTable();
+                OrderHelper.getInstance(context).setSerialNoListByProductId(null);
+
+                if (configurationMasterHelper.SHOW_PRODUCTRETURN)
+                    productHelper.clearBomReturnProductsTable();
+
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public Single<LocationLevel> getParentLevelName(int locid, boolean isParent) {
+        return Single.fromCallable(() -> {
+
+            LocationLevel locationLevel = new LocationLevel();
+            try{
+                initDb();
+
+                String locationLevelId="";
+                StringBuilder sb = new StringBuilder();
+                sb.append("select locid,locName, LocLevelId from locationmaster where locid=");
+                if (!isParent) {
+                    sb.append(locid);
+
+                } else {
+                    sb.append("(select locParentId from locationmaster  where locid=");
+                    sb.append(locid);
+                    sb.append(")");
+                }
+
+                Cursor c = dbUtil.selectSQL(sb.toString());
+                if (c != null) {
+                    if (c.getCount() > 0) {
+                        if (c.moveToNext()) {
+
+                            locationLevel.setLocationId(c.getInt(0));
+                            locationLevel.setLocationName(c.getString(1));
+                            locationLevelId= c.getString(2);
+                            c.close();
+                        }
+                    }
+                    c.close();
+                }
+                sb  = new StringBuilder();
+                sb.append("select Name from LocationLevel where id=");
+                sb.append(getStringQueryParam(locationLevelId));
+                Cursor c1 = dbUtil.selectSQL(sb.toString());
+                if (c1 != null) {
+                    if (c1.getCount() > 0) {
+                        if (c1.moveToNext()) {
+                            locationLevel.setLocationLevel(c1.getString(0));
+
+                            return locationLevel;
+                        }
+                    }
+                    c1.close();
+                }
+
+                return locationLevel;
+
+            }catch (Exception ignored){
+
+            }
+
+
+            return locationLevel;
         });
     }
 

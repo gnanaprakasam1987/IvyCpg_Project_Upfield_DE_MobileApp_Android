@@ -4,7 +4,7 @@ package com.ivy.cpg.view.denomination;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -238,7 +238,7 @@ public class DenominationFragment extends IvyBaseFragment {
                     totalValues = 0;
                     for (Integer key : editTextHashMap.keySet()) {
                         String values = getDynamicEditTextValues(key);
-                        if (!StringUtils.isEmptyString(values)) {
+                        if (!StringUtils.isNullOrEmpty(values)) {
                             double temp = Double.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
                             totalValues = totalValues + (Double.valueOf(values) * temp);
                             if (totalValues <= Double.valueOf(initialTotalAmount)) {
@@ -271,7 +271,7 @@ public class DenominationFragment extends IvyBaseFragment {
                 totalValues = 0;
                 for (Integer key : editTextHashMap.keySet()) {
                     String values = getDynamicEditTextValues(key);
-                    if (!StringUtils.isEmptyString(values)) {
+                    if (!StringUtils.isNullOrEmpty(values)) {
                         double temp = Double.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
                         totalValues = totalValues + (Double.valueOf(values) * temp);
                         if (totalValues <= Double.valueOf(initialTotalAmount)) {
@@ -299,7 +299,7 @@ public class DenominationFragment extends IvyBaseFragment {
 
             String count = getDynamicEditTextValues(key);
 
-            if (!StringUtils.isEmptyString(count)) {
+            if (!StringUtils.isNullOrEmpty(count)) {
 
                 double temp = Double.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
 
@@ -322,7 +322,7 @@ public class DenominationFragment extends IvyBaseFragment {
         ArrayList<DenominationBO> denominationList = new ArrayList<>();
         for (Integer key : editTextHashMap.keySet()) {
             String count = getDynamicEditTextValues(key);
-            if (!StringUtils.isEmptyString(count)) {
+            if (!StringUtils.isNullOrEmpty(count)) {
                 DenominationBO denominationBO = new DenominationBO();
                 denominationBO.setDenomintionId(denominationInputValues.get(key).getDenomintionId());
                 denominationBO.setDenominationDisplayName(denominationInputValues.get(key).getDenominationDisplayName());

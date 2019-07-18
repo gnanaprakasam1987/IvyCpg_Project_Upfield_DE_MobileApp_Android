@@ -5,20 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -659,7 +660,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             drawerOpen = drawerLayout.isDrawerOpen(GravityCompat.END);
         }
 
-        menu.findItem(R.id.menu_notification).setVisible(true);
+        menu.findItem(R.id.menu_notification).setVisible(source == TaskConstant.SOURCE.HOME_SCREEN);
         menu.findItem(R.id.menu_save).setVisible(false);
         menu.findItem(R.id.menu_sort).setVisible(true);
         menu.findItem(R.id.menu_new_task).setVisible(false);
@@ -738,7 +739,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
             drawerLayout.openDrawer(GravityCompat.END);
 
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFragment frag = (FilterFragment) fm
                     .findFragmentByTag(TaskConstant.FILTER);
             FragmentTransaction ft = fm
@@ -842,6 +843,11 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             filterHashMapList = new HashMap<>();
             filterHashMapList.putAll(filterListHashMap);
         }
+    }
+
+    @Override
+    public void updateSortList() {
+        taskListAdapter.notifyDataSetChanged();
     }
 
     private void handleVisibilty(int visibility) {

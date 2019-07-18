@@ -104,8 +104,8 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
         if (timeTrackList.isEmpty())
             return true;
 
-        status = (!StringUtils.isEmptyString(timeTrackList.get(timeTrackList.size() - 1).getInTime()) &&
-                !StringUtils.isEmptyString(timeTrackList.get(timeTrackList.size() - 1).getOutTime()));
+        status = (!StringUtils.isNullOrEmpty(timeTrackList.get(timeTrackList.size() - 1).getInTime()) &&
+                !StringUtils.isNullOrEmpty(timeTrackList.get(timeTrackList.size() - 1).getOutTime()));
 
         return status;
     }

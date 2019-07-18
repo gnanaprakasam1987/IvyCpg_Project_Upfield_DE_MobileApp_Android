@@ -1,6 +1,6 @@
 package com.ivy.ui.task.presenter;
 
-import android.arch.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleObserver;
 
 import com.ivy.core.IvyConstants;
 import com.ivy.core.base.presenter.BasePresenter;
@@ -468,7 +468,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                     return sstr.getTaskDueDate().compareToIgnoreCase(fstr.getTaskDueDate());
             });
         }
-        getIvyView().updateListData(taskList);
+        ((TaskContract.TaskListView)getIvyView()).updateSortList();
     }
 
     @Override

@@ -16,12 +16,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -39,9 +39,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.ui.AssetServiceRequest.AssetServiceRequestActivity;
-import com.ivy.ui.DisplayAsset.DisplayAssetActivity;
-import com.ivy.ui.DisplayAsset.DisplayAssetHelper;
 import com.ivy.cpg.view.Planorama.PlanoramaActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
@@ -130,8 +127,11 @@ import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.ui.AssetServiceRequest.AssetServiceRequestActivity;
 import com.ivy.ui.DisplayAsset.DisplayAssetActivity;
 import com.ivy.ui.DisplayAsset.DisplayAssetHelper;
+import com.ivy.ui.announcement.AnnouncementConstant;
+import com.ivy.ui.announcement.view.AnnouncementActivity;
 import com.ivy.ui.notes.NoteConstant;
 import com.ivy.ui.notes.view.NotesActivity;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
@@ -300,7 +300,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         activityView.setLayoutManager(linearLayoutManager);
 
-        isPreVisit = getIntent().getBooleanExtra("PreVisit",false);
+        isPreVisit = getIntent().getBooleanExtra("PreVisit", false);
 
         try {
             int length = bmodel.retailerMasterBO.getRetailerName().indexOf("/");
@@ -811,6 +811,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 menu.findItem(R.id.menu_category_filter).setVisible(false);
         }
 
+        if (bmodel.configurationMasterHelper.IS_SHOW_ANNOUNCEMENT) {
+            MenuItem item = menu.findItem(R.id.menu_announcement);
+            item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            item.setVisible(true);
+        }
+
         Commons.print("icon" + bmodel.configurationMasterHelper.SHOW_DGTC);
         return true;
     }
@@ -834,13 +840,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (!isPreVisit)
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                            DateTimeUtils.now(DateTimeUtils.TIME), MENU_TASK);
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), MENU_TASK);
 
                     Intent intent = new Intent(HomeScreenTwo.this, TaskActivity.class);
 
                     if (isPreVisit)
-                        intent.putExtra("PreVisit",true);
+                        intent.putExtra("PreVisit", true);
 
                     intent.putExtra(TaskConstant.RETAILER_WISE_TASK, true);
                     intent.putExtra(TaskConstant.MENU_CODE, MENU_TASK);
@@ -957,6 +963,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             Intent prof = new Intent(HomeScreenTwo.this, ProfileActivity.class);
             prof.putExtra("hometwo", true);
             startActivity(prof);
+        } else if (i1 == R.id.menu_announcement) {
+            Intent i = new Intent(this,
+                    AnnouncementActivity.class);
+            i.putExtra(AnnouncementConstant.SCREEN_TITLE, getString(R.string.announcement));
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1518,8 +1529,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
                     }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_DISPLAY_ASSET)) {
+                } else if (menuDB.get(i).getConfigCode().equals(MENU_DISPLAY_ASSET)) {
                     if (menuDB.get(i).getHasLink() == 1) {
                         if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
                             menuDB.get(i).setDone(true);
@@ -1613,19 +1623,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         if (menu.getConfigCode().equals(MENU_STOCK)
                 || menu.getConfigCode().equals(MENU_COMBINED_STOCK) && hasLink == 1) {
 
-            load_MENU_STOCK(menu,isFromChild);
+            load_MENU_STOCK(menu, isFromChild);
 
         } else if (menu.getConfigCode().equals(MENU_ORDER) && hasLink == 1 && !isPreVisit) {
 
             load_MENU_ORDER(menu);
 
         } else if ((menu.getConfigCode().equals(MENU_STK_ORD)
-                || menu.getConfigCode().equals(MENU_CATALOG_ORDER) && hasLink == 1 ) && !isPreVisit) {
+                || menu.getConfigCode().equals(MENU_CATALOG_ORDER) && hasLink == 1) && !isPreVisit) {
             StockCheckHelper.getInstance(HomeScreenTwo.this).loadStockCheckConfiguration(HomeScreenTwo.this, bmodel.retailerMasterBO.getSubchannelid());
             DigitalContentHelper.getInstance(HomeScreenTwo.this).loadFloatingDgtConfig(HomeScreenTwo.this);
             new StockAndOrderTask(menu, this).execute();
             // moveToStockAndOrder(menu);
-        } else if (menu.getConfigCode().equals(MENU_CLOSING) && hasLink == 1  && !isPreVisit) {
+        } else if (menu.getConfigCode().equals(MENU_CLOSING) && hasLink == 1 && !isPreVisit) {
 
             load_MENU_CLOSING(menu);
 
@@ -1707,8 +1717,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (!isPreVisit)
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                     Intent intent = new Intent(HomeScreenTwo.this,
                             TaskActivity.class);
@@ -1718,7 +1728,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     intent.putExtra(TaskConstant.SCREEN_TITLE, menu.getMenuName());
 
                     if (isPreVisit)
-                        intent.putExtra("PreVisit",true);
+                        intent.putExtra("PreVisit", true);
 
                     startActivity(intent);
                     isCreated = false;
@@ -1733,7 +1743,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 isCreated = false;
             }
 
-        } else if (menu.getConfigCode().equals(MENU_KELLGS_DASH) && hasLink == 1  && !isPreVisit) {
+        } else if (menu.getConfigCode().equals(MENU_KELLGS_DASH) && hasLink == 1 && !isPreVisit) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
                 if (!isClick) {
@@ -1758,11 +1768,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 isCreated = false;
             }
 
-        } else if (menu.getConfigCode().equals(MENU_PHOTO) && hasLink == 1  && !isPreVisit) {
+        } else if (menu.getConfigCode().equals(MENU_PHOTO) && hasLink == 1 && !isPreVisit) {
 
             load_MENU_PHOTO(menu, isFromChild);
 
-        } else if (menu.getConfigCode().equals(MENU_INVOICE) && hasLink == 1  && !isPreVisit) {
+        } else if (menu.getConfigCode().equals(MENU_INVOICE) && hasLink == 1 && !isPreVisit) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
             ) {
@@ -1837,7 +1847,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             }
         } else if ((menu.getConfigCode().equals(MENU_COLLECTION)
                 || menu.getConfigCode().equals(StandardListMasterConstants.MENU_COLLECTION_VIEW))
-                && hasLink == 1  && !isPreVisit) {
+                && hasLink == 1 && !isPreVisit) {
             if (!isClick) {
                 isClick = true;
                 if (bmodel.configurationMasterHelper.IS_JUMP
@@ -1911,7 +1921,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
             }
         } else if (menu.getConfigCode().equals(MENU_COLLECTION_REF)
-                && hasLink == 1  && !isPreVisit) {
+                && hasLink == 1 && !isPreVisit) {
             if (!isClick) {
                 isClick = true;
                 if (bmodel.configurationMasterHelper.IS_JUMP
@@ -1957,7 +1967,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
             }
         } else if (((menu.getConfigCode().equals(MENU_SALES_RET) && hasLink == 1)
-                || (menu.getConfigCode().equals(StandardListMasterConstants.MENU_STOCK_REPLACEMENT) && hasLink == 1))  && !isPreVisit) {
+                || (menu.getConfigCode().equals(StandardListMasterConstants.MENU_STOCK_REPLACEMENT) && hasLink == 1)) && !isPreVisit) {
             if (!isClick) {
                 isClick = true;
                 if (bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
@@ -2003,7 +2013,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     isClick = false;
                 }
             }
-        } else if (menu.getConfigCode().equals(MENU_DGT) && hasLink == 1  && !isPreVisit) {
+        } else if (menu.getConfigCode().equals(MENU_DGT) && hasLink == 1 && !isPreVisit) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
             ) {
@@ -2044,7 +2054,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
             }
 
-        } else if (menu.getConfigCode().equals(MENU_CALL_ANLYS)  && !isPreVisit) {
+        } else if (menu.getConfigCode().equals(MENU_CALL_ANLYS) && !isPreVisit) {
             if (bmodel.configurationMasterHelper.SHOW_NO_COLLECTION_REASON &&
                     !collectionHelper.checkInvoiceWithReason(bmodel.getRetailerMasterBO().getRetailerID(), this)) {
 
@@ -2107,14 +2117,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         if (!isPreVisit)
                             bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                    DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                         Intent in = new Intent(HomeScreenTwo.this,
                                 AssetTrackingActivity.class);
 
                         if (isPreVisit)
-                            in.putExtra("PreVisit",true);
+                            in.putExtra("PreVisit", true);
 
                         in.putExtra("CurrentActivityCode", menu.getConfigCode());
                         if (isFromChild)
@@ -2161,14 +2171,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         if (!isPreVisit)
                             bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                    DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                         Intent in = new Intent(HomeScreenTwo.this,
                                 SerializedAssetActivity.class);
 
                         if (isPreVisit)
-                            in.putExtra("PreVisit",true);
+                            in.putExtra("PreVisit", true);
 
                         in.putExtra("CurrentActivityCode", menu.getConfigCode());
                         if (isFromChild)
@@ -2209,14 +2219,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (!isPreVisit)
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                     Intent in = new Intent(HomeScreenTwo.this,
                             PosmTrackingActivity.class);
 
                     if (isPreVisit)
-                        in.putExtra("PreVisit",true);
+                        in.putExtra("PreVisit", true);
 
                     in.putExtra("CurrentActivityCode", menu.getConfigCode());
                     if (isFromChild)
@@ -2275,7 +2285,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             NearExpiryTrackingActivity.class);
 
                     if (isPreVisit)
-                        intent.putExtra("PreVisit",true);
+                        intent.putExtra("PreVisit", true);
 
                     intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                     if (isFromChild)
@@ -2300,8 +2310,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 isCreated = false;
 
             }
-        } else if (menu.getConfigCode().equals(MENU_SKUWISERTGT )
-                && hasLink == 1  && !isPreVisit) {
+        } else if (menu.getConfigCode().equals(MENU_SKUWISERTGT)
+                && hasLink == 1 && !isPreVisit) {
 
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
@@ -2329,7 +2339,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             }
 
         } else if (menu.getConfigCode().equals(MENU_CONTRACT_VIEW)
-                && hasLink == 1  && !isPreVisit) {
+                && hasLink == 1 && !isPreVisit) {
 
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
@@ -2376,8 +2386,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (!isPreVisit)
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                     Intent in = new Intent(HomeScreenTwo.this,
                             PlanoGramActivity.class);
@@ -2429,7 +2439,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 
                 // Download Tagged products and update the product master obj
-                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,"PC");
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this, "PC");
 
                 // Load Price related configurations.
                 priceTrackingHelper.loadPriceCheckConfiguration(getApplicationContext(), bmodel.getRetailerMasterBO().getSubchannelid());
@@ -2439,7 +2449,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         bmodel.productHelper.downloadCompetitorFiveFilterLevels();
                     }
                     bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE);
-                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,"PC");
+                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this, "PC");
                 }
 
                 priceTrackingHelper.clearPriceCheck();
@@ -2453,8 +2463,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 if (!isPreVisit)
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                 Intent in = new Intent(HomeScreenTwo.this,
                         PriceTrackActivity.class);
@@ -2494,13 +2504,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 
                 // Download Tagged products and update the product master obj
-                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,"PC");
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this, "PC");
 
                 // Load Price related configurations.
                 priceTrackingHelper.loadPriceCheckConfiguration(getApplicationContext(), bmodel.getRetailerMasterBO().getSubchannelid());
                 //its menu price comp
                 bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE_COMP);
-                ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,"PC");
+                ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this, "PC");
 
                 priceTrackingHelper.clearPriceCheck();
                 priceTrackingHelper.loadPriceTransaction(getApplicationContext());
@@ -2514,8 +2524,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 if (!isPreVisit)
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
 
                 Intent in = new Intent(HomeScreenTwo.this,
@@ -2525,7 +2535,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     in.putExtra("isFromChild", true);
 
                 if (isPreVisit)
-                    in.putExtra("PreVisit",true);
+                    in.putExtra("PreVisit", true);
 
                 startActivity(in);
                 finish();
@@ -2639,9 +2649,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (!isPreVisit)
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                            DateTimeUtils.now(DateTimeUtils.TIME),
-                            MENU_SOS);
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME),
+                                MENU_SOS);
 
                     mSFHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SOSActivity.class);
@@ -2729,9 +2739,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (!isPreVisit)
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                            DateTimeUtils.now(DateTimeUtils.TIME),
-                            MENU_SOD);
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME),
+                                MENU_SOD);
                     mSFHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SODActivity.class);
 
@@ -2787,9 +2797,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (!isPreVisit)
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                            DateTimeUtils.now(DateTimeUtils.TIME),
-                            MENU_SOD_ASSET);
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME),
+                                MENU_SOD_ASSET);
                     mSODAssetHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SODAssetActivity.class);
 
@@ -2844,9 +2854,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (!isPreVisit)
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                            DateTimeUtils.now(DateTimeUtils.TIME),
-                            MENU_SOSKU);
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME),
+                                MENU_SOSKU);
                     mSFHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SOSKUActivity.class);
                     intent.putExtra("CurrentActivityCode", menu.getConfigCode());
@@ -2903,7 +2913,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             CompetitorTrackingActivity.class);
 
                     if (isPreVisit)
-                        intent.putExtra("PreVisit",true);
+                        intent.putExtra("PreVisit", true);
 
                     intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                     if (isFromChild)
@@ -3303,13 +3313,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
                     if (isPreVisit)
-                        i.putExtra("PreVisit",true);
+                        i.putExtra("PreVisit", true);
 
                     i.putExtra(NoteConstant.MENU_CODE, menu.getConfigCode());
                     i.putExtra(NoteConstant.SCREEN_TITLE, menu.getMenuName());
                     startActivity(i);
                     finish();
-                }else {
+                } else {
                     Toast.makeText(
                             this,
                             getResources().getString(
@@ -3320,54 +3330,50 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 }
             }
-        }
-         else if(menu.getConfigCode().equals(MENU_DISPLAY_ASSET) && hasLink == 1){
-                if (isPreviousDone(menu)
-                        || bmodel.configurationMasterHelper.IS_JUMP || isPreVisit) {
+        } else if (menu.getConfigCode().equals(MENU_DISPLAY_ASSET) && hasLink == 1) {
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP || isPreVisit) {
 
-                    DisplayAssetHelper assetHelper=DisplayAssetHelper.getInstance(this);
-                    assetHelper.downloadDisplayAssets(this);
+                DisplayAssetHelper assetHelper = DisplayAssetHelper.getInstance(this);
+                assetHelper.downloadDisplayAssets(this);
 
-                    if(assetHelper.getDisplayAssetList().size()>0) {
+                if (assetHelper.getDisplayAssetList().size() > 0) {
 
-                        if (!isPreVisit)
-                            bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                    if (!isPreVisit)
+                        bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
-                        assetHelper.loadDisplayAssetInEditMode(this);
-                        Intent i = new Intent(this,
-                                DisplayAssetActivity.class);
-                        i.putExtra("menuName",menu.getMenuName());
+                    assetHelper.loadDisplayAssetInEditMode(this);
+                    Intent i = new Intent(this,
+                            DisplayAssetActivity.class);
+                    i.putExtra("menuName", menu.getMenuName());
 
-                        if (isPreVisit)
-                            i.putExtra("PreVisit",true);
+                    if (isPreVisit)
+                        i.putExtra("PreVisit", true);
 
-                        i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        startActivity(i);
-                        finish();
+                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(i);
+                    finish();
 
-                    }
-                    else {
-                        Toast.makeText(
-                                this,
-                                getResources().getString(
-                                        R.string.data_not_mapped),
-                                Toast.LENGTH_SHORT).show();
-                        isCreated = false;
-                    }
-                }
-                else {
+                } else {
                     Toast.makeText(
                             this,
                             getResources().getString(
-                                    R.string.please_complete_previous_activity),
+                                    R.string.data_not_mapped),
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
-
                 }
+            } else {
+                Toast.makeText(
+                        this,
+                        getResources().getString(
+                                R.string.please_complete_previous_activity),
+                        Toast.LENGTH_SHORT).show();
+                isCreated = false;
+
             }
-        else if(menu.getConfigCode().equals(MENU_ASSET_SERVICE_REQUEST) && hasLink == 1){
+        } else if (menu.getConfigCode().equals(MENU_ASSET_SERVICE_REQUEST) && hasLink == 1) {
 
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
@@ -3378,13 +3384,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 Intent i = new Intent(this,
                         AssetServiceRequestActivity.class);
-                i.putExtra("menuName",menu.getMenuName());
+                i.putExtra("menuName", menu.getMenuName());
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(i);
                 finish();
 
-            }
-            else {
+            } else {
                 Toast.makeText(
                         this,
                         getResources().getString(
@@ -3879,7 +3884,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         }
     }
 
-    private void load_MENU_STOCK(ConfigureBO menu,boolean isFromChild){
+    private void load_MENU_STOCK(ConfigureBO menu, boolean isFromChild) {
         if (isPreviousDone(menu)
                 || bmodel.configurationMasterHelper.IS_JUMP || isPreVisit) {
 
@@ -3887,10 +3892,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             // More than 15 characters not allowed in sync. So code shortened..
             if (menu.getConfigCode().equals(MENU_COMBINED_STOCK)) {
                 stockCheckHelper.loadCmbStkChkConfiguration(this, bmodel.retailerMasterBO.getSubchannelid());
-                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,"MENU_COMB_STK");
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this, "MENU_COMB_STK");
             } else {
                 stockCheckHelper.loadStockCheckConfiguration(this, bmodel.retailerMasterBO.getSubchannelid());
-                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,MENU_STOCK);
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this, MENU_STOCK);
             }
 
             /** Download location to load in the filter. **/
@@ -3903,9 +3908,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
                 bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);
                 if (menu.getConfigCode().equals(MENU_COMBINED_STOCK))
-                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,"MENU_COMB_STK");
+                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this, "MENU_COMB_STK");
                 else
-                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,menu.getConfigCode());
+                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this, menu.getConfigCode());
             }
 
             if (ProductTaggingHelper.getInstance(this).getTaggedProducts().size() > 0) {
@@ -3995,8 +4000,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 if (!isPreVisit)
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                 /**
                  * Download product long-press information dialog
@@ -4840,7 +4845,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             }
 
             if (holder.config.isDone()) {
-                holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(HomeScreenTwo.this,R.color.green_productivity));
+                holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(HomeScreenTwo.this, R.color.green_productivity));
             } else {
                 holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(getBaseContext(), R.color.black_bg1));
             }
@@ -5637,7 +5642,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             db.openDataBase();
             Cursor c = db.selectSQL("select stockid from "
                     + DataMembers.tbl_closingstockheader + " where retailerid="
-                    + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID())
+                    + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRetailerID())
                     + " AND DistributorID=" + bmodel.getAppDataProvider().getRetailMaster().getDistributorId());
             if (c != null) {
                 if (c.getCount() > 0) {

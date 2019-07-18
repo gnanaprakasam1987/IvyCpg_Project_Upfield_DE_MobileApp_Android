@@ -15,12 +15,12 @@ public class ProfileConstant {
     public static final String SUBCHANNEL = "PROFILE07";//SUBCHANNEL,length validation=Y,Has Edit=1,RetailerMaster
     public static final String LATTITUDE= "PROFILE08";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerAddress
 
-    public static final String PROFILE_09 = "PROFILE09";//CONTACTPERSON1,length validation=Y,Has Edit=0,RetailerContact
+    public static final String PROFILE_09 = "PROFILE09";//CONTACT_PERSON1,length validation=Y,Has Edit=0,RetailerContact
     public static final String PROFILE_10 = "PROFILE10";//PHNO1,length validation=Y,input validation=NUMBER,Has Edit=0,RetailerContact
-    public static final String PROFILE_11 = "PROFILE11";//CONTACTPERSON2,length validation=Y,Has Edit=0,RetailerContact
+    public static final String PROFILE_11 = "PROFILE11";//CONTACT_PERSON2,length validation=Y,Has Edit=0,RetailerContact
     public static final String PROFILE_12 = "PROFILE12";//PHNO2,length validation=Y,input validation=NUMBER,Has Edit=0,RetailerContact
-    public static final String PROFILE_41 = "PROFILE41";//CONTACTTITLE 1 ,length validation=Y,Has Edit=1,,RetailerContact
-    public static final String PROFILE_42 = "PROFILE42";//CONTACTTITLE 2,length validation=Y,Has Edit=1,RetailerContact
+    public static final String PROFILE_41 = "PROFILE41";//CONTACT_TITLE 1 ,length validation=Y,Has Edit=1,,RetailerContact
+    public static final String PROFILE_42 = "PROFILE42";//CONTACT_TITLE 2,length validation=Y,Has Edit=1,RetailerContact
 
     public static final String LOCATION01 = "PROFILE13";//LOCATION01 One level up,length validation=Y,Has Edit=0,RetailerMaster
     public static final String LOCATION02 = "PROFILE14";//LOCATION02 two level up,length validation=Y,Has Edit=0,RetailerMaster
@@ -50,7 +50,7 @@ public class ProfileConstant {
     public static final String PRIORITYPRODUCT = "PROFILE57";//PRIORITYPRODUCT -->From  PriorityProducts Table
     public static final String ATTRIBUTE = "PROFILE58";//ATTRIBUTE -->From RetailerAttribute Table
     public static final String GSTN = "PROFILE61";//GSTN Number,length validation=Y,Has Edit=1,RetailerMaster;
-    public static final String INSEZ = "PROFILE62";//INSEZ,length validation=Y,Has Edit=0, ,RetailerMaster
+    public static final String INSEZ = "PROFILE62";//IN_SEZ,length validation=Y,Has Edit=0, ,RetailerMaster
     public static final String PHOTO_CAPTURE = "PROFILE63";//PHOTO_CAPTURE , lat and Long, Note:-Only Profile Config,Has Edit=0
     public static final String EMAIL = "PROFILE78";//EMAIL,length validation=Y,Has Edit=1,RetailerMaster;
     public static final String MOBILE = "PROFILE79";//MOBILE ,length validation=Y,Has Edit=1,RetailerMaster;

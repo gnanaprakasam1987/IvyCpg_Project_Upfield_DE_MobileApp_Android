@@ -13,14 +13,14 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/filter_level_rv"
             android:layout_width="@dimen/filter_level_list_width"
             android:layout_height="fill_parent"
             android:background="#f6f9fc"
             android:divider="@null" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/filter_list_rv"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"

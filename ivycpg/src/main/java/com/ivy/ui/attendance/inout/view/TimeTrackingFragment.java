@@ -8,9 +8,9 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -201,8 +201,8 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
         if (this.timeTrackList.size() > 0) {
             for (NonFieldTwoBo timeTrackBo : timeTrackList) {
-                if ((!StringUtils.isEmptyString(timeTrackBo.getInTime())) &&
-                        (!StringUtils.isEmptyString(timeTrackBo.getOutTime()))) {
+                if ((!StringUtils.isNullOrEmpty(timeTrackBo.getInTime())) &&
+                        (!StringUtils.isNullOrEmpty(timeTrackBo.getOutTime()))) {
                     timeTrackBo.setStatus(getResources().getString(R.string.in_complete));
                 } else {
                     timeTrackBo.setStatus(getResources().getString(R.string.in_partial));

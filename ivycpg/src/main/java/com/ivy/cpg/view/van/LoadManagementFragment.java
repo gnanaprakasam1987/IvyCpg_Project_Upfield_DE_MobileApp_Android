@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
 import com.ivy.cpg.view.planogram.PlanoGramActivity;
 import com.ivy.cpg.view.planogram.PlanoGramHelper;
@@ -48,7 +49,6 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
@@ -988,7 +988,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private void updateStockRefresh(String errorCode) {
         dismissAlertDialog();
         if (errorCode != null && errorCode
-                .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
             if (getActivity() != null)
                 bmodel.showAlert(
                         getString(

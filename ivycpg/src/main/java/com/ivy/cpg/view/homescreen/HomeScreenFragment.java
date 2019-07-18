@@ -2,6 +2,7 @@ package com.ivy.cpg.view.homescreen;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,23 +13,23 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,13 +59,12 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationFragment;
 import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.cpg.view.expense.ExpenseFragment;
-import com.ivy.cpg.view.homescreen.deviceStatus.DeviceStatusActivity;
-import com.ivy.cpg.view.homescreen.userFeedback.UserFeedbackActivity;
 import com.ivy.cpg.view.jointcall.JoinCallFragment;
 import com.ivy.cpg.view.leaveapproval.LeaveApprovalFragment;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.TermsAndConditionsActivity;
 import com.ivy.cpg.view.mvp.MVPFragment;
+import com.ivy.cpg.view.mvp.MVPNotification;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
 import com.ivy.cpg.view.orderfullfillment.OrderFullfillmentRetailerSelection;
@@ -96,24 +96,27 @@ import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.ChannelSelectionDialog;
 import com.ivy.sd.png.view.NewOutletEditFragment;
-import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.sd.png.view.PlanDeviationFragment;
+import com.ivy.sd.png.view.ProfileContainerFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
+import com.ivy.ui.announcement.AnnouncementConstant;
+import com.ivy.ui.announcement.view.AnnouncementActivity;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
 import com.ivy.ui.reports.dynamicreport.view.DynamicReportFragmentNew;
 import com.ivy.ui.retailerplan.calendar.view.CalendarPlanFragment;
 import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
 import com.ivy.ui.notes.NoteConstant;
 import com.ivy.ui.notes.view.NotesListFragment;
+import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
+import com.ivy.ui.retailerplan.calendar.view.CalendarPlanFragment;
 import com.ivy.ui.task.TaskConstant;
-import com.ivy.ui.task.TaskViewListener;
 import com.ivy.ui.task.view.TaskFragment;
+import com.ivy.ui.task.TaskViewListener;
 import com.ivy.ui.task.view.TaskUnplannedFragment;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
@@ -198,10 +201,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     private Vector<ConfigureBO> leftmenuDB = new Vector<>();
 
-    //Chat
-    private String CHAT_AUTHENTICATION_KEY = "mj74gxbHLMvVfHK";
-    private String CHAT_AUTHENTICATION_SECRET_KEY = "rQkkQgYJss9UCOA";
-
     private HomeScreenItemClickedListener mHomeScreenItemClickedListener;
     private Handler handler;
 
@@ -216,6 +215,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private ListView listView;
     private ArrayList<ChannelBO> mChannelList;
     private ChannelSelectionDialog dialogFragment;
+
+
+    /*This ChannelId  used to load loadNewOutletConfiguration*/
+    private int channelId=0;
+    private String channelName;
 
 
     @Nullable
@@ -317,11 +321,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         });
 
-        TextView txtLogOut = (TextView)view.findViewById(R.id.txtLogOut);
+        Button ll_logout = view.findViewById(R.id.ll_logout);
         if (!BuildConfig.FLAVOR.equalsIgnoreCase("aws"))
-            txtLogOut.setText(getResources().getString(R.string.close));
+            ll_logout.setText(getResources().getString(R.string.close));
 
-        LinearLayout ll_logout = view.findViewById(R.id.ll_logout);
         ll_logout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -330,7 +333,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         });
 
-        LinearLayout ll_about = view.findViewById(R.id.ll_about);
+        ImageView ll_about = view.findViewById(R.id.ll_about);
         ll_about.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -348,66 +351,36 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         });
 
-        ImageButton chatBtn = view.findViewById(R.id.img_chat);
-        ImageButton firebaseChat = view.findViewById(R.id.img_chat_firebase);
-        ImageButton divStatusBtn = view.findViewById(R.id.img_div_status);
-        ImageButton feedBackBtn = view.findViewById(R.id.img_user_feedback);
+        ImageView chatBtn = view.findViewById(R.id.img_chat);
+        ImageView announcementImgView = view.findViewById(R.id.img_announcement);
+        ImageView notificationIMgView = view.findViewById(R.id.img_notification);
 
-        if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
-            chatBtn.setVisibility(View.VISIBLE);
-
-        if (bmodel.configurationMasterHelper.SHOW_DEVICE_STATUS)
-            divStatusBtn.setVisibility(View.VISIBLE);
-
-        if (bmodel.configurationMasterHelper.SHOW_FEEDBACK)
-            feedBackBtn.setVisibility(View.VISIBLE);
 
         if (bmodel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED)
-            firebaseChat.setVisibility(View.VISIBLE);
+            chatBtn.setVisibility(View.VISIBLE);
 
 
-        chatBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (bmodel.getChatRegId() != null && bmodel.getChatUserName() != null
-                        && bmodel.getChatPassword() != null && !bmodel.getChatRegId().equals("")
-                        && !bmodel.getChatUserName().equals("") && !bmodel.getChatPassword().equals("")) {
-                    ChatApplicationHelper.getInstance(getActivity())
-                            .openChatApplication(bmodel.getChatUserName(),
-                                    bmodel.getChatUserName().trim() + "@ivymobility.com", bmodel.getChatPassword(),
-                                    bmodel.getChatRegId(), CHAT_AUTHENTICATION_KEY, CHAT_AUTHENTICATION_SECRET_KEY);
-                } else {
-                    Toast.makeText(getActivity(), R.string.not_registered, Toast.LENGTH_LONG).show();
-                }
+        if (bmodel.configurationMasterHelper.IS_SHOW_ANNOUNCEMENT)
+            announcementImgView.setVisibility(View.VISIBLE);
 
-            }
+        if(bmodel.configurationMasterHelper.IS_SHOW_NOTIFICATION)
+            notificationIMgView.setVisibility(View.VISIBLE);
+
+        chatBtn.setOnClickListener(view1 -> navigateChatApp());
+
+
+        announcementImgView.setOnClickListener(v -> {
+            Intent i = new Intent(getActivity(), AnnouncementActivity.class)
+                    .putExtra(AnnouncementConstant.SCREEN_TITLE, getString(R.string.announcement))
+                    .putExtra(AnnouncementConstant.FROM_HOME_SCREEN, true);
+            startActivity(i);
         });
 
-        firebaseChat.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), StartChatActivity.class);
-                startActivity(intent);
-            }
+        notificationIMgView.setOnClickListener(v -> {
+            Intent i = new Intent(getActivity(), MVPNotification.class);
+            startActivity(i);
         });
 
-
-        divStatusBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), DeviceStatusActivity.class);
-                startActivity(i);
-            }
-        });
-
-
-        feedBackBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), UserFeedbackActivity.class);
-                startActivity(i);
-            }
-        });
 
         // Initilize photo filder path and create directory if not exisit.
         if (!FileUtils.createFilePathAndFolder(getContext())) {
@@ -438,6 +411,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         return view;
 
+    }
+
+    private void navigateChatApp() {
+        Intent intent = new Intent(getContext(), StartChatActivity.class);
+        startActivity(intent);
     }
 
     public void loadHomeMenuConfiguration() {
@@ -568,8 +546,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         gotoNextActivity(configureBO);
                         break;
                     } //Mansoor -  IVYCPG-4099
-                    else if(bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled &&
-                            configureBO.getConfigCode().equalsIgnoreCase(MENU_IN_OUT)){
+                    else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled &&
+                            configureBO.getConfigCode().equalsIgnoreCase(MENU_IN_OUT)) {
                         gotoNextActivity(configureBO);
                         break;
                     }
@@ -617,7 +595,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                         .setTitle(
                                 BuildConfig.FLAVOR.equalsIgnoreCase("aws") ? getResources().getString(R.string.do_u_want_logout) :
-                        getResources().getString(R.string.do_u_want_close))
+                                        getResources().getString(R.string.do_u_want_close))
                         .setCancelable(false)
                         .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
@@ -752,7 +730,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
 
-            if (false&&bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+            if (false && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
                     (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
                                     .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
@@ -775,13 +753,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             Toast.LENGTH_SHORT).show();
             } else if (bmodel.configurationMasterHelper.IS_ENABLE_TRIP && !LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()) {
                 showDialog(2);
-            }
-            else if(false&&!LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isDownloadedDateValid()){
+            } else if (false && !LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isDownloadedDateValid()) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
-            }
-            else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
+            } else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
                     && isInandOutModuleEnabled
                     && AttendanceHelper.getInstance(getContext()).isSellerWorking(getContext())) {
                 Toast.makeText(getActivity(),
@@ -1675,9 +1651,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     }
 
     private void switchFragment(String fragmentName, String menuName) {
-        android.support.v4.app.FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getFragmentManager();
 
-        NewoutletContainerFragment mNewOutletFragment = (NewoutletContainerFragment) fm
+        ProfileContainerFragment mNewOutletFragment = (ProfileContainerFragment) fm
                 .findFragmentByTag(MENU_NEW_RETAILER);
 
         VisitFragment mVisitFragment = (VisitFragment) fm
@@ -1929,7 +1905,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 && dynamicDash02.isVisible()) {
             return;
         }
-        android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+        FragmentTransaction ft = fm.beginTransaction();
 
         if (mNewOutletFragment != null)
             ft.remove(mNewOutletFragment);
@@ -2029,6 +2005,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 if (!bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
                     bmodel.newOutletHelper.loadNewOutletConfiguration(0);
+                    channelId=0;
                     bmodel.newOutletHelper.downloadLinkRetailer();
                 }
 
@@ -2044,18 +2021,20 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(bmodel.productHelper.getFilterProductLevels(), true));
                 }
 
-                bmodel.newOutletHelper.downloadLocationLevels();
+             //   bmodel.newOutletHelper.downloadLocationLevels();
                 //clear distributor id and group id
                 bmodel.getRetailerMasterBO().setDistributorId(0);
                 bmodel.getRetailerMasterBO().setGroupId(0);
                 bmodel.newOutletHelper.setRetailerContactList(new ArrayList<RetailerContactBo>());
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
-                fragment = new NewoutletContainerFragment();
+                bndl.putInt("channelid", channelId);
+                if(channelName!=null)
+                    bndl.putString("channelName",channelName);
+                fragment = new ProfileContainerFragment();
                 fragment.setArguments(bndl);
                 fromHomeScreen = true;
-                ft.add(R.id.fragment_content, fragment,
-                        MENU_NEW_RETAILER);
+                ft.add(R.id.fragment_content, fragment, MENU_NEW_RETAILER);
                 break;
             case MENU_VISIT:
                 bndl = new Bundle();
@@ -2474,8 +2453,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
      * @param menuCode detach current fragment based on passed menu code
      */
     public void detach(String menuCode) {
-        android.support.v4.app.FragmentManager fm = getFragmentManager();
-        android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
 
         if (fm.findFragmentByTag(menuCode) != null) {
             ft.detach(fm.findFragmentByTag(menuCode));
@@ -2559,6 +2538,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         bmodel.newOutletHelper.loadNewOutletConfiguration(channelBO.getChannelId());
         bmodel.newOutletHelper.loadRetailerType();
         bmodel.newOutletHelper.downloadLinkRetailer();
+        channelId = channelBO.getChannelId();
+        channelName = channelBO.getChannelName();
         switchFragment(MENU_NEW_RETAILER, menuName);
         dialogFragment.dismiss();
     }
@@ -2566,7 +2547,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     @Override
     public void switchTaskView(boolean fromPendingTask) {
         if (!fromPendingTask) {
-            for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
+            for (ConfigureBO con : leftmenuDB) {
                 if (con.getConfigCode().equals(MENU_TASK_NEW)) {
                     gotoNextActivity(con);
                     break;
@@ -2769,16 +2750,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     + path);
             if (imgFile.exists()) {
                 try {
-                    profileImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                    profileImageView.setAdjustViewBounds(true);
-                    //  profileImageView.setImageBitmap(getCircularBitmapFrom(myBitmap));
-
                     Glide.with(getActivity())
                             .load(imgFile)
                             .centerCrop()
                             .placeholder(R.drawable.face)
                             .error(R.drawable.no_image_available)
-                            .transform(bmodel.circleTransform)
                             .into(profileImageView);
 
                 } catch (Exception e) {
@@ -2799,15 +2775,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 String path = imgPaths[imgPaths.length - 1];
                 File file = new File(FileUtils.photoFolderPath + "/" + path);
 
-                profileImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                profileImageView.setAdjustViewBounds(true);
-
-
                 Glide.with(getActivity()).load(file)
                         .centerCrop()
                         .placeholder(R.drawable.face)
                         .error(R.drawable.no_image_available)
-                        .transform(bmodel.circleTransform)
                         .into(profileImageView);
             } else {
                 profileImageView.setImageResource(R.drawable.face);

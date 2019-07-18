@@ -2,7 +2,7 @@ package com.ivy.cpg.locationservice.realtime;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.cpg.locationservice.LocationServiceHelper;

@@ -22,8 +22,10 @@ public interface RetailerDataManager {
 
     Observable<ArrayList<RetailerMissedVisitBO>> fetchMissedRetailers();
 
+    Single<Boolean> updatePriceGroupId(boolean isRetailer);
     Single<DateWisePlanBo> updatePlanAndVisitCount(RetailerMasterBO retailerMasterBO,DateWisePlanBo planBo);
 
+    Single<Boolean> updateSurveyScoreHistoryRetailerWise();
     Single<Boolean> updatePlanVisitCount(List<DateWisePlanBo> planList);
 
     Single<Boolean> updateIsToday();

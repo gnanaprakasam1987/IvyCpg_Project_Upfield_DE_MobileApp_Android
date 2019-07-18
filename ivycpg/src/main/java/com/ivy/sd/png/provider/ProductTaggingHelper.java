@@ -2,7 +2,7 @@ package com.ivy.sd.png.provider;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -60,6 +60,16 @@ public class ProductTaggingHelper {
     }
     public ArrayList<ProductTaggingBO> getProductTaggingList() {
         return productTaggingList;
+    }
+
+
+    /**
+     * get tagged products and update the productBO.
+     *
+     * @param mMenuCode menu code
+     */
+    public void downloadTaggedProducts(String mMenuCode) {
+        downloadTaggedProducts(businessModel,mMenuCode);
     }
 
     /**
@@ -270,7 +280,7 @@ public class ProductTaggingHelper {
 
         String attrQuery = "Select distinct PTAM.Groupid from ProductTaggingAttributesMapping PTAM" +
                 " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PTAM.groupid" +
-                " inner join RetailerAttribute RA on RA.AttributeId = PTAM.RetailerAttibuteId and RA.RetailerId =" + StringUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()) +
+                " inner join RetailerAttribute RA on RA.AttributeId = PTAM.RetailerAttibuteId and RA.RetailerId =" + StringUtils.getStringQueryParam(businessModel.getRetailerMasterBO().getRetailerID()) +
                 " WHERE PM.TaggingTypelovID = " + "(SELECT ListId FROM StandardListMaster WHERE ListCode = '" + moduleCode + "' AND ListType = 'PRODUCT_TAGGING')";
 
         Cursor c1 = db.selectSQL(attrQuery);
@@ -379,6 +389,15 @@ public class ProductTaggingHelper {
 
 
     ///////////////// Competitor tagging ////////////////////
+
+    /**
+     * get competitor tagged products and update the productBO.
+     *
+     * @param mMenuCode menu code
+     */
+    public void downloadCompetitorTaggedProducts(String mMenuCode) {
+        downloadCompetitorTaggedProducts(businessModel,mMenuCode);
+    }
 
     /**
      * get competitor tagged products and update the productBO.

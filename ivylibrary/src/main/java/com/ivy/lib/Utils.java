@@ -5,14 +5,11 @@ import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.text.TextUtils;
-import android.widget.ImageView;
-
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 

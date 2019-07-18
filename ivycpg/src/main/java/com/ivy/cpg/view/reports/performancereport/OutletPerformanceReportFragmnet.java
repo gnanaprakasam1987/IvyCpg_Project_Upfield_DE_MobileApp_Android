@@ -5,9 +5,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
@@ -337,7 +340,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
                     String key = (String) itr.next();
                     if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                         String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                             bmodel.synchronizationHelper
                                     .parseJSONAndInsert(jsonObject, true);
 
@@ -362,9 +365,9 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             progressDialogue.dismiss();
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 if (errorCode
-                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     if (outletPerfomanceHelper.isPerformReport()) {
 
                         downloadReportData();
@@ -399,9 +402,9 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
 
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentManager fm = getActivity().getSupportFragmentManager();
             SellerListFragment frag = (SellerListFragment) fm.findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+            FragmentTransaction ft = fm.beginTransaction();
             if (frag != null)
                 ft.detach(frag);
 

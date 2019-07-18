@@ -1,11 +1,13 @@
 package com.ivy.cpg.view.sf;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -46,7 +48,7 @@ public class SOSActivity_PRJSpecific extends IvyBaseActivityNoActionBar {
     }
 
     public void numberPressed(View vw) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SOSFragment_PRJSpecific asf = (SOSFragment_PRJSpecific) fm
                 .findFragmentById(R.id.sos_fragment_proj);
         asf.numberPressed(vw);

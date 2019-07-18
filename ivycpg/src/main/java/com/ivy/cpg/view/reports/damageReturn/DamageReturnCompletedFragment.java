@@ -50,7 +50,7 @@ public class DamageReturnCompletedFragment extends IvyBaseFragment {
         if (DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size() > 0) {
             pandingDeliveryBOS=new ArrayList<>();
             for(int i=0;i<DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size();i++){
-                if(!StringUtils.isEmptyString(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i).getStatus())){
+                if(!StringUtils.isNullOrEmpty(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i).getStatus())){
                     pandingDeliveryBOS.add(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i));
                 }
             }
@@ -136,7 +136,7 @@ public class DamageReturnCompletedFragment extends IvyBaseFragment {
             }
             PendingDeliveryBO pandingDeliveryBO = arrayList.get(position);
 
-            if(!StringUtils.isEmptyString(pandingDeliveryBO.getStatus())){
+            if(!StringUtils.isNullOrEmpty(pandingDeliveryBO.getStatus())){
                 holder.invoiceNo.setText(pandingDeliveryBO.getInvoiceRefNo());
                 holder.invoiceDate.setText(pandingDeliveryBO.getInvoiceDate());
                 holder.invNetamount.setText(pandingDeliveryBO.getInvNetamount());

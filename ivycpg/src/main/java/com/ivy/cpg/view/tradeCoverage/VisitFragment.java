@@ -12,15 +12,6 @@ import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +31,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.jointcall.JoinCallActivity;
 import com.ivy.cpg.view.order.tax.TaxGstHelper;
@@ -598,7 +600,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         inflater.inflate(R.menu.menu_search, menu);
         SearchManager searchManager = (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        ImageView searchClose = searchView.findViewById(R.id.search_close_btn);
         searchClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
         searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getActivity().getComponentName()) : null);
         SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
@@ -728,27 +730,27 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME_WGT)
                 tv_target.setText(String.valueOf(getTotalWeight()));
 
+            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
+                tv_target.setText(getTotalTimeSpend());
                 //cpg132-task13
             else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
                 tv_target.setText(String.valueOf(getTotalVolume()));
 
-            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
-                tv_target.setText(getTotalTimeSpend());
             else
                 tv_target.setText(getTotalVisitActual());
         } else {
 
             if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
                 tv_target1.setText(String.valueOf(getStoreVisited()));
+
             else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME_WGT)
                 tv_target1.setText(String.valueOf(getTotalWeight()));
 
+            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
+                tv_target1.setText(getTotalTimeSpend());
                 //cpg132-task13
             else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
                 tv_target1.setText(String.valueOf(getTotalVolume()));
-
-            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
-                tv_target1.setText(getTotalTimeSpend());
             else
                 tv_target1.setText(getTotalVisitActual());
         }
@@ -1454,7 +1456,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     String key = (String) itr.next();
                     if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                         errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                             int validateStatus = jsonObject.getInt("Response");
                             SharedPreferences.Editor editor = PreferenceManager
                                     .getDefaultSharedPreferences(getActivity())
@@ -1477,9 +1479,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             progressDialogue.dismiss();
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 if (errorCode
-                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     //proceed to retailer Selection
                     SharedPreferences sharedPrefs = PreferenceManager
                             .getDefaultSharedPreferences(getActivity());
@@ -2277,13 +2279,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         String strLastVisit = retailerMasterBO.getLastVisitDate() == null ? "" : DateTimeUtils.convertFromServerDateToRequestedFormat(retailerMasterBO.getLastVisitDate(), ConfigurationMasterHelper.outDateFormat);
 
         if (bmodel.configurationMasterHelper.IS_SHOW_RETAILER_LAST_VISITEDBY) {
-            if (StringUtils.isEmptyString(strLastVisit))
+            if (StringUtils.isNullOrEmpty(strLastVisit))
                 strLastVisit = retailerMasterBO.getLastVisitedBy() == null ? "" : "By : " + retailerMasterBO.getLastVisitedBy();
             else
                 strLastVisit = strLastVisit + " | " + (retailerMasterBO.getLastVisitedBy() == null ? "" : "By : " + retailerMasterBO.getLastVisitedBy());
         }
 
-        if (StringUtils.isEmptyString(strLastVisit))
+        if (StringUtils.isNullOrEmpty(strLastVisit))
             return "";
         else
             return getResources().getString(R.string.last_vist) + " " + strLastVisit;

@@ -2,11 +2,13 @@ package com.ivy.cpg.view.sf;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -77,7 +79,7 @@ public class SOSActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SOSFragment sos = (SOSFragment) fm.findFragmentById(R.id.sos_fragment);
         sos.updateBrandText(mFilterText, id);
     }
@@ -88,14 +90,14 @@ public class SOSActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SOSFragment sos = (SOSFragment) fm.findFragmentById(R.id.sos_fragment);
         sos.updateCancel();
     }
 
     @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SOSFragment fragment = (SOSFragment) fm
                 .findFragmentById(R.id.sos_fragment);
         fragment.updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);

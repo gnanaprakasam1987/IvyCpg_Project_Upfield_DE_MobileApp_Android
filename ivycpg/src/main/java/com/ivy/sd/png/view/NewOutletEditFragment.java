@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,6 +34,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.profile.create.view.NewOutletFragmentNew;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
     private ChannelSelectionDialog dialogFragment;
     NewOutletEditSortDialog sortDialog;
     private int lastCheckedPosition = -1;
+    private int channelid=0;
 
 
     @Nullable
@@ -144,6 +146,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
         bmodel.newOutletHelper.loadNewOutletConfiguration(channelBO.getChannelId());
         bmodel.newOutletHelper.loadRetailerType();
         bmodel.newOutletHelper.downloadLinkRetailer();
+        channelid = channelBO.getChannelId();
         new LoadNewOutLet().execute("0");
         dialogFragment.dismiss();
     }
@@ -192,11 +195,12 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                 @Override
                 public void onClick(View view) {
                     bmodel.newOutletHelper.loadNewOutletConfiguration(0);
-                    Intent i = new Intent(getActivity(), NewOutlet.class);
+                    Intent i = new Intent(getActivity(), NewOutletFragmentNew.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     i.putExtra("screenMode", 1);
                     i.putExtra("retailerId", retailer.getRetailerId());
                     i.putExtra("isNewRetailerEdit", true);
+                    i.putExtra("channelid",0);
                     startActivity(i);
                     //getActivity().finish();
                 }
@@ -439,6 +443,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
             try {
                 if (!bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
                     bmodel.newOutletHelper.loadNewOutletConfiguration(0);
+                    channelid=0;
                     bmodel.newOutletHelper.downloadLinkRetailer();
                 }
 
@@ -473,6 +478,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
 
             if (result) {
                 Intent i = new Intent(getActivity(), NewOutlet.class);
+                i.putExtra("channelid",channelid);
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 if (mParam.equals("1")) {
                     i.putExtra("screenMode", 2);

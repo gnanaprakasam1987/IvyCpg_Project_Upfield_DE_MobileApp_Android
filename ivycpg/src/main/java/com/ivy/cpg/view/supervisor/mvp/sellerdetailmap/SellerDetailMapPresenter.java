@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
@@ -803,7 +804,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             StringBuilder url = new StringBuilder();
             url.append(DataMembers.SERVER_URL);
             url.append(appendurl);
-            if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (businessModel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 try {
                     MyHttpConnectionNew http = new MyHttpConnectionNew();
                     http.create(MyHttpConnectionNew.POST, url.toString(), null);

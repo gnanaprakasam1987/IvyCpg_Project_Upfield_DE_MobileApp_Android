@@ -23,13 +23,15 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.ShareCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
+import androidx.fragment.app.DialogFragment;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentManager;
+
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -52,6 +54,7 @@ import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.ivy.core.IvyConstants;
 import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
@@ -73,7 +76,6 @@ import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.ApkDownloaderThread;
@@ -102,7 +104,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import static com.ivy.utils.DateTimeUtils.DATE;
 
@@ -797,7 +798,7 @@ public class SynchronizationFragment extends IvyBaseFragment
             getActivity().finish();
 
         } else if (i == R.id.menu_switch_user) {
-            android.support.v4.app.FragmentManager ft = getActivity().getSupportFragmentManager();
+            FragmentManager ft = getActivity().getSupportFragmentManager();
             SwitchUserDialog dialog = new SwitchUserDialog();
             dialog.setTargetFragment(this, 0);
             dialog.setCancelable(false);
@@ -1514,7 +1515,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     }
                 });
             } else {
-                if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     if (!result) {
                         if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
                             new UrlDownloadData().execute();
@@ -1661,7 +1662,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         int totalTableCount = bundle.getInt("totalCount");
         switch (method) {
             case SynchronizationHelper.VOLLEY_DOWNLOAD_INSERT:
-                if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
+                if (errorCode.equals(IvyConstants.UPDATE_TABLE_SUCCESS_CODE)) {
 
                     updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
@@ -1675,7 +1676,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         lastSyncTimeHelper.updateDownloadTime();
                         updateLastTransactionTimeInView();
                     }
-                } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                } else if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     //outelet Performac
                     if (OutletPerfomanceHelper.getInstance(getActivity()).getPerformRptUrl().length() > 0) {
                         SharedPreferences.Editor editor = PreferenceManager
@@ -1693,7 +1694,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                 break;
 
             case SynchronizationHelper.DISTRIBUTOR_WISE_DOWNLOAD_INSERT:
-                if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
+                if (errorCode.equals(IvyConstants.UPDATE_TABLE_SUCCESS_CODE)) {
 
                     updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
@@ -1707,7 +1708,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         lastSyncTimeHelper.updateDownloadTime();
                         updateLastTransactionTimeInView();
                     }
-                } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                } else if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     new UpdateDistributorFinish().execute();
                 } else {
                     reDownloadAlert(bundle);
@@ -1854,7 +1855,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         String key = (String) itr.next();
                         if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                             String errorCode = jsonObject.getString(key);
-                            if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                 bmodel.synchronizationHelper
                                         .parseJSONAndInsert(jsonObject, true);
                                 bmodel.synchronizationHelper.loadMasterUrlFromDB(true);
@@ -1901,7 +1902,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     private void updateDeleteTableStatus(String errorCode) {
         if (errorCode
-                .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
             if (dayCloseCheckBox.isChecked()) {
                 new DeleteTables(true, true).execute();
             } else {
@@ -1929,7 +1930,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                 String key = (String) itr.next();
                 if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                     String errorCode = jsonObject.getString(key);
-                    if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                         bmodel.synchronizationHelper
                                 .parseJSONAndInsert(jsonObject, true);
                         bmodel.synchronizationHelper.loadMasterUrlFromDB(true);
@@ -2159,7 +2160,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         String key = (String) itr.next();
                         if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                             String errorCode = value.getString(key);
-                            if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                 bmodel.synchronizationHelper
                                         .parseJSONAndInsert(value, true);
 
@@ -2385,7 +2386,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                 jsonObj.put("FirmWare", "");
                 jsonObj.put("DeviceId",
                         DeviceUtils.getIMEINumber(getActivity()));
-                jsonObj.put("RegistrationId", bmodel.regid);
+                jsonObj.put("RegistrationId", bmodel.fcmRegistrationToken);
                 jsonObj.put("DeviceUniqueId", DeviceUtils.getDeviceId(getActivity()));
                 if (DataMembers.ACTIVATION_KEY != null && !DataMembers.ACTIVATION_KEY.isEmpty())
                     jsonObj.put("ActivationKey", DataMembers.ACTIVATION_KEY);
@@ -2412,7 +2413,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     String key = (String) itr.next();
                     if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                         String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                             bmodel.synchronizationHelper
                                     .parseJSONAndInsert(jsonObject, false);
                             bmodel.userMasterHelper.downloadUserDetails();
@@ -2432,9 +2433,9 @@ public class SynchronizationFragment extends IvyBaseFragment
             super.onPostExecute(output);
             if (alertDialog != null)
                 alertDialog.dismiss();
-            if (output.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                bmodel.userNameTemp = userName;
-                bmodel.passwordTemp = password;
+            if (output.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
+                bmodel.getAppDataProvider().setUserName(userName);
+                bmodel.getAppDataProvider().setUserPassword(password);
                 new CheckNewVersionTask()
                         .execute(0);
             } else {

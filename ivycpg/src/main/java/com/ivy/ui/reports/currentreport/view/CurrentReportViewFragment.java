@@ -14,12 +14,12 @@ import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.ui.reports.currentreport.CurrentReportViewAdapter;
 import com.ivy.ui.reports.currentreport.ICurrentReportContract;
 import com.ivy.ui.reports.currentreport.di.CurrentReportModule;
-import com.ivy.ui.reports.currentreport.di.DaggerCurrentReportComponent;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.ui.reports.currentreport.di.DaggerCurrentReportComponent;
 
 
 import java.util.ArrayList;

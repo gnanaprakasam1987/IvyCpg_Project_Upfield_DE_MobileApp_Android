@@ -90,7 +90,8 @@
 
 
         <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
-        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
+        <item name="homeScreenListViewBackground">@color/list_view_bg_blue</item>
+        <item name="homeScreenHeaderBackground">@color/burger_menu_header_blue</item>
         <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
         <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
         <!--CustomTextViews-->
@@ -108,6 +109,7 @@
         <item name="fabButtonStyle_Configured">@style/fab_icon_style_enabled</item>
         <item name="imageStyle_Configured">@style/image_style_enabled</item>
         <item name="buttonStyle_Configured">@style/button_normal_style_enabled</item>
+        <item name="circleBackground">@drawable/circle_bg_blue</item>
 
 
     </style>
@@ -200,7 +202,8 @@
 
 
         <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
-        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
+        <item name="homeScreenListViewBackground">@color/list_view_bg_blue</item>
+        <item name="homeScreenHeaderBackground">@color/burger_menu_header_blue</item>
         <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
         <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
         <!--CustomTextViews-->
@@ -217,6 +220,7 @@
         <item name="fabButtonStyle_Configured">@style/fab_icon_style_disabled</item>
         <item name="imageStyle_Configured">@style/image_style_disabled</item>
         <item name="buttonStyle_Configured">@style/button_normal_style_disabled</item>
+        <item name="circleBackground">@drawable/circle_bg_blue</item>
 
     </style>
 

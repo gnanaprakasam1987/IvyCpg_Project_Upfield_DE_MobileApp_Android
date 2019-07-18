@@ -38,6 +38,10 @@
     <!--List item Value Text color-->
     <color name="list_item_values_text_color_green">#262626</color>
 
+    <!-- Home Screen Burger Menu background color-->
+    <color name="list_view_bg_green">#071F17</color>
+    <color name="burger_menu_header_green">#04150F</color>
+
     <!-- ********************************Planning sub/ LoadManagement Module **************************-->
 
     <color name="startAndEndOfTheDayHeaderLayoutBg_green">#F3FFF6</color>

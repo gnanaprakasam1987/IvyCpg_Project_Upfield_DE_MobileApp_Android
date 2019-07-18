@@ -9,4 +9,6 @@ public interface DataManager extends AppDataManager,SharedPreferenceHelper,AppDa
     int getSavedImageCount();
 
     String getMenuName(String menuCode);
+
+    boolean isOpenOrderExisting();
 }

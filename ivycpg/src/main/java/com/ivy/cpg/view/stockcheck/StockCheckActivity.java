@@ -1,13 +1,14 @@
 package com.ivy.cpg.view.stockcheck;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
-import com.ivy.core.base.view.BaseActivity;
+import androidx.fragment.app.FragmentManager;
+
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -78,7 +79,7 @@ public class StockCheckActivity extends IvyBaseActivityNoActionBar implements
     }
 
     public void numberPressed(View vw) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockCheckFragment asf = (StockCheckFragment) fm
                 .findFragmentById(R.id.stock_check_fragment);
         asf.numberPressed(vw);
@@ -86,7 +87,7 @@ public class StockCheckActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockCheckFragment asf = (StockCheckFragment) fm
                 .findFragmentById(R.id.stock_check_fragment);
         asf.updateBrandText(mFilterText, id);
@@ -94,7 +95,7 @@ public class StockCheckActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateGeneralText(String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
         StockCheckFragment mStockCheckFragment = (StockCheckFragment) fm
                 .findFragmentById(R.id.stock_check_fragment);
@@ -103,7 +104,7 @@ public class StockCheckActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockCheckFragment asf = (StockCheckFragment) fm
                 .findFragmentById(R.id.stock_check_fragment);
         asf.updateCancel();
@@ -111,7 +112,7 @@ public class StockCheckActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockCheckFragment asf = (StockCheckFragment) fm
                 .findFragmentById(R.id.stock_check_fragment);
         asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);

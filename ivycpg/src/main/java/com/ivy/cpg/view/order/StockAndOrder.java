@@ -20,22 +20,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.Group;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.CompoundButtonCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -66,12 +50,29 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.Group;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.widget.CompoundButtonCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.tabs.TabLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.initiative.InitiativeActivity;
@@ -80,8 +81,10 @@ import com.ivy.cpg.view.order.moq.MOQHighlightActivity;
 import com.ivy.cpg.view.order.productdetails.ProductSchemeDetailsActivity;
 import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
+import com.ivy.cpg.view.order.scheme.SchemeBO;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsActivity;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.cpg.view.order.scheme.UpSellingActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
@@ -99,8 +102,6 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
-import com.ivy.cpg.view.order.scheme.SchemeBO;
-import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
@@ -318,7 +319,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
@@ -2033,7 +2034,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (bmodel.configurationMasterHelper.IS_STK_DIGIT)
                         holder.shelfCaseQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
 
-                    ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.shelfCaseTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.shelfCaseTitle))
@@ -3515,7 +3515,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             productSearch.setProductNameOnBar(holder.pname);
 
                         if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
-                            dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.shelfPcsQty);
+                            dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.srpEdit,true,12);
                             dialogCustomKeyBoard.show();
                             dialogCustomKeyBoard.setCancelable(false);
 
@@ -3565,7 +3565,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         holder.srpEdit.setSelection(qty.length());
                     }
                     if (!"".equals(qty)) {
-                        if (SDUtil.isValidDecimal(qty, 8, 2)) {
+                        boolean validateSRPEdit = isValidateSRPEdit(qty, holder);
+                        if (SDUtil.isValidDecimal(qty, 8, 2)
+                                && validateSRPEdit) {
 
                             holder.productObj.setSrp(SDUtil.convertToFloat(SDUtil.format(SDUtil.convertToFloat(qty), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
 
@@ -3574,7 +3576,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             float osrp = holder.productObj.getOutersize() * SDUtil.convertToFloat(qty);
                             holder.productObj.setOsrp(SDUtil.convertToFloat(SDUtil.format(osrp, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+
+                            if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP
+                                    && mSchedule != null)
+                                mSchedule.notifyDataSetChanged();
                         } else {
+                            if (!validateSRPEdit
+                                    && bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP)
+                                showMessage(String.format(getString(R.string.srp_must_be_less_than_of_mrp),holder.productObj.getMRP()));
+
                             holder.srpEdit.setText(qty.length() > 1 ? qty
                                     .substring(0, qty.length() - 1) : "0");
                         }
@@ -3834,7 +3844,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             });
         }
 
+    }
 
+    private boolean isValidateSRPEdit(String qty, ViewHolder holder) {
+       return !bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP
+               || (SDUtil.convertToFloat(SDUtil.format(SDUtil.convertToFloat(qty), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0))
+               <= holder.productObj.getMRP());
     }
 
     private void calculateSO(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {
@@ -5047,10 +5062,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
 
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("generalfilter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);
@@ -5076,10 +5091,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);
@@ -5854,7 +5869,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         switch (method) {
             case SynchronizationHelper.WAREHOUSE_STOCK_DOWNLOAD:
-                if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (errorCode != null && errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     dismissProgressDialog();
                     bmodel.showAlert(getResources().getString(R.string.stock_download_successfully), 0);
                     orderHelper.updateWareHouseStock(getApplicationContext());
@@ -5903,7 +5918,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 String warehouseWebApi = bmodel.synchronizationHelper.downloadWareHouseStockURL();
                 if (!warehouseWebApi.equals("")) {
                     bmodel.synchronizationHelper.downloadWareHouseStock(warehouseWebApi);

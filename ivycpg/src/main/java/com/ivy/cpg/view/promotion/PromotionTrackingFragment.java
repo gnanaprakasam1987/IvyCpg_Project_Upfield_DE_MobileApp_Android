@@ -10,17 +10,18 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -43,6 +44,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -65,6 +67,7 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.view.OnSingleClickListener;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -160,7 +163,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         FrameLayout drawer = view.findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
         businessModel = (BusinessModel) getActivity().getApplicationContext();
@@ -536,7 +539,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             onBackButonClick();
             return true;
         } else if (i == R.id.menu_remarks) {
-            android.support.v4.app.FragmentManager ft = getActivity()
+            FragmentManager ft = getActivity()
                     .getSupportFragmentManager();
             RemarksDialog remarksDialog = new RemarksDialog(HomeScreenTwo.MENU_PROMO);
             remarksDialog.setCancelable(false);
@@ -559,7 +562,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         try {
 
             mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
+            FragmentManager fm = getActivity()
                     .getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("FiveFilter");
@@ -818,6 +821,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         Button mToDateBTN;
         LinearLayout ll_Rating, ll_price;
         ImageView img_remarks;
+        ImageButton imgAttachment;
     }
 
     private class MyAdapter extends ArrayAdapter<PromotionBO> {
@@ -1204,7 +1208,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 }
             });
 
-            if (!StringUtils.isEmptyString(holder.mPromotionMasterBO.getRemarks()))
+            if (!StringUtils.isNullOrEmpty(holder.mPromotionMasterBO.getRemarks()))
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_promo, null));
             else
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_no_promo, null));
@@ -1502,7 +1506,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
                 holder.tv_promoHeader = row
                         .findViewById(R.id.tvPromoHeader);
-                holder.tv_promoHeader.setVisibility(View.GONE);
+
+                holder.imgAttachment = row.findViewById(R.id.imgAttachment);
+                holder.imgAttachment.setVisibility(View.GONE);
+
                 holder.tv_product_price = row
                         .findViewById(R.id.price);
                 holder.rbExecuted = row
@@ -1776,10 +1783,18 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
             holder.mPromotionMasterBO = items.get(position);
 
+//            row.findViewById(R.id.ll_attachment).setVisibility(View.GONE);
             if(keySet.contains(holder.mPromotionMasterBO.getPromoName())){
-                holder.tv_promoHeader.setVisibility(View.VISIBLE);
+                row.findViewById(R.id.ll_attachment).setVisibility(View.VISIBLE);
                 holder.tv_promoHeader.setText(holder.mPromotionMasterBO.getPromoName());
                 keySet.remove(holder.mPromotionMasterBO.getPromoName());
+            }
+
+            if(holder.mPromotionMasterBO.getPromotionAttchmentList() != null &&
+                    holder.mPromotionMasterBO.getPromotionAttchmentList().size() > 0){
+                holder.imgAttachment.setVisibility(View.VISIBLE);
+            } else {
+                holder.imgAttachment.setVisibility(View.GONE);
             }
             //holder.tv_product_price.setText(holder.mPromotionMasterBO.getProductPrice() + "");
             if (holder.mPromotionMasterBO.getIsExecuted() == 1) {
@@ -1879,7 +1894,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 }
             });
 
-            if (!StringUtils.isEmptyString(holder.mPromotionMasterBO.getRemarks()))
+            if (!StringUtils.isNullOrEmpty(holder.mPromotionMasterBO.getRemarks()))
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_promo, null));
             else
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_no_promo, null));
@@ -1901,6 +1916,17 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             } else {
                 holder.ll_price.setVisibility(View.GONE);
             }
+
+            holder.imgAttachment.setOnClickListener(new OnSingleClickListener() {
+                @Override
+                public void onSingleClick(View v) {
+                    FragmentTransaction ft = getActivity()
+                            .getSupportFragmentManager().beginTransaction();
+                    PromotionAttachmentDialog dialog = new PromotionAttachmentDialog("MENU_PROMO_REMARKS", holder.mPromotionMasterBO.getPromotionAttchmentList());
+                    dialog.setCancelable(false);
+                    dialog.show(ft, "MENU_PROMO_ATTACHMENT");
+                }
+            });
             return row;
         }
     }

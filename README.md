@@ -1,3 +1,7 @@
+
+[![API](https://img.shields.io/badge/API-16%2B-blue.svg?style=plastic)](https://developer.android.com/studio/releases/platforms#4.1)
+
+
 IvyCPG is a native android offline application. VanSales, Presales, Primary Sales, Team Leader , Auditing, Sub-D and Supervisor are the main modules. Application will work based on configuration sent from backend.
 
 Pre-Requsite to compile

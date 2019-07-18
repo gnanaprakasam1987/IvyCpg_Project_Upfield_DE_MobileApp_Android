@@ -81,12 +81,14 @@
         <attr name="tradeCoverageBackgroundTwo" format="reference" />
         <attr name="tradeCoverageBackgroundThree" format="reference" />
         <attr name="dashboardSpinnerBackground" format="reference" />
-        <attr name="homescreenbackground" format="reference" />
+        <attr name="homeScreenListViewBackground" format="color" />
+        <attr name="homeScreenHeaderBackground" format="color" />
         <attr name="mtdDashboardBackground" format="reference" />
         <attr name="dashboardSpinnerSelector" format="reference" />
         <attr name="customListTitleBackgroundColor" format="color" />
         <attr name="startAndEndOfTheDayHeaderLayoutBg" format="color" />
         <attr name="customHeaderBackgroundColor" format="color" />
+        <attr name="circleBackground" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="cardViewLayout">

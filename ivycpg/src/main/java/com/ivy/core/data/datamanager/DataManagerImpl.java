@@ -9,9 +9,12 @@ import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.IndicativeBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -32,13 +35,15 @@ public class DataManagerImpl implements DataManager {
     private AppDataProvider appDataProvider;
     private ConfigurationMasterHelper configurationMasterHelper;
     private Context mContext;
+    private ProductHelper productHelper;
 
     @Inject
-    public DataManagerImpl(@ApplicationContext Context context, SharedPreferenceHelper sharedPreferenceHelper, AppDataManager appDataManager, AppDataProvider appDataProvider, ConfigurationMasterHelper configurationMasterHelper) {
+    public DataManagerImpl(@ApplicationContext Context context, SharedPreferenceHelper sharedPreferenceHelper, AppDataManager appDataManager, AppDataProvider appDataProvider, ConfigurationMasterHelper configurationMasterHelper, ProductHelper productHelper) {
         this.mSharedPreferenceHelper = sharedPreferenceHelper;
         this.appDataManager = appDataManager;
         this.appDataProvider = appDataProvider;
         this.configurationMasterHelper = configurationMasterHelper;
+        this.productHelper = productHelper;
         this.mContext = context;
     }
 
@@ -259,6 +264,21 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public void setOrderHeaderNote(String orderHeaderNote) {
+        appDataProvider.setOrderHeaderNote(orderHeaderNote);
+    }
+
+    @Override
+    public void setOrderHeaderNote(String orderHeaderNote, boolean isFromBModel) {
+        appDataProvider.setOrderHeaderNote(orderHeaderNote,isFromBModel);
+    }
+
+    @Override
+    public String getOrderHeaderNote() {
+        return appDataProvider.getOrderHeaderNote();
+    }
+
+    @Override
     public Observable<ArrayList<ConfigureBO>> fetchNewActivityMenu(String menuName) {
         return appDataManager.fetchNewActivityMenu(menuName);
     }
@@ -313,6 +333,112 @@ public class DataManagerImpl implements DataManager {
             Commons.printException(e);
         }
         return menuName;
+    }
+
+    @Override
+    public boolean isOpenOrderExisting() {
+        int siz = productHelper.getProductMaster().size();
+        if (siz == 0)
+            return false;
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO product = productHelper
+                    .getProductMaster().get(i);
+            if (product.getOrderedCaseQty() > 0
+                    || product.getOrderedPcsQty() > 0
+                    || product.getOrderedOuterQty() > 0)
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Single<Boolean> isDayClosed() {
+        return appDataManager.isDayClosed();
+    }
+
+    @Override
+    public Single<Boolean> isFloatingSurveyEnabled(String moduleCode) {
+        return appDataManager.isDayClosed();
+    }
+
+    @Override
+    public String getUserName() {
+        return appDataProvider.getUserName();
+    }
+
+    @Override
+    public void setUserName(String userName) {
+        appDataProvider.setUserName(userName);
+    }
+
+    @Override
+    public String getUserPassword() {
+        return appDataProvider.getUserPassword();
+    }
+
+    @Override
+    public void setUserPassword(String userPassword) {
+        appDataProvider.setUserPassword(userPassword);
+    }
+
+    @Override
+    public boolean isEditOrder() {
+        return appDataProvider.isEditOrder();
+    }
+
+    @Override
+    public void setIsEditOrder(boolean isEditOrder) {
+        appDataProvider.setIsEditOrder(isEditOrder);
+    }
+
+    @Override
+    public String getDeviceId() {
+        return appDataProvider.getDeviceId();
+    }
+
+    @Override
+    public String getAppVersionNumber() {
+        return appDataProvider.getAppVersionNumber();
+    }
+
+    @Override
+    public String getAppVersionName() {
+        return appDataProvider.getAppVersionName();
+    }
+
+    @Override
+    public String getIMEINumber() {
+        return appDataProvider.getIMEINumber();
+    }
+
+    @Override
+    public String getFcmRegistrationToken() {
+        return appDataProvider.getFcmRegistrationToken();
+    }
+
+    @Override
+    public void setFcmRegistrationToken(String fcmRegistrationToken) {
+        appDataProvider.setFcmRegistrationToken(fcmRegistrationToken);
+    }
+
+    @Override
+    public void setApplicationUrl(String applicationUrl) {
+        mSharedPreferenceHelper.setApplicationUrl(applicationUrl);
+    }
+
+    @Override
+    public String getApplicationUrl() {
+        return mSharedPreferenceHelper.getApplicationUrl();
+    }
+
+    @Override
+    public void setSyncLogId(String syncLogId) {
+        appDataProvider.setSyncLogId(syncLogId);
+    }
+
+    @Override
+    public String getSyncLogId() {
+        return appDataProvider.getSyncLogId();
     }
 
     @Override

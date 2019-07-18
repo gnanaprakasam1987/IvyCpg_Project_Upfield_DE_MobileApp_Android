@@ -1,4 +1,4 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
@@ -219,7 +219,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/ll_titleList" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_week"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -257,7 +257,7 @@
 
     <include layout="@layout/copy_plan_bottomsheet" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_retailer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -270,4 +270,4 @@
         app:layout_anchor="@+id/bottomsheet"
         app:layout_anchorGravity="top|end"
         app:useCompatPadding="true" />
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

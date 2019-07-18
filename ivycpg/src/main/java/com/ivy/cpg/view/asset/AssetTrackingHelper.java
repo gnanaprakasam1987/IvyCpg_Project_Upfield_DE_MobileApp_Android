@@ -2407,7 +2407,7 @@ public class AssetTrackingHelper {
 
         String attrQuery = "Select distinct Id,MappingSetId from POSMCriteriaAttributesMappingV2 PCA"
                 + " inner join RetailerAttribute RA on RA.AttributeId = PCA.RetailerAttibuteId and RA.RetailerId ="
-                + StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+                + StringUtils.getStringQueryParam(mBusinessModel.getRetailerMasterBO().getRetailerID());
 
         Cursor c = db.selectSQL(attrQuery);
 
@@ -2420,10 +2420,10 @@ public class AssetTrackingHelper {
         String criteriaQuery = "Select Distinct pcm.Id,pcm.MappingSetId,pcm.AccountId,pcm.Retailerid,pcm.LocationId,pcm.ChannelId,IFNULL(pca.Id,0) as attrMapped from POSMCriteriaMappingV2 pcm "
                 + " Left Join POSMCriteriaAttributesMappingV2 pca on pca.Id = pcm.Id and pca.MappingSetId = pcm.MappingSetId "
                 + "where AccountId in(0," + mBusinessModel.getRetailerMasterBO().getAccountid() + ") and "
-                + " Retailerid in(0," + StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ") and "
+                + " Retailerid in(0," + StringUtils.getStringQueryParam(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ") and "
                 + " LocationId in(0," + mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()) + ") and "
                 + " ChannelId in(0," + mBusinessModel.getRetailerMasterBO().getSubchannelid() + ") OR "
-                + " ChannelId in (0," + StringUtils.QT(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext)) + ")";
+                + " ChannelId in (0," + StringUtils.getStringQueryParam(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext)) + ")";
 
         c = db.selectSQL(criteriaQuery);
         if (c.getCount() > 0) {

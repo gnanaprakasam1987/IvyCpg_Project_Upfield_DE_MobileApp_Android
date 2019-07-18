@@ -18,6 +18,7 @@ public class SharedPreferenceHelperImpl implements SharedPreferenceHelper {
     private static final String APPLICATION_NAME = "application";
     private static final String ACTIVATION_KEY = "activationKey";
     private static final String LANGUAGE_PREF = "languagePref";
+    private static final String APPLICATION ="application";
     private static final String TASK_NOTIFICATION = "taskNotificationFlag";
 
 
@@ -69,6 +70,10 @@ public class SharedPreferenceHelperImpl implements SharedPreferenceHelper {
     }
 
     @Override
+    public String getApplicationUrl() {
+        return defaultPreferences.getString(APPLICATION, "");
+    }
+    @Override
     public boolean getTaskNotificationFlag() {
         return defaultPreferences.getBoolean(TASK_NOTIFICATION, false);
     }
@@ -79,4 +84,8 @@ public class SharedPreferenceHelperImpl implements SharedPreferenceHelper {
     }
 
 
+    @Override
+    public void setApplicationUrl(String applicationUrl) {
+        defaultPreferences.edit().putString(APPLICATION, applicationUrl).apply();
+    }
 }

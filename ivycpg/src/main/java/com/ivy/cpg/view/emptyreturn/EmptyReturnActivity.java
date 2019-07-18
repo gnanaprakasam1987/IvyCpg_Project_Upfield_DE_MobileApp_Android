@@ -1,8 +1,10 @@
 package com.ivy.cpg.view.emptyreturn;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -29,7 +31,7 @@ public class EmptyReturnActivity extends IvyBaseActivityNoActionBar implements B
     }
 
     public void numberPressed(View v) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         EmptyReturnFragment fragment = (EmptyReturnFragment) fm
                 .findFragmentById(R.id.empty_return_fragment);
         fragment.numberPressed(v);
@@ -37,7 +39,7 @@ public class EmptyReturnActivity extends IvyBaseActivityNoActionBar implements B
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         EmptyReturnFragment fragment = (EmptyReturnFragment) fm
                 .findFragmentById(R.id.empty_return_fragment);
         fragment.updateBrandText(mFilterText, id);
@@ -45,7 +47,7 @@ public class EmptyReturnActivity extends IvyBaseActivityNoActionBar implements B
 
     @Override
     public void updateGeneralText(String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         EmptyReturnFragment fragment = (EmptyReturnFragment) fm
                 .findFragmentById(R.id.empty_return_fragment);
         fragment.updateGeneralText(mFilterText);
@@ -53,7 +55,7 @@ public class EmptyReturnActivity extends IvyBaseActivityNoActionBar implements B
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         EmptyReturnFragment fragment = (EmptyReturnFragment) fm
                 .findFragmentById(R.id.empty_return_fragment);
         fragment.updateCancel();

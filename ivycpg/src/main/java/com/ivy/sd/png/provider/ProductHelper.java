@@ -370,16 +370,16 @@ public class ProductHelper {
                     if(stockQty != null){
                         String[] splitQty = stockQty.split(",");
                         if (splitQty.length >= 4) {
-                            p.setLastVisitColor(splitQty[0].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisitColor(splitQty[0].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[0]).find() ? android.R.color.holo_green_dark :
                                             android.R.color.holo_red_dark));
-                            p.setLastVisit1Color(splitQty[1].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisit1Color(splitQty[1].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[1]).find() ? android.R.color.holo_green_dark :
                                     android.R.color.holo_red_dark));
-                            p.setLastVisit2Color(splitQty[2].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisit2Color(splitQty[2].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[2]).find() ? android.R.color.holo_green_dark :
                                     android.R.color.holo_red_dark));
-                            p.setLastVisit3Color(splitQty[3].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisit3Color(splitQty[3].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[3]).find() ? android.R.color.holo_green_dark :
                                     android.R.color.holo_red_dark));
 
@@ -976,7 +976,7 @@ public class ProductHelper {
                     + " F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid,F.ASRP as asrp,"
                     + " (CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
                     + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom,F.MarginPrice as marginprice"
-                    + (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE ? ",FSH.qty as freeSIH" : ",0 as freeSIH,")
+                    + (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE ? ",FSH.qty as freeSIH," : ",0 as freeSIH,")
                     + "(CASE WHEN A.PID in (PPM.PID) then '1' else '0' end) as  isTradePromo"
                     + " from ProductMaster A";
 
@@ -1107,7 +1107,7 @@ public class ProductHelper {
 
             db.closeDB();
 
-            if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
+            if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER && taxHelper!=null) {
                 taxHelper.downloadProductTaxDetails();
             }
 
@@ -1116,7 +1116,7 @@ public class ProductHelper {
                 downloadAttributeProductMapping();
 
 
-            if (filterProductLevels.size() > 0
+            if (filterProductLevels!=null && filterProductLevels.size() > 0
                     && (getLstProductAttributeMapping() != null
                     && getLstProductAttributeMapping().size() > 0))
                 downloadLeastBrandProductMapping(mContentLevelId, filterProductLevels.size(), moduleCode);
@@ -1533,6 +1533,7 @@ public class ProductHelper {
                     oldBatchId.put(c.getString(0), c.getInt(1));
                     oldBatchBasePrice.put(c.getString(0), c.getDouble(3));
                 }
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -2470,7 +2471,7 @@ public class ProductHelper {
             db.openDataBase();
           /*  Cursor indicativeCursor = db
                     .selectSQL("select distinct(uid) from indicativeorder where rid="
-                            + QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                            + getStringQueryParam(bmodel.getRetailerMasterBO().getRetailerID()));
             String uid = "";
             if (indicativeCursor.getCount() > 0) {
                 if (indicativeCursor.moveToFirst()) {

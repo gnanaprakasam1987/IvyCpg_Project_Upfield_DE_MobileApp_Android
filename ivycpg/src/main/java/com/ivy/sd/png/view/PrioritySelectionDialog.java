@@ -3,8 +3,8 @@ package com.ivy.sd.png.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +34,7 @@ public class PrioritySelectionDialog extends Dialog {
     private ArrayList<StandardListBO> mPriorityProductList;
     private PrioritySelectionListener prioritySelectionListener;
 
-    PrioritySelectionDialog(@NonNull Context context, String mTitle, int hasLink, int mSelectedposition, ArrayList<StandardListBO> PriorityProductList) {
+    public PrioritySelectionDialog(@NonNull Context context, String mTitle, int hasLink, int mSelectedposition, ArrayList<StandardListBO> PriorityProductList) {
         super(context);
         mContext = context;
         Title = mTitle;
@@ -145,7 +145,7 @@ public class PrioritySelectionDialog extends Dialog {
         void updatePriorityProducts(ArrayList<StandardListBO> mPriorityProductList);
     }
 
-    void setPrioritySelectionListener(Fragment Listner) {
+    public void setPrioritySelectionListener(Fragment Listner) {
         this.prioritySelectionListener = (PrioritySelectionListener) Listner;
     }
 }

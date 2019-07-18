@@ -51,7 +51,7 @@
         android:id="@+id/menu_search"
         android:icon="@drawable/icon_search"
         android:title="search"
-        ivydist:actionViewClass="android.support.v7.widget.SearchView"
+        ivydist:actionViewClass="androidx.appcompat.widget.SearchView"
         ivydist:showAsAction="always"
         android:visible="false"/>
 

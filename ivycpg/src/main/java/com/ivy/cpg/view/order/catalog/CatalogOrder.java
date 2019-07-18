@@ -13,18 +13,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -49,9 +37,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.initiative.InitiativeActivity;
@@ -181,6 +185,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private RequestManager glide;
     private StockCheckHelper stockCheckHelper;
+    private int lastSelectedPos = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -307,7 +312,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         FrameLayout drawer = findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
@@ -1215,10 +1220,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             mDrawerLayout.openDrawer(GravityCompat.END);
 
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("generalfilter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);
@@ -1247,10 +1252,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             mDrawerLayout.openDrawer(GravityCompat.END);
 
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);
@@ -1706,6 +1711,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             String  strDistValue = sbdAchievement + "/" + bmodel.getAppDataProvider().getRetailMaster()
                     .getSbdDistributionTarget();
             distValue.setText(strDistValue);
+
+            if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP
+                    && lastSelectedPos != -1)
+                adapter.notifyItemChanged(lastSelectedPos);
         }
     }
 
@@ -2216,6 +2225,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                             dialogCustomKeyBoard.show();
                             dialogCustomKeyBoard.setCancelable(false);
 
+                            lastSelectedPos = getAdapterPosition();
                             //Grab the window of the dialog, and change the width
                             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                             Window window = dialogCustomKeyBoard.getWindow();
@@ -2330,7 +2340,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         switch (method) {
             case SynchronizationHelper.WAREHOUSE_STOCK_DOWNLOAD:
-                if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (errorCode != null && errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     alertDialog.dismiss();
                     bmodel.showAlert(getResources().getString(R.string.stock_download_successfully), 0);
                     OrderHelper.getInstance(this).updateWareHouseStock(getApplicationContext());
@@ -2385,7 +2395,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 String warehouseWebApi = bmodel.synchronizationHelper.downloadWareHouseStockURL();
                 if (!warehouseWebApi.equals("")) {
                     bmodel.synchronizationHelper.downloadWareHouseStock(warehouseWebApi);

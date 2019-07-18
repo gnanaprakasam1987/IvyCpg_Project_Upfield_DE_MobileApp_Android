@@ -1,6 +1,6 @@
 package com.ivy.sd.png.model;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by dharmapriya.k on 11/11/2016,3:10 PM.

@@ -18,13 +18,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +39,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -296,7 +295,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             for (ConfigureBO configureBO : callanalysismenu) {
                 if (configureBO.getConfigCode().equalsIgnoreCase("CallA38")) {
                     contentCloseCall.setVisibility(View.VISIBLE);
-                    TVMenuName.setText(StringUtils.isEmptyString(configureBO.getMenuName()) ? "Activity Completion Status" : configureBO.getMenuName());
+                    TVMenuName.setText(StringUtils.isNullOrEmpty(configureBO.getMenuName()) ? "Activity Completion Status" : configureBO.getMenuName());
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                     linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                     ModuleAdapter moduleAdapter = new ModuleAdapter(getTimeTakenData());
@@ -1209,7 +1208,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             db.openDataBase();
             Cursor c = db.selectSQL("select stockid from "
                     + DataMembers.tbl_closingstockheader + " where retailerid="
-                    + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                    + StringUtils.getStringQueryParam(bmodel.getRetailerMasterBO().getRetailerID())
                     + " AND DistributorID=" + bmodel.getRetailerMasterBO().getDistributorId());
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -2162,8 +2161,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             Cursor c = db.selectSQL("select OD.TimeIn,OD.TimeOut,ifnull(hm.MName,'') from "
                     + DataMembers.tbl_outlet_time_stamp_detail
                     + " OD Left join HhtMenuMaster hm on hm.HHTCode = OD.ModuleCode and lang="
-                    + StringUtils.QT(language)
-                    + " where retailerid=" + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                    + StringUtils.getStringQueryParam(language)
+                    + " where retailerid=" + StringUtils.getStringQueryParam(bmodel.getRetailerMasterBO().getRetailerID())
                     + " AND ModuleCode != 'MENU_CALL_ANLYS'");
 
             if (c != null) {

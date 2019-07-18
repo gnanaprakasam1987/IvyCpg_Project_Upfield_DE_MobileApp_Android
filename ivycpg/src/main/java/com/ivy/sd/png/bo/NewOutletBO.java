@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class NewOutletBO extends ArrayList<NewOutletBO> {
+public class NewOutletBO {
     private int mSelectedImageIndex = 0;
     private double NewOutletlattitude, NewOutletLongitude;
-    private String visitDays;
-    private String weekNo;
+    private String visitDays="";
+    private String weekNo="";
     private String mName;
     private String valueText;
     private String srotText;
@@ -21,53 +21,64 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
     public ArrayList<String> ImageName = new ArrayList<>();
     public ArrayList<Integer> ImageId = new ArrayList<>();
 
-    private String Market;
+    private String Market="";
     private int channel, subChannel;
-    private String outletName;
-    private String Address;
-    private String Address2;
-
+    private String outletName="";
+    private String Address="";
+    private String Address2="";
 
     private String Address3 = "";
-    private String City, State;
-    private String Phone, email;
+    private String City="", State="";
+    private String Phone="", email="";
     private String distid = "0";
-    private String contactpersonname, contactpersonname2, Phone2;
-    private String contactpersonnameLastName;
-    private String contactpersonname2LastName;
-    private String Contact1title, contact1titlelovid;
-    private String Contact2title, contact2titlelovid;
-    private int contractStatuslovid;
+    private String contactpersonname="", contactpersonname2="", Phone2="";
+    private String contactpersonnameLastName="";
+    private String contactpersonname2LastName="";
+    private String Contact1title="0", contact1titlelovid="0";
+    private String Contact2title="0", contact2titlelovid="0";
+    private int contractStatuslovid=0;
     private int routeid, locid, loc1id, loc2id;
-    private String Fax;
-    private String Email;
-    private String CreditLimit;
-    private String Vat;
-    private String Payment;
+    private String Fax="";
+    private String CreditLimit="0";
+    private String Payment="0";
     private String retailerId;
     private String creditDays;
-    private ArrayList<NewOutletBO> lst;
-    private String rfield5;
-    private String rfield6;
-    private String rField4;
-    private String rField7;
-    private String tinExpDate;
+    private String rfield5="0";
+    private String rfield6="0";
+    private String rField4="0";
+    private String rField7="0";
+    private String tinExpDate="";
     private int userId;
-    private String panNo;
-    private String drugLicenseNo;
-    private String foodLicenseNo;
-    private String dlExpDate;
-    private String flExpDate;
-    private String region;
-    private String country;
-    private String mobile;
-    private String district;
+    private String panNo="";
+    private String drugLicenseNo="";
+    private String foodLicenseNo="";
+    private String dlExpDate="";
+    private String flExpDate="";
+    private String region="";
+    private String country="";
+    private String mobile="";
+    private String district="";
 
-    public java.lang.String getRetailerId() {
+    private String rfield3="";
+
+    private String rfield8="";
+    private String rfield9="";
+    private String rfield10="";
+    private String rfield11="";
+    private String rfield12="";
+    private String rfield13="";
+    private String rfield14="";
+    private String rfield15="";
+    private String rfield16="";
+    private String rfield17="";
+    private String rfield18="";
+    private String rfield19="";
+
+    public String getRetailerId() {
         return retailerId;
     }
 
-    public void setRetailerId(java.lang.String retailerId) {
+    public void setRetailerId(String retailerId) {
         this.retailerId = retailerId;
     }
 
@@ -103,39 +114,39 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
         this.priorityProductList = priorityProductList;
     }
 
-    public java.lang.String getPriorityProductId() {
+    public String getPriorityProductId() {
         return priorityProductId;
     }
 
-    public void setPriorityProductId(java.lang.String priorityProductId) {
+    public void setPriorityProductId(String priorityProductId) {
         this.priorityProductId = priorityProductId;
     }
 
     private String priorityProductId, priorityProductLevelId;
 
-    public java.lang.String getPriorityProductLevelId() {
+    public String getPriorityProductLevelId() {
         return priorityProductLevelId;
     }
 
-    public void setPriorityProductLevelId(java.lang.String priorityProductLevelId) {
+    public void setPriorityProductLevelId(String priorityProductLevelId) {
         this.priorityProductLevelId = priorityProductLevelId;
     }
 
-    public java.lang.String getTaxTypeId() {
+    public String getTaxTypeId() {
         return taxTypeId;
     }
 
-    public void setTaxTypeId(java.lang.String taxTypeId) {
+    public void setTaxTypeId(String taxTypeId) {
         this.taxTypeId = taxTypeId;
     }
 
     private String taxTypeId = "0";
 
-    public java.lang.String getClassTypeId() {
+    public String getClassTypeId() {
         return classTypeId;
     }
 
-    public void setClassTypeId(java.lang.String classTypeId) {
+    public void setClassTypeId(String classTypeId) {
         this.classTypeId = classTypeId;
     }
 
@@ -179,11 +190,11 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
 
     }
 
-    public java.lang.String getSrotText() {
+    public String getSrotText() {
         return srotText;
     }
 
-    public void setSrotText(java.lang.String srotText) {
+    public void setSrotText(String srotText) {
         this.srotText = srotText;
     }
 
@@ -291,7 +302,7 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
         return ImageName;
     }
 
-    public void setImageName(ArrayList<java.lang.String> imageName) {
+    public void setImageName(ArrayList<String> imageName) {
         ImageName = imageName;
     }
 
@@ -465,17 +476,17 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
         this.tinno = tinno;
     }
 
-    private String tinno;
+    private String tinno="0";
 
-    public java.lang.String getGstNum() {
+    public String getGstNum() {
         return gstNum;
     }
 
-    public void setGstNum(java.lang.String gstNum) {
+    public void setGstNum(String gstNum) {
         this.gstNum = gstNum;
     }
 
-    private String gstNum;
+    private String gstNum="";
 
     public int getIsSEZ() {
         return isSEZ;
@@ -495,7 +506,101 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
         this.rfield3 = rfield3;
     }
 
-    private String rfield3;
+    public String getRfield8() {
+        return rfield8;
+    }
+
+    public void setRfield8(String rfield8) {
+        this.rfield8 = rfield8;
+    }
+
+    public String getRfield9() {
+        return rfield9;
+    }
+
+    public void setRfield9(String rfield9) {
+        this.rfield9 = rfield9;
+    }
+
+    public String getRfield10() {
+        return rfield10;
+    }
+
+    public void setRfield10(String rfield10) {
+        this.rfield10 = rfield10;
+    }
+
+    public String getRfield11() {
+        return rfield11;
+    }
+
+    public void setRfield11(String rfield11) {
+        this.rfield11 = rfield11;
+    }
+
+    public String getRfield12() {
+        return rfield12;
+    }
+
+    public void setRfield12(String rfield12) {
+        this.rfield12 = rfield12;
+    }
+
+    public String getRfield13() {
+        return rfield13;
+    }
+
+    public void setRfield13(String rfield13) {
+        this.rfield13 = rfield13;
+    }
+
+    public String getRfield14() {
+        return rfield14;
+    }
+
+    public void setRfield14(String rfield14) {
+        this.rfield14 = rfield14;
+    }
+
+    public String getRfield15() {
+        return rfield15;
+    }
+
+    public void setRfield15(String rfield15) {
+        this.rfield15 = rfield15;
+    }
+
+    public String getRfield16() {
+        return rfield16;
+    }
+
+    public void setRfield16(String rfield16) {
+        this.rfield16 = rfield16;
+    }
+
+    public String getRfield17() {
+        return rfield17;
+    }
+
+    public void setRfield17(String rfield17) {
+        this.rfield17 = rfield17;
+    }
+
+    public String getRfield18() {
+        return rfield18;
+    }
+
+    public void setRfield18(String rfield18) {
+        this.rfield18 = rfield18;
+    }
+
+    public String getRfield19() {
+        return rfield19;
+    }
+
+    public void setRfield19(String rfield19) {
+        this.rfield19 = rfield19;
+    }
 
     public String getPincode() {
         return pincode;
@@ -505,10 +610,10 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
         this.pincode = pincode;
     }
 
-    private String pincode;
+    private String pincode="";
 
 
-    public java.lang.String getContact1title() {
+    public String getContact1title() {
         return Contact1title;
     }
 
@@ -563,27 +668,27 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
     //for use of profile screen
 
 
-    public java.lang.String getmName() {
+    public String getmName() {
         return mName;
     }
 
-    public void setmName(java.lang.String mName) {
+    public void setmName(String mName) {
         this.mName = mName;
     }
 
-    public java.lang.String getValueText() {
+    public String getValueText() {
         return valueText;
     }
 
-    public void setValueText(java.lang.String valueText) {
+    public void setValueText(String valueText) {
         this.valueText = valueText;
     }
 
-    public HashMap<java.lang.String, AddressBO> getmAddressByTag() {
+    public HashMap<String, AddressBO> getmAddressByTag() {
         return mAddressByTag;
     }
 
-    public void setmAddressByTag(HashMap<java.lang.String, AddressBO> mAddressByTag) {
+    public void setmAddressByTag(HashMap<String, AddressBO> mAddressByTag) {
         this.mAddressByTag = mAddressByTag;
     }
 
@@ -621,91 +726,91 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
         this.userId = userId;
     }
 
-    public java.lang.String getPanNo() {
+    public String getPanNo() {
         return panNo;
     }
 
-    public void setPanNo(java.lang.String panNo) {
+    public void setPanNo(String panNo) {
         this.panNo = panNo;
     }
 
-    public java.lang.String getDrugLicenseNo() {
+    public String getDrugLicenseNo() {
         return drugLicenseNo;
     }
 
-    public void setDrugLicenseNo(java.lang.String drugLicenseNo) {
+    public void setDrugLicenseNo(String drugLicenseNo) {
         this.drugLicenseNo = drugLicenseNo;
     }
 
-    public java.lang.String getFoodLicenseNo() {
+    public String getFoodLicenseNo() {
         return foodLicenseNo;
     }
 
-    public void setFoodLicenseNo(java.lang.String foodLicenseNo) {
+    public void setFoodLicenseNo(String foodLicenseNo) {
         this.foodLicenseNo = foodLicenseNo;
     }
 
-    public java.lang.String getDlExpDate() {
+    public String getDlExpDate() {
         return dlExpDate;
     }
 
-    public void setDlExpDate(java.lang.String dlExpDate) {
+    public void setDlExpDate(String dlExpDate) {
         this.dlExpDate = dlExpDate;
     }
 
-    public java.lang.String getFlExpDate() {
+    public String getFlExpDate() {
         return flExpDate;
     }
 
-    public void setFlExpDate(java.lang.String flExpDate) {
+    public void setFlExpDate(String flExpDate) {
         this.flExpDate = flExpDate;
     }
 
-    public java.lang.String getrField4() {
+    public String getrField4() {
         return rField4;
     }
 
-    public void setrField4(java.lang.String rField4) {
+    public void setrField4(String rField4) {
         this.rField4 = rField4;
     }
 
-    public java.lang.String getrField7() {
+    public String getrField7() {
         return rField7;
     }
 
-    public void setrField7(java.lang.String rField7) {
+    public void setrField7(String rField7) {
         this.rField7 = rField7;
     }
 
-    public java.lang.String getRegion() {
+    public String getRegion() {
         return region;
     }
 
-    public void setRegion(java.lang.String region) {
+    public void setRegion(String region) {
         this.region = region;
     }
 
-    public java.lang.String getCountry() {
+    public String getCountry() {
         return country;
     }
 
-    public void setCountry(java.lang.String country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
-    public java.lang.String getMobile() {
+    public String getMobile() {
         return mobile;
     }
 
-    public void setMobile(java.lang.String mobile) {
+    public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 
-    public java.lang.String getDistrict() {
+    public String getDistrict() {
         return district;
     }
 
-    public void setDistrict(java.lang.String district) {
+    public void setDistrict(String district) {
         this.district = district;
     }
 }

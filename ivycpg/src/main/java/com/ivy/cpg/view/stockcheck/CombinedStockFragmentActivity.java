@@ -1,11 +1,13 @@
 package com.ivy.cpg.view.stockcheck;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
@@ -85,7 +87,7 @@ public class CombinedStockFragmentActivity extends IvyBaseActivityNoActionBar im
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         CombinedStockFragment asf = (CombinedStockFragment) fm
                 .findFragmentById(R.id.combined_stock_fragment);
         asf.updateBrandText(mFilterText, id);
@@ -93,7 +95,7 @@ public class CombinedStockFragmentActivity extends IvyBaseActivityNoActionBar im
 
     @Override
     public void updateGeneralText(String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
         CombinedStockFragment mStockCheckFragment = (CombinedStockFragment) fm
                 .findFragmentById(R.id.combined_stock_fragment);
@@ -102,7 +104,7 @@ public class CombinedStockFragmentActivity extends IvyBaseActivityNoActionBar im
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         CombinedStockFragment asf = (CombinedStockFragment) fm
                 .findFragmentById(R.id.combined_stock_fragment);
         asf.updateCancel();
@@ -110,7 +112,7 @@ public class CombinedStockFragmentActivity extends IvyBaseActivityNoActionBar im
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         CombinedStockFragment asf = (CombinedStockFragment) fm
                 .findFragmentById(R.id.combined_stock_fragment);
         asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
@@ -118,7 +120,7 @@ public class CombinedStockFragmentActivity extends IvyBaseActivityNoActionBar im
 
     @Override
     public void updateCompetitorProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         CombinedStockFragment asf = (CombinedStockFragment) fm
                 .findFragmentById(R.id.combined_stock_fragment);
         asf.updateCompetitorProducts(parentIdList,mSelectedIdByLevelId,filterText);

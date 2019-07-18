@@ -11,7 +11,7 @@ android:background="@color/list_odd_item_bg">
     android:id="@+id/toolbar"
     layout="@layout/material_tool_bar" />
 
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/toolbar"
@@ -482,7 +482,7 @@ android:background="@color/list_odd_item_bg">
 
         </RelativeLayout>
     </LinearLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>
 
 <LinearLayout
     android:id="@+id/ll_Btn"

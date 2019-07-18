@@ -187,7 +187,7 @@ public class ManualVanLoadHelper {
                                     else {
                                         batchid = "0";
                                     }
-                                    values = StringUtils.QT(uid)
+                                    values = StringUtils.getStringQueryParam(uid)
                                             + ","
                                             + product.getProductid()
                                             + ","
@@ -197,17 +197,17 @@ public class ManualVanLoadHelper {
                                             + ","
                                             + totalsih
                                             + ","
-                                            + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                                            + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                             + ","
-                                            + StringUtils.QT("Y")
+                                            + StringUtils.getStringQueryParam("Y")
                                             + ","
                                             + bo.getOuterQty() + ","
                                             + product.getCaseSize() + ","
                                             + product.getdUomid() + ","
                                             + product.getOuterSize() + ","
                                             + product.getdOuonid() + ","
-                                            + StringUtils.QT(batchid) + ","
-                                            + StringUtils.QT(bo.getBatchNo()) + ","
+                                            + StringUtils.getStringQueryParam(batchid) + ","
+                                            + StringUtils.getStringQueryParam(bo.getBatchNo()) + ","
                                             + selectedSubDepotID + "," + 1;
 
                                     db.insertSQL(DataMembers.tbl_vanload, columns,
@@ -219,7 +219,7 @@ public class ManualVanLoadHelper {
                     } else {
 
                         batchid = 0 + "";
-                        values = StringUtils.QT(uid)
+                        values = StringUtils.getStringQueryParam(uid)
                                 + ","
                                 + product.getProductid()
                                 + ","
@@ -229,16 +229,16 @@ public class ManualVanLoadHelper {
                                 + ","
                                 + totalsih
                                 + ","
-                                + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                                + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                 + ","
-                                + StringUtils.QT("Y")
+                                + StringUtils.getStringQueryParam("Y")
                                 + ","
                                 + product.getOuterQty() + ","
                                 + product.getCaseSize() + ","
                                 + product.getdUomid() + ","
                                 + product.getOuterSize() + ","
                                 + product.getdOuonid() + ","
-                                + StringUtils.QT(batchid) + ","
+                                + StringUtils.getStringQueryParam(batchid) + ","
                                 + 0 + ","
                                 + selectedSubDepotID + "," + 1;
 
@@ -265,9 +265,9 @@ public class ManualVanLoadHelper {
 
                         values = tranId
                                 + ","
-                                + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                                + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                 + ","
-                                + StringUtils.QT(bomReturnBo.getPid())
+                                + StringUtils.getStringQueryParam(bomReturnBo.getPid())
                                 + ","
                                 + bomReturnBo.getLiableQty()
                                 + ","
@@ -309,7 +309,7 @@ public class ManualVanLoadHelper {
                 values = tid + "," + mPaymentTypeId + ","
                         + SDUtil.format(getmVanLoadAmount(), 2, 0) + ","
                         + selectedSubDepotID + "," + uid + ","
-                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                        + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
                 db.insertSQL(DataMembers.tbl_SubDepotSettlement,
                         subDepotColumns, values);
@@ -343,7 +343,7 @@ public class ManualVanLoadHelper {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT batchid from BatchMaster where batchNum="
-                            + StringUtils.QT(batchno) + " and pid=" + pid);
+                            + StringUtils.getStringQueryParam(batchno) + " and pid=" + pid);
             if (c != null) {
                 while (c.moveToNext()) {
                     batchid = c.getString(0);
@@ -460,10 +460,10 @@ public class ManualVanLoadHelper {
 
             String columns = "batchid,batchNum,pid,MfgDate,ExpDate,is_new";
 
-            values = batchId + "," + StringUtils.QT(product.getManualBatchNo())
+            values = batchId + "," + StringUtils.getStringQueryParam(product.getManualBatchNo())
                     + "," + product.getProductid() + ","
-                    + StringUtils.QT(product.getMfgDate()) + ","
-                    + StringUtils.QT(product.getExpDate()) + ", 1";
+                    + StringUtils.getStringQueryParam(product.getMfgDate()) + ","
+                    + StringUtils.getStringQueryParam(product.getExpDate()) + ", 1";
 
             db.insertSQL("BatchMaster", columns, values);
             db.closeDB();

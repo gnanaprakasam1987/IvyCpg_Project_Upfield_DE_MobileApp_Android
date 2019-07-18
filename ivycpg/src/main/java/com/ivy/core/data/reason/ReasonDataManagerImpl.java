@@ -221,7 +221,7 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
                         initDb();
 
                     String s = "SELECT ListId, ListName,CASE WHEN ifnull(P.id,0) >0 THEN 1 ELSE 0 END as planned FROM StandardListMaster S" +
-                            " Left join PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + StringUtils.QT(listType);
+                            " Left join PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + StringUtils.getStringQueryParam(listType);
                     Cursor c = mDbUtil.selectSQL(s);
                     if (c != null) {
                         while (c.moveToNext()) {
@@ -262,7 +262,7 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
                 try {
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
-                    String s = "SELECT ListId, ListName FROM StandardListMaster S INNER JOIN PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + StringUtils.QT(listType);
+                    String s = "SELECT ListId, ListName FROM StandardListMaster S INNER JOIN PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + StringUtils.getStringQueryParam(listType);
                     Cursor c = mDbUtil.selectSQL(s);
                     if (c != null) {
                         while (c.moveToNext()) {
@@ -455,7 +455,7 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
 
-                    String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType =" + StringUtils.QT(listType);
+                    String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType =" + StringUtils.getStringQueryParam(listType);
                     Cursor c = mDbUtil.selectSQL(s);
                     if (c != null) {
                         while (c.moveToNext()) {
@@ -500,7 +500,7 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
                             if (addressSB.length() > 0)
                                 addressSB.append(",");
 
-                            addressSB.append(StringUtils.QT(addCodes));
+                            addressSB.append(StringUtils.getStringQueryParam(addCodes));
                             i = i + 1;
                         }
                     } else

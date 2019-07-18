@@ -21,18 +21,13 @@ import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.DatabaseUtils;
-import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
+
+import androidx.core.app.NotificationCompat;
 
 //import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.

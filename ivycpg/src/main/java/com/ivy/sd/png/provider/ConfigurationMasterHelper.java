@@ -580,6 +580,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_CUMULATIVE_AND;
     public boolean IS_NEARBY = false;
     public boolean SHOW_DEVICE_STATUS;
+    @Deprecated
     public boolean floating_Survey = false;
     public boolean floating_np_reason_photo = false;
     public boolean IS_NEW_TASK;
@@ -724,7 +725,7 @@ public class ConfigurationMasterHelper {
 
     public boolean SHOW_STK_ORD_SRP = true;
 
-    public boolean SHOW_STK_ORD_SRP_EDT;
+
     public boolean SHOW_STK_QTY_IN_ORDER;
     public boolean SHOW_D1;
     public boolean SHOW_D2;
@@ -1050,6 +1051,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_REJECT_SALES_RETURN_DELIVERY = "DEL01";
     public boolean IS_SR_DELIVERY_REJECT;
 
+    private static final String CODE_SHOW_STK_ORD_SRP_EDT = "SRPEDIT";
+    public boolean SHOW_STK_ORD_SRP_EDT;
+    public boolean SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP;
+
     //int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
     private Context context;
@@ -1355,7 +1360,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_QTY_ORDER = "ORDB65";
 
 
-
     //cpg132-task 13
     public boolean SHOW_TOTAL_ACHIEVED_VOLUME;
     public boolean SHOW_TOTAL_ACHIEVED_VOLUME_WGT;
@@ -1606,7 +1610,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DISABLE_CALL_ANALAYSIS_TIMER = "FUN82";
     public boolean IS_DISABLE_CALL_ANALYSIS_TIMER = true;
 
-    private static final String CODE_SHOW_SORT_STKCHK = "FUN85";
+    private static final String CODE_SHOW_SORT_STKCHK = "CSSTK09";
     public boolean IS_SHOW_SORT_STKCHK = true;
 
     private static final String CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER = "NOTE01";
@@ -1620,6 +1624,12 @@ public class ConfigurationMasterHelper {
 
     private final String CODE_PRE_VISIT = "PREVISIT";
     public boolean IS_PRE_VISIT = false;
+
+    private static final String CODE_SHOW_ANNOUNCEMENT = "ANNCMNT01";
+    public Boolean IS_SHOW_ANNOUNCEMENT;
+
+    private static final String CODE_SHOW_NOTIFICATION = "NOTIFY01";
+    public boolean IS_SHOW_NOTIFICATION;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1991,12 +2001,14 @@ public class ConfigurationMasterHelper {
             );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                while (c.moveToNext()) {
-                    CALC_QDVP3 = true;
-                }
-                c.close();
-            }
+            if (c != null)
+                if (c.getCount() != 0) {
+                    while (c.moveToNext()) {
+                        CALC_QDVP3 = true;
+                    }
+                    c.close();
+                }else
+                    c.close();
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -2005,9 +2017,10 @@ public class ConfigurationMasterHelper {
     }
 
     /**
-     * This method will return RFiled6 column value from the HHTMenuMaster table.
-     *
      * @return boolean true - survey is required.
+     * @See {@link com.ivy.core.data.db.AppDataManagerImpl#isFloatingSurveyEnabled(String)}
+     * This method will return RFiled6 column value from the HHTMenuMaster table.
+     * @deprecated
      */
     public boolean downloadFloatingSurveyConfig(String moduleCode) {
 
@@ -2835,6 +2848,8 @@ public class ConfigurationMasterHelper {
         this.IS_PRE_VISIT = hashMapHHTModuleConfig.get(CODE_PRE_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_PRE_VISIT) : false;
         this.IS_SHOW_SORT_STKCHK = hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) : false;
         this.IS_SHOW_EXPLIST_IN_PROMO = hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) : false;
+        this.IS_SHOW_ANNOUNCEMENT = hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) : false;
+        this.IS_SHOW_NOTIFICATION = hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) : false;
     }
 
     private boolean isInOutModule() {
@@ -4096,6 +4111,8 @@ public class ConfigurationMasterHelper {
             SELLER_SKU_WISE_KPI_CODES = "";
 
             SHOW_LASTVISIT_GRAPH = false;
+            SHOW_STK_ORD_SRP_EDT = false;
+            SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -4192,12 +4209,26 @@ public class ConfigurationMasterHelper {
                         SHOW_INDICATIVE_ORDER = true;
                     else if (temp.equals("CO"))
                         SHOW_CLEANED_ORDER = true;
-                    else if (temp.equals("SRPEDT"))
-                        SHOW_STK_ORD_SRP_EDT = true;
                     else if (temp.equals("STKQTY"))
                         SHOW_STK_QTY_IN_ORDER = true;
                 }
             }
+
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_STK_ORD_SRP_EDT) + " and Flag=1 and ForSwitchSeller = 0";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    SHOW_STK_ORD_SRP_EDT = true;
+                    if (c.getInt(0) == 1)
+                        SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP = true;
+                }
+                c.close();
+            }
+
+
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode=" + bmodel.QT(CODE_SHOW_REMARKS_STK_ORD) + " and Flag=1 and ForSwitchSeller = 0";
@@ -4935,7 +4966,6 @@ public class ConfigurationMasterHelper {
     }
 
 
-
     public int getSbdDistTargetPCent() {
         int targetPercent = 0;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -5051,7 +5081,6 @@ public class ConfigurationMasterHelper {
     public void setGenFilter(Vector<ConfigureBO> genFilter) {
         this.genFilter = genFilter;
     }
-
 
 
     public String getLoadmanagementtitle() {
@@ -6371,7 +6400,7 @@ public class ConfigurationMasterHelper {
             db.openDataBase();
 
             Cursor c = db.selectSQL("select RField from " + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + StringUtils.QT(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.DIGITAL_CONTENT_SIZE = c.getLong(0);

@@ -261,17 +261,17 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                 stringBuilder.append(id+",");
                 stringBuilder.append(assetBO.getAssetID()+",");
                 stringBuilder.append(appDataProvider.getRetailMaster().getRetailerID()+",");
-                stringBuilder.append(StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))+",");
-                stringBuilder.append(StringUtils.QT(assetBO.getSerialNo())+",");
+                stringBuilder.append(StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))+",");
+                stringBuilder.append(StringUtils.getStringQueryParam(assetBO.getSerialNo())+",");
                 stringBuilder.append(assetBO.getReasonID()+",");
                 stringBuilder.append(assetBO.getServiceProviderId()+",");
-                stringBuilder.append(StringUtils.QT(assetBO.getIssueDescription())+",");
-                stringBuilder.append(StringUtils.QT(imagePath)+",");
-                stringBuilder.append(StringUtils.QT(assetBO.getAssetServiceReqStatus())+",");
-                stringBuilder.append(StringUtils.QT(assetBO.getNewInstallDate())+",");
+                stringBuilder.append(StringUtils.getStringQueryParam(assetBO.getIssueDescription())+",");
+                stringBuilder.append(StringUtils.getStringQueryParam(imagePath)+",");
+                stringBuilder.append(StringUtils.getStringQueryParam(assetBO.getAssetServiceReqStatus())+",");
+                stringBuilder.append(StringUtils.getStringQueryParam(assetBO.getNewInstallDate())+",");
                 stringBuilder.append("'N'"+",");
                 stringBuilder.append("'I'"+",");
-                stringBuilder.append(StringUtils.QT(appDataProvider.getUser().getUserType()));
+                stringBuilder.append(StringUtils.getStringQueryParam(appDataProvider.getUser().getUserType()));
 
                 mDbUtil.insertSQL(DataMembers.tbl_SerializedAssetServiceRequest,columns,stringBuilder.toString());
 
@@ -300,19 +300,19 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
 
                 stringBuilder.append("update "+DataMembers.tbl_SerializedAssetServiceRequest+" set ");
                 stringBuilder.append("AssetId="+assetBO.getAssetID()+",");
-                stringBuilder.append("SerialNumber="+StringUtils.QT(assetBO.getSerialNo())+",");
+                stringBuilder.append("SerialNumber="+StringUtils.getStringQueryParam(assetBO.getSerialNo())+",");
                 stringBuilder.append("ReasonId="+assetBO.getReasonID()+",");
                 stringBuilder.append("serviceProviderId="+assetBO.getServiceProviderId()+",");
-                stringBuilder.append("IssueDescription="+StringUtils.QT(assetBO.getIssueDescription())+",");
-                stringBuilder.append("ImagePath="+StringUtils.QT(assetBO.getImageName())+",");
-                stringBuilder.append("ApprovalStatus="+StringUtils.QT(assetBO.getAssetServiceReqStatus())+",");
-                stringBuilder.append("ExpectedResolutionDate="+StringUtils.QT(assetBO.getNewInstallDate())+",");
+                stringBuilder.append("IssueDescription="+StringUtils.getStringQueryParam(assetBO.getIssueDescription())+",");
+                stringBuilder.append("ImagePath="+StringUtils.getStringQueryParam(assetBO.getImageName())+",");
+                stringBuilder.append("ApprovalStatus="+StringUtils.getStringQueryParam(assetBO.getAssetServiceReqStatus())+",");
+                stringBuilder.append("ExpectedResolutionDate="+StringUtils.getStringQueryParam(assetBO.getNewInstallDate())+",");
                 stringBuilder.append("Upload='N'");
 
                 if(!assetBO.getStatus().equals("I"))// If not a new one then updating as U to denote it.
                  stringBuilder.append(",status='U'");
 
-                stringBuilder.append(" where uid="+StringUtils.QT(assetBO.getRField()));
+                stringBuilder.append(" where uid="+StringUtils.getStringQueryParam(assetBO.getRField()));
 
 
 
@@ -340,7 +340,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
 
                 initDb();
 
-                String query="update "+DataMembers.tbl_SerializedAssetServiceRequest+" set ApprovalStatus='CANCELLED' where uid="+StringUtils.QT(requestId);
+                String query="update "+DataMembers.tbl_SerializedAssetServiceRequest+" set ApprovalStatus='CANCELLED' where uid="+StringUtils.getStringQueryParam(requestId);
 
                 mDbUtil.updateSQL(query);
 

@@ -30,6 +30,7 @@ public class PromotionHelper {
     int mSelectedPromoID = 0;
     int mSelectedProductId=0;
     private ArrayList<PromotionBO> mPromotionList;
+    private ArrayList<PromotionAttachmentBO> mPromotionAttachmentList;
     private ArrayList<StandardListBO> mRatingList;
     boolean SHOW_PROMO_TYPE;
     boolean SHOW_PROMO_RATING;
@@ -212,6 +213,10 @@ public class PromotionHelper {
                     promotionMaster.setProductPrice(c.getString(9));
                     promotionMaster.setAccepted(true);
                     promotionMaster.setPromotionGroupName(c.getString(10));
+                    if(businessModel.configurationMasterHelper.IS_SHOW_EXPLIST_IN_PROMO) {
+                        promotionMaster.setPromotionAttchmentList(downloadPromotionAttachments(mContext, promotionMaster.getMappingId(),
+                                promotionMaster.getPromoId()));
+                    }
                     getPromotionList().add(promotionMaster);
                 }
                 c.close();
@@ -235,6 +240,35 @@ public class PromotionHelper {
             db.closeDB();
             Commons.printException("" + e);
         }
+    }
+
+    private ArrayList<PromotionAttachmentBO> downloadPromotionAttachments(Context mContext, int mappingId, int promotionId) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+        try {
+            PromotionAttachmentBO promotionAttachment;
+            db.openDataBase();
+            Cursor c;
+            c = db.selectSQL("Select FilePath, FileName from PromotionAttachment where MappingId = '" + mappingId + "' " +
+                    "and PromotionId = '" + promotionId + "'");
+            if (c != null) {
+                mPromotionAttachmentList = new ArrayList<>();
+                while (c.moveToNext()) {
+                    promotionAttachment = new PromotionAttachmentBO();
+                    promotionAttachment.setPromotionId(String.valueOf(promotionId));
+                    promotionAttachment.setMappingId(String.valueOf(mappingId));
+                    promotionAttachment.setFilePath(c.getString(0));
+                    promotionAttachment.setFileName(c.getString(1));
+                    getmPromotionAttachmentList().add(promotionAttachment);
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            db.closeDB();
+            Commons.printException("" + e);
+        }
+        return getmPromotionAttachmentList();
     }
 
     private void downloadNonAcceptedPromotions(Context mContext) {
@@ -689,6 +723,14 @@ public class PromotionHelper {
         if (mPromotionList == null)
             return new ArrayList<PromotionBO>();
         return mPromotionList;
+    }
+
+    public ArrayList<PromotionAttachmentBO> getmPromotionAttachmentList() {
+        return mPromotionAttachmentList;
+    }
+
+    public void setmPromotionAttachmentList(ArrayList<PromotionAttachmentBO> mPromotionAttachmentList) {
+        this.mPromotionAttachmentList = mPromotionAttachmentList;
     }
 
     public Vector<ConfigureBO> getPromoFilter() {

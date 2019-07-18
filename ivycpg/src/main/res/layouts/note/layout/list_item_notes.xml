@@ -11,7 +11,7 @@
         android:layout_toStartOf="@+id/list_item_icon_more"
         android:layout_toLeftOf="@+id/list_item_icon_more">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/list_item_note_created_by_tv"
             style="@style/TextViewListItemSecondaryHighlight"
             android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
             android:text="@string/created_by"
             android:textAlignment="textStart" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/list_item_retailer_name_tv"
             style="@style/TextViewListItemSecondary"
             android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
             android:textColor="@color/gray_text" />
 
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/list_item_note_title_tv"
             style="@style/TextViewListItemPrimary"
             android:layout_width="match_parent"
@@ -59,7 +59,7 @@
             android:textAlignment="textStart" />
 
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/list_item_note_desc_tv"
             style="@style/TextViewListItemSecondary"
             android:layout_width="match_parent"
@@ -76,7 +76,7 @@
             />
 
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/list_item_note_date_tv"
             style="@style/TextViewListItemSecondary"
             android:layout_width="wrap_content"
@@ -90,7 +90,7 @@
             android:textAlignment="textStart" />
     </RelativeLayout>
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/list_item_icon_more"
         android:layout_width="@dimen/info_icon"
         android:layout_height="wrap_content"

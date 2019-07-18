@@ -77,11 +77,11 @@ public class CaptureSignatureDialog extends Dialog {
         setCancelable(false);
 
         TextView txtTitle = findViewById(R.id.tv_title);
-        if (StringUtils.isEmptyString(title))
+        if (StringUtils.isNullOrEmpty(title))
             txtTitle.setText(title);
 
         TextView msg_text = findViewById(R.id.tv_msg);
-        if (StringUtils.isEmptyString(title))
+        if (StringUtils.isNullOrEmpty(title))
             msg_text.setText(msg);
 
         Button mDoneBTN = findViewById(R.id.btn_done);
@@ -109,7 +109,7 @@ public class CaptureSignatureDialog extends Dialog {
         });
 
         Button mCancelBTN = findViewById(R.id.btn_cancel);
-        if (!StringUtils.isEmptyString(negBtnTxt)) {
+        if (!StringUtils.isNullOrEmpty(negBtnTxt)) {
             mCancelBTN.setText(negBtnTxt);
             mCancelBTN.setVisibility(View.VISIBLE);
         }
@@ -140,7 +140,7 @@ public class CaptureSignatureDialog extends Dialog {
             }
         });
 
-        if (!StringUtils.isEmptyString(capturedImageName))
+        if (!StringUtils.isNullOrEmpty(capturedImageName))
             setSignImage();
         mView = mContent;
     }
