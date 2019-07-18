@@ -15,6 +15,7 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 import com.ivy.ui.profile.create.model.ContractStatus;
 import com.ivy.ui.profile.view.ProfileBaseBo;
+import com.stepstone.stepper.StepperLayout;
 
 
 import java.util.ArrayList;
@@ -128,7 +129,9 @@ public interface IProfileEditContract {
 
         void checkRegex(String regex);
 
-        void updateProfileData(ProfileBaseBo retailerProfileField);
+        void onNextStepClicked(ProfileBaseBo retailerProfileField, StepperLayout.OnNextClickedCallback callback);
+
+        void onCompleteClicked(ProfileBaseBo retailerProfileField, StepperLayout.OnCompleteClickedCallback callback);
 
     }
 
@@ -212,7 +215,7 @@ public interface IProfileEditContract {
 
         boolean doValidateProdileEdit();
 
-        void setProfileValues(boolean isSave);
+        void setProfileValues(boolean isSave,StepperLayout.OnNextClickedCallback nextCallback,StepperLayout.OnCompleteClickedCallback completeCallback);
 
     }
 }

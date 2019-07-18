@@ -42,13 +42,18 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
     }
 
     @Override
-    public Observable<ArrayList<AttributeBO>> prepareCommonAttributeList(){
+    public Observable<ArrayList<AttributeBO>> prepareCommonAttributeList(boolean isProfileEdit){
         return Observable.fromCallable(new Callable<ArrayList<AttributeBO>>() {
             @Override
             public ArrayList<AttributeBO> call() throws Exception {
                 ArrayList<AttributeBO> mapValues = new ArrayList<>();
 
-                String parentQry = "Select EAM.AttributeId,EAM.AttributeName,EAM.Sequence,EAM.ParentId,EAM.levels,EAM.isEditable from EntityAttributeMaster EAM where EAM.parentId = 0 " +
+                String whereCond = " ";
+                if (isProfileEdit)
+                    whereCond = " and EAM.isEditable = 1 ";
+
+                String parentQry = "Select EAM.AttributeId,EAM.AttributeName,EAM.Sequence,EAM.ParentId,EAM.levels,EAM.isEditable,EAM.IsMandatory from EntityAttributeMaster EAM where EAM.parentId = 0 "
+                        +whereCond+
                         " and EAM.Attributeid not in(select attributeid from EntityCriteriaType) and EAM.IsSystemComputed=0 and EAM.IsCriteriaMapped=0 order by EAM.Sequence,EAM.AttributeId ASC";
 
                 initDb();
@@ -62,6 +67,7 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                         attributeBO.setAttributeName(c.getString(1));
                         attributeBO.setLevelCount(c.getInt(4));
                         attributeBO.setEditable(c.getInt(5) > 0);
+                        attributeBO.setMandatory(c.getInt(6) > 0);
 
                         mapValues.add(attributeBO);
 
@@ -76,15 +82,21 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
     }
 
     @Override
-    public Observable<ArrayList<AttributeBO>> prepareChannelAttributeList(){
+    public Observable<ArrayList<AttributeBO>> prepareChannelAttributeList(boolean isProfileEdit){
         return Observable.fromCallable(new Callable<ArrayList<AttributeBO>>() {
             @Override
             public ArrayList<AttributeBO> call() throws Exception {
                 ArrayList<AttributeBO> mapValues = new ArrayList<>();
 
+                String whereCond = " ";
+                if (isProfileEdit)
+                    whereCond = " and EAM.isEditable = 1 ";
+
                 String parentQry = "Select EAM.AttributeId,EAM.AttributeName,EAM.Sequence,EAM.ParentId,EAM.levels,EAM.isEditable,ECT.CriteriaId,ECT.isMandatory from EntityAttributeMaster EAM " +
                         " inner join EntityCriteriaType ECT ON EAM.attributeId = ECT.attributeId " +
-                        " where parentid = 0 and criteriaType = 'CHANNEL' and IsSystemComputed = 0 order by EAM.Sequence,EAM.AttributeId ASC";
+                        " where parentid = 0 "
+                        +whereCond+
+                        " and criteriaType = 'CHANNEL' and IsSystemComputed = 0 order by EAM.Sequence,EAM.AttributeId ASC";
 
                 initDb();
 

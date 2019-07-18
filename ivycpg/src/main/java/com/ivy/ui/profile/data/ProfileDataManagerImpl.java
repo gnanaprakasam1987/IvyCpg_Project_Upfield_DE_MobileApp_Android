@@ -1364,6 +1364,9 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
         return Single.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
+
+                initDb();
+
                 Cursor headerCursor;
                 String tid = "";
                 try {
@@ -1394,6 +1397,8 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
 
         final String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
                 "values (" + getStringQueryParam(tid) + "," + RetailerID + "," + getStringQueryParam(currentDate) + ")";
+
+        initDb();
 
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
@@ -1433,6 +1438,9 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                                 } catch (Exception e) {
                                     Commons.printException("" + e);
                                 }
+
+                                shutDownDb();
+
                                 return true;
                             }
                         });
@@ -2380,8 +2388,6 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
             @Override
             public Boolean call() throws Exception {
 
-                initDb();
-
                 try {
 
                     ArrayList<ConfigureBO> profileFieldList = new ArrayList<>();
@@ -2410,9 +2416,6 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-
-                shutDownDb();
-
 
                 return true;
             }
@@ -2512,8 +2515,6 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
             @Override
             public Boolean call() throws Exception {
 
-                initDb();
-
                 try {
                     if (contactList != null && !contactList.isEmpty()) {
                         for (RetailerContactBo retailerContactBo : contactList) {
@@ -2531,8 +2532,6 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-
-                shutDownDb();
 
                 return true;
             }
@@ -2584,7 +2583,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                             + StringUtils.getStringQueryParam(retailerContactBo.getIsEmailPrimary()+"");
                     dbUtil.insertSQL("RetailerContactEdit", column, value);
 
-                    addContactAvail(dbUtil,retailerContactBo,getStringQueryParam(dataManager.getRetailMaster().getRetailerID()),tid);
+                    addContactAvail(dbUtil,retailerContactBo,dataManager.getRetailMaster().getRetailerID(),tid);
                 }
             }
         }
@@ -2661,8 +2660,6 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                         + "," + StringUtils.getStringQueryParam(id.getStatus()) + ",'N')";
                 dbUtil.executeQ(Q);
             }
-
-            shutDownDb();
 
         } catch (Exception e) {
             Commons.printException("" + e);

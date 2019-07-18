@@ -36,6 +36,7 @@ import com.ivy.ui.profile.view.ProfileBaseBo;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.SchedulerProvider;
+import com.stepstone.stepper.StepperLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -600,7 +601,9 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     @Override
-    public void setProfileValues(final boolean isSave) {
+    public void setProfileValues(final boolean isSave, StepperLayout.OnNextClickedCallback nextCallback, StepperLayout.OnCompleteClickedCallback completeCallback) {
+
+        getIvyView().showLoading();
 
         if (profileConfig.get(0).getConfigCode().equals(ProfileConstant.PROFILE_60) &&
                 (profileConfig.get(0).isFlag() == 1) &&
@@ -614,8 +617,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 }
             }
         }
-
-        getIvyView().showLoading();
 
         setNearByRetailers(getIvyView().getSelectedIds());
 
@@ -686,19 +687,21 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
                     @Override
                     public void onError(Throwable e) {
-
+                        getIvyView().hideLoading();
                     }
 
                     @Override
                     public void onComplete() {
                         setValues();
-                        prepareProfileEditValues(isSave);
+                        prepareProfileEditValues(isSave,nextCallback,completeCallback);
+
+                        getIvyView().hideLoading();
                     }
                 })
         );
     }
 
-    private void prepareProfileEditValues(boolean isSave) {
+    private void prepareProfileEditValues(boolean isSave,StepperLayout.OnNextClickedCallback nextCallback,StepperLayout.OnCompleteClickedCallback completeCallback) {
 
         ArrayList<ConfigureBO> retailerFieldList = new ArrayList<>();
         ArrayList<StandardListBO> priorityProdList = new ArrayList<>();
@@ -943,7 +946,10 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         profileBaseBo.setFieldName("Profile");
         profileBaseBo.setProfileFields(profileMapObject);
 
-        getIvyView().updateProfileData(profileBaseBo);
+        if (isSave)
+            getIvyView().onCompleteClicked(profileBaseBo,completeCallback);
+        else
+            getIvyView().onNextStepClicked(profileBaseBo,nextCallback);
 
     }
 
@@ -957,14 +963,14 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         this.nearByRetailerList = nearByRetailerList;
     }
 
-    private void getRetailerProfileObject(ConfigureBO configBO, String field,ArrayList<ConfigureBO> retailerFieldList){
+    private void getRetailerProfileObject(ConfigureBO configBO, String originalFieldValue,ArrayList<ConfigureBO> retailerFieldList){
 
         configBO.setRetailerId(retailerMasterBO.getRetailerID());
-        if ((field + "").equals(configBO.getMenuNumber())
+        if ((originalFieldValue + "").equals(configBO.getMenuNumber())
                 && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
             configBO.setDeleteRow(true);
             retailerFieldList.add(configBO);
-        } else if ((!(field + "").equals(configBO.getMenuNumber())
+        } else if ((!(originalFieldValue + "").equals(configBO.getMenuNumber())
                 && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {

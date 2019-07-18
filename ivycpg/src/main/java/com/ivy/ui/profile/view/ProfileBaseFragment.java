@@ -43,6 +43,8 @@ public class ProfileBaseFragment extends BaseFragment
     private String retailerId="";
     private boolean isShowAttribute;
 
+    private StepperLayout mStepperLayout;
+
     @Inject
     IProfileContractor.IProfilePresenter<IProfileContractor.IProfileView> profilePresenter;
 
@@ -58,7 +60,7 @@ public class ProfileBaseFragment extends BaseFragment
     @Override
     public void initializeDi() {
         DaggerProfileComponent.builder()
-                .ivyAppComponent(((BusinessModel) context).getComponent())
+                .ivyAppComponent(((BusinessModel) context.getApplicationContext()).getComponent())
                 .profileModule(new ProfileModule(this))
                 .build().inject(this);
         setBasePresenter((BasePresenter) profilePresenter);
@@ -82,6 +84,13 @@ public class ProfileBaseFragment extends BaseFragment
     @Override
     protected void setUpViews() {
 
+        mStepperLayout.setAdapter(new ProfileStepperAdapter(
+                ((FragmentActivity)context).getSupportFragmentManager(),
+                context,retailerId,isShowAttribute,
+                bmodel.configurationMasterHelper.IS_CONTACT_TAB,isFromEditProfileView,isProfileView));
+
+        mStepperLayout.setListener(this);
+
     }
 
     private void initializeItem(View view) {
@@ -92,18 +101,9 @@ public class ProfileBaseFragment extends BaseFragment
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).setDisplayShowHomeEnabled(true);
         }
 
-        StepperLayout mStepperLayout;
-
         mStepperLayout = view.findViewById(R.id.stepperLayout);
 
         mStepperLayout.setOffscreenPageLimit(3);
-
-        mStepperLayout.setAdapter(new ProfileStepperAdapter(
-                ((FragmentActivity)context).getSupportFragmentManager(),
-                context,retailerId,isShowAttribute,
-                bmodel.configurationMasterHelper.IS_CONTACT_TAB,isFromEditProfileView,isProfileView));
-
-        mStepperLayout.setListener(this);
     }
 
     private void getBundleValues() {
@@ -146,24 +146,22 @@ public class ProfileBaseFragment extends BaseFragment
 
     @Override
     public void onCompleted(View completeButton) {
-        Toast.makeText(getActivity(), "onCompleted", Toast.LENGTH_SHORT).show();
-
-
+//        Toast.makeText(getActivity(), "onCompleted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onError(VerificationError verificationError) {
-        Toast.makeText(getActivity(), "onError", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "onError", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onStepSelected(int newStepPosition) {
-        Toast.makeText(getActivity(), "onStepSelected", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "onStepSelected", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onReturn() {
-        Toast.makeText(getActivity(), "onReturn", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "onReturn", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -214,6 +212,7 @@ public class ProfileBaseFragment extends BaseFragment
     private void showAlertDialog(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(msg);
+        builder.setCancelable(false);
 
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 

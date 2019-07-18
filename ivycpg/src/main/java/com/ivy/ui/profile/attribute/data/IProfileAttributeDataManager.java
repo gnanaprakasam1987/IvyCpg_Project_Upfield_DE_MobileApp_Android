@@ -11,9 +11,9 @@ import io.reactivex.Single;
 
 public interface IProfileAttributeDataManager extends AppDataManagerContract {
 
-    Observable<ArrayList<AttributeBO>> prepareCommonAttributeList();
+    Observable<ArrayList<AttributeBO>> prepareCommonAttributeList(boolean isProfileEdit);
 
-    Observable<ArrayList<AttributeBO>> prepareChannelAttributeList();
+    Observable<ArrayList<AttributeBO>> prepareChannelAttributeList(boolean isProfileEdit);
 
     Observable<HashMap<String,ArrayList<AttributeBO>>> prepareChildAttributeList(String retailerId);
 

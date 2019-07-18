@@ -2012,20 +2012,27 @@ public class ProfileEditFragmentNew extends BaseFragment
     }
 
     @Override
-    public void updateProfileData(ProfileBaseBo retailerProfileField) {
+    public void onNextStepClicked(ProfileBaseBo retailerProfileField,StepperLayout.OnNextClickedCallback callback) {
         EventBus.getDefault().post(retailerProfileField);
+        callback.goToNextStep();
+    }
+
+    @Override
+    public void onCompleteClicked(ProfileBaseBo retailerProfileField,StepperLayout.OnCompleteClickedCallback callback) {
+        EventBus.getDefault().post(retailerProfileField);
+        callback.complete();
     }
 
     @Override
     public void onNextClicked(StepperLayout.OnNextClickedCallback callback) {
         if (profileEditPresenter.doValidateProdileEdit())
-            profileEditPresenter.setProfileValues(false);
+            profileEditPresenter.setProfileValues(false,callback,null);
     }
 
     @Override
     public void onCompleteClicked(StepperLayout.OnCompleteClickedCallback callback) {
         if (profileEditPresenter.doValidateProdileEdit())
-            profileEditPresenter.setProfileValues(true);
+            profileEditPresenter.setProfileValues(true,null,callback);
     }
 
     @Override

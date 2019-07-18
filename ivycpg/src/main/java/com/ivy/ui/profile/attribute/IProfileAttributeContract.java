@@ -17,7 +17,7 @@ public interface IProfileAttributeContract {
     }
 
     interface IProfileAttributePresenter<V extends IProfileAttributeView> extends BaseIvyPresenter<V>{
-        void prepareAttributeList();
+        void prepareAttributeList(boolean isProfileEdit);
 
         ArrayList<AttributeBO> getCommonAttributeList();
 

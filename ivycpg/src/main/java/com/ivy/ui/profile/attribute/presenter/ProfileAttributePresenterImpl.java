@@ -2,32 +2,25 @@ package com.ivy.ui.profile.attribute.presenter;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
-import com.ivy.sd.png.bo.NewOutletAttributeBO;
+import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.attribute.IProfileAttributeContract;
 import com.ivy.ui.profile.attribute.data.IProfileAttributeDataManager;
-import com.ivy.ui.profile.data.ChannelWiseAttributeList;
-import com.ivy.ui.profile.data.IProfileDataManager;
 import com.ivy.ui.profile.edit.di.Profile;
-import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
-import io.reactivex.functions.Function5;
 import io.reactivex.observers.DisposableObserver;
 
 public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.IProfileAttributeView>
@@ -39,6 +32,8 @@ public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.I
     private ArrayList<AttributeBO> commonAttributeList = new ArrayList<>();
     private ArrayList<AttributeBO> channelAttributeList = new ArrayList<>();
     private HashMap<String, ArrayList<AttributeBO>> childAttribute = new HashMap<>();
+    private Vector<ConfigureBO> profileConfig = new Vector<>();
+
     @Inject
     public ProfileAttributePresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider,
                                          CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper,
@@ -50,10 +45,10 @@ public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.I
         this.retailerMasterBO = retailerMasterBO;
     }
 
-    public void prepareAttributeList() {
+    public void prepareAttributeList(boolean isProfileEdit) {
 
-        getCompositeDisposable().add(Observable.zip(attributeDataManager.prepareCommonAttributeList(),
-                attributeDataManager.prepareChannelAttributeList(),
+        getCompositeDisposable().add(Observable.zip(attributeDataManager.prepareCommonAttributeList(isProfileEdit),
+                attributeDataManager.prepareChannelAttributeList(isProfileEdit),
                 attributeDataManager.prepareChildAttributeList(retailerMasterBO.getRetailerID()),
                 new Function3<ArrayList<AttributeBO>, ArrayList<AttributeBO>, HashMap<String, ArrayList<AttributeBO>>, Boolean>() {
                     @Override
@@ -118,84 +113,72 @@ public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.I
         return getChildAttribute().get(parentId) != null ? getChildAttribute().get(parentId) : new ArrayList<>();
     }
 
-    /*private void validateAttribute() {
-
-        boolean isAdded = true;
-        ArrayList<NewOutletAttributeBO> selectedAttributeLevel = new ArrayList<>();
+    public boolean validateAttribute(ArrayList<AttributeBO> selectedAttributeList) {
 
         try {
+
+            int selectedListSize = selectedAttributeList.size();
+
             // to check all common mandatory attributes selected
-            for (NewOutletAttributeBO attributeBO : getAttributeParentList()) {
-
-                if (getCommonAttributeList().contains(attributeBO.getAttrId())) {
-
-                    NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBO.getAttrId());
-
-                    if (attributeBO.getIsMandatory() == 1) {
-                        if (tempBO != null && tempBO.getAttrId() != -1) {
-                            selectedAttributeLevel.add(tempBO);
-                        } else {
-                            isAdded = false;
-                            String errorMessage = attributeBO.getAttrName() + " is Mandatory";
-                            getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
+            for (AttributeBO attributeBO : commonAttributeList) {
+                if (attributeBO.isMandatory()){
+                    int i = 0;
+                    for (AttributeBO selectedAttribute : selectedAttributeList){
+                        if (selectedAttribute.getAttributeParentId() == attributeBO.getAttributeId()){
                             break;
+                        }else{
+                            if (i == selectedListSize -1 ){
+                                String errorMessage = attributeBO.getAttributeName() + " is Mandatory";
+                                getIvyView().showAlert("Attribute", errorMessage);
+                                return false;
+                            }
                         }
-                    } else {
-                        if (tempBO != null && tempBO.getAttrId() != -1)
-                            selectedAttributeLevel.add(tempBO);
+
+                        i = i+1;
                     }
                 }
             }
+
+            boolean isChannelAvail = true;
+            int selectedChannelId = 10;
+
             //to check all mandatory channel's attributes selected
-            if (isChannelAvailable() && isAdded) {
+            if (isChannelAvail) {
 
                 try {
-                    for (NewOutletAttributeBO attributeBo : getAttributeBOListByLocationID().get(getIvyView().subChannelGetSelectedItem())) {
+                    for (AttributeBO attributeBo : channelAttributeList) {
 
-                        NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBo.getAttrId());
+                        int i = 0;
+                        if (attributeBo.getChannelId() == selectedChannelId) {
 
-                        if (attributeBo.getIsMandatory() == 1) {
-                            if (tempBO != null && tempBO.getAttrId() != -1) {
-                                selectedAttributeLevel.add(tempBO);
-                            } else {
-                                isAdded = false;
-                                String errorMessage = attributeBo.getAttrName() + " is Mandatory";
-                                getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
-                                break;
+                            if (attributeBo.isMandatory()) {
+
+                                for (AttributeBO selectedAttribute : selectedAttributeList){
+                                    if (selectedAttribute.getAttributeParentId() == attributeBo.getAttributeId()){
+                                        break;
+                                    }else{
+                                        if (i == selectedListSize -1 ){
+                                            String errorMessage = attributeBo.getAttributeName() + " is Mandatory";
+                                            getIvyView().showAlert("Attribute", errorMessage);
+                                            return false;
+                                        }
+                                    }
+
+                                    i = i+1;
+                                }
                             }
-                        } else {
-                            if (tempBO != null && tempBO.getAttrId() != -1)
-                                selectedAttributeLevel.add(tempBO);
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            if (!isAdded) {
-                validate = false;
-            }
-            setRetailerAttribute(selectedAttributeLevel);
         } catch (Exception e) {
             getIvyView().hideLoading();
             Commons.printException(e);
         }
-    }*/
 
-    public void saveAttribute(ArrayList<AttributeBO> selectedAttributes){
-
-        getCompositeDisposable().add(
-                attributeDataManager.saveRetailerAttribute(getDataManager().getUser().getUserid()
-                        ,getDataManager().getRetailMaster().getRetailerID()
-                        , selectedAttributes)
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
-                               @Override
-                               public void accept(Boolean response) throws Exception {
-                                    getIvyView().showMessage("Attribute Added");
-                               }
-                           }
-                ));
+        return true;
     }
+
 }

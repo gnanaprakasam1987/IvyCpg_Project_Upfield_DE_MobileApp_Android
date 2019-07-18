@@ -1,14 +1,16 @@
 package com.ivy.ui.profile.attribute.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.asean.view.R;
@@ -19,7 +21,6 @@ import com.ivy.ui.profile.attribute.di.DaggerProfileAttributeComponent;
 import com.ivy.ui.profile.attribute.di.ProfileAttributeModule;
 import com.ivy.ui.profile.attribute.presenter.ProfileAttributePresenterImpl;
 import com.ivy.ui.profile.view.ProfileBaseBo;
-import com.ivy.utils.view.OnSingleClickListener;
 import com.stepstone.stepper.BlockingStep;
 import com.stepstone.stepper.StepperLayout;
 import com.stepstone.stepper.VerificationError;
@@ -39,6 +40,8 @@ public class ProfileAttributeFragment extends BaseFragment
     private HashMap<String,Spinner> attributeSpinner = new HashMap<>();
     private HashMap<String,AttributeBO> selectedSpinnerIds = new HashMap<>();
     private ArrayList<Integer> channelIds = new ArrayList<>();
+    private boolean isProfileEdit = true;
+    @SuppressLint("UseSparseArrays")
     private HashMap<Integer,AttributeBO> filteredAttributeIds = new HashMap<>();
 
     @Inject
@@ -70,10 +73,11 @@ public class ProfileAttributeFragment extends BaseFragment
 
     @Override
     protected void setUpViews() {
-        profileAttributePresenter.prepareAttributeList();
+        profileAttributePresenter.prepareAttributeList(isProfileEdit);
     }
 
-    private void saveAttribute(boolean isSave){
+    private void saveAttribute(boolean isSave,StepperLayout.OnNextClickedCallback nextCallback,
+                               StepperLayout.OnCompleteClickedCallback completCallback){
 
         ArrayList<AttributeBO> childMasterList = new ArrayList<>();
 
@@ -106,17 +110,21 @@ public class ProfileAttributeFragment extends BaseFragment
                 filteredAttributeIds.remove(childMasterBo.getAttributeId());
         }
 
-//        if (filteredAttributeIds.size() > 0)
-//            profileAttributePresenter.saveAttribute(new ArrayList<>(filteredAttributeIds.values()));
-//        else
-//            showMessage("No Data To Save");
+        if (profileAttributePresenter.validateAttribute(new ArrayList<>(filteredAttributeIds.values()))){
 
-        ProfileBaseBo profileBaseBo = new ProfileBaseBo();
-        profileBaseBo.setStatus(isSave?"Save":"Update");
-        profileBaseBo.setFieldName("Attribute");
-        profileBaseBo.setAttributeList(new ArrayList<>(filteredAttributeIds.values()));
+            ProfileBaseBo profileBaseBo = new ProfileBaseBo();
+            profileBaseBo.setStatus(isSave?"Save":"Update");
+            profileBaseBo.setFieldName("Attribute");
+            profileBaseBo.setAttributeList(new ArrayList<>(filteredAttributeIds.values()));
 
-        EventBus.getDefault().post(profileBaseBo);
+            EventBus.getDefault().post(profileBaseBo);
+
+            if (isSave)
+                completCallback.complete();
+            else
+                nextCallback.goToNextStep();
+
+        }
     }
 
     @Override
@@ -153,7 +161,7 @@ public class ProfileAttributeFragment extends BaseFragment
 
     }
 
-    public void showAttributeSpinner(ArrayList<AttributeBO> attributeParentList) {
+    private void showAttributeSpinner(ArrayList<AttributeBO> attributeParentList) {
 
         for (AttributeBO attributeBO : attributeParentList){
 
@@ -353,14 +361,12 @@ public class ProfileAttributeFragment extends BaseFragment
 
     @Override
     public void onNextClicked(StepperLayout.OnNextClickedCallback callback) {
-        saveAttribute(false);
-        callback.goToNextStep();
+        saveAttribute(false,callback,null);
     }
 
     @Override
     public void onCompleteClicked(StepperLayout.OnCompleteClickedCallback callback) {
-        saveAttribute(true);
-        callback.complete();
+        saveAttribute(true,null,callback);
     }
 
     @Override
