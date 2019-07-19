@@ -35,6 +35,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.sync.UploadThread;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.TaskAssignBO;
 import com.ivy.sd.png.bo.TeamLeadBO;
@@ -330,7 +331,7 @@ public class ReAllocationActivity extends IvyBaseActivityNoActionBar implements
         alertDialog = builder.create();
         alertDialog.show();
         bmodel.teamLeadermasterHelper.saveReAllocation(mPresentIDList, mPresentTaskListByMerchandiserID);
-        new MyThread(this, DataMembers.SYNC_REALLOC_UPLOAD).start();
+        new UploadThread(this, UploadThread.SYNC_REALLOC_UPLOAD).start();
     }
 
     @Override

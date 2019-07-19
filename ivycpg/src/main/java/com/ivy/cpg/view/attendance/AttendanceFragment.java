@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.sync.UploadHelper;
+import com.ivy.cpg.view.sync.UploadThread;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
@@ -515,7 +516,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         protected UploadHelper.UPLOAD_STATUS doInBackground(Void... params) {
 
             UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
-            return mUploadHelper.uploadTransactionDataByType(getHandler(), DataMembers.ATTENDANCE_UPLOAD, getActivity().getApplicationContext());
+            return mUploadHelper.uploadTransactionDataByType(getHandler(), UploadThread.ATTENDANCE_UPLOAD, getActivity().getApplicationContext());
         }
 
         @Override

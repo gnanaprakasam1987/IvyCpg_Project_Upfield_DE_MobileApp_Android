@@ -45,6 +45,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sync.SyncContractor;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.UploadPresenterImpl;
+import com.ivy.cpg.view.sync.UploadThread;
 import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.camera.CameraActivity;

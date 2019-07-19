@@ -4462,7 +4462,7 @@ public class BusinessModel extends Application {
     }
 
     // Amazon Image Upload
-    void uploadImageToAmazonCloud(Handler handler) {
+    public void uploadImageToAmazonCloud(Handler handler) {
         try {
             AWSConnectionHelper.getInstance().setAmazonS3Credentials(getApplicationContext());
             TransferUtility tm = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getApplicationContext
@@ -7711,7 +7711,7 @@ public class BusinessModel extends Application {
     }
 
     //Azure ImageUpload
-    void uploadImageToAzureCloud(Handler handler) {
+    public void uploadImageToAzureCloud(Handler handler) {
         String start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
         AzureConnectionHelper.getInstance().setAzureCredentials(getApplicationContext());
         try {

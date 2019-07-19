@@ -38,6 +38,7 @@ import com.ivy.cpg.view.homescreen.deviceStatus.DeviceStatusActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.password.ChangePasswordActivity;
 import com.ivy.cpg.view.sync.UploadHelper;
+import com.ivy.cpg.view.sync.UploadThread;
 import com.ivy.cpg.view.webview.PrivacyPolicyActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -172,8 +173,8 @@ public class UserSettingsActivity extends PreferenceActivity {
                 public boolean onPreferenceClick(Preference arg0) {
 
                     progressDialog = ProgressDialog.show(UserSettingsActivity.this, "Export", "File is exporting...");
-                    new MyThread(UserSettingsActivity.this,
-                            DataMembers.UPLOAD_FILE_IN_AMAZON).start();
+                    new UploadThread(UserSettingsActivity.this,
+                            UploadThread.UPLOAD_FILE_IN_AMAZON).start();
 
 
                     return true;

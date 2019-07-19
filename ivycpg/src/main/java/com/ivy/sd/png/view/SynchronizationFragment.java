@@ -64,6 +64,7 @@ import com.ivy.cpg.view.sync.LastSyncTimeHelper;
 import com.ivy.cpg.view.sync.SyncContractor;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.UploadPresenterImpl;
+import com.ivy.cpg.view.sync.UploadThread;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImagesDownlaod;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
 import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
@@ -909,36 +910,53 @@ public class SynchronizationFragment extends IvyBaseFragment
                     break;
 
                 case DataMembers.NOTIFY_UPLOADED:
+
                     if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES)
                             && (uploadPresenter.getImageFilesCount() > 0 || uploadPresenter.getTextFilesCount() > 0)) {
+
                         String s1 = tvwstatus.getText()
                                 + DataMembers.CR1
                                 + getResources().getString(
                                 R.string.data_upload_completed_sucessfully);
                         tvwstatus.setText(s1);
+
+                        // Store last transaction time.
+                        lastSyncTimeHelper.updateUploadedTime();
+                        // Display last sync time on  UI
+                        updateLastTransactionTimeInView();
+
                         builder = new AlertDialog.Builder(getActivity());
                         setMessageInProgressDialog(builder, getResources().getString(
                                 R.string.image_uploading));
                         alertDialog.show();
+
                         uploadPresenter.uploadImages();
 
-                        lastSyncTimeHelper.updateUploadedTime();
-                        updateLastTransactionTimeInView();
-
-
                     } else {
+
                         alertDialog.dismiss();
                         withPhotosCheckBox.setChecked(false);
+
+                        //Not understand the purpose of below line
                         updateLastSync();
+
+                        // Store last transaction time.
+                        lastSyncTimeHelper.updateUploadedTime();
+
+                        // Display last sync time on  UI
+                        updateLastTransactionTimeInView();
+
                         tvwstatus.setText(getResources().getString(
                                 R.string.data_upload_completed_sucessfully));
+
+                        // Show Sucess Dialog.
                         displaymetrics = new DisplayMetrics();
                         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
                         sdsd = new SyncDownloadStatusDialog(getActivity(), getResources().getString(
                                 R.string.data_upload_completed_sucessfully), displaymetrics);
                         sdsd.show();
-                        lastSyncTimeHelper.updateUploadedTime();
-                        updateLastTransactionTimeInView();
+
+
                         if (bmodel.synchronizationHelper.checkDataForSyncLogUpload())
                             new UploadSyncLog().execute();
                     }

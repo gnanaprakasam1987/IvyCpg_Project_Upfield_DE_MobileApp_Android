@@ -530,9 +530,7 @@
         <activity
             android:name="com.ivy.sd.print.CommonPrintPreviewActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.attendance.inout.TimeTrackingActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.cpg.view.attendance.TLAttendanceActivity"
             android:screenOrientation="portrait" />

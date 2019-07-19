@@ -28,6 +28,7 @@ import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.cpg.view.sync.UploadHelper;
+import com.ivy.cpg.view.sync.UploadThread;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -336,7 +337,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
         @Override
         protected UploadHelper.UPLOAD_STATUS doInBackground(Void... params) {
-            return UploadHelper.getInstance(mContext).uploadTransactionDataByType(getHandler(), DataMembers.ATTENDANCE_UPLOAD, mContext);
+            return UploadHelper.getInstance(mContext).uploadTransactionDataByType(getHandler(), UploadThread.ATTENDANCE_UPLOAD, mContext);
         }
 
         @Override

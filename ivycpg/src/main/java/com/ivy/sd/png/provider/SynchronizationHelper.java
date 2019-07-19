@@ -111,8 +111,7 @@ import javax.crypto.Cipher;
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class
-SynchronizationHelper {
+public class SynchronizationHelper {
     public static final String JSON_MASTER_KEY = "Master";
     public static final String JSON_FIELD_KEY = "Field";
     public static final String JSON_DATA_KEY = "Data";
@@ -681,7 +680,7 @@ SynchronizationHelper {
 
 
 
-    public boolean checkLoyaltyPoints() {
+    public boolean hasLoyaltyPointsDataExist() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
@@ -711,7 +710,7 @@ SynchronizationHelper {
     }
 
 
-    public boolean checkPickListData() {
+    public boolean hasPickListDataExist() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
@@ -740,7 +739,7 @@ SynchronizationHelper {
 
     }
 
-    public boolean checkTripData() {
+    public boolean hasTripDataExist() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
@@ -4781,7 +4780,7 @@ SynchronizationHelper {
      *
      * @return
      */
-    public boolean checkOrderDeliveryStatusTable() {
+    public boolean hasOrderDeliveryStatusDataExist() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
