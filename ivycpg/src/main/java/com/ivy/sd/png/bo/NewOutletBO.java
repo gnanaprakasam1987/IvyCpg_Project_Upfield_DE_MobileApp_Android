@@ -59,11 +59,26 @@ public class NewOutletBO {
     private String mobile="";
     private String district="";
 
-    public java.lang.String getRetailerId() {
+    private String rfield3="";
+
+    private String rfield8="";
+    private String rfield9="";
+    private String rfield10="";
+    private String rfield11="";
+    private String rfield12="";
+    private String rfield13="";
+    private String rfield14="";
+    private String rfield15="";
+    private String rfield16="";
+    private String rfield17="";
+    private String rfield18="";
+    private String rfield19="";
+
+    public String getRetailerId() {
         return retailerId;
     }
 
-    public void setRetailerId(java.lang.String retailerId) {
+    public void setRetailerId(String retailerId) {
         this.retailerId = retailerId;
     }
 
@@ -99,25 +114,25 @@ public class NewOutletBO {
         this.priorityProductList = priorityProductList;
     }
 
-    public java.lang.String getPriorityProductId() {
+    public String getPriorityProductId() {
         return priorityProductId;
     }
 
-    public void setPriorityProductId(java.lang.String priorityProductId) {
+    public void setPriorityProductId(String priorityProductId) {
         this.priorityProductId = priorityProductId;
     }
 
     private String priorityProductId, priorityProductLevelId;
 
-    public java.lang.String getPriorityProductLevelId() {
+    public String getPriorityProductLevelId() {
         return priorityProductLevelId;
     }
 
-    public void setPriorityProductLevelId(java.lang.String priorityProductLevelId) {
+    public void setPriorityProductLevelId(String priorityProductLevelId) {
         this.priorityProductLevelId = priorityProductLevelId;
     }
 
-    public java.lang.String getTaxTypeId() {
+    public String getTaxTypeId() {
         return taxTypeId;
     }
 
@@ -127,11 +142,11 @@ public class NewOutletBO {
 
     private String taxTypeId = "0";
 
-    public java.lang.String getClassTypeId() {
+    public String getClassTypeId() {
         return classTypeId;
     }
 
-    public void setClassTypeId(java.lang.String classTypeId) {
+    public void setClassTypeId(String classTypeId) {
         this.classTypeId = classTypeId;
     }
 
@@ -175,11 +190,11 @@ public class NewOutletBO {
 
     }
 
-    public java.lang.String getSrotText() {
+    public String getSrotText() {
         return srotText;
     }
 
-    public void setSrotText(java.lang.String srotText) {
+    public void setSrotText(String srotText) {
         this.srotText = srotText;
     }
 
@@ -287,7 +302,7 @@ public class NewOutletBO {
         return ImageName;
     }
 
-    public void setImageName(ArrayList<java.lang.String> imageName) {
+    public void setImageName(ArrayList<String> imageName) {
         ImageName = imageName;
     }
 
@@ -463,11 +478,11 @@ public class NewOutletBO {
 
     private String tinno="0";
 
-    public java.lang.String getGstNum() {
+    public String getGstNum() {
         return gstNum;
     }
 
-    public void setGstNum(java.lang.String gstNum) {
+    public void setGstNum(String gstNum) {
         this.gstNum = gstNum;
     }
 
@@ -491,7 +506,101 @@ public class NewOutletBO {
         this.rfield3 = rfield3;
     }
 
-    private String rfield3="";
+    public String getRfield8() {
+        return rfield8;
+    }
+
+    public void setRfield8(String rfield8) {
+        this.rfield8 = rfield8;
+    }
+
+    public String getRfield9() {
+        return rfield9;
+    }
+
+    public void setRfield9(String rfield9) {
+        this.rfield9 = rfield9;
+    }
+
+    public String getRfield10() {
+        return rfield10;
+    }
+
+    public void setRfield10(String rfield10) {
+        this.rfield10 = rfield10;
+    }
+
+    public String getRfield11() {
+        return rfield11;
+    }
+
+    public void setRfield11(String rfield11) {
+        this.rfield11 = rfield11;
+    }
+
+    public String getRfield12() {
+        return rfield12;
+    }
+
+    public void setRfield12(String rfield12) {
+        this.rfield12 = rfield12;
+    }
+
+    public String getRfield13() {
+        return rfield13;
+    }
+
+    public void setRfield13(String rfield13) {
+        this.rfield13 = rfield13;
+    }
+
+    public String getRfield14() {
+        return rfield14;
+    }
+
+    public void setRfield14(String rfield14) {
+        this.rfield14 = rfield14;
+    }
+
+    public String getRfield15() {
+        return rfield15;
+    }
+
+    public void setRfield15(String rfield15) {
+        this.rfield15 = rfield15;
+    }
+
+    public String getRfield16() {
+        return rfield16;
+    }
+
+    public void setRfield16(String rfield16) {
+        this.rfield16 = rfield16;
+    }
+
+    public String getRfield17() {
+        return rfield17;
+    }
+
+    public void setRfield17(String rfield17) {
+        this.rfield17 = rfield17;
+    }
+
+    public String getRfield18() {
+        return rfield18;
+    }
+
+    public void setRfield18(String rfield18) {
+        this.rfield18 = rfield18;
+    }
+
+    public String getRfield19() {
+        return rfield19;
+    }
+
+    public void setRfield19(String rfield19) {
+        this.rfield19 = rfield19;
+    }
 
     public String getPincode() {
         return pincode;
@@ -504,7 +613,7 @@ public class NewOutletBO {
     private String pincode="";
 
 
-    public java.lang.String getContact1title() {
+    public String getContact1title() {
         return Contact1title;
     }
 
@@ -559,27 +668,27 @@ public class NewOutletBO {
     //for use of profile screen
 
 
-    public java.lang.String getmName() {
+    public String getmName() {
         return mName;
     }
 
-    public void setmName(java.lang.String mName) {
+    public void setmName(String mName) {
         this.mName = mName;
     }
 
-    public java.lang.String getValueText() {
+    public String getValueText() {
         return valueText;
     }
 
-    public void setValueText(java.lang.String valueText) {
+    public void setValueText(String valueText) {
         this.valueText = valueText;
     }
 
-    public HashMap<java.lang.String, AddressBO> getmAddressByTag() {
+    public HashMap<String, AddressBO> getmAddressByTag() {
         return mAddressByTag;
     }
 
-    public void setmAddressByTag(HashMap<java.lang.String, AddressBO> mAddressByTag) {
+    public void setmAddressByTag(HashMap<String, AddressBO> mAddressByTag) {
         this.mAddressByTag = mAddressByTag;
     }
 
@@ -617,91 +726,91 @@ public class NewOutletBO {
         this.userId = userId;
     }
 
-    public java.lang.String getPanNo() {
+    public String getPanNo() {
         return panNo;
     }
 
-    public void setPanNo(java.lang.String panNo) {
+    public void setPanNo(String panNo) {
         this.panNo = panNo;
     }
 
-    public java.lang.String getDrugLicenseNo() {
+    public String getDrugLicenseNo() {
         return drugLicenseNo;
     }
 
-    public void setDrugLicenseNo(java.lang.String drugLicenseNo) {
+    public void setDrugLicenseNo(String drugLicenseNo) {
         this.drugLicenseNo = drugLicenseNo;
     }
 
-    public java.lang.String getFoodLicenseNo() {
+    public String getFoodLicenseNo() {
         return foodLicenseNo;
     }
 
-    public void setFoodLicenseNo(java.lang.String foodLicenseNo) {
+    public void setFoodLicenseNo(String foodLicenseNo) {
         this.foodLicenseNo = foodLicenseNo;
     }
 
-    public java.lang.String getDlExpDate() {
+    public String getDlExpDate() {
         return dlExpDate;
     }
 
-    public void setDlExpDate(java.lang.String dlExpDate) {
+    public void setDlExpDate(String dlExpDate) {
         this.dlExpDate = dlExpDate;
     }
 
-    public java.lang.String getFlExpDate() {
+    public String getFlExpDate() {
         return flExpDate;
     }
 
-    public void setFlExpDate(java.lang.String flExpDate) {
+    public void setFlExpDate(String flExpDate) {
         this.flExpDate = flExpDate;
     }
 
-    public java.lang.String getrField4() {
+    public String getrField4() {
         return rField4;
     }
 
-    public void setrField4(java.lang.String rField4) {
+    public void setrField4(String rField4) {
         this.rField4 = rField4;
     }
 
-    public java.lang.String getrField7() {
+    public String getrField7() {
         return rField7;
     }
 
-    public void setrField7(java.lang.String rField7) {
+    public void setrField7(String rField7) {
         this.rField7 = rField7;
     }
 
-    public java.lang.String getRegion() {
+    public String getRegion() {
         return region;
     }
 
-    public void setRegion(java.lang.String region) {
+    public void setRegion(String region) {
         this.region = region;
     }
 
-    public java.lang.String getCountry() {
+    public String getCountry() {
         return country;
     }
 
-    public void setCountry(java.lang.String country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
-    public java.lang.String getMobile() {
+    public String getMobile() {
         return mobile;
     }
 
-    public void setMobile(java.lang.String mobile) {
+    public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 
-    public java.lang.String getDistrict() {
+    public String getDistrict() {
         return district;
     }
 
-    public void setDistrict(java.lang.String district) {
+    public void setDistrict(String district) {
         this.district = district;
     }
 }

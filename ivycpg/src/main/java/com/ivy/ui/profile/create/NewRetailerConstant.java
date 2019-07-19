@@ -2,21 +2,22 @@ package com.ivy.ui.profile.create;
 
 public class NewRetailerConstant {
 
-    public enum MenuType{
-        OTHER(0), VIEW(1),EDIT(2),CREATE_FRM_EDT_SCREEN(4);
+    public enum MenuType {
+        OTHER(0), VIEW(1), EDIT(2), CREATE_FRM_EDT_SCREEN(4);
 
         private final int menuType;
 
-         MenuType(int menuType) {
-            this.menuType=menuType;
+        MenuType(int menuType) {
+            this.menuType = menuType;
         }
-        public int getMenuType(){
+
+        public int getMenuType() {
             return menuType;
         }
     }
 
-    public enum ContactTitleOption{
-        FIRSTNAME,LASTNAME,TITLE;
+    public enum ContactTitleOption {
+        FIRSTNAME, LASTNAME, TITLE;
     }
 
     public static final String MENU_NEW_RETAILER = "MENU_NEW_RET";
@@ -56,6 +57,20 @@ public class NewRetailerConstant {
     public static final String RFIELD5 = "RFIELD5";
     public static final String RFIELD6 = "RFIELD6";
     public static final String RFIELD7 = "RFIELD7";
+
+    public static final String RFIELD8 = "RFIELD8";
+    public static final String RFIELD9 = "RFIELD9";
+    public static final String RFIELD10 = "RFIELD10";
+    public static final String RFIELD11 = "RFIELD11";
+    public static final String RFIELD12 = "RFIELD12";
+    public static final String RFIELD13 = "RFIELD13";
+    public static final String RFIELD14 = "RFIELD14";
+    public static final String RFIELD15 = "RFIELD15";
+    public static final String RFIELD16 = "RFIELD16";
+    public static final String RFIELD17 = "RFIELD17";
+    public static final String RFIELD18 = "RFIELD18";
+    public static final String RFIELD19 = "RFIELD19";
+
     public static final String CREDITPERIOD = "CREDITPERIOD";
     public static final String DRUG_LICENSE_NUM = "DRUG_LICENSE_NUM";
     public static final String FOOD_LICENCE_NUM = "FOOD_LICENCE_NUM";
@@ -84,10 +99,10 @@ public class NewRetailerConstant {
     public static final int CONTACT_PERSON_LASTNAME_KEY = 1101;
     public static final int CONTACT_PERSON_OTHERNAME_KEY = 1102;
 
-    public static final int WEEK_TEXT_LABEL  = 1000;
-    public static final int DAY_TEXT_LABEL  = 1001;
+    public static final int WEEK_TEXT_LABEL = 1000;
+    public static final int DAY_TEXT_LABEL = 1001;
 
-    public static final String NEW_RETAILER ="NEW_RETAILER";
+    public static final String NEW_RETAILER = "NEW_RETAILER";
     public static final String moduleName = "NO_";
 
     public static final int NO_RETAILER_DOWNLOAD_URL = 1;

@@ -10,7 +10,6 @@ import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.sync.SynchronizationDataManager;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
-import com.ivy.core.model.UrlMaster;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
 import com.ivy.cpg.view.retailercontact.RetailerContactBo;
@@ -42,6 +41,7 @@ import com.ivy.ui.profile.create.NewRetailerConstant;
 import com.ivy.ui.profile.create.di.NewRetailer;
 import com.ivy.ui.profile.create.model.ContactTitle;
 import com.ivy.ui.profile.create.model.ContractStatus;
+import com.ivy.ui.profile.create.model.LocationLevel;
 import com.ivy.ui.profile.create.model.PaymentType;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
@@ -49,8 +49,6 @@ import com.ivy.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,19 +63,14 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Function4;
 
 import static com.ivy.ui.profile.create.NewRetailerConstant.MENU_NEW_RETAILER;
-import static com.ivy.ui.profile.create.NewRetailerConstant.NO_RETAILER_DOWNLOAD_URL;
 import static com.ivy.utils.StringUtils.getStringQueryParam;
 import static com.ivy.utils.StringUtils.isNullOrEmpty;
 
@@ -243,21 +236,23 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
         return Observable.fromCallable(new Callable<ArrayList<String>>() {
             @Override
             public ArrayList<String> call() throws Exception {
-                ArrayList<String> nearByRetailers = null;
-                try {
-                    dbUtil.openDataBase();
-                    String sql = "select  nearbyrid from NearByRetailers where rid=" + getStringQueryParam(retailerId);
-                    Cursor c = dbUtil.selectSQL(sql);
-                    if (c.getCount() > 0) {
-                        nearByRetailers = new ArrayList<>();
-                        while (c.moveToNext()) {
-                            nearByRetailers.add(c.getString(0));
+                ArrayList<String> nearByRetailers = new ArrayList<>();
+                if(retailerId!=null) {
+                    try {
+                        initDb();
+                        String sql = "select  nearbyrid from NearByRetailers where rid=" + getStringQueryParam(retailerId);
+                        Cursor c = dbUtil.selectSQL(sql);
+                        if (c.getCount() > 0) {
+                            nearByRetailers = new ArrayList<>();
+                            while (c.moveToNext()) {
+                                nearByRetailers.add(c.getString(0));
+                            }
                         }
-                    }
-                    c.close();
+                        c.close();
 
-                } catch (Exception e) {
-                    Commons.printException("" + e);
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
                 }
                 return nearByRetailers;
             }
@@ -400,7 +395,8 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                             ",RC1.contact_title as contact_title1,RC1.contact_title_lovid as contact_title_lovid1" +
                             ",RC2.contactname as contactName2,RC2.ContactName_LName as contactLName2,RC2.contactNumber as contactNumber2,RC2.contact_title as contact_title2,RC2.contact_title_lovid as contact_title_lovid2," +
                             "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State,RM.RField5,RM.RField6,RM.TinExpDate," +
-                            "RM.pan_number,RM.food_licence_number,RM.food_licence_exp_date,RM.DLNo,RM.DLNoExpDate,RM.RField4,RM.RField7,RA.Mobile,RA.Region,RA.Country,RM.userid,RM.GSTNumber" +
+                            "RM.pan_number,RM.food_licence_number,RM.food_licence_exp_date,RM.DLNo,RM.DLNoExpDate,RM.RField4,RM.RField7,RA.Mobile,RA.Region,RA.Country,RM.userid,RM.GSTNumber," +
+                            "RM.RField8,RM.RField9,RM.RField10,,RM.RField11,RM.RField12,RM.RField13,RM.RField14,RM.RField15,RM.RField16,RM.RField17,RM.RField18,RM.RField19"+
                             " from RetailerMaster RM LEFT JOIN RetailerContact RC1 ON Rm.retailerid=RC1.retailerId AND RC1.isprimary=1" +
                             " LEFT JOIN RetailerContact RC2 ON Rm.retailerid=RC2.retailerId AND RC2.isprimary=0" +
                             " LEFT JOIN RetailerAddress RA ON RA.RetailerId=RM.retailerId" +
@@ -465,6 +461,20 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                                 retailer.setMobile(c.getString(c.getColumnIndex("Mobile")));
                                 retailer.setUserId(c.getInt(c.getColumnIndex("userid")));
                                 retailer.setGstNum(c.getString(c.getColumnIndex("GSTNumber")));
+
+                                retailer.setRfield8(c.getString(c.getColumnIndex("RField8")));
+                                retailer.setRfield9(c.getString(c.getColumnIndex("RField9")));
+                                retailer.setRfield10(c.getString(c.getColumnIndex("RField10")));
+                                retailer.setRfield11(c.getString(c.getColumnIndex("RField11")));
+                                retailer.setRfield12(c.getString(c.getColumnIndex("RField12")));
+                                retailer.setRfield13(c.getString(c.getColumnIndex("RField13")));
+                                retailer.setRfield14(c.getString(c.getColumnIndex("RField14")));
+                                retailer.setRfield15(c.getString(c.getColumnIndex("RField15")));
+                                retailer.setRfield16(c.getString(c.getColumnIndex("RField16")));
+                                retailer.setRfield17(c.getString(c.getColumnIndex("RField17")));
+                                retailer.setRfield18(c.getString(c.getColumnIndex("RField18")));
+                                retailer.setRfield19(c.getString(c.getColumnIndex("RField19")));
+
                                 retailer.setImageName(loadImgList(retailer.getRetailerId()));
                                 retailer.setEditAttributeList(loadEditAttributes(retailer.getRetailerId()));
                                 lst.add(retailer);
@@ -763,8 +773,9 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                 ArrayList<RetailerMasterBO> mLinkRetailerList = new ArrayList<>();
                 try {
 
+                    initDb();
                     String sb = "select Distributorid ,retailerid,name,latitude,longitude,pincode from linkretailermaster where Distributorid=" + distId +
-                            " order by Distributorid ";
+                            " order by Distributorid";
                     Cursor c = dbUtil.selectSQL(sb);
                     RetailerMasterBO linkRetailerBO;
                     if (c.getCount() > 0) {
@@ -2177,7 +2188,8 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                         + DataMembers.VISIT_DAYS_COLUMN_NAME + ",LocationId," +
                         "creditlimit,RPTypeId,tinnumber,RField3,distributorId,TaxTypeid," +
                         "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber,RField5,RField6,TinExpDate," +
-                        "pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
+                        "pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid," +
+                        "RField8,RField9,RField10,RField11,RField12,RField13,RField14,RField15,RField16,RField17,RField18,RField19";
 
                 int userid = outlet.getUserId();
                 if (userid == 0)
@@ -2214,7 +2226,19 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                         + "," + (outlet.getDlExpDate() == null || outlet.getDlExpDate().isEmpty() ? null : getStringQueryParam(outlet.getDlExpDate()))
                         + "," + getStringQueryParam(outlet.getrField4())
                         + "," + getStringQueryParam(outlet.getrField7())
-                        + "," + getStringQueryParam(userid + "");
+                        + "," + getStringQueryParam(userid + "")
+                        + "," + getStringQueryParam(outlet.getRfield8())
+                        + "," + getStringQueryParam(outlet.getRfield9())
+                        + "," + getStringQueryParam(outlet.getRfield10())
+                        + "," + getStringQueryParam(outlet.getRfield11())
+                        + "," + getStringQueryParam(outlet.getRfield12())
+                        + "," + getStringQueryParam(outlet.getRfield13())
+                        + "," + getStringQueryParam(outlet.getRfield14())
+                        + "," + getStringQueryParam(outlet.getRfield15())
+                        + "," + getStringQueryParam(outlet.getRfield16())
+                        + "," + getStringQueryParam(outlet.getRfield17())
+                        + "," + getStringQueryParam(outlet.getRfield18())
+                        + "," + getStringQueryParam(outlet.getRfield19());
 
 
                 dbUtil.insertSQL("RetailerMaster", column, value);
@@ -2634,6 +2658,65 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
 
                 return null;
             }
+        });
+    }
+
+    @Override
+    public Single<LocationLevel> getParentLevelName(int locid, boolean isParent) {
+        return Single.fromCallable(() -> {
+
+            LocationLevel locationLevel = new LocationLevel();
+            try{
+                initDb();
+
+                String locationLevelId="";
+                StringBuilder sb = new StringBuilder();
+                sb.append("select locid,locName, LocLevelId from locationmaster where locid=");
+                if (!isParent) {
+                    sb.append(locid);
+
+                } else {
+                    sb.append("(select locParentId from locationmaster  where locid=");
+                    sb.append(locid);
+                    sb.append(")");
+                }
+
+                Cursor c = dbUtil.selectSQL(sb.toString());
+                if (c != null) {
+                    if (c.getCount() > 0) {
+                        if (c.moveToNext()) {
+
+                            locationLevel.setLocationId(c.getInt(0));
+                            locationLevel.setLocationName(c.getString(1));
+                            locationLevelId= c.getString(2);
+                            c.close();
+                        }
+                    }
+                    c.close();
+                }
+                sb  = new StringBuilder();
+                sb.append("select Name from LocationLevel where id=");
+                sb.append(getStringQueryParam(locationLevelId));
+                Cursor c1 = dbUtil.selectSQL(sb.toString());
+                if (c1 != null) {
+                    if (c1.getCount() > 0) {
+                        if (c1.moveToNext()) {
+                            locationLevel.setLocationLevel(c1.getString(0));
+
+                            return locationLevel;
+                        }
+                    }
+                    c1.close();
+                }
+
+                return locationLevel;
+
+            }catch (Exception ignored){
+
+            }
+
+
+            return locationLevel;
         });
     }
 
