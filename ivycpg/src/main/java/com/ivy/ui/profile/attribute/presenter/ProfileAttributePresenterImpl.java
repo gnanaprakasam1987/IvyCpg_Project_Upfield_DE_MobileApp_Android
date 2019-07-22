@@ -23,6 +23,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function3;
 import io.reactivex.observers.DisposableObserver;
 
+import static com.ivy.ui.profile.view.ProfileBaseFragment.selectedChannelId;
+
 public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.IProfileAttributeView>
         extends BasePresenter<V> implements IProfileAttributeContract.IProfileAttributePresenter<V> {
 
@@ -117,56 +119,25 @@ public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.I
 
         try {
 
-            int selectedListSize = selectedAttributeList.size();
+            attrParentId = 0;
 
             // to check all common mandatory attributes selected
-            for (AttributeBO attributeBO : commonAttributeList) {
-                if (attributeBO.isMandatory()){
-                    int i = 0;
-                    for (AttributeBO selectedAttribute : selectedAttributeList){
-                        if (selectedAttribute.getAttributeParentId() == attributeBO.getAttributeId()){
-                            break;
-                        }else{
-                            if (i == selectedListSize -1 ){
-                                String errorMessage = attributeBO.getAttributeName() + " is Mandatory";
-                                getIvyView().showAlert("Attribute", errorMessage);
-                                return false;
-                            }
-                        }
-
-                        i = i+1;
-                    }
-                }
+            for (AttributeBO commonAttribute : commonAttributeList) {
+                if (validateSelectedAttributeList(selectedAttributeList, commonAttribute))
+                    return false;
             }
 
-            boolean isChannelAvail = true;
-            int selectedChannelId = 10;
-
             //to check all mandatory channel's attributes selected
-            if (isChannelAvail) {
+            if (attributeDataManager.isChannelAvailable()) {
+
+                attrParentId = 0;
 
                 try {
-                    for (AttributeBO attributeBo : channelAttributeList) {
+                    for (AttributeBO channelAttribute : channelAttributeList) {
 
-                        int i = 0;
-                        if (attributeBo.getChannelId() == selectedChannelId) {
-
-                            if (attributeBo.isMandatory()) {
-
-                                for (AttributeBO selectedAttribute : selectedAttributeList){
-                                    if (selectedAttribute.getAttributeParentId() == attributeBo.getAttributeId()){
-                                        break;
-                                    }else{
-                                        if (i == selectedListSize -1 ){
-                                            String errorMessage = attributeBo.getAttributeName() + " is Mandatory";
-                                            getIvyView().showAlert("Attribute", errorMessage);
-                                            return false;
-                                        }
-                                    }
-
-                                    i = i+1;
-                                }
-                            }
+                        if (channelAttribute.getChannelId() == selectedChannelId) {
+                            if (validateSelectedAttributeList(selectedAttributeList, channelAttribute))
+                                return false;
                         }
                     }
                 } catch (Exception e) {
@@ -179,6 +150,45 @@ public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.I
         }
 
         return true;
+    }
+
+    private boolean validateSelectedAttributeList(ArrayList<AttributeBO> selectedAttributeList, AttributeBO commonAttribute) {
+        boolean isAttributeSelected= false;
+        if (commonAttribute.isMandatory()){
+            for (AttributeBO selectedAttribute : selectedAttributeList){
+                if (selectedAttribute.getParentId().equalsIgnoreCase("0"))
+                    attrParentId = selectedAttribute.getAttributeParentId();
+                getParentAttributeId(selectedAttribute);
+                if (attrParentId == commonAttribute.getAttributeId() &&
+                        !selectedAttribute.getStatus().equalsIgnoreCase("D")){
+                    isAttributeSelected = true;
+                    break;
+                }
+            }
+
+            if (!isAttributeSelected){
+                String errorMessage = commonAttribute.getAttributeName() + " is Mandatory";
+                getIvyView().showAlert("Attribute", errorMessage);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int attrParentId = 0;
+
+    private void getParentAttributeId(AttributeBO attributeBO){
+
+        String sId =  attributeBO.getParentId();
+
+        if (!getAttributeChildLst(sId).isEmpty()) {
+            if (!getAttributeChildLst(sId).get(0).getParentId().equalsIgnoreCase("0")) {
+                getParentAttributeId(getAttributeChildLst(sId).get(0));
+            }else {
+                System.out.println("Return getParentId() = " + attributeBO.getParentId());
+                attrParentId = Integer.parseInt(attributeBO.getParentId());
+            }
+        }
     }
 
 }

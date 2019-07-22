@@ -45,6 +45,8 @@ public class ProfileBaseFragment extends BaseFragment
 
     private StepperLayout mStepperLayout;
 
+    public static int selectedChannelId;
+
     @Inject
     IProfileContractor.IProfilePresenter<IProfileContractor.IProfileView> profilePresenter;
 
@@ -73,6 +75,9 @@ public class ProfileBaseFragment extends BaseFragment
 
     @Override
     public void init(View view) {
+
+        selectedChannelId = 0 ;
+
         initializeItem(view);
     }
 
@@ -146,22 +151,19 @@ public class ProfileBaseFragment extends BaseFragment
 
     @Override
     public void onCompleted(View completeButton) {
-//        Toast.makeText(getActivity(), "onCompleted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onError(VerificationError verificationError) {
-//        Toast.makeText(getActivity(), "onError", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onStepSelected(int newStepPosition) {
-//        Toast.makeText(getActivity(), "onStepSelected", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onReturn() {
-//        Toast.makeText(getActivity(), "onReturn", Toast.LENGTH_SHORT).show();
     }
 
     @Override

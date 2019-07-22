@@ -19,4 +19,5 @@ public interface IProfileAttributeDataManager extends AppDataManagerContract {
 
     Single<Boolean> saveRetailerAttribute(final int userId,final String RetailerID,
                                                   final ArrayList<AttributeBO> selectedAttribList);
+    boolean isChannelAvailable();
 }

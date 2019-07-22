@@ -107,6 +107,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
+import static com.ivy.ui.profile.view.ProfileBaseFragment.selectedChannelId;
 
 public class ProfileEditFragmentNew extends BaseFragment
         implements IProfileEditContract.ProfileEditView, RetailerOTPDialog.OTPListener, DatePreviewListener,BlockingStep {
@@ -156,8 +157,6 @@ public class ProfileEditFragmentNew extends BaseFragment
     private String selectedProductID = "";
     private static String lat = "", longitude = "";
     private boolean isLatLongCameravailable = false;
-    private int spinnerCount = 0;
-    private int check = 0;
 
     /*ProfileImageView */
     private ImageView mProfileImageView = null;
@@ -258,11 +257,11 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public void showAlert() {
-        showAlertDialog(getActivity().getResources().getString(R.string.profile_updated_scccess), 0);
+        showAlertDialog(getResources().getString(R.string.profile_updated_scccess), 0);
     }
 
 
-    void showAlertDialog(String msg, int id) {
+    private void showAlertDialog(String msg, int id) {
         final int idd = id;
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(msg);
@@ -2013,12 +2012,18 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public void onNextStepClicked(ProfileBaseBo retailerProfileField,StepperLayout.OnNextClickedCallback callback) {
+
+        selectedChannelId = getSubChennalSelectedItemId();
+
         EventBus.getDefault().post(retailerProfileField);
         callback.goToNextStep();
     }
 
     @Override
     public void onCompleteClicked(ProfileBaseBo retailerProfileField,StepperLayout.OnCompleteClickedCallback callback) {
+
+        selectedChannelId = getSubChennalSelectedItemId();
+
         EventBus.getDefault().post(retailerProfileField);
         callback.complete();
     }

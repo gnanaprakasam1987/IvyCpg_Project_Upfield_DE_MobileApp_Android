@@ -138,7 +138,7 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                         " left join RetailerAttribute as RA on RA.AttributeId = EAM1.AttributeId  and RA.RetailerId = "+ StringUtils.getStringQueryParam(retailerId) +
                         " left join RetailerEditAttribute as REA on REA.AttributeId = EAM1.AttributeId  and REA.RetailerId = "+ StringUtils.getStringQueryParam(retailerId) +
                         " group by EAM1.AttributeId " +
-                        " order by EAM1.Sequence,EAM.AttributeId ASC ";
+                        " order by EAM.AttributeId ASC ";
 
                 initDb();
 
@@ -274,49 +274,32 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
         }
     }
 
-    /*public Single<Boolean> updateRetailerMasterAttribute(final String mTid, final String RetailerID,
-                                                         final ArrayList<AttributeBO> selectedAttribList) {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                try {
-                    mDbUtil.deleteSQL("RetailerEditAttribute", " tid =" + StringUtils.QT(mTid), false);
+    public boolean isChannelAvailable(){
+        initDb();
 
-                } catch (Exception e) {
-                    Commons.printException("" + e);
-                }
-                return true;
+        boolean isChannelAvail = false;
+
+        try {
+            // delete Header if exist
+            Cursor cursor = mDbUtil.selectSQL("SELECT Rfield from hhtmenumaster where hhtcode='PROFILE06' and rfield = 1");
+
+            if (cursor != null) {
+
+                if (cursor.getCount() > 0)
+                    isChannelAvail = true;
+
+                cursor.close();
             }
-        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
-            @Override
-            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
 
-                return Single.fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        try {
-                            for (AttributeBO id : selectedAttribList) {
-                                String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
-                                        "values (" + StringUtils.QT(mTid)
-                                        + "," + RetailerID
-                                        + "," + id.getAttributeId()
-                                        + "," + id.getLevelId()
-                                        + "," + StringUtils.QT(id.getStatus()) + ",'N')";
-                                mDbUtil.executeQ(Q);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+        shutDownDb();
 
-                        shutDownDb();
+        return isChannelAvail;
 
-                        return true;
-                    }
-                });
-            }
-        });
     }
-*/
+
     @Override
     public void tearDown() {
         shutDownDb();

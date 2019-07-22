@@ -2,7 +2,10 @@ package com.ivy.ui.profile.attribute.view;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Color;
+import android.os.Build;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -33,6 +36,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.ivy.ui.profile.view.ProfileBaseFragment.selectedChannelId;
+
 public class ProfileAttributeFragment extends BaseFragment
         implements IProfileAttributeContract.IProfileAttributeView,BlockingStep {
 
@@ -43,6 +48,10 @@ public class ProfileAttributeFragment extends BaseFragment
     private boolean isProfileEdit = true;
     @SuppressLint("UseSparseArrays")
     private HashMap<Integer,AttributeBO> filteredAttributeIds = new HashMap<>();
+
+    private int channelId;
+
+    private LinearLayout channelLayout;
 
     @Inject
     ProfileAttributePresenterImpl<IProfileAttributeContract.IProfileAttributeView> profileAttributePresenter;
@@ -73,12 +82,14 @@ public class ProfileAttributeFragment extends BaseFragment
 
     @Override
     protected void setUpViews() {
+
         profileAttributePresenter.prepareAttributeList(isProfileEdit);
     }
 
     private void saveAttribute(boolean isSave,StepperLayout.OnNextClickedCallback nextCallback,
                                StepperLayout.OnCompleteClickedCallback completCallback){
 
+        //Master Attribute list
         ArrayList<AttributeBO> childMasterList = new ArrayList<>();
 
         for (Map.Entry<String, ArrayList<AttributeBO>> childAttribList : profileAttributePresenter.getChildAttribute().entrySet()) {
@@ -88,29 +99,33 @@ public class ProfileAttributeFragment extends BaseFragment
             }
         }
 
+        filteredAttributeIds.clear();
         if (!selectedSpinnerIds.isEmpty()) {
             ArrayList<AttributeBO> ids = new ArrayList<>(selectedSpinnerIds.values());
 
-            filteredAttributeIds.clear();
             for (AttributeBO bo : ids){
                 if (bo.isAttributeSelected()) {
                     if (profileAttributePresenter.getAttributeChildLst(bo.getAttributeId()+"").isEmpty()) {
-                        bo.setStatus("N");
+                        if (!bo.isMasterRecord())
+                            bo.setStatus("N");
+                        else
+                            bo.setStatus("M");
+
                         filteredAttributeIds.put(bo.getAttributeId(), bo);
                     }
                 }
             }
         }
 
-        for (AttributeBO childMasterBo : childMasterList){
-            if (filteredAttributeIds.get(childMasterBo.getAttributeId()) == null){
-                childMasterBo.setStatus("D");
-                filteredAttributeIds.put(childMasterBo.getAttributeId(),childMasterBo);
-            }else
-                filteredAttributeIds.remove(childMasterBo.getAttributeId());
-        }
-
         if (profileAttributePresenter.validateAttribute(new ArrayList<>(filteredAttributeIds.values()))){
+
+            for (AttributeBO childMasterBo : childMasterList){
+                if (filteredAttributeIds.get(childMasterBo.getAttributeId()) == null){
+                    childMasterBo.setStatus("D");
+                    filteredAttributeIds.put(childMasterBo.getAttributeId(),childMasterBo);
+                }else
+                    filteredAttributeIds.remove(childMasterBo.getAttributeId());
+            }
 
             ProfileBaseBo profileBaseBo = new ProfileBaseBo();
             profileBaseBo.setStatus(isSave?"Save":"Update");
@@ -147,17 +162,30 @@ public class ProfileAttributeFragment extends BaseFragment
         if (channelAttrbList.isEmpty())
             return;
 
-        View view = getLayoutInflater().inflate(R.layout.task_report_recycle_header, null);
+        LinearLayout.LayoutParams layoutParam_parent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        ((TextView)view.findViewById(R.id.tv_task_header)).setText("Channel Attribute");
+        channelLayout = new LinearLayout(context);
+        channelLayout.setOrientation(LinearLayout.HORIZONTAL);
+        channelLayout.setLayoutParams(layoutParam_parent);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            channelLayout.setBackgroundColor(Color.WHITE);
+        } else {
+            channelLayout.setBackgroundColor(Color.WHITE);
+        }
 
-        dynamicViewLayout.addView(view);
+        dynamicViewLayout.addView(channelLayout);
+
+        View view = getLayoutInflater().inflate(R.layout.dynamic_report_table_row_child, null);
+
+        ((TextView)view.findViewById(R.id.table_row_child)).setText("Channel Attribute");
+
+        channelLayout.addView(view);
 
         showAttributeSpinner(channelAttrbList);
 
         View seperatorView = getLayoutInflater().inflate(R.layout.seperator_line_layout, null);
 
-        dynamicViewLayout.addView(seperatorView);
+        channelLayout.addView(seperatorView);
 
     }
 
@@ -383,6 +411,15 @@ public class ProfileAttributeFragment extends BaseFragment
     @Override
     public void onSelected() {
 
+        if (channelId != selectedChannelId){
+
+            if (channelLayout != null)
+                channelLayout.removeAllViews();
+
+            channelId = selectedChannelId;
+            channelIds.add(selectedChannelId);
+            showChannelAttributeSpinner(profileAttributePresenter.getChannelAttributeList());
+        }
     }
 
     @Override

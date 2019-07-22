@@ -9,5 +9,5 @@
     app:ms_tabNavigationEnabled="false"
     app:ms_completeButtonColor="@color/green_productivity"
     app:ms_nextButtonColor="@color/half_Black"
-    app:ms_backButtonColor="@color/half_Black"
+    app:ms_backButtonColor="@color/plano_yes_grey"
     />
