@@ -223,7 +223,7 @@
     <string name="month">Month</string>
     <string name="plus_more">\u2022+%d More</string>
     <string name="plan_retailer_name">\u2022 %s </string>
-    <string name="visit_hours"> Visit Hour : %s - %s</string>
+    <string name="visit_hours"> Visit Hour : %1$s - %2$s</string>
     <string name="v_frequency">V.Frequency</string>
     <string name="v_completed">V.Completed</string>
     <string name="v_pending">V.Pending</string>
@@ -360,7 +360,7 @@
     <string name="do_u_want_to_update">Do you want to update?</string>
     <string name="service_provider">Service provider</string>
     <string name="select_due_date">Select Due Date</string>
-    <string name="input_char_validation_msg">The value should be from the range %d to %d</string>
+    <string name="input_char_validation_msg">The value should be from the range %1$d to %2$d</string>
     <string name="mvp_kpi_tab1_text">KPI Wise Ach. % Rank</string>
     <string name="mvp_kpi_tab2_text">Top 5 peers</string>
     <string name="kpi_label">KPI</string>

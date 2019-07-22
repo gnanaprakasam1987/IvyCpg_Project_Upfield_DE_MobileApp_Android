@@ -890,20 +890,29 @@ public class NewOutletFragmentNew extends BaseFragment
     }
 
     @Override
-    public void createLatLongTextView(int mNumber) {
+    public void createLatLongTextView(String mName, int mNumber) {
 
         LinearLayout secondlayout = new LinearLayout(getActivity());
         secondlayout.setOrientation(LinearLayout.HORIZONTAL);
 
-        latLongTextView = new MandatoryTextView(getActivity());
+        TextView latLongTextHeader;
+        latLongTextHeader = getDateTextLabel(mName);
+        secondlayout.addView(latLongTextHeader, mandatoryTextViewParams);
+
+        latLongTextView =  new TextView(new ContextThemeWrapper(getActivity(), R.style.locationButton), null, 0);
+        latLongTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
         latLongTextView.setTextColor(Color.BLACK);
+        latLongTextView.setGravity(Gravity.CENTER);
         latLongTextView.setId(mNumber);
         latLongTextView.setText("0.0");
-        latLongTextView.setGravity(Gravity.START);
-        latLongTextView.setTypeface(latLongTextView.getTypeface(), Typeface.NORMAL);
+        latLongTextView.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
-        secondlayout.addView(latLongTextView, latlongTextViewWeight);
-        mRootLinearLayout.addView(secondlayout, commonsParams);
+        if (textViewHashMap == null)
+            textViewHashMap = new SparseArray<>();
+        textViewHashMap.put(mNumber, latLongTextView);
+
+        secondlayout.addView(latLongTextView, weight2);
+        mRootLinearLayout.addView(secondlayout, latlongTextViewWeight);
 
         if (screenMode == NewRetailerConstant.MenuType.VIEW.getMenuType() || screenMode == NewRetailerConstant.MenuType.EDIT.getMenuType()) {
             String latlng = mNewRetailerPresenter.getOutlet().getNewOutletlattitude()
@@ -1090,7 +1099,6 @@ public class NewOutletFragmentNew extends BaseFragment
         dateTextView.setText(getResources().getString(R.string.select_date));
         dateTextView.setFocusableInTouchMode(true);
         dateTextView.setFocusable(true);
-        dateTextView.setTypeface(dateTextView.getTypeface(), Typeface.NORMAL);
 
         if (textViewHashMap == null)
             textViewHashMap = new SparseArray<>();
@@ -1613,15 +1621,13 @@ public class NewOutletFragmentNew extends BaseFragment
 
         if (resultCode == RESULT_OK && requestCode == LOCATION_REQUEST_CODE) {
             if (data.hasExtra("lat") && data.hasExtra("isChanged")) {
-
                 mNewRetailerPresenter.updateLatitude(data.getExtras().getDouble("lat"));
                 mNewRetailerPresenter.updateLongitude(data.getExtras().getDouble("lon"));
 
-                if (data.getExtras().getBoolean("isChanged")) {
-                    String latlng = mNewRetailerPresenter.getLatitude()
-                            + "," + mNewRetailerPresenter.getLongitude();
-                    latLongTextView.setText(latlng);
-                }
+                String latlng = mNewRetailerPresenter.getLatitude()
+                        + "," + mNewRetailerPresenter.getLongitude();
+                latLongTextView.setText(latlng);
+                latLongTextView.setError(null);
             }
         } else if (requestCode == NewRetailerConstant.CAMERA_REQUEST_CODE && resultCode == 1) {
             if (imageIdList == null)
