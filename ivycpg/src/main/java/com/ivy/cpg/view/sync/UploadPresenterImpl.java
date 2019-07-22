@@ -35,7 +35,6 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     private Context mContext;
     private SyncContractor.SyncView view;
 
-    private List<SyncRetailerBO> isVisitedRetailerList;
     private boolean isDayClosed;
     private boolean isWithImage;
     public boolean isFromCallAnalysis;
@@ -115,18 +114,15 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
             if (isDayCloseChecked)
                 doDayCloseUpdates();
 
-            if (mBModel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT) {
-                new LoadRetailerIsVisited().execute();
+            int dbImageCount = mBModel.synchronizationHelper.countImageFiles();
+            if (mBModel.configurationMasterHelper.photocount >= 10 && (((double) dbImageCount / mBModel.configurationMasterHelper.photocount) * 100) >= mBModel.configurationMasterHelper.photopercent) {
+                view.showAlertImageUploadRecommended();
+
             } else {
-                int dbImageCount = mBModel.synchronizationHelper.countImageFiles();
-                if (mBModel.configurationMasterHelper.photocount >= 10 && (((double) dbImageCount / mBModel.configurationMasterHelper.photocount) * 100) >= mBModel.configurationMasterHelper.photopercent) {
-                    view.showAlertImageUploadRecommended();
 
-                } else {
-
-                    upload();
-                }
+                upload();
             }
+
 
         } else if ((isWithImage || !mBModel.configurationMasterHelper.IS_SYNC_WITH_IMAGES) && mBModel.synchronizationHelper.countImageFiles() > 0) {
             if (isDayCloseChecked)
@@ -158,46 +154,6 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         }
     }
 
-
-    class LoadRetailerIsVisited extends AsyncTask<Integer, Integer, Boolean> {
-
-
-        protected void onPreExecute() {
-            view.showProgressLoading();
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                isVisitedRetailerList = mBModel.synchronizationHelper.getRetailerIsVisited();
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE; // Return your real result here
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-
-            view.cancelProgress();
-            if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
-                    && !isDayClosed) {
-                view.showRetailerSelectionScreen(isVisitedRetailerList);
-
-            } else {
-                upload();
-            }
-
-        }
-
-    }
-
     @Override
     public void upload() {
 
@@ -216,9 +172,6 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
             new UploadThread((Activity) mContext, UploadThread.SYNC_LYTY_PT_UPLOAD, isFromCallAnalysis).start();
         else if (mBModel.synchronizationHelper.hasPickListDataExist())
             new UploadThread((Activity) mContext, UploadThread.SYNC_PICK_LIST_UPLOAD, isFromCallAnalysis).start();
-        else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
-                && !isDayClosed)
-            new UploadThread((Activity) mContext, UploadThread.SYNC_UPLOAD_RETAILER_WISE, isFromCallAnalysis).start();
         else if (mBModel.synchronizationHelper.hasOrderDeliveryStatusDataExist())
             new UploadThread((Activity) mContext, UploadThread.SYNC_ORDER_DELIVERY_STATUS_UPLOAD, isFromCallAnalysis).start();
         else if (mBModel.synchronizationHelper.hasTripDataExist())
@@ -272,31 +225,6 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     @Override
     public int getTextFilesCount() {
         return mBModel.synchronizationHelper.countTextFiles();
-    }
-
-
-    @Override
-    public StringBuilder getVisitedRetailerId() {
-        return mUploadHelper.getVisitedRetailerIds();
-    }
-
-    public void setIsVisitedRetailerList(List<SyncRetailerBO> isVisitedRetailerList) {
-        this.isVisitedRetailerList = isVisitedRetailerList;
-    }
-
-    @Override
-    public void prepareSelectedRetailerIds() {
-        mUploadHelper.setVisitedRetailerIds(new StringBuilder());
-        for (SyncRetailerBO sbo : isVisitedRetailerList) {
-            //if (sbo.isChecked()) {
-            mUploadHelper.getVisitedRetailerIds().append(
-                    mBModel.QT(sbo.getRetailerId()));
-            mUploadHelper.getVisitedRetailerIds().append(",");
-            //}
-        }
-        if (mUploadHelper.getVisitedRetailerIds() != null && mUploadHelper.getVisitedRetailerIds().toString().length() > 0) {
-            mUploadHelper.getVisitedRetailerIds().delete(mUploadHelper.getVisitedRetailerIds().length() - 1, mUploadHelper.getVisitedRetailerIds().length());
-        }
     }
 
     @Override

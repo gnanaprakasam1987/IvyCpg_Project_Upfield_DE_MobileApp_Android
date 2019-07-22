@@ -991,32 +991,6 @@ public class SynchronizationHelper {
         }
     }
 
-    public List<SyncRetailerBO> getRetailerIsVisited() {
-        List<SyncRetailerBO> isVisitedRetailerList = null;
-        try {
-            isVisitedRetailerList = new ArrayList<>();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
-            );
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT DISTINCT OT.RetailerID, RM.RetailerName FROM OutletTimestamp OT INNER JOIN RetailerMaster RM ON OT.RetailerID = RM.RetailerID Where OT.upload = 'N' ORDER BY RM.RetailerName");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    SyncRetailerBO retBO = new SyncRetailerBO();
-                    retBO.setRetailerId(c.getString(0));
-                    retBO.setRetailerName(c.getString(1));
-                    retBO.setChecked(true);
-                    isVisitedRetailerList.add(retBO);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return isVisitedRetailerList;
-    }
-
 
     public RequestQueue getRequestQueue() {
 

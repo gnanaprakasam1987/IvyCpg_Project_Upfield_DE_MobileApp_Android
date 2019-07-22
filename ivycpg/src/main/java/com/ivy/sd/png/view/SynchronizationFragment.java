@@ -975,8 +975,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     break;
                 case DataMembers.NOTIFY_UPLOADED_IMAGE:
                     withPhotosCheckBox.setChecked(false);
-                    if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT)
-                        uploadPresenter.loadRetailerSelectionScreen();
+
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.images_sucessfully_uploaded), 0);
@@ -1062,28 +1061,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                 if (resultCode == Activity.RESULT_OK) {
                     uploadPresenter.upload();
 
-                }
-                break;
-
-            case 1:
-                if (resultCode == Activity.RESULT_OK) {
-                    Bundle returnValue = data.getExtras();
-                    uploadPresenter.setIsVisitedRetailerList(returnValue.getParcelableArrayList("VisitedList"));
-                    uploadPresenter.prepareSelectedRetailerIds();
-                    if (uploadPresenter.getVisitedRetailerId() != null
-                            && uploadPresenter.getVisitedRetailerId().toString().length() > 0) {
-                        isClicked = false;
-                        uploadPresenter.upload();
-                    } else {
-                        bmodel.showAlert(
-                                getResources()
-                                        .getString(R.string.no_unsubmitted_orders), 0);
-                        isClicked = false;
-                        //dialog.dismiss();
-                    }
-
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    isClicked = false;
                 }
                 break;
 
@@ -2503,29 +2480,6 @@ public class SynchronizationFragment extends IvyBaseFragment
     }
 
     @Override
-    public void showRetailerSelectionScreen(List<SyncRetailerBO> isVisitedRetailerList) {
-//        Intent intent = new Intent(getActivity(), SyncRetailerSelectActivity.class);
-//        SyncVisitedRetailer catObj = new SyncVisitedRetailer(isVisitedRetailerList);
-//        Bundle bun = new Bundle();
-//        bun.putParcelable("list", catObj);
-//        intent.putExtras(bun);
-//        startActivityForResult(intent, 1);
-
-        uploadPresenter.prepareSelectedRetailerIds();
-        if (uploadPresenter.getVisitedRetailerId() != null
-                && uploadPresenter.getVisitedRetailerId().toString().length() > 0) {
-            isClicked = false;
-            uploadPresenter.upload();
-        } else {
-            bmodel.showAlert(
-                    getResources()
-                            .getString(R.string.no_unsubmitted_orders), 0);
-            isClicked = false;
-            //dialog.dismiss();
-        }
-    }
-
-    @Override
     public void showAlertImageUploadRecommended() {
         showAlertOkCancel(
                 getResources()
@@ -2593,11 +2547,6 @@ public class SynchronizationFragment extends IvyBaseFragment
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            builder = new AlertDialog.Builder(getActivity());
-
-            customProgressDialog(builder, "Uploading Sync Log Details");
-            alertDialog = builder.create();
-            alertDialog.show();
         }
 
         @Override
@@ -2610,7 +2559,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         @Override
         protected void onPostExecute(Void s) {
             super.onPostExecute(s);
-            alertDialog.dismiss();
+            Toast.makeText(getContext(),"Logs Uplaoded Sucessfully",Toast.LENGTH_SHORT).show();
             if (isSwitchUser) {
                 getActivity().finish();
                 moveToHomeScreenActivity();

@@ -70,7 +70,6 @@ public class UploadHelper {
     private static UploadHelper instance;
 
     private Handler handler;
-    private StringBuilder mVisitedRetailerIds;
     private Context mContext;
     private RequestQueue mRequestQueue;
     private static final String TAG = "UploadHelper";
@@ -122,6 +121,7 @@ public class UploadHelper {
 
     /**
      * Has attendance completed or not
+     *
      * @param context application context
      * @return true or false
      */
@@ -180,10 +180,10 @@ public class UploadHelper {
             if (businessModel.configurationMasterHelper.SHOW_DATA_UPLOAD_STATUS) {
                 storeSyncLog(jsonObjData, db);
             }
-            String uploadStartTime = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
-
 
             if (BuildConfig.FLAVOR.equalsIgnoreCase("aws")) {
+
+                String uploadStartTime = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
 
                 //Get Sync URL by Sync Type
                 String uploadURL = getUploadURLByType(syncType);
@@ -246,31 +246,6 @@ public class UploadHelper {
                 }
             }
 
-        } else if (flag == UploadThread.SYNC_UPLOAD_RETAILER_WISE) {
-            Set<String> keys = DataMembers.uploadColumnWithOutRetailer
-                    .keySet();
-
-            jsonObjData = new JSONObject();
-            for (String tableName : keys) {
-                JSONArray jsonArray = prepareDataForUploadJSONWithOutRetailer(
-                        db, tableName,
-                        DataMembers.uploadColumnWithOutRetailer
-                                .get(tableName));
-
-                if (jsonArray.length() > 0)
-                    jsonObjData.put(tableName, jsonArray);
-
-            }
-            keys = DataMembers.uploadColumnWithRetailer.keySet();
-            for (String tableName : keys) {
-                JSONArray jsonArray = prepareDataForUploadJSONWithRetailer(
-                        db, tableName,
-                        DataMembers.uploadColumnWithRetailer.get(tableName));
-
-                if (jsonArray.length() > 0)
-                    jsonObjData.put(tableName, jsonArray);
-            }
-
         } else if (flag == UploadThread.ATTENDANCE_UPLOAD) {
             Set<String> keys = DataMembers.uploadAttendanceColumn.keySet();
 
@@ -297,7 +272,7 @@ public class UploadHelper {
                     jsonObjData.put(tableName, jsonArray);
             }
 
-        }else if (flag == UploadThread.SYNC_LYTY_PT_UPLOAD) {
+        } else if (flag == UploadThread.SYNC_LYTY_PT_UPLOAD) {
             Set<String> keys = DataMembers.uploadLPTable.keySet();
 
             jsonObjData = new JSONObject();
@@ -528,7 +503,7 @@ public class UploadHelper {
     }
 
 
-    private void getUploadResponseSFDC(final JSONObject data, final int flag, final Handler handler) {
+    private void getUploadResponseSFDC(final JSONObject data, final int syncType, final Handler handler) {
 
         String initTime = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
 
@@ -537,7 +512,7 @@ public class UploadHelper {
         String uniqueTransactionID = businessModel.userMasterHelper.getUserMasterBO().getUserid()
                 + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
-        // This has not value, sent this for just downwards compatiblity.
+        // This has no value, sent this for just downwards compatiblity.
         try {
             data.put("MessageId", uniqueTransactionID);
             HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
@@ -545,91 +520,52 @@ public class UploadHelper {
             e.printStackTrace();
         }
 
+
+        // Get URL from URLMaster
+        String uploadURL = getUploadURLByType(syncType);
+
+        if(uploadURL.isEmpty()) {
+            handler.sendEmptyMessage(
+                    DataMembers.NOTIFY_URL_NOT_CONFIGURED);
+            return;
+        }
+
+        // Prepare URL to connect
         StringBuilder sb = new StringBuilder();
         sb.append(instance_url);
-        sb.append(businessModel.synchronizationHelper.getUploadUrl("UPLDTRAN"));
+        sb.append(uploadURL);
 
         try {
+
             jsonObjectRequest = new MyjsonarrayPostRequest(
                     Request.Method.POST, sb.toString(), data,
                     new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray jsonObject) {
-                            Commons.print(" RES: " + jsonObject);
-                            System.gc();
-                            try {
 
+                            try {
                                 int response = 0;
                                 if (jsonObject.toString().contains("Response")) {
                                     response = jsonObject.getJSONObject(0).getInt("Response");
                                 }
 
-                                int responseMsg = 0;
-                                if (response == 1) {
 
-                                    if (flag == UploadThread.SYNC_UPLOAD_RETAILER_WISE) {
-                                        updateUploadFlagRetailerWise(mContext);
-                                        getVisitedRetailerIds().delete(0,
-                                                getVisitedRetailerIds().length());
-                                        responseMsg = 1;
-                                    } else if (flag == UploadThread.SYNC_SIH_UPLOAD) {
-                                        updateUploadFlag(DataMembers.uploadSIHTable, mContext);
-                                        responseMsg = 2;
-                                    } else if (flag == UploadThread.SYNC_LYTY_PT_UPLOAD) {
-                                        updateUploadFlag(DataMembers.uploadLPTable, mContext);
-                                        responseMsg = 2;
-                                    } else if (flag == UploadThread.SYNC_STK_APPLY_UPLOAD) {
+                                UPLOAD_STATUS responseMsg = response == 1? UPLOAD_STATUS.SUCCESS : UPLOAD_STATUS.FAILED;
 
-                                        updateUploadFlag(DataMembers.uploadStockApplyTable, mContext);
-                                        responseMsg = 2;
-                                    } else if (flag == UploadThread.SYNC_REALLOC_UPLOAD) {
-                                        updateUploadFlag(DataMembers.uploadReallocTable, mContext);
-                                        responseMsg = 1;
-                                    } else if (flag == UploadThread.ATTENDANCE_UPLOAD) {
-                                        updateUploadFlag(DataMembers.uploadAttendanceColumn, mContext);
-                                        responseMsg = 1;
-                                    } else {
-                                        updateUploadFlag(DataMembers.uploadColumn, mContext);
-                                        responseMsg = 1;
-                                    }
-
-                                } else if (response == 0) {
-                                    if (UploadThread.SYNC_UPLOAD_RETAILER_WISE == 1) {
-                                        getVisitedRetailerIds().delete(0,
-                                                getVisitedRetailerIds().length());
-                                        responseMsg = 0;
-                                    }
+                                if (responseMsg == UPLOAD_STATUS.SUCCESS) {
+                                    updateTransactionUploadStatusByType(syncType, mContext, UPLOAD_STATUS.SUCCESS);
                                 }
-                                // Upload Transaction Sequence Table Separate , the above method
-                                // successfully upload. This Method also doing same work, but server
-                                // need the data while replicate this data while download instantly.
-                                if ((businessModel.configurationMasterHelper.SHOW_ORDER_SEQUENCE_NO || businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO
-                                        || businessModel.configurationMasterHelper.SHOW_COLLECTION_SEQ_NO)
-                                        && businessModel.orderAndInvoiceHelper.hasTransactionSequence()) {
-                                    if (responseMsg == 1) {
-                                        responseMsg = uploadInvoiceSequenceNo(handler, mContext).value;
-                                    }
-                                }
-                                Commons.print("After Responce");
 
-                                String syncStatus;
-                                if (responseMsg == 1) {
-                                    syncStatus = SYNC_STATUS_COMPLETED;
-                                } else {
-                                    syncStatus = SYNC_STATUS_FAILED;
-                                }
                                 businessModel.synchronizationHelper.insertSyncHeader(initTime, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_DGT_UPLOAD,
-                                        0, syncStatus, 1);
+                                        0, responseMsg == UPLOAD_STATUS.SUCCESS ? SYNC_STATUS_COMPLETED : SYNC_STATUS_FAILED, 1);
 
-                                if (responseMsg == 1) {
+                                if (responseMsg == UPLOAD_STATUS.SUCCESS && syncType != UploadThread.SYNC_UPLOAD) {
+                                    handler.sendEmptyMessage(
+                                            DataMembers.NOTIFY_UPLOADED_CONTINUE);
+                                }  else if (responseMsg == UPLOAD_STATUS.SUCCESS) {
                                     handler.sendEmptyMessage(
                                             DataMembers.NOTIFY_UPLOADED);
-                                } else if (responseMsg == -1) {
-                                    handler.sendEmptyMessage(
-                                            DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-
-
-                                } else if (responseMsg == 0) {
+                                }  else if (responseMsg == UPLOAD_STATUS.FAILED) {
                                     handler.sendEmptyMessage(
                                             DataMembers.NOTIFY_UPLOAD_ERROR);
                                 }
@@ -790,19 +726,16 @@ public class UploadHelper {
 
     /**
      * This method will update transaction based on upload type
+     *
      * @param uploadType SIH or Stock or Transaction
-     * @param context app context
-     * @param response success or failure
+     * @param context    app context
+     * @param response   success or failure
      */
     private void updateTransactionUploadStatusByType(int uploadType, Context context, UPLOAD_STATUS response) {
 
         if (response == UPLOAD_STATUS.SUCCESS) {
 
-            if (uploadType == UploadThread.SYNC_UPLOAD_RETAILER_WISE) {
-                updateUploadFlagRetailerWise(context.getApplicationContext());
-                getVisitedRetailerIds().delete(0,
-                        getVisitedRetailerIds().length());
-            } else if (uploadType == UploadThread.SYNC_SIH_UPLOAD) {
+            if (uploadType == UploadThread.SYNC_SIH_UPLOAD) {
                 updateUploadFlag(DataMembers.uploadSIHTable, context.getApplicationContext());
             } else if (uploadType == UploadThread.SYNC_LYTY_PT_UPLOAD) {
                 updateUploadFlag(DataMembers.uploadLPTable, context.getApplicationContext());
@@ -823,63 +756,8 @@ public class UploadHelper {
             } else {
                 updateUploadFlag(DataMembers.uploadColumn, context.getApplicationContext());
             }
-        } else if (response == UPLOAD_STATUS.FAILED) {
-            if (UploadThread.SYNC_UPLOAD_RETAILER_WISE == 1) {
-                getVisitedRetailerIds().delete(0,
-                        getVisitedRetailerIds().length());
-
-            }
         }
 
-    }
-
-
-    public StringBuilder getVisitedRetailerIds() {
-        return mVisitedRetailerIds;
-    }
-
-    public void setVisitedRetailerIds(StringBuilder mVisitedRetailerIds) {
-        this.mVisitedRetailerIds = mVisitedRetailerIds;
-    }
-
-    private void updateUploadFlagRetailerWise(Context context) {
-        try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
-            );
-            db.openDataBase();
-            String query = "";
-            Set<String> keys = DataMembers.uploadColumnWithOutRetailer.keySet();
-            for (String tableName : keys) {
-                query = "update " + tableName
-                        + " set upload='Y' where upload='N'";
-                db.updateSQL(query);
-            }
-            keys = DataMembers.uploadColumnWithRetailer.keySet();
-            for (String tableName : keys) {
-                if (tableName.equalsIgnoreCase("NearByRetailers") || tableName.equalsIgnoreCase("RetailerPotential")
-                        || tableName.equalsIgnoreCase("RrtNearByEditRequest")) {
-                    query = "update "
-                            + tableName
-                            + " set upload='Y' where upload='N' and rid in ("
-                            + getVisitedRetailerIds().toString()
-                            + ")";
-                } else {
-                    if (!tableName.equalsIgnoreCase("OrderDetailRequest")
-                            || !tableName.equalsIgnoreCase("SOSDetail_Proj")
-                            || !tableName.equalsIgnoreCase("RetailerPotential"))
-                        query = "update "
-                                + tableName
-                                + " set upload='Y' where upload='N' and RetailerID in ("
-                                + getVisitedRetailerIds().toString()
-                                + ")";
-                }
-                db.updateSQL(query);
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
     }
 
     private JSONArray prepareDataForUploadJSON(DBUtil db, Handler handler,
@@ -968,80 +846,6 @@ public class UploadHelper {
         return ohRowsArray;
     }
 
-    private JSONArray prepareDataForUploadJSONWithOutRetailer(DBUtil db,
-                                                              String tableName, String columns) {
-        JSONArray ohRowsArray = new JSONArray();
-
-        try {
-            Cursor cursor;
-            String columnArray[] = columns.split(",");
-            String sql = "select " + columns + " from " + tableName
-                    + " where upload='N'";
-            cursor = db.selectSQL(sql);
-            if (cursor != null) {
-                if (cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        JSONObject jsonObjRow = new JSONObject();
-                        int count = 0;
-                        for (String col : columnArray) {
-                            String value = cursor.getString(count);
-                            jsonObjRow.put(col, value);
-                            count++;
-                        }
-                        ohRowsArray.put(jsonObjRow);
-                    }
-                }
-
-                cursor.close();
-
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return ohRowsArray;
-    }
-
-    private JSONArray prepareDataForUploadJSONWithRetailer(DBUtil db,
-                                                           String tableName, String columns) {
-        Message msg;
-
-        JSONArray ohRowsArray = new JSONArray();
-
-        try {
-            Cursor cursor;
-            String columnArray[] = columns.split(",");
-            String sql = "select " + columns + " from " + tableName
-                    + " where upload='N' and RetailerID in ("
-                    + getVisitedRetailerIds().toString() + ")";
-            cursor = db.selectSQL(sql);
-            if (cursor != null) {
-                if (cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        JSONObject jsonObjRow = new JSONObject();
-                        int count = 0;
-                        for (String col : columnArray) {
-                            String value = cursor.getString(count);
-                            jsonObjRow.put(col, value);
-                            count++;
-                        }
-                        ohRowsArray.put(jsonObjRow);
-                    }
-
-                    msg = new Message();
-                    msg.obj = tableName + " collected to post";
-                    msg.what = DataMembers.NOTIFY_UPDATE;
-                    handler.sendMessage(msg);
-                }
-
-                cursor.close();
-
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return ohRowsArray;
-    }
-
     /**
      * Method to set upload column to Y for corresponding table list
      *
@@ -1068,103 +872,6 @@ public class UploadHelper {
         }
     }
 
-
-    /**
-     * Upload Transaction Sequence Table after Data Upload through seperate
-     * method name Returns the response Success/Failure
-     *
-     * @param handler
-     * @return
-     */
-    private UPLOAD_STATUS uploadInvoiceSequenceNo(Handler handler, Context context) {
-
-        UPLOAD_STATUS responseMessage = UPLOAD_STATUS.FAILED;
-
-        JSONObject jsonObjData;
-        this.handler = handler;
-        try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
-            db.createDataBase();
-            db.openDataBase();
-
-            Set<String> keys = DataMembers.uploadInvoiceSequenceNo.keySet();
-            jsonObjData = new JSONObject();
-            for (String tableName : keys) {
-                JSONArray jsonArray = prepareDataForUploadJSON(db, handler,
-                        tableName,
-                        DataMembers.uploadInvoiceSequenceNo.get(tableName));
-
-                if (jsonArray.length() > 0)
-                    jsonObjData.put(tableName, jsonArray);
-            }
-
-
-            // Generate header Information
-            JSONFormatter jsonFormatter = generateUploadHeaderInformation(context, jsonObjData);
-
-            // Get server URL
-            String url = businessModel.synchronizationHelper.getUploadUrl(UPLOAD_SEQUENCE_URL_CODE);
-            if (url.length() == 0)
-                return UPLOAD_STATUS.URL_NOTFOUND;
-
-            //Connect server
-            Vector<String> responseVector = businessModel.synchronizationHelper.getUploadResponse(jsonFormatter.getDataInJson(), jsonObjData.toString(), url);
-
-            int response = 0;
-            if (responseVector.size() > 0) {
-                for (String s : responseVector) {
-                    JSONObject jsonObject = new JSONObject(s);
-
-                    Iterator itr = jsonObject.keys();
-                    while (itr.hasNext()) {
-                        String key = (String) itr.next();
-                        if (key.equals("Response")) {
-                            response = jsonObject.getInt("Response");
-
-                        } else if (key.equals("ErrorCode")) {
-                            String tokenResponse = jsonObject.getString("ErrorCode");
-                            if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
-                                    || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
-                                    || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
-
-                                return UPLOAD_STATUS.TOKEN_ERROR;
-
-                            }
-
-                        }
-
-                    }
-
-
-                }
-            } else {
-                if (!businessModel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
-                    String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
-                    if (errorMsg != null) {
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-
-            if (response == 1) {
-                db.updateSQL("Update " + DataMembers.tbl_TransactionSequence
-                        + " SET UPLOAD = 'Y' WHERE UPLOAD = 'N'");
-                db.closeDB();
-                responseMessage = UPLOAD_STATUS.SUCCESS;
-
-            } else if (response == 0) {
-                responseMessage = UPLOAD_STATUS.FAILED;
-            }
-            db.closeDB();
-            Commons.print("uploadInvoiceSequenceNo:After Responce");
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            return UPLOAD_STATUS.FAILED;
-        }
-        return responseMessage;
-    }
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
@@ -1522,6 +1229,7 @@ public class UploadHelper {
 
     /**
      * Check for data in Salable and Non-salable Stock in Hand
+     *
      * @return true or false
      */
     public boolean hasStockInHandDataExist() {
@@ -1557,6 +1265,7 @@ public class UploadHelper {
 
     /**
      * Check for data in Stock Apply Table.
+     *
      * @return true or false
      */
     public boolean hasStockApplyDateExisit() {

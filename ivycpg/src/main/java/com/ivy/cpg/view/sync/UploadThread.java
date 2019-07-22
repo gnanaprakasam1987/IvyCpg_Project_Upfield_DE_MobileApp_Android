@@ -25,7 +25,7 @@ public class UploadThread extends Thread {
     public static final int SYNC_UPLOAD = 5;
     public static final int SYNC_SIH_UPLOAD = -30;
     public static final int SYNC_SEQ_NUMBER_UPLOAD = -31;
-    public static final int SYNC_UPLOAD_RETAILER_WISE = 217;
+
     public static final int SYNC_STK_APPLY_UPLOAD = -33;
     public static final int SYNC_LYTY_PT_UPLOAD = -40;
     public static final int SYNC_REALLOC_UPLOAD = -36;
@@ -101,7 +101,7 @@ public class UploadThread extends Thread {
         } else if (uploadType == SYNC_ORDER_DELIVERY_STATUS_UPLOAD || uploadType == SYNC_TRIP ||
                 uploadType == SYNC_PICK_LIST_UPLOAD || uploadType == SYNC_LYTY_PT_UPLOAD ||
                 uploadType == SYNC_SEQ_NUMBER_UPLOAD || uploadType == SYNC_STK_APPLY_UPLOAD ||
-                uploadType == SYNC_SIH_UPLOAD || uploadType == SYNC_UPLOAD_RETAILER_WISE) {
+                uploadType == SYNC_SIH_UPLOAD ) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
             UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
@@ -117,6 +117,7 @@ public class UploadThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper.UPLOAD_STATUS status = mUploadHelper.uploadTransactionDataByType(handler, uploadType, ctx.getApplicationContext());
+                if (BuildConfig.FLAVOR.equalsIgnoreCase("aws"))
                 sendMessage(status, handler, true);
             } else {
                 handler.sendEmptyMessage(

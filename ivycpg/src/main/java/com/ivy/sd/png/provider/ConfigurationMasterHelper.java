@@ -267,7 +267,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DELETE_TABLE_ADHOC = "SYNC10";
     private static final String CODE_SHOW_SIH_IN_FNAME = "ORDB34";
     // Added in 42 version
-    private static final String CODE_SHOW_SYNC_RETAILER_SELECT = "SYNC02";
     private static final String CODE_CURRENT_STDQTY_APPLY = "STKPRO14";
     private static final String CODE_VALIDATE_DIST_INV = "STKPRO15";
     private static final String CODE_SHOW_SYNC_EXPORT_TXT = "SYNC03";
@@ -788,7 +787,6 @@ public class ConfigurationMasterHelper {
     // Added in 41 version
     public boolean SHOW_MULTIPAYMENT = true;
     // Added in 42 version
-    public boolean SHOW_SYNC_RETAILER_SELECT;
     public boolean SHOW_SYNC_EXPORT_TXT;
     public boolean SHOW_SYNC_DAYCLOSE;
 
@@ -2209,7 +2207,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_MULTIPAYMENT = hashMapHHTModuleConfig.get(CODE_SHOW_MULTIPAYMENT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MULTIPAYMENT) : false;
         this.SHOW_DOWNLOAD_ALERT = hashMapHHTModuleConfig.get(CODE_DOWNLOAD_ALERT) != null ? hashMapHHTModuleConfig.get(CODE_DOWNLOAD_ALERT) : false;
         this.SHOW_SIH_IN_PNAME = hashMapHHTModuleConfig.get(CODE_SHOW_SIH_IN_FNAME) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SIH_IN_FNAME) : false;
-        this.SHOW_SYNC_RETAILER_SELECT = hashMapHHTModuleConfig.get(CODE_SHOW_SYNC_RETAILER_SELECT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SYNC_RETAILER_SELECT) : false;
         this.SHOW_CURRENT_STDQTY = hashMapHHTModuleConfig.get(CODE_CURRENT_STDQTY_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_CURRENT_STDQTY_APPLY) : false;
         this.SHOW_VALIDATION_DIST_INV = hashMapHHTModuleConfig.get(CODE_VALIDATE_DIST_INV) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_DIST_INV) : false;
         this.SHOW_SYNC_EXPORT_TXT = hashMapHHTModuleConfig.get(CODE_SHOW_SYNC_EXPORT_TXT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SYNC_EXPORT_TXT) : false;

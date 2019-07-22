@@ -357,9 +357,6 @@
             android:name="com.ivy.cpg.view.photocapture.PhotoCaptureActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SyncRetailerSelectActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.cpg.view.photocapture.Gallery"
             android:screenOrientation="portrait" />
         <activity

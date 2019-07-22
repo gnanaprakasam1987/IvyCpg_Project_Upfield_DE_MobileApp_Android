@@ -2,7 +2,6 @@
 package com.ivy.cpg.view.callanalysis;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -45,7 +44,6 @@ import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sync.SyncContractor;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.UploadPresenterImpl;
-import com.ivy.cpg.view.sync.UploadThread;
 import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.camera.CameraActivity;
@@ -54,7 +52,6 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -65,8 +62,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.sd.png.view.SyncRetailerSelectActivity;
-import com.ivy.sd.png.view.SyncVisitedRetailer;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FileUtils;
@@ -77,7 +72,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -1761,19 +1755,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 bmodel.reasonHelper.saveImage(mImageName, mImagePath);
 
             }
-        } else if (requestCode == REQUEST_CODE_RETAILER_WISE_UPLOAD) {
-            if (resultCode == Activity.RESULT_OK) {
-                presenter.prepareSelectedRetailerIds();
-                if (presenter.getVisitedRetailerId() != null
-                        && presenter.getVisitedRetailerId().toString().length() > 0) {
-                    presenter.upload();
-                } else {
-                    bmodel.showAlert(
-                            getResources()
-                                    .getString(R.string.no_unsubmitted_orders), 0);
-                }
-
-            }
         } else {
             Commons.print(bmodel.mSelectedActivityName
                     + "Camers Activity : Canceled");
@@ -1895,8 +1876,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     return true;
 
                 case DataMembers.NOTIFY_UPLOADED_IMAGE:
-                    if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT)
-                        presenter.loadRetailerSelectionScreen();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.images_sucessfully_uploaded), 0);
@@ -2033,15 +2012,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         dismissProgressDialog();
     }
 
-    @Override
-    public void showRetailerSelectionScreen(List<SyncRetailerBO> isVisitedRetailerList) {
-        Intent intent = new Intent(this, SyncRetailerSelectActivity.class);
-        SyncVisitedRetailer catObj = new SyncVisitedRetailer(isVisitedRetailerList);
-        Bundle bun = new Bundle();
-        bun.putParcelable("list", catObj);
-        intent.putExtras(bun);
-        startActivityForResult(intent, REQUEST_CODE_RETAILER_WISE_UPLOAD);
-    }
 
     @Override
     public void showAlertImageUploadRecommended() {
