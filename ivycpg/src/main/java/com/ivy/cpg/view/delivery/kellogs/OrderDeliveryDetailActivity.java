@@ -497,7 +497,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             else if (schemeProductBO.getUomID() == bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()).getOuUomid())
                 ((TextView) view.findViewById(R.id.outer_qty)).setText(String.valueOf(schemeProductBO.getQuantitySelected()));
 
-            ((TextView) view.findViewById(R.id.text_sih)).setText(String.valueOf(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()).getSIH()));
+            ((TextView) view.findViewById(R.id.text_sih)).setText(String.valueOf(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()).getDSIH()));
         }
 
     }
