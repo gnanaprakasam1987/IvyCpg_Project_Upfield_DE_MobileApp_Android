@@ -138,7 +138,8 @@ import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DASH_KPI;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DELMGMT_RET;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DENOMINATION;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DIGITIAL_SELLER;
-import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DYNAMIC_REPORT;
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DYNAMIC_DASH01;
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DYNAMIC_DASH02;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_EMPTY_RECONCILIATION;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_EXPENSE;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_IN_OUT;
@@ -1641,7 +1642,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_NOTES_SW)) {
 
             switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
-        } else if (menuItem.getConfigCode().equals(MENU_DYNAMIC_REPORT)) {
+        } else if (menuItem.getConfigCode().equals(MENU_DYNAMIC_DASH01) || menuItem.getConfigCode().equals(MENU_DYNAMIC_DASH02)) {
 
             switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
         }
@@ -1762,7 +1763,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         NotesListFragment notesListFragment = (NotesListFragment) fm.findFragmentByTag(MENU_NOTES_SW);
 
-        DynamicReportFragmentNew dynamicReportFragmentNew = (DynamicReportFragmentNew) fm.findFragmentByTag(MENU_DYNAMIC_REPORT);
+        DynamicReportFragmentNew dynamicReportFragmentNew = (DynamicReportFragmentNew) fm.findFragmentByTag(MENU_DYNAMIC_DASH01);
+        DynamicReportFragmentNew dynamicDash02 = (DynamicReportFragmentNew) fm.findFragmentByTag(MENU_DYNAMIC_DASH02);
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
                 && !bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
@@ -1896,8 +1898,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (retailerMapFragment != null && (fragmentName.equals(MENU_MAP_PLAN))
                 && retailerMapFragment.isVisible()) {
             return;
-        } else if (dynamicReportFragmentNew != null && (fragmentName.equals(MENU_DYNAMIC_REPORT))
+        } else if (dynamicReportFragmentNew != null && (fragmentName.equals(MENU_DYNAMIC_DASH01))
                 && dynamicReportFragmentNew.isVisible()) {
+            return;
+        } else if (dynamicDash02 != null && (fragmentName.equals(MENU_DYNAMIC_DASH02))
+                && dynamicDash02.isVisible()) {
             return;
         }
         FragmentTransaction ft = fm.beginTransaction();
@@ -1990,6 +1995,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(retailerMapFragment);
         if (dynamicReportFragmentNew != null)
             ft.remove(dynamicReportFragmentNew);
+        if (dynamicDash02 != null)
+            ft.remove(dynamicDash02);
 
         Bundle bndl;
         Fragment fragment;
@@ -2417,15 +2424,25 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 ft.add(R.id.fragment_content, fragment,
                         MENU_OFLNE_PLAN);
                 break;
-            case MENU_DYNAMIC_REPORT:
+            case MENU_DYNAMIC_DASH01:
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
-                bndl.putString("menucode", MENU_DYNAMIC_REPORT);
+                bndl.putString("menucode", MENU_DYNAMIC_DASH01);
                 bndl.putString("rid", "0");
                 fragment = new DynamicReportFragmentNew();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
-                        MENU_DYNAMIC_REPORT);
+                        MENU_DYNAMIC_DASH01);
+                break;
+            case MENU_DYNAMIC_DASH02:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                bndl.putString("menucode", MENU_DYNAMIC_DASH02);
+                bndl.putString("rid", "0");
+                fragment = new DynamicReportFragmentNew();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_DYNAMIC_DASH02);
                 break;
         }
         ft.commitAllowingStateLoss();

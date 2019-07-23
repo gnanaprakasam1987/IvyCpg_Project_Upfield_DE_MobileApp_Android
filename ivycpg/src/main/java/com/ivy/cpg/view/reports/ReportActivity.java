@@ -59,6 +59,7 @@ import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
 import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportFragment;
 import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportHelper;
 import com.ivy.cpg.view.reports.soho.SalesReturnReportFragmentSOHO;
+import com.ivy.ui.reports.dynamicreport.view.DynamicReportFragmentNew;
 import com.ivy.ui.reports.syncreport.view.SyncReportFragment;
 import com.ivy.cpg.view.reports.taskexcutionreport.TaskExecutionReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
@@ -193,7 +194,7 @@ public class ReportActivity extends BaseActivity implements BaseIvyView,
 
         setScreenTitle(config.getMenuName());
 
-        if (config.getConfigCode().contains(
+        if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_DYN_REPORT)) {
             DynamicReportHelper.getInstance(this).downloadDynamicReport(config.getConfigCode());
 
@@ -563,6 +564,17 @@ public class ReportActivity extends BaseActivity implements BaseIvyView,
             bundle.putBoolean("isFromReport",true);
             serviceReqFragment.setArguments(bundle);
             transaction.replace(R.id.fragment_content, serviceReqFragment);
+            commitFragment(transaction, config);
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_DYNAMIC_REPORT01) || config.getConfigCode().equals(StandardListMasterConstants.MENU_DYNAMIC_REPORT02)
+                || config.getConfigCode().equals(StandardListMasterConstants.MENU_DYNAMIC_REPORT03) || config.getConfigCode().equals(StandardListMasterConstants.MENU_DYNAMIC_REPORT04)
+                || config.getConfigCode().equals(StandardListMasterConstants.MENU_DYNAMIC_REPORT05)) {
+            DynamicReportFragmentNew dynamicReportFragmentNew = new DynamicReportFragmentNew();
+            Bundle bndl = new Bundle();
+            bndl.putString("screentitle", config.getMenuName());
+            bndl.putString("menucode", config.getConfigCode());
+            bndl.putString("rid", "0");
+            dynamicReportFragmentNew.setArguments(bndl);
+            transaction.replace(R.id.fragment_content, dynamicReportFragmentNew);
             commitFragment(transaction, config);
         }
     }

@@ -73,6 +73,7 @@ public class SurveyHelperNew {
 
     private String SignaturePath = "";
     private int accountGroupId;
+    private HashMap<Integer, Integer> surveyMandatoryMap;
 
     private SurveyHelperNew(Context context) {
         this.context = context;
@@ -158,12 +159,14 @@ public class SurveyHelperNew {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.openDataBase();
         StringBuilder surveyIds = new StringBuilder();
+        surveyMandatoryMap = new HashMap<>();
         try {
-            Cursor c = db.selectSQL("select surveyid from SurveyCriteriaMapping where criteriaid=" + accountGroupId);
+            Cursor c = db.selectSQL("select surveyid,isMandatory from SurveyCriteriaMapping where criteriaid=" + accountGroupId);
             if (c != null) {
                 while (c.moveToNext()) {
                     surveyIds.append(c.getInt(0));
                     surveyIds.append(",");
+                    surveyMandatoryMap.put(c.getInt(0), c.getInt(1));
                 }
             }
         } catch (Exception e) {
@@ -294,6 +297,7 @@ public class SurveyHelperNew {
 
         DBUtil db = null;
         String surveyIds = "";
+        surveyMandatoryMap = new HashMap<>();
         try {
 
             db = new DBUtil(context, DataMembers.DB_NAME);
@@ -322,8 +326,8 @@ public class SurveyHelperNew {
                     "Case  IFNULL(AttributeID ,-1) when -1  then '0' else '1' END as flag" +
                     ",IfNull(PriorityBiD,0) AS PriorityBiD," +
                     "IfNull(RetailerID,0) AS RetailerID, " +
-                    "IfNull(AccountID,0) AS AccountID" +
-                    " FROM (SELECT  DISTINCT SurveyId,GroupId FROM SurveyCriteriaMapping) AS Survey" +
+                    "IfNull(AccountID,0) AS AccountID,isMandatory" +
+                    " FROM (SELECT  DISTINCT SurveyId,GroupId,isMandatory FROM SurveyCriteriaMapping) AS Survey" +
 
                     " LEFT JOIN  (SELECT DISTINCT SurveyId,GroupId,CriteriaId LocationId  FROM SurveyCriteriaMapping" +
                     " INNER JOIN StandardListMaster on ListId=CriteriaType" +
@@ -373,6 +377,7 @@ public class SurveyHelperNew {
                         } else {
                             surveyIds += "," + c.getString(0);
                         }
+                        surveyMandatoryMap.put(c.getInt(0), c.getInt(8));
                     }
 
                 }
@@ -529,6 +534,8 @@ public class SurveyHelperNew {
                         surveyBO.setMaxBonusScore(c.getFloat(2));
                         surveyBO.setSurveyFreq(c.getString(c.getColumnIndex("freq")));
                         surveyBO.setSignatureRequired(c.getInt(c.getColumnIndex("IsSignatureRequired")) == 1);
+                        if (!fromHomeScreen)
+                            surveyBO.setMandatory(surveyMandatoryMap.get(surveyBO.getSurveyID()) == 1);
 
                         questionIndex = 0;
                         tempQuestionId = c.getInt(3);
@@ -877,7 +884,7 @@ public class SurveyHelperNew {
         invalidEmails = new StringBuilder();
         notInRange = new StringBuilder();
         for (SurveyBO sBO : getSurvey()) {
-            if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
+            if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE || sBO.isMandatory()) {
 
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
 

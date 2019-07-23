@@ -14,6 +14,7 @@ public class SurveyBO {
 	private float achievedScore, targtScore, bonusScoreAchieved;
 	private boolean isSignatureRequired;
 	private String signaturePath;
+	private boolean isMandatory;
 
 
 	private final ArrayList<QuestionBO> questions = new ArrayList<>();
@@ -93,5 +94,13 @@ public class SurveyBO {
 
 	public void setSignaturePath(String signaturePath) {
 		this.signaturePath = signaturePath;
+	}
+
+	public boolean isMandatory() {
+		return isMandatory;
+	}
+
+	public void setMandatory(boolean mandatory) {
+		isMandatory = mandatory;
 	}
 }

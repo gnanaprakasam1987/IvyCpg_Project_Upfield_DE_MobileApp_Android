@@ -397,6 +397,11 @@
     <string name="sync_report">Sync Report</string>
     <string name="freeze_columns">Freeze Columns</string>
     <string name="freeze_columns_alert_title">Select columns want to be freeze</string>
+    <string name="hide_columns">Hide Columns</string>
+    <string name="report_columns_hide_title">Select columns want to be hide</string>
+    <string name="search_columns">Columns Search</string>
+    <string name="select_column">Select Column</string>
+    <string name="select_column_search">Select the column you want to search</string>
     <string name="announcement">Announcement</string>
     <string name="order_type">Order Type</string>
     <string name="profile_view">Profile View</string>
