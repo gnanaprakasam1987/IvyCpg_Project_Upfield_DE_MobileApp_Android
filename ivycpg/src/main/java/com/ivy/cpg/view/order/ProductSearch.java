@@ -639,4 +639,14 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
         }
     }
 
+    public String getFilterName(String filtername) {
+        Vector<ConfigureBO> genfilter = configurationMasterHelper
+                .getGenFilter();
+        for (int i = 0; i < genfilter.size(); i++) {
+            if (genfilter.get(i).getConfigCode().equals(filtername))
+                filtername = genfilter.get(i).getMenuName();
+        }
+        return filtername;
+    }
+
 }

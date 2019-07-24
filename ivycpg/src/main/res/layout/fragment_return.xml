@@ -11,8 +11,9 @@
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@+id/keypad"
+        android:layout_alignParentTop="true"
         android:layout_margin="@dimen/list_margin"
         android:background="@android:color/transparent"
         android:cacheColorHint="@null"

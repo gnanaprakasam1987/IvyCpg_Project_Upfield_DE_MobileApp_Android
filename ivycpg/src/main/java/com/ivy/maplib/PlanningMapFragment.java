@@ -1636,6 +1636,11 @@ public class PlanningMapFragment extends SupportMapFragment implements
     }
 
     @Override
+    public void calendarPlanReason(String mode, String reasonId) {
+
+    }
+
+    @Override
     public void onDismiss() {
         profileclick = false;
     }

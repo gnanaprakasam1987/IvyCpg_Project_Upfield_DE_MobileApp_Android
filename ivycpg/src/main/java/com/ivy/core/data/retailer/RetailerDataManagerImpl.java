@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -346,8 +347,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                 updateWalkingSequenceDayWise(retailer, weekText[0]);
 
                                             }
-                                            //update plan count and visit count from datewiseplan table
-                                            updatePlanAndVisitCount(retailer);
+
 
                                             if (configurationMasterHelper.SUBD_RETAILER_SELECTION | configurationMasterHelper.IS_LOAD_ONLY_SUBD)
                                                 if (retailer.getSubdId() != 0) {
@@ -372,8 +372,11 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                                     }
 
-                                    if(configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                                    if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE) {
+                                        //update plan count and visit count from datewiseplan table
+                                        updatePlanAndVisitCount();
                                         updateIsToday();
+                                    }
 
                                 } catch (Exception ignored) {
 
@@ -921,6 +924,55 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
     }
 
+    private void updatePlanAndVisitCount() {
+        try {
+            initDb();
+
+            HashMap<String, Integer> plannedMap = new HashMap<>();
+            HashMap<String, Integer> visitedMap = new HashMap<>();
+            Cursor c;
+            c = mDbUtil.selectSQL("select EntityId From DatewisePlan where (planStatus ='APPROVED'or planStatus='PENDING')");
+            if (c != null
+                    && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    if (plannedMap.get(c.getString(0)) != null)
+                        plannedMap.put(c.getString(0), plannedMap.get(c.getString(0)) + 1);
+                    else
+                        plannedMap.put(c.getString(0), 1);
+                }
+
+                c.close();
+            }
+
+
+            c = mDbUtil.selectSQL("SELECT EntityId From DatewisePlan WHERE VisitStatus= 'COMPLETED'");
+            if (c != null
+                    && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    if (visitedMap.get(c.getString(0)) != null)
+                        visitedMap.put(c.getString(0), visitedMap.get(c.getString(0)) + 1);
+                    else
+                        visitedMap.put(c.getString(0), 1);
+                }
+
+                c.close();
+            }
+
+            for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+                if (plannedMap.get(retailerMasterBO.getRetailerID()) != null) {
+                    retailerMasterBO.setTotalPlanned(plannedMap.get(retailerMasterBO.getRetailerID()));
+                }
+                if (visitedMap.get(retailerMasterBO.getRetailerID()) != null) {
+                    retailerMasterBO.setTotalVisited(visitedMap.get(retailerMasterBO.getRetailerID()));
+                }
+            }
+            shutDownDb();
+
+        } catch (Exception ignore) {
+            Commons.printException(ignore);
+        }
+    }
+
     private void updatePlanAndVisitCount(RetailerMasterBO retObj) {
         try {
 
@@ -934,7 +986,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 c.close();
             }
 
-            c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.getStringQueryParam(retObj.getRetailerID()) + " LIMIT 1");
+            c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.getStringQueryParam(retObj.getRetailerID()));
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
@@ -1004,6 +1056,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
         return Single.fromCallable(() -> {
             initDb();
             List<String> retailerIds = new ArrayList<>();
+            List<String> vistedRetailerIds = new ArrayList<>();
             Cursor c = mDbUtil.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
                     "AND Date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
@@ -1011,6 +1064,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                     && c.getCount() > 0) {
                 while (c.moveToNext()) {
                     retailerIds.add(c.getString(0));
+                    if (c.getString(1).equals("COMPLETED"))
+                        vistedRetailerIds.add(c.getString(0));
                 }
 
                 c.close();
@@ -1019,8 +1074,11 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             if (retailerIds.size() > 0)
                 for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
                     retailerMasterBO.setIsToday(0);
+                    retailerMasterBO.setIsVisited("N");
                     if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
                         retailerMasterBO.setIsToday(1);
+                        if (vistedRetailerIds.contains(retailerMasterBO.getRetailerID()))
+                            retailerMasterBO.setIsVisited("Y");
                     }
                 }
 
