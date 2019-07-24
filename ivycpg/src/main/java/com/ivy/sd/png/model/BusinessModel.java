@@ -1886,7 +1886,8 @@ public class BusinessModel extends Application {
     private void updateIsToday(DBUtil db) {
         List<String> retailerIds = new ArrayList<>();
         List<String> vistedRetailerIds = new ArrayList<>();
-        Cursor c = db.selectSQL("select EntityId,VisitStatus From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+        List<String> adhocRetailerIds = new ArrayList<>();
+        Cursor c = db.selectSQL("select EntityId,VisitStatus,isAdhocPlan From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
                 "AND Date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null) {
             if (c.getCount() > 0) {
@@ -1894,6 +1895,8 @@ public class BusinessModel extends Application {
                     retailerIds.add(c.getString(0));
                     if (c.getString(1).equals("COMPLETED"))
                         vistedRetailerIds.add(c.getString(0));
+                    if (1 == c.getInt(2))
+                        adhocRetailerIds.add(c.getString(0));
                 }
             }
             c.close();
@@ -1906,6 +1909,8 @@ public class BusinessModel extends Application {
                     retailerMasterBO.setIsToday(1);
                     if (vistedRetailerIds.contains(retailerMasterBO.getRetailerID()))
                         retailerMasterBO.setIsVisited("Y");
+                    if (adhocRetailerIds.contains(retailerMasterBO.getRetailerID()))
+                        retailerMasterBO.setAdhoc(true);
                 }
             }
     }

@@ -46,9 +46,9 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
     }
 
     @Override
-    public void addNewPlan(String date, String startTime, String endTime, RetailerMasterBO retailerMasterBO) {
+    public void addNewPlan(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO, boolean isAdhoc) {
 
-        DateWisePlanBo dateWisePlanBo = preparePlanObjects(date, startTime, endTime, retailerMasterBO);
+        DateWisePlanBo dateWisePlanBo = preparePlanObjects(date,startTime,endTime,retailerMasterBO, isAdhoc);
 
         getCompositeDisposable().add(addPlanDataManager.savePlan(dateWisePlanBo)
                 .flatMapSingle(new Function<DateWisePlanBo, SingleSource<DateWisePlanBo>>() {
@@ -61,8 +61,10 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
                 .subscribe(new Consumer<DateWisePlanBo>() {
                     @Override
                     public void accept(DateWisePlanBo planBo) throws Exception {
-                        if (DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equalsIgnoreCase(planBo.getDate()))
+                        if (DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equalsIgnoreCase(planBo.getDate())) {
                             dataManager.getRetailMaster().setIsToday(1);
+                            dataManager.getRetailMaster().setAdhoc(isAdhoc);
+                        }
 
                         planBo.setOperationType("Add");
 
@@ -144,7 +146,7 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
 
     }
 
-    private DateWisePlanBo preparePlanObjects(String date, String startTime, String endTime, RetailerMasterBO retailerMasterBO) {
+    private DateWisePlanBo preparePlanObjects(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO, boolean isAdhoc){
 
         date = DateTimeUtils.convertToServerDateFormat(date, "yyyy/MM/dd");
 
@@ -170,6 +172,7 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
         dateWisePlanBo.setStartTime(startTime);
         dateWisePlanBo.setEndTime(endTime);
         dateWisePlanBo.setName(retailerMasterBO.getRetailerName());
+        dateWisePlanBo.setAdhoc(isAdhoc);
 
         return dateWisePlanBo;
     }

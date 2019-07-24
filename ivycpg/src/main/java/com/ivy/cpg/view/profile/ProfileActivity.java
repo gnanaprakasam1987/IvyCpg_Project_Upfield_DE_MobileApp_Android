@@ -728,7 +728,15 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 break;
             }
             case R.id.start_visit: {
-                retailerClick();
+                if (bmodel.getAppDataProvider().getRetailMaster().isAdhoc()) {
+
+                    downloadProductsAndPrice = new DownloadProductsAndPrice(ProfileActivity.this, getPhotoPath(), fnameStarts,
+                            mVisitMode, mNFCReasonId, true);
+                    if (downloadProductsAndPrice.getStatus() != AsyncTask.Status.RUNNING)
+                        downloadProductsAndPrice.execute();
+                } else {
+                    retailerClick();
+                }
                 break;
             }
             case R.id.cancel_visit: {
