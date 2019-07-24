@@ -312,6 +312,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String RField7;
     private String RField8;
     private String RField9;
+    private boolean isAdhoc;
 
     public RetailerMasterBO() {
 
@@ -1649,5 +1650,13 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setTotalVisited(int totalVisited) {
         this.totalVisited = totalVisited;
+    }
+
+    public boolean isAdhoc() {
+        return isAdhoc;
+    }
+
+    public void setAdhoc(boolean adhoc) {
+        isAdhoc = adhoc;
     }
 }

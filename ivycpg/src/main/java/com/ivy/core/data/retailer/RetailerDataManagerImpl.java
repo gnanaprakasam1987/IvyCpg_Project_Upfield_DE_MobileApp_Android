@@ -554,7 +554,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 initDb();
                 List<String> retailerIds = new ArrayList<>();
                 List<String> vistedRetailerIds = new ArrayList<>();
-                Cursor c = mDbUtil.selectSQL("select EntityId,VisitStatus From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+                List<String> adhocRetailerIds = new ArrayList<>();
+                Cursor c = mDbUtil.selectSQL("select EntityId,VisitStatus,isAdhocPlan From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
                         "AND Date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
                 if (c != null
@@ -563,6 +564,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         retailerIds.add(c.getString(0));
                         if (c.getString(1).equals("COMPLETED"))
                             vistedRetailerIds.add(c.getString(0));
+                        if (1 == c.getInt(2))
+                            adhocRetailerIds.add(c.getString(0));
                     }
 
                     c.close();
@@ -576,6 +579,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                             retailerMasterBO.setIsToday(1);
                             if (vistedRetailerIds.contains(retailerMasterBO.getRetailerID()))
                                 retailerMasterBO.setIsVisited("Y");
+                            if (adhocRetailerIds.contains(retailerMasterBO.getRetailerID()))
+                                retailerMasterBO.setAdhoc(true);
                         }
                     }
                 return retailerMasterBOS;

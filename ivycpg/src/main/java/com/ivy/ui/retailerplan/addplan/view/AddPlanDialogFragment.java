@@ -132,6 +132,9 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @BindView(R.id.btn_date_picker)
     Button btnDateSelection;
 
+    @BindView(R.id.tv_adhoc_plan)
+    TextView tv_adhoc_plan;
+
     private BottomSheetBehavior bottomSheetBehavior;
 
     private Context context;
@@ -148,6 +151,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     private int mYear;
     private int mMonth;
     private int mDay;
+
+    private boolean isAdhoc;
 
     private String selectedDate = "", startTime = "", endtime = "";
 
@@ -208,6 +213,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
         addPlan.setOnClickListener(addToPlanListener);
         editPlan.setOnClickListener(addToPlanListener);
+        tv_adhoc_plan.setOnClickListener(addToPlanListener);
 
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
 
@@ -253,6 +259,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
     @Override
     protected void setUpViews() {
+       if (addPlanPresenter.getConfigurationMasterHelper().IS_RETAILER_ADHOC_PLAN)
+           tv_adhoc_plan.setVisibility(View.VISIBLE);
         if (selectedDate != null) {
             tvDateSelection.setVisibility(View.GONE);
             btnDateSelection.setVisibility(View.GONE);
@@ -385,7 +393,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                         addPlanPresenter.updatePlan(startTime, endTime, dateWisePlanBo, "");
                 }
             } else {
-                addPlanPresenter.addNewPlan(selectedDate, startTime, endTime, retailerMasterBO);
+                addPlanPresenter.addNewPlan(selectedDate, startTime, endTime, retailerMasterBO, isAdhoc);
             }
         }
     }
@@ -460,6 +468,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     private View.OnClickListener addToPlanListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            isAdhoc = v.getId() == R.id.tv_adhoc_plan;
 
             if (addPlan.getVisibility() == View.VISIBLE) {
                 visitElementGroup.setVisibility(View.VISIBLE);
@@ -477,6 +486,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
             addPlan.setVisibility(View.GONE);
             editPlan.setVisibility(View.GONE);
+            tv_adhoc_plan.setVisibility(View.GONE);
 
             savePlan.setVisibility(View.VISIBLE);
 
@@ -555,6 +565,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
             tvLastVisitDate.setText(retailerMasterBO.getLastVisitDate());
 
             addPlan.setVisibility(View.GONE);
+            tv_adhoc_plan.setVisibility(View.GONE);
 
             if (DateTimeUtils.getDateCount(selectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd") <= 0) {
 
@@ -599,9 +610,13 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                         )
                                 || (retailerMasterBO != null && "Y".equals(retailerMasterBO.getIsVisited()))) {
 
-                    addPlan.setVisibility(View.GONE);
-                } else
-                    addPlan.setVisibility(View.VISIBLE);
+                        addPlan.setVisibility(View.GONE);
+                        tv_adhoc_plan.setVisibility(View.GONE);
+                    }else {
+                        addPlan.setVisibility(View.VISIBLE);
+                        if (addPlanPresenter.getConfigurationMasterHelper().IS_RETAILER_ADHOC_PLAN)
+                        tv_adhoc_plan.setVisibility(View.VISIBLE);
+                    }
             }
 
             final Calendar c = Calendar.getInstance();

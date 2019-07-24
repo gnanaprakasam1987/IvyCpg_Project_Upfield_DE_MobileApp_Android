@@ -67,9 +67,10 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                             + getStringQueryParam("PLANNED") + ","
                             + getStringQueryParam("MOBILE") + ","
                             + getStringQueryParam("APPROVED") + ","
-                            + getStringQueryParam("N");
+                            + getStringQueryParam("N") + ","
+                            + (dateWisePlanBo.isAdhoc() ? 1 : 0);
 
-                    String columns = DataMembers.tbl_date_wise_plan_cols + ",upload";
+                    String columns = DataMembers.tbl_date_wise_plan_cols + ",upload,isAdhocPlan";
 
                     mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, columns, values);
 
