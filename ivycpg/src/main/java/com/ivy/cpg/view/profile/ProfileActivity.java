@@ -169,13 +169,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private static boolean firstLevZoom;
     private boolean fromHomeClick = false,
             visitClick = false, isFromPlanning = false,
-            isFromPlanningSub = false ,
-            isShowVisitButton = false,isShowCancelVisit = false,isProfileViewOnly = false;
+            isFromPlanningSub = false,
+            isShowVisitButton = false, isShowCancelVisit = false, isProfileViewOnly = false;
 
-    private String retailerViewDate="";
+    private String retailerViewDate = "";
 
     private boolean isFromRetailerMapScreen = false;
-    private final String RETAILERVIEW = "RetailerView";
+    private final String DATEWISEPLAN = "DateWisePlan";
 
     private List<LatLng> markerList = new ArrayList<>();
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID;
@@ -228,6 +228,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     String selectedUserId = "";
     private boolean fromMap;
     private boolean isLocValDone;
+    private boolean isCameraCalled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -425,7 +426,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         isShowCancelVisit = getIntent().getBooleanExtra("HideCancelVisit", false);
         retailerViewDate = getIntent().getStringExtra("RetailerViewDate");
 
-        isProfileViewOnly = getIntent().getBooleanExtra("ViewOnly",false);
+        isProfileViewOnly = getIntent().getBooleanExtra("ViewOnly", false);
 
 
         try {
@@ -439,7 +440,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             calledBy = MENU_VISIT;
         }
 
-        if (calledBy.equalsIgnoreCase(RETAILERVIEW))
+        if (calledBy.equalsIgnoreCase(DATEWISEPLAN))
             isFromRetailerMapScreen = true;
     }
 
@@ -782,7 +783,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 CommonReasonDialog comReasonDialog = new CommonReasonDialog(ProfileActivity.this, "nonVisit");
                 comReasonDialog.setNonvisitListener(ProfileActivity.this);
                 if (isFromRetailerMapScreen)
-                    comReasonDialog.getFromScreenParam(RETAILERVIEW,retailerViewDate);
+                    comReasonDialog.getFromScreenParam(DATEWISEPLAN, retailerViewDate);
                 comReasonDialog.show();
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 Window window = comReasonDialog.getWindow();
@@ -846,7 +847,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             retailerCodeTxt.setVisibility(View.GONE);
         }
 
-        if (isFromRetailerMapScreen){
+        if (isFromRetailerMapScreen) {
             linearLayout.setVisibility(View.GONE);
             findViewById(R.id.retailer_plan_layout).setVisibility(View.VISIBLE);
         }
@@ -1482,7 +1483,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 return new SBDGapFragment();
             } else if (tabName.equals(retailer_contact_title)) {
                 Bundle bundle = new Bundle();
-                bundle.putString("RetailerId",bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
+                bundle.putString("RetailerId", bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
                 RetailerContactFragment retailerContactFragment = new RetailerContactFragment();
                 retailerContactFragment.setArguments(bundle);
                 return retailerContactFragment;
@@ -1574,7 +1575,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     @Override
     protected void onPause() {
         super.onPause();
-        if (visitClick) {
+        if (visitClick && !isCameraCalled) {
             if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
                 int permissionStatus = ContextCompat.checkSelfPermission(this,
                         Manifest.permission.ACCESS_FINE_LOCATION);
@@ -1595,6 +1596,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == CAMERA_REQUEST_CODE) {
+            isCameraCalled = false;
             if (resultCode == 1) {
                 int count = bmodel.synchronizationHelper.getImageCountFromPath(getPhotoPath(), fnameStarts);
                 Commons.print("ImageCount ," + count + "");
@@ -1648,7 +1650,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private void retailerClick() {
 
-        if (!isClicked && (calledBy.equals(MENU_VISIT) || calledBy.equalsIgnoreCase(RETAILERVIEW))) {
+        if (!isClicked && (calledBy.equals(MENU_VISIT) || calledBy.equalsIgnoreCase(DATEWISEPLAN))) {
 
             if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED) {
                 takePhotoForRetailer();
@@ -1659,7 +1661,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private void validationToStartVisit() {
 
-        if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+        if (DateTimeUtils.getDateCount(bmodel.userMasterHelper.getUserMasterBO()
+                        .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                "yyyy/MM/dd") <= -2) {
+            Toast.makeText(this,
+                    getResources().getString(R.string.mobile_date_time_mismatch),
+                    Toast.LENGTH_SHORT).show();
+
+        } else if (bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
             if (!LoadManagementHelper.getInstance(getApplicationContext()).isTripStarted(this)) {
                 Toast.makeText(this, getResources().getString(R.string.pls_start_the_trip), Toast.LENGTH_LONG).show();
                 return;
@@ -1856,7 +1865,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         return !Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.ALLOW_MOCK_LOCATION).equals("0");
     }
-
 
 
     private void showMocLocationAlert() {
@@ -2084,6 +2092,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     }
 
     private void callCamera(String imageName) {
+        isCameraCalled =true;
         Intent intent = new Intent(this, CameraActivity.class);
         intent.putExtra(CameraActivity.QUALITY, 40);
         String mPath = getPhotoPath() + "/" + imageName;
@@ -2348,6 +2357,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     }
 
     @Override
+    public void calendarPlanReason(String mode, String reasonId) {
+
+    }
+
+    @Override
     public void onDismiss() {
 
     }
@@ -2365,7 +2379,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     if (fromMap)
                         i.putExtra("menuCode", "MENU_PLANE_MAP");
                     else
-                    i.putExtra("menuCode", "MENU_VISIT");
+                        i.putExtra("menuCode", "MENU_VISIT");
                     startActivity(i);
                     finish();
                 } else if (calledBy.equalsIgnoreCase(MENU_PLANNING)) {
@@ -2451,7 +2465,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                         long pausedTime = getSharedPreferences("RetailerPause", MODE_PRIVATE).getLong("pausetime", 0);
                         bmodel.timer = new TimerCount(ProfileActivity.this, pausedTime);
                     } else
-                    bmodel.timer = new TimerCount(ProfileActivity.this, 0);
+                        bmodel.timer = new TimerCount(ProfileActivity.this, 0);
                 }
                 isClicked = false;
 

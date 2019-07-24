@@ -2,9 +2,10 @@ package com.ivy.ui.retailerplan.addplan;
 
 public class DateWisePlanBo {
 
-    private int PlanId, DistributorId, UserId, EntityId, Sequence,cancelReasonId;
+    private int DistributorId, UserId, EntityId, Sequence,cancelReasonId;
     private String EntityType, Status, Date="",Name,startTime="",endTime="",visitStatus,planStatus ="";
     private boolean isServerData;
+    private long PlanId;
 
     private String operationType;
 
@@ -24,11 +25,11 @@ public class DateWisePlanBo {
         isServerData = serverData;
     }
 
-    public int getPlanId() {
+    public long getPlanId() {
         return PlanId;
     }
 
-    public void setPlanId(int planId) {
+    public void setPlanId(long planId) {
         PlanId = planId;
     }
 

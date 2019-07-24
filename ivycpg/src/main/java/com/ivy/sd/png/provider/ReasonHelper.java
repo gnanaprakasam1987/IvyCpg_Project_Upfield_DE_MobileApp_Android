@@ -240,8 +240,7 @@ public class ReasonHelper {
 
     public void downloadNonVisitReasonMaster() {
         ReasonMaster reason;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
-        );
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.openDataBase();
 
         Cursor c = db.selectSQL(getReasonFromStdListMaster("NV"));
@@ -292,7 +291,7 @@ public class ReasonHelper {
     }
 
 
-    public void downloadPlannedActivitiesReasonMaster(String listType){
+    public void downloadPlannedActivitiesReasonMaster(String listType) {
         try {
             ReasonMaster reason;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -316,7 +315,6 @@ public class ReasonHelper {
             Commons.printException(e);
         }
     }
-
 
 
     public void downloadNonProductiveReasonMaster() {
@@ -402,8 +400,6 @@ public class ReasonHelper {
     }
 
 
-
-
     public ArrayList<ReasonMaster> getDeviatedReturnMaster() {
         return deviatedReturnMaster;
     }
@@ -455,9 +451,6 @@ public class ReasonHelper {
     private String QT(String data) {
         return "'" + data + "'";
     }
-
-
-
 
 
     public void downloadReasons() {
@@ -949,6 +942,54 @@ public class ReasonHelper {
                 db.closeDB();
         }
         return new ArrayList<>();
+    }
+
+    public ArrayList<ReasonMaster> getDeletePlanReason() {
+
+        ArrayList<ReasonMaster> reasonList = new ArrayList<>();
+        ReasonMaster reason;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        db.openDataBase();
+
+        Cursor c = db.selectSQL(getReasonFromStdListMaster("DPR"));
+        if (c != null) {
+            setNonVisitReasonMaster(new ArrayList<ReasonMaster>());
+            while (c.moveToNext()) {
+                reason = new ReasonMaster();
+                reason.setReasonID(c.getString(0));
+                reason.setReasonDesc(c.getString(1));
+                getNonVisitReasonMaster().add(reason);
+            }
+            c.close();
+        }
+        db.closeDB();
+
+        return reasonList;
+
+    }
+
+    public ArrayList<ReasonMaster> getReschedulePlanReason() {
+
+        ArrayList<ReasonMaster> reasonList = new ArrayList<>();
+        ReasonMaster reason;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        db.openDataBase();
+
+        Cursor c = db.selectSQL(getReasonFromStdListMaster("DPR"));
+        if (c != null) {
+            setNonVisitReasonMaster(new ArrayList<ReasonMaster>());
+            while (c.moveToNext()) {
+                reason = new ReasonMaster();
+                reason.setReasonID(c.getString(0));
+                reason.setReasonDesc(c.getString(1));
+                getNonVisitReasonMaster().add(reason);
+            }
+            c.close();
+        }
+        db.closeDB();
+
+        return reasonList;
+
     }
 
 }

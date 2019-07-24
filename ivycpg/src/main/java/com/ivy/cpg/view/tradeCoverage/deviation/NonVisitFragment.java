@@ -160,6 +160,11 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                     }
 
                     @Override
+                    public void calendarPlanReason(String mode, String reasonId) {
+
+                    }
+
+                    @Override
                     public void onDismiss() {
 
                     }
