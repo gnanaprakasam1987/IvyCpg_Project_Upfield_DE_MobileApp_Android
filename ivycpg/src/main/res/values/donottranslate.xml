@@ -404,4 +404,6 @@
     <string name="exposition_status">Exposition Status</string>
     <string name="not_applicable">Not Applicable</string>
     <string name="srp_must_be_less_than_of_mrp">Seller price must be less than of MRP: %.0f</string>
+    <string name="this_is_not_a_real_device">This is not a real device.</string>
+    <string name="app_will_not_work_in_rooted_device">App will not work in rooted device.</string>
 </resources>
