@@ -154,31 +154,20 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
     }
 
     private void saveTimeTrackDetailsDb(String reasonId, String remarks) {
-        getCompositeDisposable().add(timeTrackDataManager.saveTimeTrackDetailsDb(reasonId,remarks, LocationUtil.latitude, LocationUtil.longitude)
+        getCompositeDisposable().add(timeTrackDataManager.saveTimeTrackDetailsDb(reasonId, remarks, LocationUtil.latitude, LocationUtil.longitude)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean isSaved) {
                         if (isSaved) {
-                            if(configurationMasterHelper.IS_ATTENDANCE_SYNCUPLOAD)
+                            if (configurationMasterHelper.IS_ATTENDANCE_SYNCUPLOAD)
                                 getIvyView().uploadAttendanceToServer();
                             if (configurationMasterHelper.IS_IN_OUT_MANDATE) {
-                                checkIsLeaveToday();
+                                HomeScreenFragment.isLeave_today = timeTrackDataManager.checkIsLeave();
                             }
                             fetchData(true);
                         }
 
-                    }
-                }));
-    }
-
-    private void checkIsLeaveToday() {
-        getCompositeDisposable().add(timeTrackDataManager.checkIsLeave()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean isLeave) {
-                        HomeScreenFragment.isLeave_today = isLeave;
                     }
                 }));
     }

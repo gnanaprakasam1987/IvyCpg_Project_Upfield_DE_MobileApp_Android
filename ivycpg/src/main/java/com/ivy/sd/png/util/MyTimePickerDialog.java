@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+
+/*Used for Time Slots in Calendar Module*/
 public class MyTimePickerDialog extends TimePickerDialog {
 
     private final static int TIME_PICKER_INTERVAL = 30;

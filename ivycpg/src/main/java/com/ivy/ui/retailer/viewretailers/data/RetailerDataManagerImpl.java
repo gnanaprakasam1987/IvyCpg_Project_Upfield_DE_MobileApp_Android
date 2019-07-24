@@ -94,7 +94,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         while (c.moveToNext()) {
                             dateWisePlanBO = new DateWisePlanBo();
 
-                            dateWisePlanBO.setPlanId(c.getInt(0));
+                            dateWisePlanBO.setPlanId(c.getLong(0));
                             dateWisePlanBO.setDistributorId(c.getInt(1));
                             dateWisePlanBO.setUserId(c.getInt(2));
                              dateWisePlanBO.setDate(c.getString(3));
@@ -162,7 +162,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         while (c.moveToNext()) {
                             dateWisePlanBO = new DateWisePlanBo();
 
-                            dateWisePlanBO.setPlanId(c.getInt(0));
+                            dateWisePlanBO.setPlanId(c.getLong(0));
                             dateWisePlanBO.setDistributorId(c.getInt(1));
                             dateWisePlanBO.setUserId(c.getInt(2));
                             dateWisePlanBO.setDate(c.getString(3));

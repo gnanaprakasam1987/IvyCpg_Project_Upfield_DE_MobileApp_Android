@@ -523,6 +523,22 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PLAN_RETAILER_ON_NONFILED = "OFPLAN03";
     public boolean IS_PLAN_RETIALER_NON_FIELD;
 
+    private static final String CODE_ADD_PLAN_RESCHDULE = "OFPLAN04";
+    public boolean ADD_PLAN_RESCHDULE_TS;
+    public boolean ADD_PLAN_RESCHDULE_TR;
+    public boolean ADD_PLAN_RESCHDULE_FS;
+    public boolean ADD_PLAN_RESCHDULE_FR;
+
+    private static final String CODE_ADD_PLAN_DELETE = "OFPLAN05";
+    public boolean ADD_PLAN_DELETE_TS;
+    public boolean ADD_PLAN_DELETE_TR;
+    public boolean ADD_PLAN_DELETE_FS;
+    public boolean ADD_PLAN_DELETE_FR;
+
+    private static final String CODE_ADD_PLAN_CANCEL = "OFPLAN07";
+    public boolean ADD_PLAN_CANCEL_TS;
+    public boolean ADD_PLAN_CANCEL_FS;
+
     private static final String CODE_EXPENSE_DAYS = "EXP01";
     public int expenseDays = 30;
 
@@ -2848,6 +2864,8 @@ public class ConfigurationMasterHelper {
         this.IS_PRE_VISIT = hashMapHHTModuleConfig.get(CODE_PRE_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_PRE_VISIT) : false;
         this.IS_SHOW_SORT_STKCHK = hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) : false;
         this.IS_SHOW_EXPLIST_IN_PROMO = hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) : false;
+
+        loadAddplanConfigs();
         this.IS_SHOW_ANNOUNCEMENT = hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) : false;
         this.IS_SHOW_NOTIFICATION = hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) : false;
     }
@@ -6439,6 +6457,116 @@ public class ConfigurationMasterHelper {
 
 
         return false;
+    }
+
+    public void loadAddplanConfigs() {
+        try {
+            ADD_PLAN_RESCHDULE_TS = false;
+            ADD_PLAN_RESCHDULE_TR = false;
+            ADD_PLAN_RESCHDULE_FS = false;
+            ADD_PLAN_RESCHDULE_FR = false;
+
+            String codeValue = null;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='" + CODE_ADD_PLAN_RESCHDULE + "' and Flag=1 and ForSwitchSeller = 0";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    switch (temp) {
+                        case "TS":
+                            ADD_PLAN_RESCHDULE_TS = true;
+                            break;
+                        case "TR":
+                            ADD_PLAN_RESCHDULE_TR = true;
+                            break;
+                        case "FS":
+                            ADD_PLAN_RESCHDULE_FS = true;
+                            break;
+                        case "FR":
+                            ADD_PLAN_RESCHDULE_FR = true;
+                            break;
+                    }
+
+                }
+            }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='" + CODE_ADD_PLAN_DELETE + "' and Flag=1 and ForSwitchSeller = 0";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    switch (temp) {
+                        case "TS":
+                            ADD_PLAN_DELETE_TS = true;
+                            break;
+                        case "TR":
+                            ADD_PLAN_DELETE_TR = true;
+                            break;
+                        case "FS":
+                            ADD_PLAN_DELETE_FS = true;
+                            break;
+                        case "FR":
+                            ADD_PLAN_DELETE_FR = true;
+                            break;
+                    }
+
+                }
+            }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='" + CODE_ADD_PLAN_CANCEL + "' and Flag=1 and ForSwitchSeller = 0";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    switch (temp) {
+                        case "TS":
+                            ADD_PLAN_CANCEL_TS = true;
+                            break;
+                        case "FS":
+                            ADD_PLAN_CANCEL_FS = true;
+                            break;
+
+                    }
+
+                }
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
     }
 
 }

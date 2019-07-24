@@ -225,12 +225,7 @@ public class TimeTrackPresenterTest {
             }
         }));
 
-        given(timeTrackDataManager.checkIsLeave()).willReturn(Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return true;
-            }
-        }));
+        given(timeTrackDataManager.checkIsLeave()).willReturn(true);
         given(timeTrackDataManager.getTimeTrackList()).willReturn(Observable.fromCallable(new Callable<ArrayList<NonFieldTwoBo>>() {
             @Override
             public ArrayList<NonFieldTwoBo> call() {
