@@ -23,7 +23,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function3;
 import io.reactivex.observers.DisposableObserver;
 
-import static com.ivy.ui.profile.view.ProfileBaseFragment.selectedChannelId;
+import static com.ivy.sd.png.view.ProfileContainerFragment.selectedChannelId;
+
 
 public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.IProfileAttributeView>
         extends BasePresenter<V> implements IProfileAttributeContract.IProfileAttributePresenter<V> {

@@ -36,7 +36,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.ivy.ui.profile.view.ProfileBaseFragment.selectedChannelId;
+import static com.ivy.sd.png.view.ProfileContainerFragment.selectedChannelId;
 
 public class ProfileAttributeFragment extends BaseFragment
         implements IProfileAttributeContract.IProfileAttributeView,BlockingStep {

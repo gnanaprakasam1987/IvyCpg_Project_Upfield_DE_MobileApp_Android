@@ -47,6 +47,7 @@ public class ProfileBaseFragment extends BaseFragment
 
     public static int selectedChannelId;
 
+
     @Inject
     IProfileContractor.IProfilePresenter<IProfileContractor.IProfileView> profilePresenter;
 
@@ -61,11 +62,11 @@ public class ProfileBaseFragment extends BaseFragment
 
     @Override
     public void initializeDi() {
-        DaggerProfileComponent.builder()
-                .ivyAppComponent(((BusinessModel) context.getApplicationContext()).getComponent())
-                .profileModule(new ProfileModule(this))
-                .build().inject(this);
-        setBasePresenter((BasePresenter) profilePresenter);
+//        DaggerProfileComponent.builder()
+//                .ivyAppComponent(((BusinessModel) context.getApplicationContext()).getComponent())
+//                .profileModule(new ProfileModule(this))
+//                .build().inject(this);
+//        setBasePresenter((BasePresenter) profilePresenter);
     }
 
     @Override
@@ -92,7 +93,7 @@ public class ProfileBaseFragment extends BaseFragment
         mStepperLayout.setAdapter(new ProfileStepperAdapter(
                 ((FragmentActivity)context).getSupportFragmentManager(),
                 context,retailerId,isShowAttribute,
-                bmodel.configurationMasterHelper.IS_CONTACT_TAB,isFromEditProfileView,isProfileView));
+                bmodel.configurationMasterHelper.IS_CONTACT_TAB,isFromEditProfileView,isProfileView,0,""));
 
         mStepperLayout.setListener(this);
 

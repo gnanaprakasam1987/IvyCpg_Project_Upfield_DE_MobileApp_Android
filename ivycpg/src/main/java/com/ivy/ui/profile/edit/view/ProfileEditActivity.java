@@ -11,6 +11,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.NearByRetailerDialog;
+import com.ivy.sd.png.view.ProfileContainerFragment;
 import com.ivy.ui.profile.view.ProfileBaseFragment;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
@@ -86,7 +87,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
     }
 
     private void openProfileEditScreen(){
-        Fragment fragment = new ProfileBaseFragment();
+        Fragment fragment = new ProfileContainerFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean("isEdit",true);
         bundle.putString("retailerId", bmodel.getAppDataProvider().getRetailMaster().getRetailerID());

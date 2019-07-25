@@ -3,18 +3,18 @@ package com.ivy.ui.profile.view;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+
 import com.ivy.cpg.view.retailercontact.ContactCreationFragment;
 import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
-import com.ivy.sd.png.view.NewOutletFragment;
 import com.ivy.ui.profile.attribute.view.ProfileAttributeFragment;
+import com.ivy.ui.profile.create.view.NewOutletFragmentNew;
 import com.ivy.ui.profile.edit.view.ProfileEditFragmentNew;
 import com.stepstone.stepper.Step;
 import com.stepstone.stepper.adapter.AbstractFragmentStepAdapter;
 import com.stepstone.stepper.viewmodel.StepViewModel;
-
-import androidx.annotation.IntRange;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
 
 
 public class ProfileStepperAdapter extends AbstractFragmentStepAdapter {
@@ -23,9 +23,12 @@ public class ProfileStepperAdapter extends AbstractFragmentStepAdapter {
     private String retailerId;
     private boolean isAttribAvail, isContactAvail, isProfileEditView, isProfileViewOnly;
 
-    ProfileStepperAdapter(FragmentManager fm, Context context, String retailerId,
+    private int channelId;
+    private String channelName;
+
+    public ProfileStepperAdapter(FragmentManager fm, Context context, String retailerId,
                           boolean isAttribAvail, boolean isContactAvail,
-                          boolean isProfileEditView, boolean isProfileViewOnly) {
+                          boolean isProfileEditView, boolean isProfileViewOnly,int channelId,String channelName) {
         super(fm, context);
 
         if (isAttribAvail && isContactAvail)
@@ -40,6 +43,9 @@ public class ProfileStepperAdapter extends AbstractFragmentStepAdapter {
         this.isProfileEditView = isProfileEditView;
         this.isProfileViewOnly = isProfileViewOnly;
         this.retailerId = retailerId;
+
+        this.channelId = channelId;
+        this.channelName = channelName;
     }
 
     @Override
@@ -49,8 +55,15 @@ public class ProfileStepperAdapter extends AbstractFragmentStepAdapter {
             case 0:
                 if (isProfileEditView)
                     return new ProfileEditFragmentNew();
-                else
-                    return new NewOutletFragment();
+                else {
+                    NewOutletFragmentNew newOutletFragmentNew = new NewOutletFragmentNew();
+                    Bundle bundleNewoutLet = new Bundle();
+                    bundleNewoutLet.putInt("channelid", channelId);
+                    bundleNewoutLet.putString("channelName", channelName);
+                    newOutletFragmentNew.setArguments(bundleNewoutLet);
+                    return newOutletFragmentNew;
+
+                }
             case 1:
                 if (isAttribAvail)
                     return new ProfileAttributeFragment();

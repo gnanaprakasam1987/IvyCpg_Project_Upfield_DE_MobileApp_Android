@@ -107,7 +107,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
-import static com.ivy.ui.profile.view.ProfileBaseFragment.selectedChannelId;
+import static com.ivy.sd.png.view.ProfileContainerFragment.selectedChannelId;
 
 public class ProfileEditFragmentNew extends BaseFragment
         implements IProfileEditContract.ProfileEditView, RetailerOTPDialog.OTPListener, DatePreviewListener,BlockingStep {

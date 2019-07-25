@@ -1,173 +1,238 @@
 package com.ivy.sd.png.view;
 
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.ivy.cpg.view.retailercontact.ContactCreationFragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
-import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
+import com.ivy.core.base.presenter.BasePresenter;
+import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.Commons;
-import com.ivy.ui.profile.attribute.view.ProfileAttributeFragment;
-import com.ivy.ui.profile.create.view.NewOutletFragmentNew;
-import com.ivy.ui.profile.edit.view.ProfileEditFragmentNew;
+import com.ivy.ui.profile.IProfileContractor;
+import com.ivy.ui.profile.ProfileConstant;
+import com.ivy.ui.profile.di.DaggerProfileComponent;
+import com.ivy.ui.profile.di.ProfileModule;
+import com.ivy.ui.profile.view.ProfileBaseBo;
+import com.ivy.ui.profile.view.ProfileStepperAdapter;
+import com.stepstone.stepper.StepperLayout;
+import com.stepstone.stepper.VerificationError;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+
+import javax.inject.Inject;
 
 
-public class ProfileContainerFragment extends IvyBaseFragment {
+public class ProfileContainerFragment extends BaseFragment
+        implements StepperLayout.StepperListener,IProfileContractor.IProfileView {
 
     private BusinessModel bmodel;
     private boolean isFromEditProfileView;
     private static final String SCREEN_MODE_INTENT_KEY ="screenMode";
     private static final String RETAILERID_INTENT_KEY ="retailerId";
-    private static final Integer SCREENMODE_VIEW=1; // 1 - View Mode ;
-    private static final Integer SCREENMODE_EDIT=2; // 2 - Edit Mode
     Bundle bundle;
+
+    private boolean isProfileView;
+
+    private Context context;
+    private String retailerId="",channelName;
+    private int channelid ;
+    private boolean isShowAttribute;
+
+    private StepperLayout mStepperLayout;
+
+    public static int selectedChannelId;
+
+    @Inject
+    IProfileContractor.IProfilePresenter<IProfileContractor.IProfileView> profilePresenter;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel = (BusinessModel) context.getApplicationContext();
         bmodel.setContext(getActivity());
+
+        this.context = context;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_newoutlet_container, container, false);
+    public void initializeDi() {
+        DaggerProfileComponent.builder()
+                .ivyAppComponent(((BusinessModel) context.getApplicationContext()).getComponent())
+                .profileModule(new ProfileModule(this))
+                .build().inject(this);
+        setBasePresenter((BasePresenter) profilePresenter);
+    }
+
+    @Override
+    protected int setContentViewLayout() {
+        return R.layout.profile_base_fragment;
+    }
+
+    @Override
+    public void init(View view) {
+
+        selectedChannelId = 0 ;
+
         initializeItem(view);
-        return view;
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
+    @Override
+    protected void getMessageFromAliens() {
+        getBundleValues();
     }
 
+    @Override
+    protected void setUpViews() {
 
+        mStepperLayout.setAdapter(new ProfileStepperAdapter(
+                ((FragmentActivity)context).getSupportFragmentManager(),
+                context,retailerId,isShowAttribute,
+                bmodel.configurationMasterHelper.IS_CONTACT_TAB,isFromEditProfileView,isProfileView,channelid,channelName));
+
+        mStepperLayout.setListener(this);
+
+    }
 
     private void initializeItem(View view) {
 
-        try {
-
-            if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("test");
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-            }
-
-            bundle = getArguments();
-            if (bundle == null)
-                bundle = getActivity().getIntent().getExtras();
-
-            if (bundle != null) {
-
-                isFromEditProfileView = bundle.getBoolean("isEdit", false);
-
-                if (isFromEditProfileView) {
-                    setScreenTitle(getResources().getString(R.string.profile_edit_screen__title));
-                }
-                else {
-                    if (bundle.getString("screentitle") == null)
-                        setScreenTitle(bmodel.getMenuName("MENU_NEW_RETAILER"));
-                    else
-                        setScreenTitle(bundle.getString("screentitle"));
-                }
-
-                ViewPager viewPager = view.findViewById(R.id.pager);
-
-                ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-
-                if (isFromEditProfileView) {
-                    adapter.addFragment(new ProfileEditFragmentNew(), getResources().getString(R.string.profile_edit_screen__title));
-                    adapter.addFragment(new ProfileAttributeFragment(), getResources().getString(R.string.attribute));
-                }else {
-                    // adapter.addFragment(new NewOutletFragment(), getResources().getString(R.string.outlet));
-                    NewOutletFragmentNew newOutletFragmentNew=   new NewOutletFragmentNew();
-                    Bundle bundleNewoutLet=new Bundle();
-                    bundleNewoutLet.putInt("channelid",bundle.getInt("channelid",0));
-                    if(bundle.containsKey("channelName"))
-                        bundleNewoutLet.putString("channelName",bundle.getString("channelName",""));
-                    newOutletFragmentNew.setArguments(bundleNewoutLet);
-                    adapter.addFragment(newOutletFragmentNew, getResources().getString(R.string.outlet));
-                }
-
-
-                if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
-
-                    int screenMode = getActivity().getIntent().getIntExtra(SCREEN_MODE_INTENT_KEY, 0);
-                    String retailerId = bundle.getString(RETAILERID_INTENT_KEY, "");
-
-                    boolean isEdit = false;
-
-                    if (isFromEditProfileView) {
-                        isEdit = true;
-                        screenMode = SCREENMODE_EDIT;
-                    }
-
-
-                    bmodel.newOutletHelper.setRetailerContactList(new ArrayList<>());
-                    if (screenMode == SCREENMODE_EDIT){
-                        bmodel.newOutletHelper.setRetailerContactList(bmodel.profilehelper.getContactBos(retailerId,isEdit));
-                    }
-
-                    if (screenMode == SCREENMODE_VIEW) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("RetailerId",retailerId);
-                        RetailerContactFragment retailerContactFragment = new RetailerContactFragment();
-                        retailerContactFragment.setArguments(bundle);
-                        adapter.addFragment(retailerContactFragment, getResources().getString(R.string.contact));
-                    }else
-                        adapter.addFragment(ContactCreationFragment.getInstance(isFromEditProfileView), getResources().getString(R.string.contact));
-                }
-
-                viewPager.setAdapter(adapter);
-
-                TabLayout tabLayout = view.findViewById(R.id.tab_layout);
-                tabLayout.setupWithViewPager(viewPager);
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
+        if (((AppCompatActivity)context).getSupportActionBar() != null) {
+            Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).setTitle(null);
+            Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+            Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).setDisplayShowHomeEnabled(true);
         }
+
+        mStepperLayout = view.findViewById(R.id.stepperLayout);
+
+        mStepperLayout.setOffscreenPageLimit(3);
+    }
+
+    private void getBundleValues() {
+        Bundle bundle = getArguments();
+
+        if (bundle == null)
+            bundle = ((Activity)context).getIntent().getExtras();
+
+        if (bundle != null) {
+            isFromEditProfileView = bundle.getBoolean("isEdit", false);
+            if (isFromEditProfileView) {
+                setScreenTitle(getResources().getString(R.string.profile_edit_screen__title));
+            } else {
+                if (bundle.getString("screentitle") == null)
+                    setScreenTitle(bmodel.getMenuName("MENU_NEW_RETAILER"));
+                else
+                    setScreenTitle(bundle.getString("screentitle"));
+            }
+
+            if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
+
+                int screenMode = ((Activity) context).getIntent().getIntExtra(SCREEN_MODE_INTENT_KEY, 0);
+                retailerId = bundle.getString(RETAILERID_INTENT_KEY, "");
+
+                if (screenMode == 1)
+                    isProfileView = true;
+
+                bmodel.newOutletHelper.setRetailerContactList(new ArrayList<>());
+                if (isFromEditProfileView) {
+                    bmodel.newOutletHelper.setRetailerContactList(bmodel.profilehelper.getContactBos(retailerId, isFromEditProfileView));
+                }
+            }
+
+            channelid  = bundle.getInt("channelid",0);
+            if(bundle.containsKey("channelName"))
+                channelName = bundle.getString("channelName","");
+        }
+
+        int attribAvail = bmodel.profilehelper.isConfigAvail("RETAILER_PROFILE", ProfileConstant.ATTRIBUTE);
+
+        if (attribAvail > 0)
+            isShowAttribute = true;
+    }
+
+    @Override
+    public void onCompleted(View completeButton) {
+    }
+
+    @Override
+    public void onError(VerificationError verificationError) {
+    }
+
+    @Override
+    public void onStepSelected(int newStepPosition) {
+
+    }
+
+    @Override
+    public void onReturn() {
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    private ProfileBaseBo profileFieldsBo = new ProfileBaseBo();
+
+    @Subscribe
+    public void onMessageEvent(Object retailerProfileField) {
+        ProfileBaseBo profileBaseBo = (ProfileBaseBo)retailerProfileField;
+
+        if (profileBaseBo.getFieldName().equalsIgnoreCase("Profile"))
+            this.profileFieldsBo.setProfileFields(profileBaseBo.getProfileFields());
+        else if (profileBaseBo.getFieldName().equalsIgnoreCase("Contact"))
+            this.profileFieldsBo.setContactList(profileBaseBo.getContactList());
+        else if (profileBaseBo.getFieldName().equalsIgnoreCase("Attribute"))
+            this.profileFieldsBo.setAttributeList(profileBaseBo.getAttributeList());
+
+        if (profileBaseBo.getStatus().equalsIgnoreCase("Save"))
+            profilePresenter.saveProfileData(profileFieldsBo);
+    }
+
+    @Override
+    public void showSuccessMessage() {
+        showMessage("Saved Successfully");
+    }
+
+    @Override
+    public void showFailureMessage() {
+        showMessage("Save Failed");
+    }
+
+    @Override
+    public void showAlert() {
+        showAlertDialog(getResources().getString(R.string.profile_updated_scccess));
+    }
+
+    private void showAlertDialog(String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(msg);
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                ((Activity) context).finish();
+            }
+        });
+        applyAlertDialogTheme(getActivity(), builder);
     }
 
 }
