@@ -600,8 +600,11 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
             promoList = new ArrayList<>();
             Set<String> promotionKeys = new HashSet<>();
+            boolean isAccepted=false;
+            if(mSelectedPromoStateBO != null){
+                 isAccepted = mSelectedPromoStateBO.getConfigCode().equals("A");
+            }
 
-            boolean isAccepted = mSelectedPromoStateBO.getConfigCode().equals("A");
 
             // Iterate the List and the items to the ListHolder
             for (PromotionBO temp : items) {
