@@ -4,9 +4,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.StateListDrawable;
+
 import androidx.appcompat.widget.AppCompatRadioButton;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -52,15 +54,17 @@ public class CommonReasonDialog extends Dialog {
 
     private static final String NONVISIT = "nonVisit";
     private static final String DEVIATE = "deviate";
+    private static final String DELETE = "delete";
+    private static final String RESCHEDULE = "reschedule";
 
     public CommonReasonDialog(Context context) {
         super(context);
 
     }
 
-    private String fromScreen="",date="";
+    private String fromScreen = "", date = "";
 
-    public void getFromScreenParam(String fromScreen,String date) {
+    public void getFromScreenParam(String fromScreen, String date) {
         this.fromScreen = fromScreen;
         this.date = date;
     }
@@ -118,12 +122,14 @@ public class CommonReasonDialog extends Dialog {
                         bmodel.saveNonproductivereason(nonproductive, "");
                         bmodel.getRetailerMasterBO().setHasNoVisitReason(true);
 
-                        if (fromScreen.equalsIgnoreCase("RetailerView")){
-                            bmodel.saveCancelVistreason(temp.getReasonID(), date);
-                        }
-
-                        addNonVisitListener.addReatailerReason();
+                        if (fromScreen.equalsIgnoreCase("DateWisePlan")) {
+                            addNonVisitListener.calendarPlanReason(NONVISIT, temp.getReasonID());
+                        } else
+                            addNonVisitListener.addReatailerReason();
                         dismiss();
+                    } else if (listLoad.equals(DELETE) || listLoad.equals(RESCHEDULE)) {
+                        temp = selected_reason;
+                        addNonVisitListener.calendarPlanReason(listLoad, temp.getReasonID());
                     } else if (listLoad.equals(DEVIATE)) {
                         if (isReasonRemarksNA()) {
                             if (selected_reason.getReasonID().equals("0"))
@@ -162,6 +168,14 @@ public class CommonReasonDialog extends Dialog {
             headerText.setText(context.getResources().getString(R.string.reason_non_visit));
             reasonVisitTxt.setVisibility(View.GONE);
             reason_recycler.setAdapter(new ReasonAdapter(bmodel.reasonHelper.getNonVisitReasonMaster()));
+        } else if (listLoad.equals(DELETE)) {
+            headerText.setText(context.getResources().getString(R.string.reason_delete_plan));
+            reasonVisitTxt.setVisibility(View.GONE);
+            reason_recycler.setAdapter(new ReasonAdapter(bmodel.reasonHelper.getDeletePlanReason()));
+        } else if (listLoad.equals(RESCHEDULE)) {
+            headerText.setText(context.getResources().getString(R.string.reason_reschedule_plan));
+            reasonVisitTxt.setVisibility(View.GONE);
+            reason_recycler.setAdapter(new ReasonAdapter(bmodel.reasonHelper.getReschedulePlanReason()));
         } else if (listLoad.equals(DEVIATE)) {
             if (!isReasonRemarksNA()) {
                 ArrayList<ReasonMaster> deviateReasons = new ArrayList<>();
@@ -292,6 +306,9 @@ public class CommonReasonDialog extends Dialog {
 
     public interface AddNonVisitListener {
         void addReatailerReason();
+
+        void calendarPlanReason(String mode, String reasonId);
+
         void onDismiss();
     }
 

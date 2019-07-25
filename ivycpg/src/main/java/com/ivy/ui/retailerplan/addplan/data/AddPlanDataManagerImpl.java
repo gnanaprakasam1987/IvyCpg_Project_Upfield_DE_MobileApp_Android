@@ -6,6 +6,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
 import java.util.List;
@@ -15,6 +16,8 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
+
+import static com.ivy.utils.StringUtils.getStringQueryParam;
 
 public class AddPlanDataManagerImpl implements AddPlanDataManager {
 
@@ -54,18 +57,22 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                     String values = dateWisePlanBo.getPlanId() + ","
                             + dateWisePlanBo.getDistributorId() + ","
                             + dateWisePlanBo.getUserId() + ","
-                            + StringUtils.getStringQueryParam(dateWisePlanBo.getDate()) + ","
+                            + getStringQueryParam(dateWisePlanBo.getDate()) + ","
                             + dateWisePlanBo.getEntityId() + ","
-                            + StringUtils.getStringQueryParam(dateWisePlanBo.getEntityType()) + ","
-                            + StringUtils.getStringQueryParam(dateWisePlanBo.getStatus()) + ","
+                            + getStringQueryParam(dateWisePlanBo.getEntityType()) + ","
+                            + getStringQueryParam(dateWisePlanBo.getStatus()) + ","
                             + dateWisePlanBo.getSequence() + ","
-                            + StringUtils.getStringQueryParam(dateWisePlanBo.getStartTime()) + ","
-                            + StringUtils.getStringQueryParam(dateWisePlanBo.getEndTime()) + ","
-                            + StringUtils.getStringQueryParam("PLANNED") + ","
-                            + StringUtils.getStringQueryParam("MOBILE") + ","
-                            + StringUtils.getStringQueryParam("APPROVED");
+                            + getStringQueryParam(dateWisePlanBo.getStartTime()) + ","
+                            + getStringQueryParam(dateWisePlanBo.getEndTime()) + ","
+                            + getStringQueryParam("PLANNED") + ","
+                            + getStringQueryParam("MOBILE") + ","
+                            + getStringQueryParam("APPROVED") + ","
+                            + getStringQueryParam("N") + ","
+                            + (dateWisePlanBo.isAdhoc() ? 1 : 0);
 
-                    mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
+                    String columns = DataMembers.tbl_date_wise_plan_cols + ",upload,isAdhocPlan";
+
+                    mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, columns, values);
 
                     shutDownDb();
                 } catch (Exception e) {
@@ -79,7 +86,7 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
     }
 
     @Override
-    public Observable<DateWisePlanBo> updatePlan(DateWisePlanBo dateWisePlanBo) {
+    public Observable<DateWisePlanBo> updatePlan(DateWisePlanBo dateWisePlanBo, String reasonId,long planID) {
         return Observable.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
             public DateWisePlanBo call() throws Exception {
@@ -87,11 +94,34 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                 initDb();
 
                 try {
+                    if (reasonId.equals("")) {
+                        mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
+                                + " SET StartTime = " + getStringQueryParam(dateWisePlanBo.getStartTime()) + " , EndTime =" + getStringQueryParam(dateWisePlanBo.getEndTime())
+                                + " where PlanId = " + dateWisePlanBo.getPlanId());
+                    } else {
+                        mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
+                                + " SET cancelReasonId= " + getStringQueryParam(reasonId) + ",Status = 'D', VisitStatus = 'RESCHEDULED' "
+                                + " where PlanId = " + dateWisePlanBo.getPlanId());
 
-                    mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
-                            + " SET StartTime = " + StringUtils.getStringQueryParam(dateWisePlanBo.getStartTime()) + " , EndTime =" + StringUtils.getStringQueryParam(dateWisePlanBo.getEndTime())
-                            + " where EntityId=" + dateWisePlanBo.getEntityId() + " and Date = " + StringUtils.getStringQueryParam(dateWisePlanBo.getDate())
-                            + " and EntityType = " + StringUtils.getStringQueryParam(dateWisePlanBo.getEntityType()));
+                        String values = planID + ","
+                                + dateWisePlanBo.getDistributorId() + ","
+                                + dateWisePlanBo.getUserId() + ","
+                                + getStringQueryParam(dateWisePlanBo.getDate()) + ","
+                                + dateWisePlanBo.getEntityId() + ","
+                                + getStringQueryParam(dateWisePlanBo.getEntityType()) + ","
+                                + getStringQueryParam(dateWisePlanBo.getStatus()) + ","
+                                + dateWisePlanBo.getSequence() + ","
+                                + getStringQueryParam(dateWisePlanBo.getStartTime()) + ","
+                                + getStringQueryParam(dateWisePlanBo.getEndTime()) + ","
+                                + getStringQueryParam("PLANNED") + ","
+                                + getStringQueryParam("MOBILE") + ","
+                                + getStringQueryParam("APPROVED") + ","
+                                + getStringQueryParam("N");
+
+                        String columns = DataMembers.tbl_date_wise_plan_cols + ",upload";
+
+                        mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, columns, values);
+                    }
                     shutDownDb();
                 } catch (Exception e) {
                     Commons.printException("" + e);
@@ -104,16 +134,15 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
     }
 
     @Override
-    public Observable<DateWisePlanBo> cancelPlan(DateWisePlanBo dateWisePlanBo) {
+    public Observable<DateWisePlanBo> cancelPlan(DateWisePlanBo dateWisePlanBo, String reasonId) {
         return Observable.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
             public DateWisePlanBo call() throws Exception {
 
                 initDb();
-
                 try {
                     mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
-                            + " SET Status = 'D', VisitStatus = 'CANCELLED' "
+                            + " SET cancelReasonId= " + getStringQueryParam(reasonId) + ",Status = 'D', VisitStatus = 'CANCELLED' "
                             + " where PlanId = " + dateWisePlanBo.getPlanId());
                     shutDownDb();
                 } catch (Exception e) {
@@ -127,7 +156,7 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
     }
 
     @Override
-    public Observable<DateWisePlanBo> DeletePlan(DateWisePlanBo dateWisePlanBo) {
+    public Observable<DateWisePlanBo> DeletePlan(DateWisePlanBo dateWisePlanBo, String reasonId) {
         return Observable.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
             public DateWisePlanBo call() throws Exception {
@@ -136,9 +165,14 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
 
                 try {
 
-                    mDbUtil.deleteSQL(DataMembers.tbl_date_wise_plan,
-                            " EntityId=" + dateWisePlanBo.getEntityId() + " and Date = " + StringUtils.getStringQueryParam(dateWisePlanBo.getDate())
-                                    + " and EntityType = " + StringUtils.getStringQueryParam(dateWisePlanBo.getEntityType()), false);
+                    if (reasonId.equals(""))
+                        mDbUtil.deleteSQL(DataMembers.tbl_date_wise_plan,
+                                "PlanId = " + dateWisePlanBo.getPlanId(), false);
+                    else
+                        mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
+                                + " SET cancelReasonId= " + getStringQueryParam(reasonId) + ",Status = 'D', VisitStatus = 'DELETED' "
+                                + " where PlanId = " + dateWisePlanBo.getPlanId());
+
                     shutDownDb();
                 } catch (Exception e) {
                     Commons.printException("" + e);
@@ -160,8 +194,8 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                 try {
                     for (DateWisePlanBo dateWisePlanBo : planList) {
                         mDbUtil.deleteSQL(DataMembers.tbl_date_wise_plan,
-                                " EntityId=" + dateWisePlanBo.getEntityId() + " and Date = " + StringUtils.getStringQueryParam(dateWisePlanBo.getDate())
-                                        + " and EntityType = " + StringUtils.getStringQueryParam(dateWisePlanBo.getEntityType()), false);
+                                " EntityId=" + dateWisePlanBo.getEntityId() + " and Date = " + getStringQueryParam(dateWisePlanBo.getDate())
+                                        + " and EntityType = " + getStringQueryParam(dateWisePlanBo.getEntityType()), false);
                     }
                     shutDownDb();
                 } catch (Exception e) {
@@ -187,18 +221,21 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                         String values = dateWisePlanBo.getPlanId() + ","
                                 + dateWisePlanBo.getDistributorId() + ","
                                 + dateWisePlanBo.getUserId() + ","
-                                + StringUtils.getStringQueryParam(toDate) + ","
+                                + getStringQueryParam(toDate) + ","
                                 + dateWisePlanBo.getEntityId() + ","
-                                + StringUtils.getStringQueryParam(dateWisePlanBo.getEntityType()) + ","
-                                + StringUtils.getStringQueryParam(dateWisePlanBo.getStatus()) + ","
+                                + getStringQueryParam(dateWisePlanBo.getEntityType()) + ","
+                                + getStringQueryParam(dateWisePlanBo.getStatus()) + ","
                                 + dateWisePlanBo.getSequence() + ","
-                                + StringUtils.getStringQueryParam(dateWisePlanBo.getStartTime()) + ","
-                                + StringUtils.getStringQueryParam(dateWisePlanBo.getEndTime()) + ","
-                                + StringUtils.getStringQueryParam("PLANNED") + ","
-                                + StringUtils.getStringQueryParam("MOBILE")+ ","
-                                + StringUtils.getStringQueryParam("APPROVED");
+                                + getStringQueryParam(dateWisePlanBo.getStartTime()) + ","
+                                + getStringQueryParam(dateWisePlanBo.getEndTime()) + ","
+                                + getStringQueryParam("PLANNED") + ","
+                                + getStringQueryParam("MOBILE") + ","
+                                + getStringQueryParam("APPROVED") + ","
+                                + getStringQueryParam("N");
 
-                        mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
+                        String columns = DataMembers.tbl_date_wise_plan_cols + ",upload";
+
+                        mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, columns, values);
                     }
 
                     shutDownDb();
@@ -224,18 +261,21 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                         String values = dateWisePlanBo.getPlanId() + ","
                                 + dateWisePlanBo.getDistributorId() + ","
                                 + dateWisePlanBo.getUserId() + ","
-                                + StringUtils.getStringQueryParam(dateWisePlanBo.getDate()) + ","
+                                + getStringQueryParam(dateWisePlanBo.getDate()) + ","
                                 + dateWisePlanBo.getEntityId() + ","
-                                + StringUtils.getStringQueryParam(dateWisePlanBo.getEntityType()) + ","
-                                + StringUtils.getStringQueryParam(dateWisePlanBo.getStatus()) + ","
+                                + getStringQueryParam(dateWisePlanBo.getEntityType()) + ","
+                                + getStringQueryParam(dateWisePlanBo.getStatus()) + ","
                                 + dateWisePlanBo.getSequence() + ","
-                                + StringUtils.getStringQueryParam(dateWisePlanBo.getStartTime()) + ","
-                                + StringUtils.getStringQueryParam(dateWisePlanBo.getEndTime()) + ","
-                                + StringUtils.getStringQueryParam("PLANNED") + ","
-                                + StringUtils.getStringQueryParam("MOBILE")+ ","
-                                + StringUtils.getStringQueryParam("APPROVED");
+                                + getStringQueryParam(dateWisePlanBo.getStartTime()) + ","
+                                + getStringQueryParam(dateWisePlanBo.getEndTime()) + ","
+                                + getStringQueryParam("PLANNED") + ","
+                                + getStringQueryParam("MOBILE") + ","
+                                + getStringQueryParam("APPROVED") + ","
+                                + getStringQueryParam("N");
 
-                        mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
+                        String columns = DataMembers.tbl_date_wise_plan_cols + ",upload";
+
+                        mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, columns, values);
                     }
 
                     shutDownDb();

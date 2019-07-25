@@ -674,6 +674,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                                 selectTab(bo.getFilterCode());
                         }
+                        mSelectedSpecialFilter = bo.getFilterCode();
                         setCurrentFlag(bo);
                         isAllDone = false;
                         if (position > 0) {
@@ -963,6 +964,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         else
             title = bmodel.configurationMasterHelper
                     .getHomescreentwomenutitle("MENU_STK_ORD");
+
+        if (productSearch.isSpecialFilter() &&
+                bmodel.configurationMasterHelper.SHOW_SPL_FILTER &&
+                !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+
+            if (mSelectedSpecialFilter != null)
+                title = productSearch.getFilterName(mSelectedSpecialFilter);
+
+        }
 
         if (totalOrdCount.equals("0"))
             setScreenTitle(title + " ("

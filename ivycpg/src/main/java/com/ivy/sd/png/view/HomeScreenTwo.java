@@ -135,6 +135,7 @@ import com.ivy.ui.announcement.view.AnnouncementActivity;
 import com.ivy.ui.notes.NoteConstant;
 import com.ivy.ui.notes.view.NotesActivity;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
+import com.ivy.ui.reports.dynamicreport.view.DynamicReportActivity;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.view.TaskActivity;
 import com.ivy.utils.DateTimeUtils;
@@ -210,6 +211,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_DISPLAY_ASSET = "MENU_DISPLAY_ASSET";
     public static final String MENU_RTR_NOTES = "MENU_NOTES";
     public static final String MENU_ASSET_SERVICE_REQUEST = "MENU_ASSET_SERVICE";
+    public static final String MENU_DYNAMIC_RETAILER_DASHBOARD01 = "MENU_DYN_RET_DASH01";
+    public static final String MENU_DYNAMIC_RETAILER_DASHBOARD02 = "MENU_DYN_RET_DASH02";
 
     private final int INVOICE_CREDIT_BALANCE = 1;// Order Not Allowed when credit balance is 0
     private final int SALES_TYPES = 2;// show preVan seller dialog
@@ -1617,8 +1620,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
             }
         }
-        if (menu.getConfigCode().equals(MENU_STOCK)
-                || menu.getConfigCode().equals(MENU_COMBINED_STOCK) && hasLink == 1) {
+        if ((menu.getConfigCode().equals(MENU_STOCK)
+                || menu.getConfigCode().equals(MENU_COMBINED_STOCK)) && hasLink == 1) {
 
             load_MENU_STOCK(menu, isFromChild);
 
@@ -2052,50 +2055,54 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             }
 
         } else if (menu.getConfigCode().equals(MENU_CALL_ANLYS) && !isPreVisit) {
-            if (bmodel.configurationMasterHelper.SHOW_NO_COLLECTION_REASON &&
-                    !collectionHelper.checkInvoiceWithReason(bmodel.getRetailerMasterBO().getRetailerID(), this)) {
-
-                isCreated = false;
-                isClick = false;
-                Toast.makeText(this, getString(R.string.invoice_with_no_collection), Toast.LENGTH_SHORT).show();
-
-            } else if ((!bmodel.configurationMasterHelper.IS_JUMP && isPreviousDone(menu))
-                    || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
-                    || !canAllowCallAnalysis()) {
-                bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
-
-                // bmodel.productHelper.downloadIndicativeOrder();
-
-                if (!bmodel.configurationMasterHelper.IS_SKIP_CALL_ANALYSIS) {
-                    if (bmodel.isEdit()) {
-                        OrderHelper.getInstance(this).loadOrderedProducts(this, bmodel.getRetailerMasterBO()
-                                .getRetailerID(), null);
-                        enableSchemeModule();
-                    }
-                    if (menuCodeList.size() > 0)
-                        menuCodeList.clear();
-                    Intent in = new Intent(HomeScreenTwo.this,
-                            CallAnalysisActivity.class);
-                    in.putExtra("screentitle", menu.getMenuName());
-                    startActivity(in);
-                } else
-                    doCloseCall();
-
+            if (bmodel.getAppDataProvider().getRetailMaster().isAdhoc())
                 finish();
-            } else {
-                if (bmodel.configurationMasterHelper.IS_JUMP)
-                    onCreateDialog(MANDATORY_MODULE_CLOSE_CALL);
-                else
-                    Toast.makeText(
-                            this,
-                            getResources().getString(
-                                    R.string.please_complete_previous_activity),
-                            Toast.LENGTH_SHORT).show();
-                isCreated = false;
+            else {
+                if (bmodel.configurationMasterHelper.SHOW_NO_COLLECTION_REASON &&
+                        !collectionHelper.checkInvoiceWithReason(bmodel.getRetailerMasterBO().getRetailerID(), this)) {
 
-                isClick = false;
+                    isCreated = false;
+                    isClick = false;
+                    Toast.makeText(this, getString(R.string.invoice_with_no_collection), Toast.LENGTH_SHORT).show();
+
+                } else if ((!bmodel.configurationMasterHelper.IS_JUMP && isPreviousDone(menu))
+                        || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
+                        || !canAllowCallAnalysis()) {
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+
+                    // bmodel.productHelper.downloadIndicativeOrder();
+
+                    if (!bmodel.configurationMasterHelper.IS_SKIP_CALL_ANALYSIS) {
+                        if (bmodel.isEdit()) {
+                            OrderHelper.getInstance(this).loadOrderedProducts(this, bmodel.getRetailerMasterBO()
+                                    .getRetailerID(), null);
+                            enableSchemeModule();
+                        }
+                        if (menuCodeList.size() > 0)
+                            menuCodeList.clear();
+                        Intent in = new Intent(HomeScreenTwo.this,
+                                CallAnalysisActivity.class);
+                        in.putExtra("screentitle", menu.getMenuName());
+                        startActivity(in);
+                    } else
+                        doCloseCall();
+
+                    finish();
+                } else {
+                    if (bmodel.configurationMasterHelper.IS_JUMP)
+                        onCreateDialog(MANDATORY_MODULE_CLOSE_CALL);
+                    else
+                        Toast.makeText(
+                                this,
+                                getResources().getString(
+                                        R.string.please_complete_previous_activity),
+                                Toast.LENGTH_SHORT).show();
+                    isCreated = false;
+
+                    isClick = false;
+                }
             }
 
         } else if (menu.getConfigCode().equals(MENU_ASSET) && hasLink == 1) {
@@ -3382,6 +3389,34 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 Intent i = new Intent(this,
                         AssetServiceRequestActivity.class);
                 i.putExtra("menuName", menu.getMenuName());
+                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(i);
+                finish();
+
+            } else {
+                Toast.makeText(
+                        this,
+                        getResources().getString(
+                                R.string.please_complete_previous_activity),
+                        Toast.LENGTH_SHORT).show();
+                isCreated = false;
+
+                }
+            } else if ((menu.getConfigCode().equals(MENU_DYNAMIC_RETAILER_DASHBOARD01) || menu.getConfigCode().equals(MENU_DYNAMIC_RETAILER_DASHBOARD02)) && hasLink == 1) {
+
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP) {
+
+                bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+
+                Intent i = new Intent(this,
+                        DynamicReportActivity.class);
+                i.putExtra("menuName", menu.getMenuName());
+                i.putExtra("screentitle", menu.getMenuName());
+                i.putExtra("menucode", menu.getConfigCode());
+                i.putExtra("rid", bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(i);
                 finish();

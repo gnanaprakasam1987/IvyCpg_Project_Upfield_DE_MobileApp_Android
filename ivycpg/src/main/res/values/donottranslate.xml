@@ -237,6 +237,8 @@
     <string name="do_you_want_delete_plan_copy">Do you want to delete existing plan and copy selected plan? </string>
     <string name="from_to_date">From and To date are same! </string>
     <string name="from_to_week">From and To week are same!</string>
+    <string name="reason_delete_plan">Reason for Delete Plan</string>
+    <string name="reason_reschedule_plan">Reason for Reschedule Plan</string>
 
     <string name="enter_time_slot">Enter Time Slot</string>
     <string name="select_salutation">Select Salutation</string>
@@ -397,6 +399,11 @@
     <string name="sync_report">Sync Report</string>
     <string name="freeze_columns">Freeze Columns</string>
     <string name="freeze_columns_alert_title">Select columns want to be freeze</string>
+    <string name="hide_columns">Hide Columns</string>
+    <string name="report_columns_hide_title">Select columns want to be hide</string>
+    <string name="search_columns">Columns Search</string>
+    <string name="select_column">Select Column</string>
+    <string name="select_column_search">Select the column you want to search</string>
     <string name="announcement">Announcement</string>
     <string name="order_type">Order Type</string>
     <string name="profile_view">Profile View</string>
@@ -404,4 +411,5 @@
     <string name="exposition_status">Exposition Status</string>
     <string name="not_applicable">Not Applicable</string>
     <string name="srp_must_be_less_than_of_mrp">Seller price must be less than of MRP: %.0f</string>
+    <string name="mobile_date_time_mismatch">Mobile Date Time Mismatch!</string>
 </resources>

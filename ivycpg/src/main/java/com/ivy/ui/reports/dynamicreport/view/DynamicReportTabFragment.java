@@ -1,6 +1,10 @@
 package com.ivy.ui.reports.dynamicreport.view;
 
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -14,9 +18,8 @@ import com.ivy.cpg.view.basedi.BaseModule;
 import com.ivy.cpg.view.basedi.DaggerBaseComponent;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
+import com.ivy.ui.reports.dynamicreport.model.DynamicReportBO;
+import com.ivy.utils.DeviceUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,13 +30,14 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import androidx.core.graphics.ColorUtils;
 import butterknife.BindView;
 
-public class DynamicReportTabFragment extends BaseFragment implements BaseIvyView {
+public class DynamicReportTabFragment extends BaseFragment implements BaseIvyView, DynamicReportFragmentNew.DialogListener {
 
     private String mSelectedTab;
     private HashMap<String, HashMap<String, HashMap<String, String>>> dataMap;
-    private HashMap<String, HashMap<String, String>> fieldsMap;
+    private HashMap<String, HashMap<String, DynamicReportBO>> fieldsMap;
 
     @Inject
     BaseIvyPresenter<BaseIvyView> viewBasePresenter;
@@ -47,7 +51,7 @@ public class DynamicReportTabFragment extends BaseFragment implements BaseIvyVie
     private int freezeColumns;
 
     public static DynamicReportTabFragment newInstance(String mSelectedTab, HashMap<String, HashMap<String, HashMap<String, String>>> dataMap,
-                                                       HashMap<String, HashMap<String, String>> fieldsMap) {
+                                                       HashMap<String, HashMap<String, DynamicReportBO>> fieldsMap) {
 
         DynamicReportTabFragment tabFragment = new DynamicReportTabFragment();
         Bundle args = new Bundle();
@@ -83,37 +87,16 @@ public class DynamicReportTabFragment extends BaseFragment implements BaseIvyVie
         if (getArguments() != null) {
             mSelectedTab = getArguments().getString("tab");
             dataMap = (HashMap<String, HashMap<String, HashMap<String, String>>>) getArguments().getSerializable("values");
-            fieldsMap = (HashMap<String, HashMap<String, String>>) getArguments().getSerializable("fields");
+            fieldsMap = (HashMap<String, HashMap<String, DynamicReportBO>>) getArguments().getSerializable("fields");
         }
     }
 
     @Override
     protected void setUpViews() {
-        buildTable();
+        buildTable(dataMap);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
-
-    }
-
-    @Override
-    public void onStop() {
-        if (EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
-
-    @Subscribe
-    public void onMessageEvent(String columns) {
-        freezeColumns = Integer.valueOf(columns);
-        buildTable();
-    }
-
-    private void buildTable() {
+    private void buildTable(final HashMap<String, HashMap<String, HashMap<String, String>>> valueMap) {
 
         tableScrollableRows.removeAllViews();
         tableFixedColumns.removeAllViews();
@@ -124,26 +107,43 @@ public class DynamicReportTabFragment extends BaseFragment implements BaseIvyVie
         final TableRow fixedHeader = new TableRow(getActivity());
 
         int count = 0;
+        int padding = (int) getResources().getDimension(R.dimen.dimens_20dp);
         for (String displayname : fieldsMap.get(mSelectedTab).keySet()) {
-            TextView textHeader = (TextView) getActivity().getLayoutInflater().inflate(R.layout.dynamic_report_table_header, null);
-            textHeader.setLayoutParams(new TableRow.LayoutParams((int) getResources().getDimension(R.dimen.filter_level_list_width),
-                    TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+            DynamicReportBO dynamicReportBO = fieldsMap.get(mSelectedTab).get(displayname);
+            if (!dynamicReportBO.isSelected()) {
+                int pixelLength = DeviceUtils.dpToPixel(getActivity(), dynamicReportBO.getLength());
+                TextView textHeader = (TextView) getActivity().getLayoutInflater().inflate(R.layout.dynamic_report_table_header, null);
+                textHeader.setLayoutParams(new TableRow.LayoutParams(pixelLength,
+                        TableLayout.LayoutParams.WRAP_CONTENT));
 
-            textHeader.setMinHeight((int) getResources().getDimension(R.dimen.height_list_row));
-            textHeader.setText(fieldsMap.get(mSelectedTab).get(displayname));
-            textHeader.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    sortMap(displayname);
-                }
-            });
+                int alignment = Gravity.CENTER;
+                if ("Left".equalsIgnoreCase(dynamicReportBO.getAlign()))
+                    alignment = Gravity.START;
+                else if ("Right".equalsIgnoreCase(dynamicReportBO.getAlign()))
+                    alignment = Gravity.END;
 
-            if (count < freezeColumns)
-                fixedHeader.addView(textHeader);
-            else
-                tr.addView(textHeader);
+                textHeader.setGravity(alignment | Gravity.CENTER_VERTICAL);
 
-            count++;
+                textHeader.setMaxLines(1);
+                textHeader.setEllipsize(TextUtils.TruncateAt.END);
+                textHeader.setMinHeight((int) getResources().getDimension(R.dimen.height_list_row));
+                textHeader.setText(fieldsMap.get(mSelectedTab).get(displayname).getDisplayName());
+                textHeader.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dynamicReportBO.setSorted(true);
+                        changeSortedColumnColour(dynamicReportBO.getFieldName());
+                        sortMap(valueMap, displayname);
+                    }
+                });
+
+                if (count < freezeColumns)
+                    fixedHeader.addView(textHeader);
+                else
+                    tr.addView(textHeader);
+
+                count++;
+            }
 
         }
 
@@ -151,7 +151,7 @@ public class DynamicReportTabFragment extends BaseFragment implements BaseIvyVie
         tableScrollableRows.addView(tr);
 
 
-        for (int i = 0; i < dataMap.get(mSelectedTab).size(); i++) {
+        for (int i = 0; i < valueMap.get(mSelectedTab).size(); i++) {
 
             // add table values row
             final TableRow row = new TableRow(getActivity());
@@ -160,17 +160,39 @@ public class DynamicReportTabFragment extends BaseFragment implements BaseIvyVie
 
             count = 0;
             for (String fieldname : fieldsMap.get(mSelectedTab).keySet()) {
-                TextView textChild = (TextView) getActivity().getLayoutInflater().inflate(R.layout.dynamic_report_table_row_child, null);
-                textChild.setLayoutParams(new TableRow.LayoutParams((int) getResources().getDimension(R.dimen.filter_level_list_width),
-                        TableLayout.LayoutParams.WRAP_CONTENT, 1f));
-                textChild.setMinHeight((int) getResources().getDimension(R.dimen.height_list_row));
-                textChild.setText(getFieldValue(fieldname, String.valueOf(i)));
-                if (count < freezeColumns)
-                    fixedRow.addView(textChild);
-                else
-                    row.addView(textChild);
+                DynamicReportBO dynamicReportBO = fieldsMap.get(mSelectedTab).get(fieldname);
+                if (!dynamicReportBO.isSelected()) {
+                    int pixelLength = DeviceUtils.dpToPixel(getActivity(), dynamicReportBO.getLength());
+                    TextView textChild = (TextView) getActivity().getLayoutInflater().inflate(R.layout.dynamic_report_table_row_child, null);
+                    textChild.setLayoutParams(new TableRow.LayoutParams(pixelLength,
+                            TableLayout.LayoutParams.WRAP_CONTENT));
 
-                count++;
+                    int alignment = Gravity.CENTER;
+                    if ("Left".equalsIgnoreCase(dynamicReportBO.getAlign()))
+                        alignment = Gravity.START;
+                    else if ("Right".equalsIgnoreCase(dynamicReportBO.getAlign()))
+                        alignment = Gravity.END;
+
+                    textChild.setGravity(alignment | Gravity.CENTER_VERTICAL);
+
+                    textChild.setMaxLines(1);
+                    textChild.setEllipsize(TextUtils.TruncateAt.END);
+                    textChild.setMinHeight((int) getResources().getDimension(R.dimen.height_list_row));
+                    textChild.setPadding(0, 0, padding, 0);
+                    textChild.setText(getFieldValue(valueMap, fieldname, String.valueOf(i)));
+                    if (dynamicReportBO.isSorted()) {
+                        TypedValue typedValue = new TypedValue();
+                        Resources.Theme theme = getActivity().getTheme();
+                        theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+                        textChild.setBackgroundColor(ColorUtils.setAlphaComponent(typedValue.data,25));
+                    }
+                    if (count < freezeColumns)
+                        fixedRow.addView(textChild);
+                    else
+                        row.addView(textChild);
+
+                    count++;
+                }
             }
 
             tableFixedColumns.addView(fixedRow);
@@ -178,7 +200,7 @@ public class DynamicReportTabFragment extends BaseFragment implements BaseIvyVie
         }
     }
 
-    private String getFieldValue(String fieldname, String key) {
+    private String getFieldValue(HashMap<String, HashMap<String, HashMap<String, String>>> dataMap, String fieldname, String key) {
 
         HashMap<String, String> valueMap = dataMap.get(mSelectedTab).get(key);
         for (String name : dataMap.get(mSelectedTab).get(key).keySet()) {
@@ -188,11 +210,11 @@ public class DynamicReportTabFragment extends BaseFragment implements BaseIvyVie
         return null;
     }
 
-    private void sortMap(String fieldname) {
+    private void sortMap(HashMap<String, HashMap<String, HashMap<String, String>>> dataMap, String fieldname) {
 
         ArrayList<String> valueList = new ArrayList<>();
         for (int i = 0; i < dataMap.get(mSelectedTab).size(); i++) {
-            valueList.add(getFieldValue(fieldname, String.valueOf(i)) + "_" + i);
+            valueList.add(getFieldValue(dataMap, fieldname, String.valueOf(i)) + "_" + i);
         }
 
         final Pattern p = Pattern.compile("^\\d+");
@@ -232,8 +254,65 @@ public class DynamicReportTabFragment extends BaseFragment implements BaseIvyVie
 
         dataMap.put(mSelectedTab, sortedMap);
 
-        buildTable();
+        buildTable(dataMap);
 
     }
 
+    private void searchText() {
+        String fieldname = "";
+        String searchValue = "";
+        for (String displayname : fieldsMap.get(mSelectedTab).keySet()) {
+            DynamicReportBO dynamicReportBO = fieldsMap.get(mSelectedTab).get(displayname);
+            if (dynamicReportBO.isSearched()) {
+                fieldname = displayname;
+                searchValue = dynamicReportBO.getSearchText();
+            }
+        }
+
+        ArrayList<String> valueList = new ArrayList<>();
+        for (int i = 0; i < dataMap.get(mSelectedTab).size(); i++) {
+            String value = getFieldValue(dataMap, fieldname, String.valueOf(i));
+            if (searchValue.equalsIgnoreCase(value))
+                valueList.add(String.valueOf(i));
+        }
+
+        HashMap<String, HashMap<String, HashMap<String, String>>> searchedMap = new HashMap<>();
+        searchedMap.putAll(dataMap);
+        HashMap<String, HashMap<String, String>> sortedMap = new HashMap<>();
+        int key = 0;
+        for (String value : valueList) {
+            sortedMap.put(String.valueOf(key), dataMap.get(mSelectedTab).get(value));
+            key++;
+        }
+
+        searchedMap.put(mSelectedTab, sortedMap);
+        buildTable(searchedMap);
+    }
+
+    public void onScrollFreeze(int freezeCount) {
+        freezeColumns = freezeCount;
+        buildTable(dataMap);
+    }
+
+    @Override
+    public void onColumnHide() {
+        buildTable(dataMap);
+    }
+
+    @Override
+    public void onColumnSearch(boolean isClear) {
+        if (isClear)
+            buildTable(dataMap);
+        else
+            searchText();
+
+    }
+
+    private void changeSortedColumnColour(String field) {
+        for (String displayname : fieldsMap.get(mSelectedTab).keySet()) {
+            DynamicReportBO dynamicReportBO = fieldsMap.get(mSelectedTab).get(displayname);
+            if (!field.equals(dynamicReportBO.getFieldName()))
+                dynamicReportBO.setSorted(false);
+        }
+    }
 }

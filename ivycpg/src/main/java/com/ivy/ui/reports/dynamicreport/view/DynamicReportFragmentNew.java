@@ -2,7 +2,11 @@ package com.ivy.ui.reports.dynamicreport.view;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,12 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.ivy.core.base.presenter.BasePresenter;
@@ -26,8 +24,7 @@ import com.ivy.ui.reports.dynamicreport.DynamicReportContract;
 import com.ivy.ui.reports.dynamicreport.adapter.DynamicReportPagerAdapter;
 import com.ivy.ui.reports.dynamicreport.di.DaggerDynamicReportComponent;
 import com.ivy.ui.reports.dynamicreport.di.DynamicReportModule;
-
-import org.greenrobot.eventbus.EventBus;
+import com.ivy.ui.reports.dynamicreport.model.DynamicReportBO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,12 +32,17 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleObserver;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 
-public class DynamicReportFragmentNew extends BaseFragment implements DynamicReportContract.DynamicReportView {
+public class DynamicReportFragmentNew extends BaseFragment implements DynamicReportContract.DynamicReportView, ColumnSearchDialog.MenuIconListener, LifecycleObserver {
 
     private String screenTitle;
     private String menuCode = "";
@@ -54,11 +56,25 @@ public class DynamicReportFragmentNew extends BaseFragment implements DynamicRep
     TabLayout tab;
 
     @BindView(R.id.viewPager)
-    ViewPager viewPager;
+    DynamicReportViewPager viewPager;
+
+    DynamicReportPagerAdapter adapter;
 
     ArrayAdapter<String> columnAdapter;
 
     int selectedColumnCount = 0;
+    private Menu menu;
+    private HashMap<String, HashMap<String, DynamicReportBO>> fieldsMap;
+    ArrayList<String> headerList;
+    private boolean isClearMenu = true;
+
+    DynamicReportTabFragment mCurrentFragment;
+
+    public interface DialogListener {
+        void onColumnHide();
+
+        void onColumnSearch(boolean isClear);
+    }
 
     @Override
     public void initializeDi() {
@@ -80,9 +96,10 @@ public class DynamicReportFragmentNew extends BaseFragment implements DynamicRep
     @Override
     public void init(View view) {
         setLocationAdapter();
-        for (int i = 1; i <= 2; i++) {
+        for (int i = 0; i <= 2; i++) {
             columnAdapter.add(String.valueOf(i));
         }
+        viewPager.setPagingEnabled(false);
     }
 
     @Override
@@ -91,6 +108,10 @@ public class DynamicReportFragmentNew extends BaseFragment implements DynamicRep
             screenTitle = getArguments().getString("screentitle");
             menuCode = getArguments().getString("menucode");
             retailerId = getArguments().getString("rid", "0");
+        } else if (getActivity() != null ){
+            screenTitle = getActivity().getIntent().getStringExtra("screentitle");
+            menuCode = getActivity().getIntent().getStringExtra("menucode");
+            retailerId = getActivity().getIntent().getStringExtra("rid");
         }
     }
 
@@ -99,7 +120,6 @@ public class DynamicReportFragmentNew extends BaseFragment implements DynamicRep
         setUpActionBar();
         is7InchTablet = getResources().getConfiguration().isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
         setUpToolbar(screenTitle);
-        setHasOptionsMenu(true);
         setUnBinder(ButterKnife.bind(getActivity()));
         dynamicReportPresenter.fetchData(menuCode, retailerId);
 
@@ -108,11 +128,54 @@ public class DynamicReportFragmentNew extends BaseFragment implements DynamicRep
     }
 
     @Override
-    public void setReportData(HashMap<String, HashMap<String, String>> fieldList, HashMap<String, HashMap<String, HashMap<String, String>>> dataMap, ArrayList<String> headerList) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        this.menu = menu;
+        inflater.inflate(R.menu.menu_dynamic_report, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        updateMenuIcon();
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == R.id.menu_freeze_columns) {
+            if (adapter != null) {
+                mCurrentFragment = (DynamicReportTabFragment) adapter.getRegisteredFragment(viewPager.getCurrentItem());
+                showColumnFreezeDialog();
+            }
+            return true;
+        } else if (i == R.id.menu_columns_hide) {
+            if (adapter != null) {
+                DynamicReportTabFragment mCurrentFragment = (DynamicReportTabFragment) adapter.getRegisteredFragment(viewPager.getCurrentItem());
+                ColumnsHideDialog dialogFragment = new ColumnsHideDialog(getActivity(), getColumnList(false), mCurrentFragment);
+                dialogFragment.show();
+            }
+            return true;
+        } else if (i == R.id.menu_search_columns) {
+            if (adapter != null) {
+                ArrayList<DynamicReportBO> columnList = getColumnList(true);
+                DynamicReportTabFragment mCurrentFragment = (DynamicReportTabFragment) adapter.getRegisteredFragment(viewPager.getCurrentItem());
+                ColumnSearchDialog dialogFragment = new ColumnSearchDialog(getActivity(), columnList, mCurrentFragment, fetchSearchData(columnList), this);
+                dialogFragment.show();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setReportData(HashMap<String, HashMap<String, DynamicReportBO>> fieldList, HashMap<String, HashMap<String, HashMap<String, String>>> dataMap, ArrayList<String> headerList) {
+        this.fieldsMap = fieldList;
+        this.headerList = headerList;
         createTabs(fieldList, dataMap, headerList);
     }
 
-    private void createTabs(HashMap<String, HashMap<String, String>> fieldList, HashMap<String, HashMap<String, HashMap<String, String>>> dataMap, ArrayList<String> headerList) {
+    private void createTabs(HashMap<String, HashMap<String, DynamicReportBO>> fieldList, HashMap<String, HashMap<String, HashMap<String, String>>> dataMap, ArrayList<String> headerList) {
         for (String header : headerList) {
             tab.addTab(tab.newTab().setText(header));
         }
@@ -120,7 +183,7 @@ public class DynamicReportFragmentNew extends BaseFragment implements DynamicRep
         if (!is7InchTablet && tab.getTabCount() > 3) {
             tab.setTabMode(TabLayout.MODE_SCROLLABLE);
         }
-        DynamicReportPagerAdapter adapter = new DynamicReportPagerAdapter(getFragmentManager(), tab.getTabCount(), fieldList, dataMap, headerList);
+        adapter = new DynamicReportPagerAdapter(getFragmentManager(), tab.getTabCount(), fieldList, dataMap, headerList);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(tab.getTabCount());
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab));
@@ -129,6 +192,8 @@ public class DynamicReportFragmentNew extends BaseFragment implements DynamicRep
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+                isClearMenu = fetchSearchData(getColumnList(true)) == null;
+                updateMenuIcon();
             }
 
             @Override
@@ -151,31 +216,18 @@ public class DynamicReportFragmentNew extends BaseFragment implements DynamicRep
     }
 
     private void setUpActionBar() {
-        getActionBar().setDisplayShowTitleEnabled(false);
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActionBar().setElevation(0);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowTitleEnabled(false);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getActionBar().setElevation(0);
+            }
+
+            if (screenTitle != null)
+                setScreenTitle(screenTitle);
+
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setDisplayShowHomeEnabled(true);
         }
-
-        if (screenTitle != null)
-            setScreenTitle(screenTitle);
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setDisplayShowHomeEnabled(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_dynamic_report, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == R.id.menu_freeze_columns) {
-            showColumnFreezeDialog();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void setLocationAdapter() {
@@ -204,12 +256,62 @@ public class DynamicReportFragmentNew extends BaseFragment implements DynamicRep
     private DialogInterface.OnClickListener onColumnDialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int item) {
-            EventBus.getDefault().post(columnAdapter
-                    .getItem(item));
+            mCurrentFragment.onScrollFreeze(Integer.valueOf(columnAdapter.getItem(item)));
             selectedColumnCount = item;
 
             dialog.dismiss();
 
         }
     };
+
+    private ArrayList<DynamicReportBO> getColumnList(boolean isColumnSearch) {
+        ArrayList<DynamicReportBO> dynamicReportList = new ArrayList<>();
+        HashMap<String, DynamicReportBO> columnMap = fieldsMap.get(headerList.get(tab.getSelectedTabPosition()));
+        for (String key : columnMap.keySet()) {
+            DynamicReportBO reportBO = columnMap.get(key);
+            if (!isColumnSearch) {
+                dynamicReportList.add(reportBO);
+            } else if (!reportBO.isSelected()) {
+                dynamicReportList.add(reportBO);
+            }
+        }
+
+        return dynamicReportList;
+    }
+
+
+    private DynamicReportBO fetchSearchData(ArrayList<DynamicReportBO> columnList) {
+        for (int i = 0; i < columnList.size(); i++) {
+            DynamicReportBO reportBO = columnList.get(i);
+            if (reportBO.isSearched()) {
+                return reportBO;
+            }
+
+        }
+        return null;
+    }
+
+    @Override
+    public void changeMenuTint(boolean isClear) {
+        isClearMenu = isClear;
+        updateMenuIcon();
+    }
+
+    public void updateMenuIcon() {
+
+        MenuItem searchMenu = menu.findItem(R.id.menu_search_columns);
+        Drawable drawable = searchMenu.getIcon();
+        if (drawable != null) {
+            drawable.mutate();
+            if (!isClearMenu) {
+                TypedValue typedValue = new TypedValue();
+                Resources.Theme theme = getActivity().getTheme();
+                theme.resolveAttribute(R.attr.accentcolor, typedValue, true);
+                int color = typedValue.data;
+                drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+            } else {
+                drawable.setColorFilter(null);
+            }
+        }
+    }
 }

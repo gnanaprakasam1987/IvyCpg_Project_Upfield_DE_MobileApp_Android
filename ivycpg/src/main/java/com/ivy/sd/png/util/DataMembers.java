@@ -1204,6 +1204,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_SyncLogDetails, tbl_SyncLogDetails_cols);
 
         uploadColumnWithOutRetailer.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
+
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();

@@ -590,7 +590,18 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 checkClicked = true;
                 if (surveyHelperNew.hasDataToSave()) {
 
-                    if (surveyHelperNew.IS_SURVEY_ANSWER_ALL) {
+                    if (surveyBO.isMandatory() && !surveyHelperNew.isAllAnswered()) {
+                        if (surveyHelperNew.getInvalidEmails().length() > 0) {
+                            bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
+                        } else if (surveyHelperNew.getNotInRange().length() > 0) {
+                            bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
+                        } else {
+                            bmodel.showAlert(
+                                    getResources().getString(
+                                            R.string.pleaseanswerallthequestions), 0);
+                        }
+                        checkClicked = false;
+                    } else if (surveyHelperNew.IS_SURVEY_ANSWER_ALL) {
 
                         if (surveyHelperNew.isAllAnswered()) {
 

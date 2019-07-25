@@ -24,5 +24,5 @@ public interface TimeTrackDataManager extends AppDataManagerContract {
 
     Single<Boolean> saveTimeTrackDetailsDb(String reasonId, String remarks,double latitude , double longitude);
 
-    Single<Boolean> checkIsLeave();
+    boolean checkIsLeave();
 }

@@ -1718,8 +1718,6 @@ public class BusinessModel extends Application {
                         setIsBOMAchieved(retailer, db);
                     }
 
-                    updatePlanAndVisitCount(retailer, db);
-
                     getRetailerMaster().add(retailer);
 
                     mRetailerBOByRetailerid.put(retailer.getRetailerID(), retailer);
@@ -1736,9 +1734,10 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.SHOW_DATE_ROUTE) {
                 mRetailerHelper.updatePlannedDatesInRetailerObj(db);
                 mRetailerHelper.getPlannedRetailerFromDate();
-            } else if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+            } else if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE) {
+                updatePlanAndVisitCount(db);
                 updateIsToday(db);
-            else
+            } else
                 getPlannedRetailer();
 
 
@@ -1835,29 +1834,48 @@ public class BusinessModel extends Application {
     /**
      * update retailer plan and visit count
      *
-     * @param retObj
+     * @param db Database Object
      */
-    private void updatePlanAndVisitCount(RetailerMasterBO retObj, DBUtil db) {
+    private void updatePlanAndVisitCount(DBUtil db) {
 
         try {
+            HashMap<String, Integer> plannedMap = new HashMap<>();
+            HashMap<String, Integer> visitedMap = new HashMap<>();
             Cursor c;
-            c = db.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.getStringQueryParam(retObj.getRetailerID()));
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    if (c.moveToNext())
-                        retObj.setTotalPlanned(c.getCount());
+            c = db.selectSQL("select EntityId From DatewisePlan where (planStatus ='APPROVED'or planStatus='PENDING')");
+            if (c != null
+                    && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    if (plannedMap.get(c.getString(0)) != null)
+                        plannedMap.put(c.getString(0), plannedMap.get(c.getString(0)) + 1);
+                    else
+                        plannedMap.put(c.getString(0), 1);
                 }
+
                 c.close();
             }
 
 
-            c = db.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + getStringQueryParam(retObj.getRetailerID()) + " LIMIT 1");
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    if (c.moveToNext())
-                        retObj.setTotalVisited(c.getCount());
+            c = db.selectSQL("SELECT EntityId From DatewisePlan WHERE VisitStatus= 'COMPLETED'");
+            if (c != null
+                    && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    if (visitedMap.get(c.getString(0)) != null)
+                        visitedMap.put(c.getString(0), visitedMap.get(c.getString(0)) + 1);
+                    else
+                        visitedMap.put(c.getString(0), 1);
                 }
+
                 c.close();
+            }
+
+            for (RetailerMasterBO retailerMasterBO : getRetailerMaster()) {
+                if (plannedMap.get(retailerMasterBO.getRetailerID()) != null) {
+                    retailerMasterBO.setTotalPlanned(plannedMap.get(retailerMasterBO.getRetailerID()));
+                }
+                if (visitedMap.get(retailerMasterBO.getRetailerID()) != null) {
+                    retailerMasterBO.setTotalVisited(visitedMap.get(retailerMasterBO.getRetailerID()));
+                }
             }
         } catch (Exception ignore) {
             Commons.printException(ignore);
@@ -1868,7 +1886,8 @@ public class BusinessModel extends Application {
     private void updateIsToday(DBUtil db) {
         List<String> retailerIds = new ArrayList<>();
         List<String> vistedRetailerIds = new ArrayList<>();
-        Cursor c = db.selectSQL("select EntityId,VisitStatus From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+        List<String> adhocRetailerIds = new ArrayList<>();
+        Cursor c = db.selectSQL("select EntityId,VisitStatus,isAdhocPlan From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
                 "AND Date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null) {
             if (c.getCount() > 0) {
@@ -1876,6 +1895,8 @@ public class BusinessModel extends Application {
                     retailerIds.add(c.getString(0));
                     if (c.getString(1).equals("COMPLETED"))
                         vistedRetailerIds.add(c.getString(0));
+                    if (1 == c.getInt(2))
+                        adhocRetailerIds.add(c.getString(0));
                 }
             }
             c.close();
@@ -1888,6 +1909,8 @@ public class BusinessModel extends Application {
                     retailerMasterBO.setIsToday(1);
                     if (vistedRetailerIds.contains(retailerMasterBO.getRetailerID()))
                         retailerMasterBO.setIsVisited("Y");
+                    if (adhocRetailerIds.contains(retailerMasterBO.getRetailerID()))
+                        retailerMasterBO.setAdhoc(true);
                 }
             }
     }
@@ -2832,27 +2855,6 @@ public class BusinessModel extends Application {
             Commons.printException(e);
         }
     }
-
-
-    public void saveCancelVistreason(String reasonId, String date) {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
-            db.createDataBase();
-            db.openDataBase();
-
-            String query = "Update DatewisePlan set cancelReasonId=" + getStringQueryParam(reasonId) + ",VisitStatus = 'CANCELLED' , Status = 'D' "
-                    + " where EntityId=" + getStringQueryParam(getAppDataProvider().getRetailMaster().getRetailerID()) + " and Date=" + getStringQueryParam(date);
-
-            db.updateSQL(query);
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-
     /**
      * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
      * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#getRetailerAttribute}

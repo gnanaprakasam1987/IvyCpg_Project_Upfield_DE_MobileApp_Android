@@ -231,27 +231,22 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
     }
 
     @Override
-    public Single<Boolean> checkIsLeave() {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                try {
-                    initDb();
-                    Cursor c = mDbUtil
-                            .selectSQL("SELECT * FROM AttendanceTimeDetails where userid = " + appDataProvider.getUser().getUserid() +
-                                    " AND date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) +
-                                    " AND upload = 'N' or upload ='Y'");
-                    if (c.getCount() == 0) {
-                        shutDownDb();
-                        return true;
-                    }
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
+    public boolean checkIsLeave() {
+        try {
+            initDb();
+            Cursor c = mDbUtil
+                    .selectSQL("SELECT * FROM AttendanceTimeDetails where userid = " + appDataProvider.getUser().getUserid() +
+                            " AND date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) +
+                            " AND upload = 'N' or upload ='Y'");
+            if (c.getCount() == 0) {
                 shutDownDb();
-                return false;
+                return true;
             }
-        });
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        shutDownDb();
+        return false;
     }
 
     @Override
