@@ -634,7 +634,7 @@ public class OutletTimeStampHelper {
             db.createDataBase();
             db.openDataBase();
             db.deleteSQL("RetailerLocationDeviation", "retailerid="
-                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + " AND UID=" + getUid(), false);
+                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + " AND OutletTimeStampID =" + getUid(), false);
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);

@@ -19,7 +19,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
-public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extends BasePresenter<V> implements AddPlanContract.AddPlanPresenter<V>{
+public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends BasePresenter<V> implements AddPlanContract.AddPlanPresenter<V> {
 
 
     private final String mEntityRetailer = "RETAILER";
@@ -31,6 +31,8 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
 
     private RetailerDataManager retailerDataManager;
 
+    private ConfigurationMasterHelper configurationMasterHelper;
+
     @Inject
     public AddPlanPresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider
             , CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper
@@ -40,26 +42,29 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
         this.addPlanDataManager = addPlanDataManager;
         this.dataManager = dataManager;
         this.retailerDataManager = retailerDataManager;
+        this.configurationMasterHelper = configurationMasterHelper;
     }
 
     @Override
-    public void addNewPlan(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO) {
+    public void addNewPlan(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO, boolean isAdhoc) {
 
-        DateWisePlanBo dateWisePlanBo = preparePlanObjects(date,startTime,endTime,retailerMasterBO);
+        DateWisePlanBo dateWisePlanBo = preparePlanObjects(date,startTime,endTime,retailerMasterBO, isAdhoc);
 
         getCompositeDisposable().add(addPlanDataManager.savePlan(dateWisePlanBo)
                 .flatMapSingle(new Function<DateWisePlanBo, SingleSource<DateWisePlanBo>>() {
                     @Override
                     public SingleSource<DateWisePlanBo> apply(DateWisePlanBo planBo) throws Exception {
-                        return retailerDataManager.updatePlanAndVisitCount(retailerMasterBO,planBo);
+                        return retailerDataManager.updatePlanAndVisitCount(retailerMasterBO, planBo);
                     }
                 }).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<DateWisePlanBo>() {
                     @Override
                     public void accept(DateWisePlanBo planBo) throws Exception {
-                        if (DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equalsIgnoreCase(planBo.getDate()))
+                        if (DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equalsIgnoreCase(planBo.getDate())) {
                             dataManager.getRetailMaster().setIsToday(1);
+                            dataManager.getRetailMaster().setAdhoc(isAdhoc);
+                        }
 
                         planBo.setOperationType("Add");
 
@@ -71,10 +76,16 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
     }
 
     @Override
-    public void updatePlan(String startTime, String endTime, DateWisePlanBo planBo) {
-        DateWisePlanBo dateWisePlanBo = updatePlanObjects(startTime,endTime,planBo);
+    public void updatePlan(String startTime, String endTime, DateWisePlanBo planBo, String reasonId) {
+        DateWisePlanBo dateWisePlanBo = updatePlanObjects(startTime, endTime, planBo);
+        long planId = 0;
 
-        getCompositeDisposable().add(addPlanDataManager.updatePlan(dateWisePlanBo)
+        if (!reasonId.equals("")) {
+            planId = SDUtil.convertToLong(dataManager.getUser().getUserid()
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
+        }
+
+        getCompositeDisposable().add(addPlanDataManager.updatePlan(dateWisePlanBo, reasonId, planId)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<DateWisePlanBo>() {
@@ -88,10 +99,15 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
     }
 
     @Override
-    public void cancelPlan(DateWisePlanBo dateWisePlanBo,RetailerMasterBO retailerMasterBO) {
+    public void cancelPlan(DateWisePlanBo dateWisePlanBo, RetailerMasterBO retailerMasterBO, String reasonId) {
 
-        getCompositeDisposable().add(retailerDataManager.updatePlanAndVisitCount(retailerMasterBO,dateWisePlanBo)
-                .subscribeOn(getSchedulerProvider().io())
+        getCompositeDisposable().add(addPlanDataManager.cancelPlan(dateWisePlanBo, reasonId)
+                .flatMapSingle(new Function<DateWisePlanBo, SingleSource<DateWisePlanBo>>() {
+                    @Override
+                    public SingleSource<DateWisePlanBo> apply(DateWisePlanBo planBo) throws Exception {
+                        return retailerDataManager.updatePlanAndVisitCount(retailerMasterBO, planBo);
+                    }
+                }).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<DateWisePlanBo>() {
                     @Override
@@ -105,13 +121,13 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
     }
 
     @Override
-    public void deletePlan(DateWisePlanBo dateWisePlanBo,RetailerMasterBO retailerMasterBO) {
+    public void deletePlan(DateWisePlanBo dateWisePlanBo, RetailerMasterBO retailerMasterBO, String reasonID) {
 
-        getCompositeDisposable().add(addPlanDataManager.DeletePlan(dateWisePlanBo)
+        getCompositeDisposable().add(addPlanDataManager.DeletePlan(dateWisePlanBo, reasonID)
                 .flatMapSingle(new Function<DateWisePlanBo, SingleSource<DateWisePlanBo>>() {
                     @Override
                     public SingleSource<DateWisePlanBo> apply(DateWisePlanBo planBo) throws Exception {
-                        return retailerDataManager.updatePlanAndVisitCount(retailerMasterBO,planBo);
+                        return retailerDataManager.updatePlanAndVisitCount(retailerMasterBO, planBo);
                     }
                 }).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -130,13 +146,16 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
 
     }
 
-    private DateWisePlanBo preparePlanObjects(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO){
+    private DateWisePlanBo preparePlanObjects(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO, boolean isAdhoc){
 
         date = DateTimeUtils.convertToServerDateFormat(date, "yyyy/MM/dd");
 
         DateWisePlanBo dateWisePlanBo = new DateWisePlanBo();
 
-        dateWisePlanBo.setPlanId(0);
+        String id = dataManager.getUser().getUserid()
+                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
+
+        dateWisePlanBo.setPlanId(SDUtil.convertToLong(id));
         dateWisePlanBo.setDate(date);
         dateWisePlanBo.setDistributorId(retailerMasterBO.getDistributorId());
         dateWisePlanBo.setUserId(dataManager.getUser().getUserid());
@@ -153,15 +172,69 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
         dateWisePlanBo.setStartTime(startTime);
         dateWisePlanBo.setEndTime(endTime);
         dateWisePlanBo.setName(retailerMasterBO.getRetailerName());
+        dateWisePlanBo.setAdhoc(isAdhoc);
 
         return dateWisePlanBo;
     }
 
-    private DateWisePlanBo updatePlanObjects(String startTime, String endTime,DateWisePlanBo planBo){
+    private DateWisePlanBo updatePlanObjects(String startTime, String endTime, DateWisePlanBo planBo) {
 
         planBo.setStartTime(startTime);
         planBo.setEndTime(endTime);
 
         return planBo;
     }
+
+
+    @Override
+    public boolean showRescheduleToday() {
+        return configurationMasterHelper.ADD_PLAN_RESCHDULE_TS;
+    }
+
+    @Override
+    public boolean showRescheduleReasonToday() {
+        return configurationMasterHelper.ADD_PLAN_RESCHDULE_TR;
+    }
+
+    @Override
+    public boolean showRescheduleFuture() {
+        return configurationMasterHelper.ADD_PLAN_RESCHDULE_FS;
+    }
+
+    @Override
+    public boolean showRescheduleReasonFuture() {
+        return configurationMasterHelper.ADD_PLAN_RESCHDULE_FR;
+    }
+
+    @Override
+    public boolean showDeleteToday() {
+        return configurationMasterHelper.ADD_PLAN_DELETE_TS;
+    }
+
+    @Override
+    public boolean showDeleteReasonToday() {
+        return configurationMasterHelper.ADD_PLAN_DELETE_TR;
+    }
+
+    @Override
+    public boolean showDeleteFuture() {
+        return configurationMasterHelper.ADD_PLAN_DELETE_FS;
+    }
+
+    @Override
+    public boolean showDeleteReasonFuture() {
+        return configurationMasterHelper.ADD_PLAN_DELETE_FR;
+    }
+
+    @Override
+    public boolean showCancelToday() {
+        return configurationMasterHelper.ADD_PLAN_CANCEL_TS;
+    }
+
+    @Override
+    public boolean showCancelFuture() {
+        return configurationMasterHelper.ADD_PLAN_CANCEL_FS;
+    }
+
+
 }

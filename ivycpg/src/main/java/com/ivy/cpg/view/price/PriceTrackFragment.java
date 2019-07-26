@@ -453,7 +453,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             if (businessModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             else {
-                if (priceTrackingHelper.getLocationAdapter().getCount() < 2
+                if (businessModel.productHelper.getInStoreLocation().size() > 1
                         || !priceTrackingHelper.SHOW_PRICE_LOCATION_FILTER)
                     menu.findItem(R.id.menu_location_filter).setVisible(false);
                 else menu.findItem(R.id.menu_location_filter).setVisible(true);

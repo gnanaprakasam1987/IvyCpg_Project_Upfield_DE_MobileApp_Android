@@ -149,8 +149,18 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
         if (!isCancelled()) {
             if (isPreVisit)
                 startPreVisit();
-            else if (isProfile)
-                saveTimeStamp();
+            else if (isProfile) {
+                if (bmodel.getAppDataProvider().getRetailMaster().isAdhoc()) {
+                    Intent i = new Intent(mContext, HomeScreenTwo.class);
+                    i.putExtra("isLocDialog", true);
+                    i.putExtra("isMandatoryDialog", true);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    mContext.startActivity(i);
+                    ((ProfileActivity)mContext).finish();
+                } else {
+                    saveTimeStamp();
+                }
+            }
             if (alertDialog != null && alertDialog.isShowing())
                 alertDialog.dismiss();
 

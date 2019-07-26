@@ -1,14 +1,13 @@
 package com.ivy.ui.reports.dynamicreport.presenter;
 
 
-import androidx.lifecycle.LifecycleObserver;
-
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.reports.dynamicreport.DynamicReportContract;
 import com.ivy.ui.reports.dynamicreport.data.DynamicReportDataManager;
+import com.ivy.ui.reports.dynamicreport.model.DynamicReportBO;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import androidx.lifecycle.LifecycleObserver;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function3;
@@ -26,7 +26,7 @@ public class DynamicReportPresenterImpl<V extends DynamicReportContract.DynamicR
     private DynamicReportDataManager dynamicReportDataManager;
 
     private ArrayList<String> headerList = new ArrayList<>();
-    private HashMap<String, HashMap<String, String>> displayList = new HashMap<>();
+    private HashMap<String, HashMap<String, DynamicReportBO>> displayList = new HashMap<>();
     private HashMap<String, HashMap<String, HashMap<String, String>>> valueMap = new HashMap<>();
 
     @Inject
@@ -40,11 +40,11 @@ public class DynamicReportPresenterImpl<V extends DynamicReportContract.DynamicR
     public void fetchData(String menucode, String rid) {
         getIvyView().showLoading();
         getCompositeDisposable().add(Observable.zip(dynamicReportDataManager.fetchDisplayFields(menucode),
-                dynamicReportDataManager.fetchReportData(rid),
+                dynamicReportDataManager.fetchReportData(rid, menucode),
                 dynamicReportDataManager.fetchReportHeader(menucode),
-                new Function3<HashMap<String, HashMap<String, String>>, HashMap<String, HashMap<String, HashMap<String, String>>>, ArrayList<String>, Object>() {
+                new Function3<HashMap<String, HashMap<String, DynamicReportBO>>, HashMap<String, HashMap<String, HashMap<String, String>>>, ArrayList<String>, Object>() {
                     @Override
-                    public Boolean apply(HashMap<String, HashMap<String, String>> fieldList, HashMap<String, HashMap<String, HashMap<String, String>>> dataMap, ArrayList<String> tabList) {
+                    public Boolean apply(HashMap<String, HashMap<String, DynamicReportBO>> fieldList, HashMap<String, HashMap<String, HashMap<String, String>>> dataMap, ArrayList<String> tabList) {
 
                         headerList.clear();
                         headerList.addAll(tabList);

@@ -266,6 +266,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 menu.findItem(R.id.menu_remarks).setVisible(false);
             }
 
+            menu.findItem(R.id.menu_promostate_filter).setVisible(false);
         } catch (Exception e) {
             Commons.printException(e);
         }

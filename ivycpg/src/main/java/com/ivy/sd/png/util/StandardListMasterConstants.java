@@ -110,6 +110,11 @@ public class StandardListMasterConstants {
 	public static final String MENU_INV_SALES_RETURN_REPORT = "MENU_SALES_RET_REPORT";
 	public static final String OTP_SKIP_REASON_TYPE = "GPS_VIOLATION";
 	public static final String MENU_SYNC_REPORT = "MENU_SYNC_REPORT";
+	public static final String MENU_DYNAMIC_REPORT01 = "MENU_DYN_RPT01";
+	public static final String MENU_DYNAMIC_REPORT02 = "MENU_DYN_RPT02";
+	public static final String MENU_DYNAMIC_REPORT03 = "MENU_DYN_RPT03";
+	public static final String MENU_DYNAMIC_REPORT04 = "MENU_DYN_RPT04";
+	public static final String MENU_DYNAMIC_REPORT05 = "MENU_DYN_RPT05";
 
 	public static final HashMap<String,String> mActivityCodeByMenuCode=new HashMap<>();
 

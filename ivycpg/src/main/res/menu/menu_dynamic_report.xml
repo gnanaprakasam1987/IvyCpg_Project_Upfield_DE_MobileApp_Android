@@ -7,4 +7,16 @@
         android:orderInCategory="102"
         android:title="@string/freeze_columns"
         ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_columns_hide"
+        android:icon="@drawable/ic_action_sort"
+        android:orderInCategory="103"
+        android:title="@string/hide_columns"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_search_columns"
+        android:icon="@drawable/icon_search"
+        android:orderInCategory="104"
+        android:title="@string/search_columns"
+        ivydist:showAsAction="always"/>
 </menu>
