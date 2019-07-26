@@ -17,6 +17,8 @@ import android.os.Message;
 import androidx.fragment.app.FragmentManager;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
+import io.fabric.sdk.android.services.common.CommonUtils;
+
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.DistributorSelectionActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.PasswordLockDialogFragment;
+import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FileUtils;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 
@@ -68,6 +71,7 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         businessModel = (BusinessModel) getApplicationContext();
         initPresenter();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
