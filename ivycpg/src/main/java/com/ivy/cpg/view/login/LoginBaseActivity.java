@@ -71,14 +71,7 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(DeviceUtils.isEmulator()){
-            Toast.makeText(this,getResources().getString(R.string.this_is_not_a_real_device),Toast.LENGTH_LONG).show();
-            finish();
-        }
-        if(CommonUtils.isRooted(this)){
-            Toast.makeText(this,getResources().getString(R.string.app_will_not_work_in_rooted_device),Toast.LENGTH_LONG).show();
-            finish();
-        }
+
         businessModel = (BusinessModel) getApplicationContext();
         initPresenter();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
