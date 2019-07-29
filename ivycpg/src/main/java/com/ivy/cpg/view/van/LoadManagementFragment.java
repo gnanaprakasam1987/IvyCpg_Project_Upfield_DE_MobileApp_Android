@@ -6,9 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,8 +21,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.planogram.PlanoGramActivity;
 import com.ivy.cpg.view.planogram.PlanoGramHelper;
 import com.ivy.cpg.view.reports.ReportActivity;
@@ -51,7 +53,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
@@ -1043,10 +1044,10 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
     private void loadSellerSurveyData(String menuCode){
 
-            SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
-            surveyHelperNew.setFromHomeScreen(true);
-            surveyHelperNew.downloadModuleId("SPECIAL");
-            surveyHelperNew.downloadQuestionDetails(menuCode);
+        SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
+        surveyHelperNew.setFromHomeScreen(true);
+        surveyHelperNew.downloadModuleId("SPECIAL");
+        surveyHelperNew.downloadQuestionDetails(menuCode, null);
 
             if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
                 bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(menuCode));

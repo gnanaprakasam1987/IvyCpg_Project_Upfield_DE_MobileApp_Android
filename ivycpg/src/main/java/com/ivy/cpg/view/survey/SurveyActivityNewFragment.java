@@ -13,20 +13,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import com.google.android.material.tabs.TabLayout;
-
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -67,12 +53,25 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.tabs.TabLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.cpg.view.serializedAsset.SerializedAssetActivity;
 import com.ivy.lib.pdf.PDFGenerator;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -116,6 +115,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int DRAG_AND_DROP = 2;
+    private static final int SURVEY_DONE_REQUEST_FOR_SERIALIZED_ASSET = 3;
+    private static final int SURVEY_NOT_DONE_REQUEST_FOR_SERIALIZED_ASSET = 4;
     private boolean isClicked = true;
     private QuestionBO surveyPhcapture = new QuestionBO();
     private SurveyBO surveyBO = new SurveyBO();
@@ -157,6 +158,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private Context context;
     private boolean isPreVisit = false;
     private EditText mBarcodeEditText;
+    private String assetType;
+    private String serialNo;
 
     @Override
     public void onAttach(Context context) {
@@ -183,6 +186,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             mFrom = extras.getString("from") != null ? extras.getString("from") : "";
 
             isPreVisit = extras.getBoolean("PreVisit", false);
+            assetType = extras.getString("AssetType", null);
+            serialNo = extras.getString("AssetSRNo", null);
         }
 
         initializeView(view);
@@ -329,7 +334,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         if (isFromDragDrop == -1) {
             if (!mFrom.equalsIgnoreCase("HomeScreenTwo"))
                 surveyHelperNew
-                        .loadSurveyAnswers(0);
+                        .loadSurveyAnswers(0, null);
         }
         //  isFromDragDrop=-1;
         surveyHelperNew.mSelectedFilter = -1;
@@ -2325,7 +2330,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     surveyHelperNew.saveAnswerNewRetailer(mMenuCode, screenMode, editRetailerId);
                 } else {
                     surveyHelperNew.deleteUnusedImages();
-                    surveyHelperNew.saveAnswer(mMenuCode);
+                    surveyHelperNew.saveAnswer(mMenuCode, serialNo, assetType);
                 }
                 bmodel.saveModuleCompletion(mMenuCode, true);
                 return Boolean.TRUE;
@@ -2366,14 +2371,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     //Enabled global survey will re-direct to next screen or else screen remains same
                     if (bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE || tabCount == 1) {
                         if (extras != null && "HomeScreenTwo".equals(mFrom)) {
-                            Intent intent = new Intent(context, HomeScreenTwo.class);
-                            intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                            intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                            if (assetType == null)
+                                navigateToHomeScreenTwoActivity(extras);
+                            else
+                                navigateToSerializedAssetActivity(SURVEY_DONE_REQUEST_FOR_SERIALIZED_ASSET);
 
-                            if (isPreVisit)
-                                intent.putExtra("PreVisit", true);
-
-                            startActivity(intent);
                             ((Activity) context).finish();
                         } else if ("HomeScreen".equals(mFrom)) {
                             HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) (context)).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
@@ -2391,6 +2393,23 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 }
             }).show();
         }
+    }
+
+
+    private void navigateToHomeScreenTwoActivity(Bundle extras) {
+        Intent intent = new Intent(context, HomeScreenTwo.class);
+        intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+        intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+
+        if (isPreVisit)
+            intent.putExtra("PreVisit", true);
+
+        startActivity(intent);
+    }
+
+    private void navigateToSerializedAssetActivity(int resultCode) {
+        getActivity().setResult(resultCode, new Intent(getActivity(), SerializedAssetActivity.class)
+                .putExtra("AssetSRNo", serialNo));
     }
 
     @Override
@@ -2554,26 +2573,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             showAlert();
         } else {
             if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
-                Intent intent = new Intent(context, HomeScreenTwo.class);
-                if (isFromChild)
-                    intent.putExtra("isStoreMenu", true);
-
-                if (isPreVisit)
-                    intent.putExtra("PreVisit", true);
-
-                startActivity(intent);
-            }
-            ((Activity) context).finish();
-            ((Activity) context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-        }
-    }
-
-    private void showAlert() {
-        CommonDialog dialog = new CommonDialog(context, "",
-                getResources().getString(R.string.doyouwantgoback), getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
-                if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
+                if (assetType == null) {
                     Intent intent = new Intent(context, HomeScreenTwo.class);
                     if (isFromChild)
                         intent.putExtra("isStoreMenu", true);
@@ -2582,6 +2582,39 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         intent.putExtra("PreVisit", true);
 
                     startActivity(intent);
+                } else {
+                    navigateToSerializedAssetActivity((surveyHelperNew.isSurveyDoneForAsset()
+                            ? SURVEY_DONE_REQUEST_FOR_SERIALIZED_ASSET
+                            : SURVEY_NOT_DONE_REQUEST_FOR_SERIALIZED_ASSET));
+                }
+            }
+            ((Activity) context).finish();
+            ((Activity) context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        }
+
+
+}
+
+    private void showAlert() {
+        CommonDialog dialog = new CommonDialog(context, "",
+                getResources().getString(R.string.doyouwantgoback), getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
+                    if (assetType == null) {
+                        Intent intent = new Intent(context, HomeScreenTwo.class);
+                        if (isFromChild)
+                            intent.putExtra("isStoreMenu", true);
+
+                        if (isPreVisit)
+                            intent.putExtra("PreVisit", true);
+
+                        startActivity(intent);
+                    } else {
+                        navigateToSerializedAssetActivity((surveyHelperNew.isSurveyDoneForAsset()
+                                ? SURVEY_DONE_REQUEST_FOR_SERIALIZED_ASSET
+                                : SURVEY_NOT_DONE_REQUEST_FOR_SERIALIZED_ASSET));
+                    }
                 }
                 ((Activity) context).finish();
                 ((Activity) context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);

@@ -286,10 +286,10 @@ public class DataMembers {
     private static final String tbl_AssetAddDelete_cols = "uid,retailerid,AssetId,serialNum,installdate,creationdate,flag,mappingid,productid,TypeLovId,reasonid,remarks,toRetailerId";
 
     public static final String tbl_SerializedAssetHeader = "SerializedAssetHeader";
-    public static final String tbl_SerializedAssetHeader_cols = "uid,DateTime,RetailerId,remarks,VisitId";
+    public static final String tbl_SerializedAssetHeader_cols = "uid,DateTime,RetailerId,remarks,VisitId,Score,TargetScore";
 
     public static final String tbl_SerializedAssetDetail = "SerializedAssetDetail";
-    public static final String tbl_SerializedAssetDetail_cols = "uid,AssetID,isAvailable,ReasonID,SerialNumber,conditionId,NFCNumber,installdate,lastServicedate,isAuditDone";
+    public static final String tbl_SerializedAssetDetail_cols = "uid,AssetID,isAvailable,ReasonID,SerialNumber,conditionId,NFCNumber,installdate,lastServicedate,isAuditDone,Score,TargetScore";
 
     public static final String tbl_SerializedAssetImageDetail = "SerializedAssetImageDetails";
     public static final String tbl_SerializedAssetImageDetail_cols = "uid,AssetID,ImageName,serialNumber";
@@ -442,7 +442,7 @@ public class DataMembers {
     private static final String tbl_NonProductiveModuleTable_cols = "Tid,RetailerID,ModuleCode,ReasonID,ImagePath";
     private static final String tbl_SalesReturnHeader_cols = "uid,date,RetailerID,ReturnValue,Lpc,remark,latitude,longitude,credit_flag,unload,IsCreditNoteApplicable,ReplacedValue,Distributorid,DistParentID,SignaturePath,imgName,RefModule,RefModuleTId,IFlag,invoiceid,isCancel,CollectStatus,UserID,ridSF,VisitId";
     private static final String tbl_SalesReturnDetails_cols = "uid,outerQty,dOuomQty,dOuomid,Cqty,duomQty,duomid,Pqty,batchid,Condition,mfgdate,expdate,oldmrp,ProductID,invoiceno,srpedited,totalQty,reason_type,LotNumber,piece_uomid,HsnCode";
-    private static final String tbl_AnswerHeader_cols = "surveyid,retailerid,uid,date,ModuleID,SupervisiorId,Remark,achScore,tgtScore,AchBonusPoint,MaxBonusPoint,type,counterid,refid,DistributorID,userid,ridSF,VisitId";
+    private static final String tbl_AnswerHeader_cols = "surveyid,retailerid,uid,date,ModuleID,SupervisiorId,Remark,achScore,tgtScore,AchBonusPoint,MaxBonusPoint,type,counterid,refid,DistributorID,userid,ridSF,VisitId,EntityReferenceNo";
     private static final String tbl_AnswerDetail_cols = "answerid,qid,answer,qtype,uid,score,isExcluded";
     private static final String tbl_AnswerImageDetail_cols = "qid,uid,imgName";
 

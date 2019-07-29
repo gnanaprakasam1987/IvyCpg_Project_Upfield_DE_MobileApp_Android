@@ -220,6 +220,29 @@
                 android:overlapAnchor="false"
                 android:textAlignment="center" />
         </LinearLayout>
-
+        <LinearLayout
+            android:id="@+id/asset_survey_ll"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <TextView
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_6dp"
+                android:layout_marginStart="@dimen/dimens_6dp"
+                android:text="@string/survey" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_survey"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/icon"
+                android:layout_gravity="center"
+                android:background="@color/transparent"
+                android:contentDescription="@string/photo"
+                android:src="@drawable/activity_icon_survey" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
