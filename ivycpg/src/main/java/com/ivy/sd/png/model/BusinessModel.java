@@ -1505,7 +1505,9 @@ public class BusinessModel extends Application {
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as SupplierTaxLocId,")
-                            + "ridSF FROM RetailerMaster A"
+                            + "ridSF,RField10,RField11,RField12,RField13,RField14,RField15,RField16,RField17,RField18,RField19,RField20 "
+
+                            + "FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
@@ -1697,6 +1699,18 @@ public class BusinessModel extends Application {
                     retailer.setDistrict(c.getString(c.getColumnIndex("District")));
                     retailer.setLastVisitDate(c.getString(c.getColumnIndex("lastVisitDate")));
                     retailer.setLastVisitedBy(c.getString(c.getColumnIndex("lastVisitedBy")));
+
+                    retailer.setRField10(c.getString(c.getColumnIndex("RField10")));
+                    retailer.setRField11(c.getString(c.getColumnIndex("RField11")));
+                    retailer.setRField12(c.getString(c.getColumnIndex("RField12")));
+                    retailer.setRField13(c.getString(c.getColumnIndex("RField13")));
+                    retailer.setRField14(c.getString(c.getColumnIndex("RField14")));
+                    retailer.setRField15(c.getString(c.getColumnIndex("RField15")));
+                    retailer.setRField16(c.getString(c.getColumnIndex("RField16")));
+                    retailer.setRField17(c.getString(c.getColumnIndex("RField17")));
+                    retailer.setRField18(c.getString(c.getColumnIndex("RField18")));
+                    retailer.setRField19(c.getString(c.getColumnIndex("RField19")));
+                    retailer.setRField20(c.getString(c.getColumnIndex("RField20")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
