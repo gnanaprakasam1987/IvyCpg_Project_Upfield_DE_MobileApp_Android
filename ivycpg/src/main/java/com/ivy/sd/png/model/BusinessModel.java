@@ -733,9 +733,7 @@ public class BusinessModel extends Application {
             initializeFirebase();
             initializeChatSdk();
 
-            AppTutorialPlugin.getInstance().setContext(this);
-            AppTutorialPlugin.getInstance().setShouldInitOnShake(true);
-            AppTutorialPlugin.getInstance().init();
+            initAppTutorial();
 
             if (BuildConfig.DEBUG)
                 VolleyLog.DEBUG = true;
@@ -744,6 +742,12 @@ public class BusinessModel extends Application {
             Commons.printException(ex);
         }
 
+    }
+
+    private void initAppTutorial() {
+        AppTutorialPlugin.getInstance().setContext(this);
+        AppTutorialPlugin.getInstance().setShouldInitOnShake(true);
+        AppTutorialPlugin.getInstance().init();
     }
 
     /***********************************************************************Code Refactoring Initiatives******************************************************************/
@@ -1127,8 +1131,7 @@ public class BusinessModel extends Application {
      */
     public boolean isOrderExistToCreateInvoice() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db.selectSQL("select orderid from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
@@ -7116,10 +7119,6 @@ public class BusinessModel extends Application {
 
     int selectedUserId;
 
-    public int getSelectedUserId() {
-        return selectedUserId;
-    }
-
     public void setSelectedUserId(int selectedUserId) {
         this.selectedUserId = selectedUserId;
     }
@@ -7676,18 +7675,10 @@ public class BusinessModel extends Application {
         return photosTakeninCurrentCompetitorTracking;
     }
 
-    public void setPhotosTakeninCurrentCompetitorTracking(HashMap<String, String> photosTakeninCurrentCompetitorTracking) {
-        this.photosTakeninCurrentCompetitorTracking = photosTakeninCurrentCompetitorTracking;
-    }
-
     HashMap<String, String> photosTakeninCurrentAssetTracking = new HashMap<>();
 
     public HashMap<String, String> getPhotosTakeninCurrentAssetTracking() {
         return photosTakeninCurrentAssetTracking;
-    }
-
-    public void setPhotosTakeninCurrentAssetTracking(HashMap<String, String> photosTakeninCurrentAssetTracking) {
-        this.photosTakeninCurrentAssetTracking = photosTakeninCurrentAssetTracking;
     }
 
     public ArrayList<DigitalContentModel> getDigitalContentLargeFileURLS() {
