@@ -33,7 +33,9 @@
                 android:layout_marginEnd="@dimen/_24sdp"
                 android:src="@drawable/face"
                 app:civ_border_color="@color/light_gray"
-                app:civ_border_width="@dimen/_5sdp" />
+                app:civ_border_width="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_24sdp"
+                android:layout_alignParentLeft="true" />
 
             <LinearLayout
                 android:id="@+id/name_layout"
@@ -42,7 +44,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="@dimen/_24sdp"
                 android:layout_toEndOf="@+id/im_user"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_toRightOf="@+id/im_user">
 
                 <TextView
                     android:id="@+id/tv_username"
@@ -90,7 +93,8 @@
             android:padding="@dimen/_10sdp"
             android:src="@drawable/ic_chat_white_24dp"
             android:visibility="gone"
-            app:tintMode="src_in" />
+            app:tintMode="src_in"
+            android:layout_toRightOf="@+id/iv_setting" />
 
         <ImageView
             android:id="@+id/img_announcement"
@@ -105,7 +109,9 @@
             android:padding="@dimen/_10sdp"
             android:src="@drawable/ic_announcement_24dp"
             android:visibility="gone"
-            app:tintMode="src_in" />
+            app:tintMode="src_in"
+            android:layout_marginLeft="@dimen/_24sdp"
+            android:layout_toRightOf="@+id/img_chat" />
 
         <ImageView
             android:id="@+id/img_notification"
@@ -120,7 +126,9 @@
             android:padding="@dimen/_10sdp"
             android:src="@drawable/ic_notifications_24dp"
             android:visibility="gone"
-            app:tintMode="src_in" />
+            app:tintMode="src_in"
+            android:layout_toRightOf="@+id/img_announcement"
+            android:layout_marginLeft="@dimen/_24sdp" />
 
     </RelativeLayout>
 
@@ -150,8 +158,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingTop="@dimen/_20sdp"
-        android:paddingBottom="@dimen/_20sdp"
+        android:paddingTop="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_12sdp"
         android:paddingStart="@dimen/_24sdp"
         android:paddingEnd="@dimen/_24sdp">
 
@@ -165,7 +173,9 @@
             android:drawablePadding="@dimen/_5sdp"
             android:gravity="center"
             android:text="@string/log_out"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:layout_alignParentLeft="true"
+            android:drawableLeft="@drawable/ic_logout" />
 
         <ImageView
             android:id="@+id/ll_about"
@@ -175,7 +185,8 @@
             android:layout_centerVertical="true"
             android:background="?attr/circleBackground"
             android:padding="@dimen/_10sdp"
-            android:src="@drawable/ic_vector_about" />
+            android:src="@drawable/ic_vector_about"
+            android:layout_alignParentRight="true" />
 
     </RelativeLayout>
 </RelativeLayout>

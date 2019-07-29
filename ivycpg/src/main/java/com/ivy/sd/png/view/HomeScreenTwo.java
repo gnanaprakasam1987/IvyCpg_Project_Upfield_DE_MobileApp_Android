@@ -16,12 +16,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -39,6 +33,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.ivy.cpg.view.Planorama.PlanoramaActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
@@ -297,7 +298,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         isLocDialogShow = getIntent().getBooleanExtra("isLocDialog", false);
         isMandatoryDialogShow = getIntent().getBooleanExtra("isMandatoryDialog", false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         activityView.setLayoutManager(linearLayoutManager);
 
         isPreVisit = getIntent().getBooleanExtra("PreVisit", false);
@@ -1656,8 +1657,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menu.getConfigCode());
                 chooseFilterType(menu.getConfigCode());
 
-                surveyHelperNew.downloadQuestionDetails(menu.getConfigCode());
-                surveyHelperNew.loadSurveyAnswers(0);
+                surveyHelperNew.downloadQuestionDetails(menu.getConfigCode(), null);
+                surveyHelperNew.loadSurveyAnswers(0, null);
 
                 if (!isClick) {
                     isClick = true;
@@ -2438,8 +2439,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
                     surveyHelperNew.setFromHomeScreen(false);
                     surveyHelperNew.downloadModuleId("STANDARD");
-                    surveyHelperNew.downloadQuestionDetails(MENU_PRICE);
-                    surveyHelperNew.loadSurveyAnswers(0);
+                    surveyHelperNew.downloadQuestionDetails(MENU_PRICE, null);
+                    surveyHelperNew.loadSurveyAnswers(0, null);
                 }
 
                 // Download Tagged products and update the product master obj
@@ -2503,8 +2504,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
                     surveyHelperNew.setFromHomeScreen(false);
                     surveyHelperNew.downloadModuleId("STANDARD");
-                    surveyHelperNew.downloadQuestionDetails(MENU_PRICE_COMP);
-                    surveyHelperNew.loadSurveyAnswers(0);
+                    surveyHelperNew.downloadQuestionDetails(MENU_PRICE_COMP, null);
+                    surveyHelperNew.loadSurveyAnswers(0, null);
                 }
 
                 // Download Tagged products and update the product master obj
@@ -3689,8 +3690,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
                     surveyHelperNew.setFromHomeScreen(false);
                     surveyHelperNew.downloadModuleId("STANDARD");
-                    surveyHelperNew.downloadQuestionDetails(MENU_ORDER);
-                    surveyHelperNew.loadSurveyAnswers(0);
+                    surveyHelperNew.downloadQuestionDetails(MENU_ORDER, null);
+                    surveyHelperNew.loadSurveyAnswers(0, null);
                 }
 
                 OrderHelper orderHelper = OrderHelper.getInstance(this);
@@ -3926,8 +3927,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
                     surveyHelperNew.setFromHomeScreen(false);
                     surveyHelperNew.downloadModuleId("STANDARD");
-                    surveyHelperNew.downloadQuestionDetails(MENU_STOCK);
-                    surveyHelperNew.loadSurveyAnswers(0);
+                    surveyHelperNew.downloadQuestionDetails(MENU_STOCK, null);
+                    surveyHelperNew.loadSurveyAnswers(0, null);
                 }
 
                 bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menu.getConfigCode());
@@ -5398,8 +5399,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
                 surveyHelperNew.setFromHomeScreen(false);
                 surveyHelperNew.downloadModuleId("STANDARD");
-                surveyHelperNew.downloadQuestionDetails(MENU_STK_ORD);
-                surveyHelperNew.loadSurveyAnswers(0);
+                surveyHelperNew.downloadQuestionDetails(MENU_STK_ORD, null);
+                surveyHelperNew.loadSurveyAnswers(0, null);
             }
 
 

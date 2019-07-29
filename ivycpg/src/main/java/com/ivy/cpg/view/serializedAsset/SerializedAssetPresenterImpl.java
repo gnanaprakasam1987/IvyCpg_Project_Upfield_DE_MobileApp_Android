@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.model.BusinessModel;
@@ -15,6 +16,11 @@ import com.ivy.utils.FileUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by rajkumar.s on 11/20/2017.
@@ -51,26 +57,51 @@ public class SerializedAssetPresenterImpl implements SerializedAssetContractor.S
 
     @Override
     public void save(String mModuleCode) {
-        new SaveAssetAsync().execute(mModuleCode);
+        new AssetAsyncTask(mModuleCode, null, null).execute();
     }
 
-    private class SaveAssetAsync extends AsyncTask<String, Void, String> {
-        protected void onPreExecute() {
+    private class AssetAsyncTask extends AsyncTask<String, Void, String> {
+        private String moduleCode;
+        private String assetType;
+        private String serialNo;
 
+        public AssetAsyncTask(String moduleCode, String assetType, String serialNo) {
+            this.moduleCode = moduleCode;
+            this.assetType = assetType;
+            this.serialNo = serialNo;
+        }
+
+        protected void onPreExecute() {
         }
 
         @Override
         protected String doInBackground(String... params) {
-            deleteUnUsedImages();
-            mAssetTrackingHelper.saveAsset(mContext.getApplicationContext(), params[0]);
-            mBModel.saveModuleCompletion(params[0], true);
+            if (moduleCode.equalsIgnoreCase("MENU_SERIALIZED_ASSET")) {
+                deleteUnUsedImages();
+                mAssetTrackingHelper.saveAsset(mContext.getApplicationContext(), moduleCode);
+                mBModel.saveModuleCompletion(moduleCode, true);
+            } else {
+                SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(mContext);
+                surveyHelperNew.loadSurveyConfig("OTHERS");
+                surveyHelperNew.setFromHomeScreen(false);
+                surveyHelperNew.downloadModuleId((moduleCode.toUpperCase()));
+                surveyHelperNew.downloadQuestionDetails(moduleCode, assetType);
+                surveyHelperNew.loadSurveyAnswers(0, serialNo);
+            }
             return "";
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            mAssetView.cancelProgressDialog();
+
+            if (!moduleCode.equalsIgnoreCase("MENU_SERIALIZED_ASSET")) {
+                mAssetView.navigateSurveyScreen(moduleCode, assetType, serialNo);
+            } else {
+                mAssetView.cancelProgressDialog();
+            }
+
+
         }
 
     }
@@ -78,6 +109,37 @@ public class SerializedAssetPresenterImpl implements SerializedAssetContractor.S
     @Override
     public void updateTimeStamp() {
         mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
+    }
+
+    @Override
+    public void fetchAssetSurveyData(String moduleCode, String assetType, String serialNo) {
+        new AssetAsyncTask(moduleCode, assetType, serialNo).execute();
+    }
+
+    @Override
+    public void deleteAssetSurvey(String serialNo) {
+        if (serialNo == null) {
+            new CompositeDisposable().add(mAssetTrackingHelper.deleteAssetSurvey(mContext, mAssetView.getAssetSerialNoList())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean isDeleted) throws Exception {
+
+                        }
+                    }));
+        } else {
+            new CompositeDisposable().add(mAssetTrackingHelper.deleteAssetSurvey(mContext, serialNo)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean isDeleted) throws Exception {
+                            if (isDeleted)
+                                mAssetView.updateListAdapter();
+                        }
+                    }));
+        }
     }
 
     @Override
@@ -356,9 +418,10 @@ public class SerializedAssetPresenterImpl implements SerializedAssetContractor.S
     @Override
     public void checkDataExistToSave() {
 
-        if (!hasAssetPhotoTaken() || !hasAssetReasonTaken()) {
+        if (!hasAssetPhotoTaken() || !hasAssetReasonTaken() || !hasAssetSurveyTaken()) {
             mAssetView.showError(errorMsg);
-        } else if (hasAssetTaken() || hasAssetPhotoTaken() || hasAssetReasonTaken()) {
+        } else if (hasAssetTaken() || hasAssetPhotoTaken()
+                || hasAssetReasonTaken() || hasAssetSurveyTaken()) {
             mAssetView.save();
         }
 
@@ -427,6 +490,28 @@ public class SerializedAssetPresenterImpl implements SerializedAssetContractor.S
                     if (assetBO.getAvailQty() > 0 && (assetBO.getImgName().equals("") || assetBO.getImgName().equals(""))) {
                         isFlag = false;
                         errorMsg = mContext.getString(R.string.photo_mandatory);
+                    }
+                }
+            }
+        }
+        return isFlag;
+    }
+
+    /**
+     * Method to check Asset survey taken or not
+     *
+     * @return true if asset survey already taken
+     */
+    private boolean hasAssetSurveyTaken() {
+        ArrayList<SerializedAssetBO> mAssetTrackingList = mAssetTrackingHelper.getAssetTrackingList();
+        boolean isFlag = true;
+        if (mAssetTrackingHelper.SHOW_ASSET_SURVEY_OPTION) {
+            if (mAssetTrackingList != null
+                    && mAssetTrackingList.size() > 0) {
+                for (SerializedAssetBO assetBO : mAssetTrackingList) {
+                    if (assetBO.getAvailQty() > 0 && !assetBO.isSurveyDone()) {
+                        isFlag = false;
+                        errorMsg = mContext.getString(R.string.survey_mandatory);
                     }
                 }
             }

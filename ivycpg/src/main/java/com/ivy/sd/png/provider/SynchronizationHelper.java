@@ -4614,8 +4614,8 @@ SynchronizationHelper {
                         type = SPF_PSWD_ENCRYPT_TYPE_MD5;
                     }
                 }
-                c.close();
             }
+            c.close();
             db.closeDB();
 
             passwordType = type;

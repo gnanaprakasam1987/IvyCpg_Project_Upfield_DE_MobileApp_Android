@@ -2,21 +2,20 @@ package com.ivy.cpg.view.serializedAsset;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.MenuItem;
+import android.view.View;
+
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.ivy.lib.adapter.GridImageViewAdapter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -157,12 +156,18 @@ public class SerializedAssetDetailActivity extends IvyBaseActivityNoActionBar {
                             .applyLabels(findViewById(
                                     R.id.service_date_label).getTag()));
 
-        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
-                R.id.sih_qty_label).getTag()) != null)
-            ((AppCompatTextView) findViewById(R.id.sih_qty_label))
-                    .setText(mBModel.labelsMasterHelper
-                            .applyLabels(findViewById(
-                                    R.id.sih_qty_label).getTag()));
+
+        if (assetTrackingHelper.SHOW_ASSET_SIH) {
+            if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.sih_qty_label).getTag()) != null)
+                ((AppCompatTextView) findViewById(R.id.sih_qty_label))
+                        .setText(mBModel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.sih_qty_label).getTag()));
+        } else {
+            findViewById(R.id.sih_qty_label).setVisibility(View.GONE);
+            sihQtyTv.setVisibility(View.GONE);
+        }
 
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(
                 R.id.asset_price_label).getTag()) != null)
@@ -216,14 +221,14 @@ public class SerializedAssetDetailActivity extends IvyBaseActivityNoActionBar {
         sihQtyTv.setText(String.valueOf(detailBo.getSihQty()));
         priceTv.setText(String.valueOf(detailBo.getAssetPrice()));
         assetRentPriceTv.setText(String.valueOf(detailBo.getRentalPrice()));
-        installDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getmLastInstallDate(), ConfigurationMasterHelper.outDateFormat));
-        lastServiceDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getServiceDate(), ConfigurationMasterHelper.outDateFormat));
+        installDateTv.setText(detailBo.getmLastInstallDate());
+        lastServiceDateTv.setText(detailBo.getServiceDate());
         assetModelTv.setText(detailBo.getModelName());
         assetTypeTv.setText(detailBo.getAssetType());
         assetVendorTv.setText(detailBo.getVendorName());
         assetCapacityTv.setText(String.valueOf(detailBo.getCapacity()));
-        effFromDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getEffectiveFromDate(), ConfigurationMasterHelper.outDateFormat));
-        effToDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getEffectiveToDate(), ConfigurationMasterHelper.outDateFormat));
+        effFromDateTv.setText(detailBo.getEffectiveFromDate());
+        effToDateTv.setText(detailBo.getEffectiveToDate());
 
         loadImageIntoListView();
     }

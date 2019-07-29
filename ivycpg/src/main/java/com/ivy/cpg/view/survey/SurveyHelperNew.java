@@ -74,6 +74,7 @@ public class SurveyHelperNew {
     private String SignaturePath = "";
     private int accountGroupId;
     private HashMap<Integer, Integer> surveyMandatoryMap;
+    private boolean isSurveyDoneForAsset = false;
 
     private SurveyHelperNew(Context context) {
         this.context = context;
@@ -110,11 +111,6 @@ public class SurveyHelperNew {
 
     public void setSignaturePath(String signaturePath) {
         SignaturePath = signaturePath;
-    }
-
-    private String QT(String data) // Quote
-    {
-        return "'" + data + "'";
     }
 
     public ArrayList<SurveyBO> getSurvey() {
@@ -179,14 +175,14 @@ public class SurveyHelperNew {
     /**
      * Downlaod the surveyType standard list id.
      *
-     * @param surveyType STANDARD|SPECIAL|NEW_RETAILER
+     * @param surveyType STANDARD|SPECIAL|NEW_RETAILER|ASSET
      */
     public void downloadModuleId(String surveyType) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
         );
         db.openDataBase();
         Cursor c = db.selectSQL("SELECT ListId FROM StandardListMaster"
-                + " WHERE ListCode = " + QT(surveyType)
+                + " WHERE ListCode = " + StringUtils.getStringQueryParam(surveyType)
                 + " AND ListType = 'SURVEY_TYPE'");
         if (c != null) {
             if (c.moveToNext()) {
@@ -284,6 +280,49 @@ public class SurveyHelperNew {
             Commons.printException(ex);
         }
         return false;
+    }
+
+
+    /**
+     * This method will check criteria mapping to return surveyids.
+     * Criteria types like Asset Type will be considered.
+     *
+     * @return surveyids as comma separated string.
+     */
+    private String getAssetMappedSurveyIds(String assetType) {
+
+        DBUtil db = null;
+        StringBuilder surveyIds = new StringBuilder();
+        surveyMandatoryMap = new HashMap<>();
+        try {
+
+            db = new DBUtil(context, DataMembers.DB_NAME);
+            db.openDataBase();
+
+            String sb = "SELECT DISTINCT SurveyId,isMandatory FROM SurveyCriteriaMapping SCM" +
+                    " INNER JOIN StandardListMaster SLM on SLM.ListId=SCM.CriteriaType" +
+                    " WHERE SLM.ListCode='ASSET'" +
+                    " AND SLM.ListType='SURVEY_CRITERIA_TYPE'";
+
+            Cursor c = db.selectSQL(sb);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+
+
+                    if (surveyIds.length() > 0)
+                        surveyIds.append(",");
+
+                    surveyIds.append(c.getString(0));
+                    surveyMandatoryMap.put(c.getInt(0), c.getInt(1));
+                }
+            }
+            c.close();
+            db.closeDB();
+
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+        return surveyIds.toString();
     }
 
 
@@ -435,7 +474,7 @@ public class SurveyHelperNew {
      *
      * @param moduleCode
      */
-    public void downloadQuestionDetails(String moduleCode) {
+    public void downloadQuestionDetails(String moduleCode, String assetType) {
         try {
             getSurveyValidateOptions();
             survey = new ArrayList<>();
@@ -460,16 +499,15 @@ public class SurveyHelperNew {
             );
             db.openDataBase();
 
-            String productDistributions="";
-            if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+            String productDistributions = "";
+            if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION && assetType == null) {
                 //downloading product distribution and preparing query to get products mapped..
                 int mContentLevelId = ProductHelper.getInstance(context).getContentLevel(db, moduleCode);
                 String pdQuery = ProductHelper.getInstance(context).downloadProductDistribution(mContentLevelId);
                 if (pdQuery.length() > 0) {
-                    productDistributions=  pdQuery;
-                }
-                else {
-                    productDistributions= "0";
+                    productDistributions = pdQuery;
+                } else {
+                    productDistributions = "0";
                 }
             }
 
@@ -491,14 +529,19 @@ public class SurveyHelperNew {
             sb.append(" LEFT JOIN OptionDQM OD ON OD.OptionId = OM.OptionId");
             sb.append(" LEFT JOIN SurveyCriteriaMapping SCM1 ON SCM1.SurveyId = SCM.SurveyId AND SCM1.Groupid = SCM.Groupid");
             sb.append(" WHERE Module=");
-            sb.append(QT(surveyTypeStandardListId));
-            sb.append(" AND SM.menuCode=");
-            sb.append(QT(moduleCode));
+            sb.append(StringUtils.getStringQueryParam(surveyTypeStandardListId));
+
+            if (assetType == null) {
+                sb.append(" AND SM.menuCode=");
+                sb.append(StringUtils.getStringQueryParam(moduleCode));
+            }
             if (!fromHomeScreen) {
                 if (hasAccountGroup())
-                    sb.append(" AND SM.surveyId in(" + getAccountGroupSurveys() + ")");
+                    sb.append(" AND SM.surveyId in(").append(getAccountGroupSurveys()).append(")");
+                else if (assetType != null)
+                    sb.append(" AND SM.surveyId in(").append(getAssetMappedSurveyIds(assetType)).append(")");
                 else
-                    sb.append(" AND SM.surveyId in(" + getMappedSurveyIds() + ")");
+                    sb.append(" AND SM.surveyId in(").append(getMappedSurveyIds()).append(")");
 
 
             } else {
@@ -506,7 +549,7 @@ public class SurveyHelperNew {
                     sb.append(" AND SCM.CriteriaID=" + bmodel.newOutletHelper.getmSelectedChannelid() + "  and SL.listcode='CHANNEL' OR SL.listcode='SUBCHANNEL'");
             }
 
-            sb.append(productDistributions.length()>0?" AND A.BrandID in ("+productDistributions+")":"");
+            sb.append(productDistributions.length() > 0 ? " AND A.BrandID in (" + productDistributions + ")" : "");
 
             sb.append(" and SM.SurveyId not in (select AH.surveyid from answerheader AH ");
             sb.append("Where retailerid = '" + retailerid + "' and AH.frequency='DAILY_PIRAMAL') ");
@@ -566,11 +609,11 @@ public class SurveyHelperNew {
                         questionBO.setMaxPhoto(c.getInt(14));
                         questionBO.setIsBonus(c.getInt(15));
                         questionBO.setIsSubQuestion(0);
-                        questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
-                        questionBO.setMinValue(c.getInt(c.getColumnIndex("MinValue")));
-                        questionBO.setMaxValue(c.getInt(c.getColumnIndex("MaxValue")));
-                        if (c.getInt(c.getColumnIndex("DefaultOptionId")) != 0)
-                            questionBO.setSelectedAnswerID(c.getInt(c.getColumnIndex("DefaultOptionId")));
+                        questionBO.setMaxScore(c.getDouble(22));
+                        questionBO.setMinValue(c.getInt(24));
+                        questionBO.setMaxValue(c.getInt(25));
+                        if (c.getInt(26) != 0)
+                            questionBO.setSelectedAnswerID(c.getInt(26));
                         if (questionBO.getBrandID() > 0)
                             questionBO.setParentHierarchy(getParentHiearchy(questionBO.getBrandID()));
 
@@ -668,11 +711,11 @@ public class SurveyHelperNew {
                             questionBO.setMaxPhoto(c.getInt(14));
                             questionBO.setIsBonus(c.getInt(15));
                             questionBO.setIsSubQuestion(0);
-                            questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
-                            questionBO.setMinValue(c.getInt(c.getColumnIndex("MinValue")));
-                            questionBO.setMaxValue(c.getInt(c.getColumnIndex("MaxValue")));
-                            if (c.getInt(c.getColumnIndex("DefaultOptionId")) != 0)
-                                questionBO.setSelectedAnswerID(c.getInt(c.getColumnIndex("DefaultOptionId")));
+                            questionBO.setMaxScore(c.getDouble(22));
+                            questionBO.setMinValue(c.getInt(24));
+                            questionBO.setMaxValue(c.getInt(25));
+                            if (c.getInt(26) != 0)
+                                questionBO.setSelectedAnswerID(c.getInt(26));
                             if (questionBO.getBrandID() > 0)
                                 questionBO.setParentHierarchy(getParentHiearchy(questionBO.getBrandID()));
 
@@ -790,7 +833,7 @@ public class SurveyHelperNew {
                             + " LEFT JOIN OptionDQM OD ON OD.OptionId = OM.OptionId"
                             + " LEFT JOIN StandardListMaster E ON E.ListId =  A.QType"
                             + " WHERE Module = "
-                            + QT(surveyTypeStandardListId));
+                            + StringUtils.getStringQueryParam(surveyTypeStandardListId));
             if (c != null) {
                 while (c.moveToNext()) {
                     if (tempQuestionId != c.getInt(0)) {
@@ -1147,7 +1190,7 @@ public class SurveyHelperNew {
      * Save the Transaction as Survey Wise. AnswerHeader - used to hold the
      * survey detail. AnswerDetail - used to hold the question and anser detail.
      */
-    public void saveAnswer(String menuCode) {
+    public void saveAnswer(String menuCode, String serialNo, String assetType) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
             );
@@ -1161,9 +1204,15 @@ public class SurveyHelperNew {
             int distID = 0;
             String type = "RETAILER";
             int superwiserID = 0;
+            String serialNoCond = "";
+            String menuCodeCond = " AND menucode=" + StringUtils.getStringQueryParam(menuCode);
             if ("MENU_SURVEY_SW".equalsIgnoreCase(menuCode)) {
                 type = "SELLER";
                 superwiserID = mSelectedSuperVisiorID;
+            } else if (assetType != null) {
+                type = assetType;
+                serialNoCond = " AND EntityReferenceNo=" + StringUtils.getStringQueryParam(serialNo);
+                menuCodeCond = "";
             }
 
             if (!isFromHomeScreen()) {
@@ -1193,16 +1242,17 @@ public class SurveyHelperNew {
                     String sql = "SELECT uid FROM AnswerHeader WHERE"
                             + " surveyid = " + sBO.getSurveyID()
                             + " AND date = "
-                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                            + " AND retailerid = " + QT(retailerid)
+                            + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                            + " AND retailerid = " + StringUtils.getStringQueryParam(retailerid)
                             + " AND distributorID = " + distID
-                            + " AND ModuleID = " + QT(surveyTypeStandardListId)
-                            + " AND menucode=" + QT(menuCode)
+                            + " AND ModuleID = " + StringUtils.getStringQueryParam(surveyTypeStandardListId)
+                            + menuCodeCond
                             + " AND SupervisiorId = "
                             + superwiserID
                             + " AND upload='N'"
                             + " AND userid=" + userid
-                            + " AND frequency!='MULTIPLE'";
+                            + " AND frequency!='MULTIPLE'"
+                            + serialNoCond;
 
                     Cursor headerCursor = db.selectSQL(sql);
 
@@ -1210,13 +1260,13 @@ public class SurveyHelperNew {
                         headerCursor.moveToNext();
                         oldUid = headerCursor.getString(0);
                         db.deleteSQL("AnswerHeader",
-                                "uid = " + QT(headerCursor.getString(0)), false);
+                                "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                         db.deleteSQL("AnswerDetail",
-                                "uid = " + QT(headerCursor.getString(0)), false);
+                                "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                         db.deleteSQL("AnswerImageDetail",
-                                "uid = " + QT(headerCursor.getString(0)), false);
+                                "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                         db.deleteSQL("AnswerScoreDetail",
-                                "uid = " + QT(headerCursor.getString(0)), false);
+                                "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                         headerCursor.close();
                     }
                     isData = false;
@@ -1229,7 +1279,7 @@ public class SurveyHelperNew {
                     // update joint call
                     bmodel.outletTimeStampHelper.updateJointCallDetailsByModuleWise(menuCode, uid, oldUid);
 
-                    String headerColumns = "uid, surveyid, date, retailerid,distributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,SignaturePath,tripUid";
+                    String headerColumns = "uid, surveyid, date, retailerid,distributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,SignaturePath,tripUid,EntityReferenceNo";
 
                     mAllQuestions.addAll(sBO.getQuestions());
                     questionSize = mAllQuestions.size();
@@ -1244,11 +1294,11 @@ public class SurveyHelperNew {
                             String detailColumns = "uid, retailerid, qid, qtype, answerid, answer,score,isExcluded,surveyid,isSubQuest";
                             String detailImageColumns = "uid, retailerid, qid,imgName";
 
-                            String values1 = QT(uid) + "," + QT(retailerid)
+                            String values1 = StringUtils.getStringQueryParam(uid) + "," + StringUtils.getStringQueryParam(retailerid)
                                     + "," + questionBO.getQuestionID() + ","
-                                    + QT(questionBO.getQuestionTypeId() + "");
+                                    + StringUtils.getStringQueryParam(questionBO.getQuestionTypeId() + "");
 
-                            String values2 = QT(uid) + "," + QT(retailerid)
+                            String values2 = StringUtils.getStringQueryParam(uid) + "," + StringUtils.getStringQueryParam(retailerid)
                                     + "," + questionBO.getQuestionID();
                             int answerSize = questionBO.getSelectedAnswerIDs()
                                     .size();
@@ -1320,7 +1370,7 @@ public class SurveyHelperNew {
                             for (int k = 0; k < questionBO.getImageNames().size(); k++) {
                                 String detailImageValues = values2
                                         + ","
-                                        + bmodel.QT(questionBO.getImageNames()
+                                        + StringUtils.getStringQueryParam(questionBO.getImageNames()
                                         .get(k));
 
                                 db.insertSQL("AnswerImageDetail", detailImageColumns,
@@ -1333,9 +1383,9 @@ public class SurveyHelperNew {
                                     //Insert Answer score detail
                                     double score = ((questionBO.getMaxScore() > 0 && questionBO.getQuestScore() > questionBO.getMaxScore()) ? questionBO.getMaxScore() : questionBO.getQuestScore());
                                     totalAchievedScore += score;
-                                    String detailvalues = QT(uid) + "," + questionBO.getSurveyid()
+                                    String detailvalues = StringUtils.getStringQueryParam(uid) + "," + questionBO.getSurveyid()
                                             + "," + questionBO.getQuestionID() + ","
-                                            + score + "," + QT(retailerid);
+                                            + score + "," + StringUtils.getStringQueryParam(retailerid);
                                     db.insertSQL("AnswerScoreDetail", "uid,surveyid,qid,score,RetailerID",
                                             detailvalues);
                                 }
@@ -1351,19 +1401,25 @@ public class SurveyHelperNew {
                         for (SurveyBO qBO : getSurvey()) {
                             if (qBO.getSurveyID() == sBO.getSurveyID()) {
 
-                                String headerValues = QT(uid) + ","
+                                String headerValues = StringUtils.getStringQueryParam(uid) + ","
                                         + sBO.getSurveyID() + ","
-                                        + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                                        + QT(retailerid) + "," + distID + "," + QT(surveyTypeStandardListId) + ","
-                                        + superwiserID
-                                        + "," + totalAchievedScore + "," + qBO.getTargtScore()
-                                        + "," + QT(menuCode)
-                                        + "," + qBO.getBonusScoreAchieved()
-                                        + "," + qBO.getMaxBonusScore()
-                                        + "," + QT(remarkDone) + "," + QT(type) + ",0,''"
-                                        + "," + userid
-                                        + "," + QT(sBO.getSurveyFreq())
-                                        + "," + QT(getSignaturePath());
+                                        + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                                        + StringUtils.getStringQueryParam(retailerid) + ","
+                                        + distID + ","
+                                        + StringUtils.getStringQueryParam(surveyTypeStandardListId) + ","
+                                        + superwiserID + ","
+                                        + totalAchievedScore + ","
+                                        + qBO.getTargtScore() + ","
+                                        + StringUtils.getStringQueryParam(menuCode) + ","
+                                        + qBO.getBonusScoreAchieved() + ","
+                                        + qBO.getMaxBonusScore() + ","
+                                        + StringUtils.getStringQueryParam(remarkDone) + ","
+                                        + StringUtils.getStringQueryParam(type) + ","
+                                        + 0 + ","
+                                        + "''" + ","
+                                        + userid + ","
+                                        + StringUtils.getStringQueryParam(sBO.getSurveyFreq()) + ","
+                                        + StringUtils.getStringQueryParam(getSignaturePath());
 
                                 qBO.setSignaturePath(getSignaturePath());
 
@@ -1372,6 +1428,8 @@ public class SurveyHelperNew {
                                 } else {
                                     headerValues = headerValues + ",0";
                                 }
+                                headerValues = headerValues + ","
+                                        + (serialNo != null ? StringUtils.getStringQueryParam(serialNo) : null);
 
                                 db.insertSQL("AnswerHeader", headerColumns, headerValues);
                             }
@@ -1389,15 +1447,16 @@ public class SurveyHelperNew {
                         String sql = "SELECT uid FROM AnswerHeader WHERE"
                                 + " surveyid = " + sBO.getSurveyID()
                                 + " AND date = "
-                                + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                                + " AND retailerid = " + QT(retailerid)
+                                + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                                + " AND retailerid = " + StringUtils.getStringQueryParam(retailerid)
                                 + " AND distributorID = " + distID
-                                + " AND ModuleID = " + QT(surveyTypeStandardListId)
-                                + " AND menucode=" + QT(menuCode)
+                                + " AND ModuleID = " + StringUtils.getStringQueryParam(surveyTypeStandardListId)
+                                + " AND menucode=" + StringUtils.getStringQueryParam(menuCode)
                                 + " AND upload='N'" + " AND SupervisiorId = "
                                 + superwiserID
                                 + " AND userid=" + userid
-                                + " AND frequency!='MULTIPLE'";
+                                + " AND frequency!='MULTIPLE'"
+                                + serialNoCond;
 
 
                         Cursor headerCursor = db.selectSQL(sql);
@@ -1408,13 +1467,13 @@ public class SurveyHelperNew {
                             oldUid = headerCursor.getString(0);
                             headerCursor.getString(0);
                             db.deleteSQL("AnswerHeader",
-                                    "uid = " + QT(headerCursor.getString(0)), false);
+                                    "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                             db.deleteSQL("AnswerDetail",
-                                    "uid = " + QT(headerCursor.getString(0)), false);
+                                    "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                             db.deleteSQL("AnswerImageDetail",
-                                    "uid = " + QT(headerCursor.getString(0)), false);
+                                    "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                             db.deleteSQL("AnswerScoreDetail",
-                                    "uid = " + QT(headerCursor.getString(0)), false);
+                                    "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                             headerCursor.close();
                         }
 
@@ -1428,7 +1487,7 @@ public class SurveyHelperNew {
                         // update joint call
                         bmodel.outletTimeStampHelper.updateJointCallDetailsByModuleWise(menuCode, uid, oldUid);
 
-                        String headerColumns = "uid, surveyid, date, retailerid,DistributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,ridSF,VisitId,SignaturePath";
+                        String headerColumns = "uid, surveyid, date, retailerid,DistributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,ridSF,VisitId,SignaturePath,tripUid,EntityReferenceNo";
 
                         mAllQuestions.addAll(sBO.getQuestions());
                         questionSize = mAllQuestions.size();
@@ -1446,11 +1505,11 @@ public class SurveyHelperNew {
                                 String detailColumns = "uid, retailerid, qid, qtype, answerid, answer,score,isExcluded,surveyid,isSubQuest";
                                 String detailImageColumns = "uid, retailerid, qid,imgName";
 
-                                String values1 = QT(uid) + "," + QT(retailerid)
+                                String values1 = StringUtils.getStringQueryParam(uid) + "," + StringUtils.getStringQueryParam(retailerid)
                                         + "," + questionBO.getQuestionID() + ","
-                                        + QT(questionBO.getQuestionTypeId() + "");
+                                        + StringUtils.getStringQueryParam(questionBO.getQuestionTypeId() + "");
 
-                                String values2 = QT(uid) + "," + QT(retailerid)
+                                String values2 = StringUtils.getStringQueryParam(uid) + "," + StringUtils.getStringQueryParam(retailerid)
                                         + "," + questionBO.getQuestionID();
                                 int answerSize = questionBO.getSelectedAnswerIDs()
                                         .size();
@@ -1522,7 +1581,7 @@ public class SurveyHelperNew {
                                 for (int k = 0; k < questionBO.getImageNames().size(); k++) {
                                     String detailImageValues = values2
                                             + ","
-                                            + bmodel.QT(questionBO.getImageNames()
+                                            + StringUtils.getStringQueryParam(questionBO.getImageNames()
                                             .get(k));
 
                                     db.insertSQL("AnswerImageDetail", detailImageColumns,
@@ -1535,9 +1594,9 @@ public class SurveyHelperNew {
                                             || "MULTISELECT".equals(questionBO.getQuestionType())) {
                                         double score = ((questionBO.getMaxScore() > 0 && questionBO.getQuestScore() > questionBO.getMaxScore()) ? questionBO.getMaxScore() : questionBO.getQuestScore());
                                         totalAchievedScore += score;
-                                        String detailvalues = QT(uid) + "," + questionBO.getSurveyid()
+                                        String detailvalues = StringUtils.getStringQueryParam(uid) + "," + questionBO.getSurveyid()
                                                 + "," + questionBO.getQuestionID() + ","
-                                                + score + "," + QT(retailerid);
+                                                + score + "," + StringUtils.getStringQueryParam(retailerid);
                                         db.insertSQL("AnswerScoreDetail", "uid,surveyid,qid,score,RetailerID",
                                                 detailvalues);
                                     }
@@ -1551,23 +1610,39 @@ public class SurveyHelperNew {
                             for (SurveyBO surBO : getSurvey()) {
                                 if (surBO.getSurveyID() == sBO.getSurveyID()) {
 
-                                    String headerValues = QT(uid) + ","
+                                    String headerValues = StringUtils.getStringQueryParam(uid) + ","
                                             + surBO.getSurveyID() + ","
-                                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                                            + QT(retailerid) + "," + distID + "," + QT(surveyTypeStandardListId) + ","
-                                            + superwiserID
-                                            + "," + totalAchievedScore + "," + sBO.getTargtScore()
-                                            + "," + QT(menuCode)
-                                            + "," + sBO.getBonusScoreAchieved()
-                                            + "," + sBO.getMaxBonusScore()
-                                            + "," + QT(remarkDone) + "," + QT(type) + ",0,''"
-                                            + "," + userid
-                                            + "," + QT(sBO.getSurveyFreq())
-                                            + "," + QT(ridSF)
-                                            + "," + bmodel.getAppDataProvider().getUniqueId();
+                                            + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                                            + StringUtils.getStringQueryParam(retailerid) + ","
+                                            + distID + ","
+                                            + StringUtils.getStringQueryParam(surveyTypeStandardListId) + ","
+                                            + superwiserID + ","
+                                            + totalAchievedScore + ","
+                                            + sBO.getTargtScore() + ","
+                                            + StringUtils.getStringQueryParam(menuCode) + ","
+                                            + sBO.getBonusScoreAchieved() + ","
+                                            + sBO.getMaxBonusScore() + ","
+                                            + StringUtils.getStringQueryParam(remarkDone) + ","
+                                            + StringUtils.getStringQueryParam(type) + ","
+                                            + 0 + ","
+                                            + "''" + ","
+                                            + userid + ","
+                                            + StringUtils.getStringQueryParam(sBO.getSurveyFreq()) + ","
+                                            + StringUtils.getStringQueryParam(ridSF) + ","
+                                            + bmodel.getAppDataProvider().getUniqueId();
 
                                     surBO.setSignaturePath(getSignaturePath());
+
+                                    if (bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+                                        headerValues = headerValues + "," + StringUtils.getStringQueryParam(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
+                                    } else {
+                                        headerValues = headerValues + ",0";
+                                    }
+                                    headerValues = headerValues + ","
+                                            + (serialNo != null ? StringUtils.getStringQueryParam(serialNo) : null);
+
                                     db.insertSQL("AnswerHeader", headerColumns, headerValues);
+                                    isSurveyDoneForAsset = true;
                                 }
 
                             }
@@ -1723,7 +1798,7 @@ public class SurveyHelperNew {
     }
 
 
-    public void loadSurveyAnswers(int supervisiorId) {
+    public void loadSurveyAnswers(int supervisiorId, String entityReferenceNo) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
         );
         db.createDataBase();
@@ -1746,6 +1821,10 @@ public class SurveyHelperNew {
 
         boolean isLocalData = false;// to check whether transaction record is there or not
 
+        String entityRefNoCond = "";
+        if (entityReferenceNo != null)
+            entityRefNoCond = " and EntityReferenceNo=" + StringUtils.getStringQueryParam(entityReferenceNo);
+
         if (getSurvey() != null)
             for (SurveyBO sBO : getSurvey()) {
 
@@ -1756,11 +1835,12 @@ public class SurveyHelperNew {
 
                 StringBuilder sb = new StringBuilder();
                 sb.append("SELECT uid,SignaturePath FROM AnswerHeader  ");
-                sb.append(" WHERE retailerid = " + QT(retailerid) + " AND distributorID = " + distID + " AND surveyid = ");
+                sb.append(" WHERE retailerid = " + StringUtils.getStringQueryParam(retailerid) + " AND distributorID = " + distID + " AND surveyid = ");
                 sb.append(+surveyId + " AND date = ");
-                sb.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                sb.append(StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                 sb.append(" and upload='N' and supervisiorId = " + supervisiorId + " AND userid = " + userid);
                 sb.append(" and frequency!='MULTIPLE'");
+                sb.append(entityRefNoCond);
 
                 Cursor answerHeaderCursor = db.selectSQL(sb.toString());
                 if (answerHeaderCursor != null) {
@@ -1784,7 +1864,7 @@ public class SurveyHelperNew {
 
                     boolean check = false;
                     String sql1 = "SELECT qid, answerid, Answer,score FROM AnswerDetail WHERE"
-                            + " uid = " + QT(uid) + " and isSubQuest=0";
+                            + " uid = " + StringUtils.getStringQueryParam(uid) + " and isSubQuest=0";
                     Cursor c = db.selectSQL(sql1);
                     if (c != null) {
 
@@ -1811,7 +1891,7 @@ public class SurveyHelperNew {
                     }
                     if (check) {
                         String sql2 = "SELECT qid, answerid, Answer,score FROM AnswerDetail WHERE"
-                                + " uid = " + QT(uid) + " and isSubQuest=1";
+                                + " uid = " + StringUtils.getStringQueryParam(uid) + " and isSubQuest=1";
 
                         StringBuilder sb1 = new StringBuilder();
                         int counter = 0;
@@ -1833,7 +1913,7 @@ public class SurveyHelperNew {
                                             subqBO.setQuestScore(c1.getFloat(3));
 
                                         sb1.append("Select IFNULL(ImgName,'') FROM AnswerImageDetail WHERE uid = ");
-                                        sb1.append(QT(uid));
+                                        sb1.append(StringUtils.getStringQueryParam(uid));
                                         sb1.append(" and qid=");
                                         sb1.append(c1.getInt(0));
                                         Cursor c3 = db.selectSQL(sb1.toString());
@@ -1893,7 +1973,7 @@ public class SurveyHelperNew {
 
 
                     String sql1 = "SELECT qid, imgName FROM AnswerImageDetail WHERE"
-                            + " uid = " + QT(uid);
+                            + " uid = " + StringUtils.getStringQueryParam(uid);
                     Cursor c = db.selectSQL(sql1);
                     if (c != null) {
                         while (c.moveToNext()) {
@@ -1980,7 +2060,7 @@ public class SurveyHelperNew {
         for (SurveyBO bo : getSurvey()) {
 
             String sql = "SELECT uid FROM NewRetailerSurveyResultHeader WHERE"
-                    + " retailerid = " + QT(retailerId);
+                    + " retailerid = " + StringUtils.getStringQueryParam(retailerId);
 
             Cursor answerHeaderCursor = db.selectSQL(sql);
             if (answerHeaderCursor != null) {
@@ -1992,7 +2072,7 @@ public class SurveyHelperNew {
 
             if (!uid.equals("0")) {
                 String sql1 = "SELECT qid, answerid, Answer,surveyid,isSubQuest FROM NewRetailerSurveyResultDetail WHERE"
-                        + " uid = " + QT(uid);
+                        + " uid = " + StringUtils.getStringQueryParam(uid);
                 Cursor c = db.selectSQL(sql1);
                 //To clear default option id
                 for (QuestionBO questionBO : bo.getQuestions())
@@ -2059,9 +2139,9 @@ public class SurveyHelperNew {
             uid = "0";
 
             String sql = "SELECT uid FROM AnswerHeader WHERE"
-                    + " retailerid = " + QT(retailerid) + " AND surveyid = "
+                    + " retailerid = " + StringUtils.getStringQueryParam(retailerid) + " AND surveyid = "
                     + surveyId + " AND date = "
-                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " and upload='I' and supervisiorId = " + supervisiorId
                     + " and refid='" + referenceId + "'";
 
@@ -2078,7 +2158,7 @@ public class SurveyHelperNew {
                 mAllQuestions.addAll(sBO.getQuestions());
                 boolean check = false;
                 String sql1 = "SELECT qid, answerid, Answer FROM AnswerDetail WHERE"
-                        + " uid = " + QT(uid) + " and isSubQuest=0";
+                        + " uid = " + StringUtils.getStringQueryParam(uid) + " and isSubQuest=0";
                 Cursor c = db.selectSQL(sql1);
                 if (c != null) {
 
@@ -2101,7 +2181,7 @@ public class SurveyHelperNew {
                 }
                 if (check) {
                     String sql2 = "SELECT qid, answerid, Answer FROM AnswerDetail WHERE"
-                            + " uid = " + QT(uid) + " and isSubQuest=1";
+                            + " uid = " + StringUtils.getStringQueryParam(uid) + " and isSubQuest=1";
                     Cursor c1 = db.selectSQL(sql2);
                     if (c1 != null) {
 
@@ -2130,7 +2210,7 @@ public class SurveyHelperNew {
             if (!"0".equals(uid)) {
 
                 String sql1 = "SELECT qid, imgName FROM AnswerImageDetail WHERE"
-                        + " uid = " + QT(uid);
+                        + " uid = " + StringUtils.getStringQueryParam(uid);
                 Cursor c = db.selectSQL(sql1);
                 if (c != null) {
                     while (c.moveToNext()) {
@@ -2200,9 +2280,9 @@ public class SurveyHelperNew {
             uid = "0";
 
             String sql = "SELECT uid FROM AnswerHeader WHERE"
-                    + " retailerid = " + QT(retailerid) + " AND distributorID = " + distID + " AND surveyid = "
+                    + " retailerid = " + StringUtils.getStringQueryParam(retailerid) + " AND distributorID = " + distID + " AND surveyid = "
                     + surveyId + " AND date = "
-                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " and upload='N' and supervisiorId = " + supervisiorId;
 
             Cursor answerHeaderCursor = db.selectSQL(sql);
@@ -2221,7 +2301,7 @@ public class SurveyHelperNew {
 
                 boolean check = false;
                 String sql1 = "SELECT qid, answerid, Answer FROM AnswerDetail WHERE"
-                        + " uid = " + QT(uid) + " and isSubQuest=0";
+                        + " uid = " + StringUtils.getStringQueryParam(uid) + " and isSubQuest=0";
                 Cursor c = db.selectSQL(sql1);
                 if (c != null) {
 
@@ -2243,7 +2323,7 @@ public class SurveyHelperNew {
                 }
                 if (check) {
                     String sql2 = "SELECT qid, answerid, Answer FROM AnswerDetail WHERE"
-                            + " uid = " + QT(uid) + " and isSubQuest=1";
+                            + " uid = " + StringUtils.getStringQueryParam(uid) + " and isSubQuest=1";
                     Cursor c1 = db.selectSQL(sql2);
                     if (c1 != null) {
 
@@ -2394,9 +2474,9 @@ public class SurveyHelperNew {
                     String sql = "SELECT uid FROM NewRetailerSurveyResultHeader WHERE"
                             + " surveyid = " + sBO.getSurveyID()
                             + " AND date = "
-                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                            + " AND retailerid = " + QT(retailerid)
-                            + " AND menucode=" + QT(menuCode)
+                            + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                            + " AND retailerid = " + StringUtils.getStringQueryParam(retailerid)
+                            + " AND menucode=" + StringUtils.getStringQueryParam(menuCode)
                             + " AND userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                             + " AND upload='N'";
 
@@ -2406,9 +2486,9 @@ public class SurveyHelperNew {
                         headerCursor.moveToNext();
                         oldUid = headerCursor.getString(0);
                         db.deleteSQL("NewRetailerSurveyResultHeader",
-                                "uid = " + QT(headerCursor.getString(0)), false);
+                                "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                         db.deleteSQL("NewRetailerSurveyResultDetail",
-                                "uid = " + QT(headerCursor.getString(0)), false);
+                                "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                         headerCursor.close();
                     }
                     isData = false;
@@ -2432,9 +2512,9 @@ public class SurveyHelperNew {
 
                             String detailColumns = "uid, retailerid, qid, qtype, answerid, answer, surveyid,score,NoReply,isSubQuest";
 
-                            String values1 = QT(uid) + "," + QT(retailerid)
+                            String values1 = StringUtils.getStringQueryParam(uid) + "," + StringUtils.getStringQueryParam(retailerid)
                                     + "," + questionBO.getQuestionID() + ","
-                                    + QT(questionBO.getQuestionTypeId() + "");
+                                    + StringUtils.getStringQueryParam(questionBO.getQuestionTypeId() + "");
 
 
                             int answerSize = questionBO.getSelectedAnswerIDs()
@@ -2473,14 +2553,14 @@ public class SurveyHelperNew {
                         for (SurveyBO qBO : getSurvey()) {
                             if (qBO.getSurveyID() == sBO.getSurveyID()) {
 
-                                String headerValues = QT(uid) + ","
+                                String headerValues = StringUtils.getStringQueryParam(uid) + ","
                                         + sBO.getSurveyID() + ","
-                                        + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                                        + QT(retailerid) + ","
-                                        + QT(remarkDone) + ","
+                                        + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                                        + StringUtils.getStringQueryParam(retailerid) + ","
+                                        + StringUtils.getStringQueryParam(remarkDone) + ","
                                         + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ","
-                                        + QT(menuCode)
-                                        + "," + QT(type) + ",''";
+                                        + StringUtils.getStringQueryParam(menuCode)
+                                        + "," + StringUtils.getStringQueryParam(type) + ",''";
 
                                 db.insertSQL("NewRetailerSurveyResultHeader", headerColumns, headerValues);
                             }
@@ -2498,9 +2578,9 @@ public class SurveyHelperNew {
                         String sql = "SELECT uid FROM NewRetailerSurveyResultHeader WHERE"
                                 + " surveyid = " + sBO.getSurveyID()
                                 + " AND date = "
-                                + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                                + " AND retailerid = " + QT(retailerid)
-                                + " AND menucode=" + QT(menuCode)
+                                + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                                + " AND retailerid = " + StringUtils.getStringQueryParam(retailerid)
+                                + " AND menucode=" + StringUtils.getStringQueryParam(menuCode)
                                 + " AND userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                                 + " AND upload='N'";
                         Cursor headerCursor = db.selectSQL(sql);
@@ -2511,9 +2591,9 @@ public class SurveyHelperNew {
                             oldUid = headerCursor.getString(0);
                             headerCursor.getString(0);
                             db.deleteSQL("NewRetailerSurveyResultHeader",
-                                    "uid = " + QT(headerCursor.getString(0)), false);
+                                    "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                             db.deleteSQL("NewRetailerSurveyResultDetail",
-                                    "uid = " + QT(headerCursor.getString(0)), false);
+                                    "uid = " + StringUtils.getStringQueryParam(headerCursor.getString(0)), false);
                             headerCursor.close();
                         }
 
@@ -2539,9 +2619,9 @@ public class SurveyHelperNew {
 
                                 String detailColumns = "uid, retailerid, qid, qtype, answerid, answer, surveyid,isSubQuest";
 
-                                String values1 = QT(uid) + "," + QT(retailerid)
+                                String values1 = StringUtils.getStringQueryParam(uid) + "," + StringUtils.getStringQueryParam(retailerid)
                                         + "," + questionBO.getQuestionID() + ","
-                                        + QT(questionBO.getQuestionTypeId() + "");
+                                        + StringUtils.getStringQueryParam(questionBO.getQuestionTypeId() + "");
 
 
                                 int answerSize = questionBO.getSelectedAnswerIDs()
@@ -2573,14 +2653,14 @@ public class SurveyHelperNew {
                             for (SurveyBO qBO : getSurvey()) {
                                 if (qBO.getSurveyID() == sBO.getSurveyID()) {
 
-                                    String headerValues = QT(uid) + ","
+                                    String headerValues = StringUtils.getStringQueryParam(uid) + ","
                                             + sBO.getSurveyID() + ","
-                                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                                            + QT(retailerid) + ","
-                                            + QT(remarkDone) + ","
+                                            + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                                            + StringUtils.getStringQueryParam(retailerid) + ","
+                                            + StringUtils.getStringQueryParam(remarkDone) + ","
                                             + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ","
-                                            + QT(menuCode)
-                                            + "," + QT(type) + ",''";
+                                            + StringUtils.getStringQueryParam(menuCode)
+                                            + "," + StringUtils.getStringQueryParam(type) + ",''";
 
                                     db.insertSQL("NewRetailerSurveyResultHeader", headerColumns, headerValues);
                                 }
@@ -2618,8 +2698,8 @@ public class SurveyHelperNew {
             Cursor c;
 
             sql = "select uid from NewRetailerSurveyResultHeader "
-                    + "where retailerid = " + QT(retailerId)
-                    + "AND Upload = " + QT("N");
+                    + "where retailerid = " + StringUtils.getStringQueryParam(retailerId)
+                    + "AND Upload = " + StringUtils.getStringQueryParam("N");
             c = db.selectSQL(sql);
             if (c.getCount() > 0) {
                 isavailable = true;
@@ -2647,9 +2727,9 @@ public class SurveyHelperNew {
             db.openDataBase();
 
             db.deleteSQL("NewRetailerSurveyResultDetail", "retailerid ="
-                    + QT(retailerID), false);
+                    + StringUtils.getStringQueryParam(retailerID), false);
             db.deleteSQL("NewRetailerSurveyResultHeader", "retailerid ="
-                    + QT(retailerID), false);
+                    + StringUtils.getStringQueryParam(retailerID), false);
 
 
             db.closeDB();
@@ -2689,7 +2769,7 @@ public class SurveyHelperNew {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY07'and menu_type="
-                            + bmodel.QT(menucode) + " and  ForSwitchSeller = 0");
+                            + StringUtils.getStringQueryParam(menucode) + " and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.SHOW_SMS_IN_SURVEY = true;
@@ -2699,7 +2779,7 @@ public class SurveyHelperNew {
             }
 
             c = db.selectSQL("select menu_type,RField from HhtModuleMaster where flag=1 and hhtcode='SURVEY06'and menu_type="
-                    + bmodel.QT(menucode) + " and  ForSwitchSeller = 0");
+                    + StringUtils.getStringQueryParam(menucode) + " and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.SHOW_PHOTOCAPTURE_IN_SURVEY = true;
@@ -2709,7 +2789,7 @@ public class SurveyHelperNew {
             }
             // Survey12 to enable multiple photo capture
             c = db.selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY12'and menu_type="
-                    + bmodel.QT(menucode) + " and  ForSwitchSeller = 0");
+                    + StringUtils.getStringQueryParam(menucode) + " and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.ENABLE_MULTIPLE_PHOTO = true;
@@ -2719,7 +2799,7 @@ public class SurveyHelperNew {
             }
 
             c = db.selectSQL("select * from HhtModuleMaster where flag=1 and hhtcode='SURVEY13'and menu_type="
-                    + bmodel.QT(menucode) + " and  ForSwitchSeller = 0");
+                    + StringUtils.getStringQueryParam(menucode) + " and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.SHOW_DRAGDROP_IN_SURVEY = true;
@@ -2729,7 +2809,7 @@ public class SurveyHelperNew {
 
             c = db.selectSQL("select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_TOTAL_SCORE_IN_SURVEY) + " and Flag=1 and ForSwitchSeller = 0");
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(CODE_SHOW_TOTAL_SCORE_IN_SURVEY) + " and Flag=1 and ForSwitchSeller = 0");
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.SHOW_TOTAL_SCORE_IN_SURVEY = true;
@@ -2739,7 +2819,7 @@ public class SurveyHelperNew {
 
             c = db.selectSQL("select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SURVEY_ANSWER_ALL) + " and Flag=1 and ForSwitchSeller = 0");
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(CODE_SURVEY_ANSWER_ALL) + " and Flag=1 and ForSwitchSeller = 0");
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.IS_SURVEY_ANSWER_ALL = true;
@@ -2749,7 +2829,7 @@ public class SurveyHelperNew {
 
             c = db.selectSQL("select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SURVEY_ANSWER_MANDATORY) + " and Flag=1 and ForSwitchSeller = 0");
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(CODE_SURVEY_ANSWER_MANDATORY) + " and Flag=1 and ForSwitchSeller = 0");
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.IS_SURVEY_ANSWER_MANDATORY = true;
@@ -2759,7 +2839,7 @@ public class SurveyHelperNew {
 
             c = db.selectSQL("select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_SCORE_IN_SURVEY) + " and Flag=1 and ForSwitchSeller = 0");
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(CODE_SHOW_SCORE_IN_SURVEY) + " and Flag=1 and ForSwitchSeller = 0");
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.SHOW_SCORE_IN_SURVEY = true;
@@ -2794,5 +2874,9 @@ public class SurveyHelperNew {
         }
 
         return parentHiearchy;
+    }
+
+    public boolean isSurveyDoneForAsset() {
+        return isSurveyDoneForAsset;
     }
 }

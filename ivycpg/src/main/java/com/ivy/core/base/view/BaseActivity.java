@@ -49,10 +49,12 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.cpg.nfc.NFCManager;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
@@ -62,6 +64,7 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.fabric.sdk.android.services.common.CommonUtils;
 
 public abstract class BaseActivity extends AppCompatActivity implements BaseIvyView, LifecycleOwner {
 
@@ -108,6 +111,17 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+
+        if (!BuildConfig.DEBUG) {
+            if (DeviceUtils.isEmulator()) {
+                Toast.makeText(this, getResources().getString(R.string.this_is_not_a_real_device), Toast.LENGTH_LONG).show();
+                finish();
+            }
+            if (CommonUtils.isRooted(this)) {
+                Toast.makeText(this, getResources().getString(R.string.app_will_not_work_in_rooted_device), Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
