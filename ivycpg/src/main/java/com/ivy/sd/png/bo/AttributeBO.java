@@ -132,4 +132,93 @@ public class AttributeBO {
     public void setAttributeSelected(boolean attributeSelected) {
         isAttributeSelected = attributeSelected;
     }
+
+    private boolean isRetailerAttributeId;
+    private boolean isRetailerEditAttributeId;
+    private int channelId;
+    private boolean isMandatory,isEditable,isMasterRecord;
+    private int levelId;
+    private String status;
+    private String parentId;
+    private int attributeParentId;
+
+    public boolean isMasterRecord() {
+        return isMasterRecord;
+    }
+
+    public void setMasterRecord(boolean masterRecord) {
+        isMasterRecord = masterRecord;
+    }
+
+    public boolean isEditable() {
+        return isEditable;
+    }
+
+    public void setEditable(boolean editable) {
+        isEditable = editable;
+    }
+
+    public int getAttributeParentId() {
+        return attributeParentId;
+    }
+
+    public void setAttributeParentId(int attributeParentId) {
+        this.attributeParentId = attributeParentId;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getLevelId() {
+        return levelId;
+    }
+
+    public void setLevelId(int levelId) {
+        this.levelId = levelId;
+    }
+
+    public boolean isRetailerAttributeId() {
+        return isRetailerAttributeId;
+    }
+
+    public void setRetailerAttributeId(boolean retailerAttributeId) {
+        isRetailerAttributeId = retailerAttributeId;
+    }
+
+    public boolean isRetailerEditAttributeId() {
+        return isRetailerEditAttributeId;
+    }
+
+    public void setRetailerEditAttributeId(boolean retailerEditAttributeId) {
+        isRetailerEditAttributeId = retailerEditAttributeId;
+    }
+
+    public int getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(int channelId) {
+        this.channelId = channelId;
+    }
+
+    public boolean isMandatory() {
+        return isMandatory;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        isMandatory = mandatory;
+    }
 }

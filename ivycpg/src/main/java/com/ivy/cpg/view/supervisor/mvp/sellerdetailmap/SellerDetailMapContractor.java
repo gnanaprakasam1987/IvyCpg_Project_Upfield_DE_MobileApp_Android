@@ -43,8 +43,6 @@ public interface SellerDetailMapContractor {
 
         void getMarkerForFocus();
 
-        String convertMillisToTime(Long millis);
-
         String calculateDuration(long startTime,long endTime);
 
         void animateSellerMarker(final LatLng destination, final Marker marker);

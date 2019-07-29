@@ -3,6 +3,7 @@ package com.ivy.ui.profile.data;
 
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.cpg.view.retailercontact.RetailerContactBo;
+import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.CensusLocationBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
@@ -82,7 +83,7 @@ public interface ProfileDataManager {
 
     Observable<ArrayList<NewOutletAttributeBO>> downloadAttributeListForRetailer(String RetailerID);
 
-    Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerAttribute();
+    Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerChildAttribute();
 
     Observable<ArrayList<NewOutletAttributeBO>> downloadAttributeParentList(ArrayList<NewOutletAttributeBO> attribList);
 
@@ -97,19 +98,7 @@ public interface ProfileDataManager {
 
     Single<String> checkHeaderAvailablility(String RetailerID, String currentDate);
 
-    Single<Boolean> deleteQuery(String configCode, String RetailerID);
-
-    Single<Boolean> insertNewRow(String configCode, String RetailerID, String mTid, String mCustomQuery);
-
-    Single<Boolean> updateNearByRetailers(String mTid, String RetailerID, HashMap<String, String> temp);
-
-    Single<Boolean> updateRetailerEditPriorityProducts(String mTid, String RetailerID, ArrayList<StandardListBO> selectedPrioProducts);
-
-    Single<Boolean> updateRetailerMasterAttribute(String mTid, String RetailerID, ArrayList<NewOutletAttributeBO> tempList);
-
     Single<Boolean> updateRetailer(String mTid, String RetailerID, String currentDate);
-
-    Single<Boolean> insertRetailerContactEdit(String mTid, String RetailerID, ArrayList<RetailerContactBo> retailerContactList);
 
     Single<Boolean> deleteNewRetailer(String getId);
 
@@ -148,6 +137,12 @@ public interface ProfileDataManager {
     Single<Boolean> clearExistingOrder();
 
     Single<LocationLevel> getParentLevelName(int locid, boolean isParent);
+
+    Single<Boolean> saveEditProfileField(HashMap<String,?> retailerProfileField,String tid);
+
+    Single<Boolean> saveEditContactData(ArrayList<RetailerContactBo> contactList,String tid);
+
+    Single<Boolean> saveEditAttributeData(ArrayList<AttributeBO> attributeList, String tid);
 
     void closeDB();
 

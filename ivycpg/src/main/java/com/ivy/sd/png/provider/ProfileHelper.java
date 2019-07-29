@@ -1119,7 +1119,7 @@ public class ProfileHelper {
         });
     }
 
-    public ArrayList<RetailerContactBo> getContactBos(final String retailerID, final boolean isEdit){
+    public ArrayList<RetailerContactBo> getContactBos(final String retailerID, final boolean isEdit) {
         ArrayList<RetailerContactBo> contactList = new ArrayList<>();
 
         String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,RC.contact_title_lovid as contact_title_lovid,"
@@ -1128,31 +1128,32 @@ public class ProfileHelper {
                 + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
                 + " Where RC.RetailerId =" + StringUtils.getStringQueryParam(retailerID);
 
-                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-                    );
-                    db.openDataBase();
-                    Cursor c = db.selectSQL(sql);
-                    if (c != null) {
-                        while (c.moveToNext()) {
-                            RetailerContactBo retailerContactBo = new RetailerContactBo();
-                            if (c.getString(c.getColumnIndex("contactTitle")).length() > 0)
-                                retailerContactBo.setTitle(c.getString(c.getColumnIndex("contactTitle")));
-                            else
-                                retailerContactBo.setTitle(c.getString(c.getColumnIndex("listName")));
-                            retailerContactBo.setContactTitleLovId(c.getString(c.getColumnIndex("contact_title_lovid")));
-                            retailerContactBo.setFistname(c.getString(c.getColumnIndex("cName")));
-                            retailerContactBo.setLastname(c.getString(c.getColumnIndex("cLname")));
-                            retailerContactBo.setContactNumber(c.getString(c.getColumnIndex("cNumber")));
-                            retailerContactBo.setContactMail(c.getString(c.getColumnIndex("email")));
-                            retailerContactBo.setIsPrimary(c.getInt(c.getColumnIndex("isPrimary")));
-                            retailerContactBo.setCpId(c.getString(c.getColumnIndex("cpid")));
-            retailerContactBo.setContactSalutationId(c.getString(c.getColumnIndex("salutationId")));
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
+        db.openDataBase();
+        Cursor c = db.selectSQL(sql);
+        if (c != null) {
+            while (c.moveToNext()) {
+                RetailerContactBo retailerContactBo = new RetailerContactBo();
+                if (c.getString(c.getColumnIndex("contactTitle")).length() > 0)
+                    retailerContactBo.setTitle(c.getString(c.getColumnIndex("contactTitle")));
+                else
+                    retailerContactBo.setTitle(c.getString(c.getColumnIndex("listName")));
+                retailerContactBo.setContactTitleLovId(c.getString(c.getColumnIndex("contact_title_lovid")));
+                retailerContactBo.setFistname(c.getString(c.getColumnIndex("cName")));
+                retailerContactBo.setLastname(c.getString(c.getColumnIndex("cLname")));
+                retailerContactBo.setContactNumber(c.getString(c.getColumnIndex("cNumber")));
+                retailerContactBo.setContactMail(c.getString(c.getColumnIndex("email")));
+                retailerContactBo.setIsPrimary(c.getInt(c.getColumnIndex("isPrimary")));
+                retailerContactBo.setCpId(c.getString(c.getColumnIndex("cpid")));
+                retailerContactBo.setContactSalutationId(c.getString(c.getColumnIndex("salutationId")));
                 retailerContactBo.setIsEmailPrimary(c.getInt(c.getColumnIndex("emailPref")));
-                            retailerContactBo.setRetailerID(c.getString(c.getColumnIndex("retailerID")));
-                setContactAvailList(db,retailerContactBo,"ContactAvailability",false);                contactList.add(retailerContactBo);
-                        }
-                        c.close();
-                    }
+                retailerContactBo.setRetailerID(c.getString(c.getColumnIndex("retailerID")));
+                setContactAvailList(db, retailerContactBo, "ContactAvailability", false);
+                contactList.add(retailerContactBo);
+            }
+            c.close();
+        }
 
 
         if (isEdit) {
@@ -1161,33 +1162,34 @@ public class ProfileHelper {
                     + " Left join StandardListMaster SM on SM.ListId= RC.Contact_Title_LovId "
                     + " Where RC.RetailerId =" + StringUtils.getStringQueryParam(retailerID);
 
-                        Cursor retailerContactEditCurson = db.selectSQL(retailerContactEditQuery);
-                        if (retailerContactEditCurson != null) {
-                            ArrayList<RetailerContactBo> tempList = new ArrayList<>();
-                            while (retailerContactEditCurson.moveToNext()) {
-                                RetailerContactBo retailerContactBo = new RetailerContactBo();
-                                if (retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contactTitle")).length() > 0) {
-                                    retailerContactBo.setTitle(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contactTitle")));
-                                } else {
-                                    retailerContactBo.setTitle(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("listName")));
-                                }
-                                retailerContactBo.setContactTitleLovId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contact_title_lovid")));
-                                retailerContactBo.setFistname(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cName")));
-                                retailerContactBo.setLastname(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cLname")));
-                                retailerContactBo.setContactNumber(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cNumber")));
-                                retailerContactBo.setContactMail(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("email")));
-                                retailerContactBo.setIsPrimary(retailerContactEditCurson.getInt(retailerContactEditCurson.getColumnIndex("isPrimary")));
-                                retailerContactBo.setStatus(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("status")));
-                                retailerContactBo.setCpId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cpid")));
-            retailerContactBo.setContactSalutationId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("salutationId")));
+            Cursor retailerContactEditCurson = db.selectSQL(retailerContactEditQuery);
+            if (retailerContactEditCurson != null) {
+                ArrayList<RetailerContactBo> tempList = new ArrayList<>();
+                while (retailerContactEditCurson.moveToNext()) {
+                    RetailerContactBo retailerContactBo = new RetailerContactBo();
+                    if (retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contactTitle")).length() > 0) {
+                        retailerContactBo.setTitle(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contactTitle")));
+                    } else {
+                        retailerContactBo.setTitle(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("listName")));
+                    }
+                    retailerContactBo.setContactTitleLovId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contact_title_lovid")));
+                    retailerContactBo.setFistname(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cName")));
+                    retailerContactBo.setLastname(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cLname")));
+                    retailerContactBo.setContactNumber(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cNumber")));
+                    retailerContactBo.setContactMail(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("email")));
+                    retailerContactBo.setIsPrimary(retailerContactEditCurson.getInt(retailerContactEditCurson.getColumnIndex("isPrimary")));
+                    retailerContactBo.setStatus(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("status")));
+                    retailerContactBo.setCpId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cpid")));
+                    retailerContactBo.setContactSalutationId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("salutationId")));
                     retailerContactBo.setIsEmailPrimary(retailerContactEditCurson.getInt(retailerContactEditCurson.getColumnIndex("emailPref")));
-                                retailerContactBo.setRetailerID(c.getString(c.getColumnIndex("retailerID")));
-                    setContactAvailList(db,retailerContactBo,"ContactAvailabilityEdit",true);                    tempList.add(retailerContactBo);
-                            }
-                            retailerContactEditCurson.close();
+                    retailerContactBo.setRetailerID(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("retailerID")));
+                    setContactAvailList(db, retailerContactBo, "ContactAvailabilityEdit", true);
+                    tempList.add(retailerContactBo);
+                }
+                retailerContactEditCurson.close();
 
-                            /*Update the edited contact list */
-                            for (int i = 0; i < contactList.size(); i++) {
+                /*Update the edited contact list */
+                for (int i = 0; i < contactList.size(); i++) {
 
                     String parentCpId = contactList.get(i).getCpId();
 
@@ -1204,7 +1206,7 @@ public class ProfileHelper {
                 }
 
                 /*Add the new contact list */
-                for (RetailerContactBo retailerContactBo :  tempList) {
+                for (RetailerContactBo retailerContactBo : tempList) {
                     if (retailerContactBo.getStatus().equalsIgnoreCase("I")) {
                         contactList.add(retailerContactBo);
                     }
@@ -1318,5 +1320,38 @@ public class ProfileHelper {
                 }
             }
         });
+    }
+
+    public int isConfigAvail(String menu,String config){
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+        try {
+
+            SharedPreferences sharedPrefs = PreferenceManager
+                    .getDefaultSharedPreferences(mContext);
+            String locale = sharedPrefs.getString("languagePref",
+                    ApplicationConfigs.LANGUAGE);
+            db.openDataBase();
+
+            String query = "select RField from "
+                    + DataMembers.tbl_HhtMenuMaster
+                    + " where flag=1 and HHTCode = " +StringUtils.getStringQueryParam(config)
+                    + " and MenuType= "+StringUtils.getStringQueryParam(menu)+" and lang=" + StringUtils.getStringQueryParam(locale);
+
+            Cursor c = db.selectSQL(query);
+            if (c != null && c.getCount() > 0 && c.moveToNext()) {
+
+                int val = c.getInt(0);
+                c.close();
+
+                return val;
+            }
+            else
+                return -1;
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+            return -1;
+        }
     }
 }

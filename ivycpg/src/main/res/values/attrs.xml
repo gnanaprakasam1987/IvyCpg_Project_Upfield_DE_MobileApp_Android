@@ -19,7 +19,7 @@
     <declare-styleable name="MaterialSpinner">
         <attr name="ms_baseColor" format="integer" />
         <attr name="ms_highlightColor" format="integer" />
-        <attr name="ms_errorColor" format="integer" />
+        <attr name="ms_error_Color" format="integer" />
         <attr name="ms_floatingLabelText" format="string" />
         <attr name="ms_floatingLabelColor" format="color" />
         <attr name="ms_typeface" format="string" />

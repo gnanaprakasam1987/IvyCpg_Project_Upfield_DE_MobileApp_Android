@@ -27,7 +27,7 @@ public interface OutletMapViewContractor {
 
         void setView(OutletMapView outletMapView,Context context);
 
-        void downloadOutletListAws();
+        void downloadOutletListAws(String date);
 
         void setOutletActivityDetail(int userId, String date);
 
@@ -38,8 +38,6 @@ public interface OutletMapViewContractor {
         void setCoveredOutlet();
 
         void setUnbilledOutlet();
-
-        String convertMillisToTime(Long time);
 
         String calculateDuration(long startTime,long endTime);
     }

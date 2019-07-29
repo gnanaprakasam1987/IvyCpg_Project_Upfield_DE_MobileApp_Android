@@ -41,7 +41,7 @@ public class NewOutletAttributeHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadRetailerAttribute()}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadRetailerChildAttribute()}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -51,7 +51,7 @@ public class NewOutletAttributeHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadRetailerAttribute()}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadRetailerChildAttribute()}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */

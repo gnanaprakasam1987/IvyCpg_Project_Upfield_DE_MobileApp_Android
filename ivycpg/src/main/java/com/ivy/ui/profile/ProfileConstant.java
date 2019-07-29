@@ -70,6 +70,18 @@ public class ProfileConstant {
     public static final String RFIELD_6 = "RFIELD6";
     public static final String RFIELD_7 = "RFIELD7";
 
+   public static final String RFIELD10 = "RFIELD10";
+   public static final String RFIELD11 = "RFIELD11";
+   public static final String RFIELD12 = "RFIELD12";
+   public static final String RFIELD13 = "RFIELD13";
+   public static final String RFIELD14 = "RFIELD14";
+   public static final String RFIELD15 = "RFIELD15";
+   public static final String RFIELD16 = "RFIELD16";
+   public static final String RFIELD17 = "RFIELD17";
+   public static final String RFIELD18 = "RFIELD18";
+   public static final String RFIELD19 = "RFIELD19";
+   public static final String RFIELD20 = "RFIELD20";
+
     /*Configuration Static Constant */
     public static final String D = "D";
     public static final String LNAME = "LNAME";

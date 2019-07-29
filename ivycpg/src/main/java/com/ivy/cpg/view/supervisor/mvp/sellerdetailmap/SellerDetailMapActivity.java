@@ -52,6 +52,7 @@ import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
@@ -482,7 +483,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             if (stringSplit.length > 1) {
                 tvMapInfoUserName.setText(stringSplit[0]);
                 tvInfoVisitTime.setText(getResources().getString(R.string.visit_time) + " " +
-                        sellerMapViewPresenter.convertMillisToTime(Long.valueOf(stringSplit[1])));
+                        DateTimeUtils.getTimeFromMillis(Long.valueOf(stringSplit[1])));
             } else {
                 tvMapInfoUserName.setText(stringSplit[0]);
                 tvInfoVisitTime.setText(getResources().getString(R.string.visit_time));
@@ -615,8 +616,8 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
             holder.tvSerialNumber.setText(sequenceStr);
             holder.tvStoreName.setText(outletListBos.get(holder.getAdapterPosition()).getRetailerName());
-            holder.tvTimeIn.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(holder.getAdapterPosition()).getInTime()));
-            holder.tvTimeOut.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(holder.getAdapterPosition()).getOutTime()));
+            holder.tvTimeIn.setText(DateTimeUtils.getTimeFromMillis(outletListBos.get(holder.getAdapterPosition()).getInTime()));
+            holder.tvTimeOut.setText(DateTimeUtils.getTimeFromMillis(outletListBos.get(holder.getAdapterPosition()).getOutTime()));
 
             if (sellerMapViewPresenter.getLastVisited() != 0 && sellerMapViewPresenter.getLastVisited() > outletListBos.get(holder.getAdapterPosition()).getMasterSequence()
                     && !outletListBos.get(holder.getAdapterPosition()).isVisited()) {

@@ -5,6 +5,10 @@ import com.ivy.core.data.sync.SynchronizationDataManager;
 import com.ivy.core.data.sync.SynchronizationDataManagerImpl;
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.ui.profile.data.ProfileDataManager;
+import com.ivy.ui.profile.attribute.data.IProfileAttributeDataManager;
+import com.ivy.ui.profile.attribute.data.ProfileAttributeDataManagerImpl;
+import com.ivy.ui.profile.attribute.presenter.ProfileAttributePresenterImpl;
+import com.ivy.ui.profile.data.IProfileDataManager;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;
@@ -53,6 +57,11 @@ public class ProfileEditModule {
     @Provides
     SynchronizationDataManager providesSynchronizationDataManager(SynchronizationDataManagerImpl synchronizationDataManager){
         return synchronizationDataManager;
+    }
+
+    @Provides
+    IProfileAttributeDataManager profileAttributeDataManager(ProfileAttributeDataManagerImpl profileAttributeDataManager){
+        return profileAttributeDataManager;
     }
 
 }

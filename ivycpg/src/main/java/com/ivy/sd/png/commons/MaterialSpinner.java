@@ -164,7 +164,7 @@ public class MaterialSpinner extends AppCompatSpinner implements ValueAnimator.A
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.MaterialSpinner);
         baseColor = array.getColor(R.styleable.MaterialSpinner_ms_baseColor, defaultBaseColor);
         highlightColor = array.getColor(R.styleable.MaterialSpinner_ms_highlightColor, defaultHighlightColor);
-        errorColor = array.getColor(R.styleable.MaterialSpinner_ms_errorColor, defaultErrorColor);
+        errorColor = array.getColor(R.styleable.MaterialSpinner_ms_error_Color, defaultErrorColor);
         disabledColor = ContextCompat.getColor(context, R.color.gray_text);
         floatingLabelText = array.getString(R.styleable.MaterialSpinner_ms_floatingLabelText);
         floatingLabelColor = array.getColor(R.styleable.MaterialSpinner_ms_floatingLabelColor, defaultfloatinglabelColor);

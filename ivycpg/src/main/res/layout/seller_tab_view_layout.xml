@@ -38,7 +38,7 @@
             android:orientation="horizontal"
             android:paddingLeft="@dimen/_15sdp"
             android:paddingRight="@dimen/_15sdp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
                 android:id="@+id/filter_layout"
@@ -101,6 +101,6 @@
 
     </RelativeLayout>
 
-    <include layout="@layout/sort_bottom_sheet_layout" />
+    <!--<include layout="@layout/sort_bottom_sheet_layout" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

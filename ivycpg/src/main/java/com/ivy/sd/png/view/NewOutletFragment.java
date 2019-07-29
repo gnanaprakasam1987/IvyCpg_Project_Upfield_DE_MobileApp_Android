@@ -103,6 +103,9 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
+import com.stepstone.stepper.BlockingStep;
+import com.stepstone.stepper.StepperLayout;
+import com.stepstone.stepper.VerificationError;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -123,7 +126,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class NewOutletFragment extends IvyBaseFragment
         implements NearByRetailerDialog.NearByRetailerInterface
-        , PrioritySelectionDialog.PrioritySelectionListener {
+        , PrioritySelectionDialog.PrioritySelectionListener,BlockingStep {
     private double lattitude = 0;
     private double longitude = 0;
 
@@ -6703,6 +6706,37 @@ public class NewOutletFragment extends IvyBaseFragment
             if (count == 4)
                 break;
         }
+    }
+
+    @Override
+    public void onNextClicked(StepperLayout.OnNextClickedCallback callback) {
+        callback.goToNextStep();
+    }
+
+    @Override
+    public void onCompleteClicked(StepperLayout.OnCompleteClickedCallback callback) {
+        callback.complete();
+    }
+
+    @Override
+    public void onBackClicked(StepperLayout.OnBackClickedCallback callback) {
+        callback.goToPrevStep();
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 
 }

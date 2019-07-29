@@ -115,24 +115,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|end"
-                        android:gravity="bottom|end"
-                        android:orientation="horizontal">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingTop="@dimen/dimens_22dp"
+                        android:paddingBottom="@dimen/dimens_22dp">
 
                         <ProgressBar
                             android:id="@+id/progress_map"
                             android:layout_width="@dimen/dimens_20dp"
                             android:layout_height="@dimen/dimens_20dp"
-                            android:layout_marginBottom="@dimen/dimens_20dp"
-                            android:layout_marginEnd="@dimen/dimens_10dp"
-                            android:layout_marginStart="@dimen/dimens_10dp" />
+                            android:layout_marginStart="@dimen/dimens_12dp"
+                            android:layout_marginLeft="@dimen/dimens_12dp"/>
 
                         <ImageView
                             android:id="@+id/draw_routeimg_btn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/dimens_22dp"
-                            android:layout_marginEnd="@dimen/dimens_10dp"
-                            android:layout_marginStart="@dimen/dimens_10dp"
+                            android:layout_marginEnd="@dimen/dimens_12dp"
+                            android:layout_marginStart="@dimen/dimens_12dp"
                             android:clickable="true"
                             android:contentDescription="@null"
                             android:focusable="true"
@@ -143,18 +143,14 @@
                             android:id="@+id/profile_mapswitch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="bottom|end"
-                            android:layout_marginTop="@dimen/dimens_22dp"
-                            android:layout_marginBottom="@dimen/dimens_22dp"
-                            android:layout_marginEnd="@dimen/dimens_10dp"
-                            android:layout_marginRight="@dimen/dimens_10dp"
+                            android:layout_marginEnd="@dimen/dimens_12dp"
+                            android:layout_marginRight="@dimen/dimens_12dp"
                             android:contentDescription="@null"
-                            android:src="@drawable/ic_gps"
+                            android:src="@drawable/ic_satellite_black_24dp"
                             android:tint="@color/white"
                             app:borderWidth="0dp"
                             app:fabSize="mini"
                             app:layout_anchor="@id/appbar"
-                            app:layout_anchorGravity="bottom|end"
                             tools:ignore="MissingPrefix" />
 
                         <ImageView
@@ -162,13 +158,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom|end"
-                            android:layout_marginTop="@dimen/dimens_22dp"
-                            android:layout_marginBottom="@dimen/dimens_22dp"
-                            android:layout_marginEnd="@dimen/dimens_10dp"
-                            android:layout_marginRight="@dimen/dimens_10dp"
+                            android:layout_marginEnd="@dimen/dimens_12dp"
+                            android:layout_marginRight="@dimen/dimens_12dp"
                             android:contentDescription="@null"
-                            android:src="@drawable/ic_edit"
-                            android:tint="@color/white"
+                            android:src="@drawable/ic_edit_white_24dp"
                             app:borderWidth="0dp"
                             app:fabSize="mini"
                             app:layout_anchor="@id/appbar"

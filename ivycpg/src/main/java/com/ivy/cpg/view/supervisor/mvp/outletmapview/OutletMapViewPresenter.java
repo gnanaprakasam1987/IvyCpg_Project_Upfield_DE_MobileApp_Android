@@ -78,7 +78,8 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
     }
 
     @Override
-    public void downloadOutletListAws() {
+    public void downloadOutletListAws(String date) {
+        SupervisorActivityHelper.getInstance().downloadOutletListAws(context,convertPlaneDateToGlobal(date));
         retailerMasterHashmap.putAll(SupervisorActivityHelper.getInstance().getRetailerMasterHashmap());
     }
 
@@ -302,18 +303,6 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
         if (isFocus)
             outletMapView.focusMarker(builder);
-    }
-
-    @Override
-    public String convertMillisToTime(Long time) {
-
-        if (time != null && time != 0) {
-            Date date = new Date(time);
-            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return format.format(date);
-        } else
-            return "";
     }
 
     @Override

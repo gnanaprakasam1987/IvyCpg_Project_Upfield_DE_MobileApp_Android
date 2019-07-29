@@ -1,6 +1,9 @@
 package com.ivy.cpg.view.retailercontact;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +22,9 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
+import com.stepstone.stepper.BlockingStep;
+import com.stepstone.stepper.StepperLayout;
+import com.stepstone.stepper.VerificationError;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +37,7 @@ import io.reactivex.observers.DisposableObserver;
 /**
  * Created by mansoor.k on 30-07-2018.
  */
-public class RetailerContactFragment extends IvyBaseFragment {
+public class RetailerContactFragment extends IvyBaseFragment implements BlockingStep {
     private BusinessModel bmodel;
     private View view;
     private RecyclerView rvContacts;
@@ -305,6 +311,37 @@ public class RetailerContactFragment extends IvyBaseFragment {
 
             }
         }
+    }
+
+    @Override
+    public void onNextClicked(StepperLayout.OnNextClickedCallback callback) {
+        callback.goToNextStep();
+    }
+
+    @Override
+    public void onCompleteClicked(StepperLayout.OnCompleteClickedCallback callback) {
+        callback.complete();
+    }
+
+    @Override
+    public void onBackClicked(StepperLayout.OnBackClickedCallback callback) {
+        callback.goToPrevStep();
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 
 }

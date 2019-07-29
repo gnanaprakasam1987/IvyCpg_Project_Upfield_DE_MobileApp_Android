@@ -5,6 +5,7 @@ package com.ivy.ui.profile.edit;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
@@ -13,6 +14,8 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 import com.ivy.ui.profile.create.model.ContractStatus;
+import com.ivy.ui.profile.view.ProfileBaseBo;
+import com.stepstone.stepper.StepperLayout;
 
 
 import java.util.ArrayList;
@@ -126,6 +129,10 @@ public interface IProfileEditContract {
 
         void checkRegex(String regex);
 
+        void onNextStepClicked(ProfileBaseBo retailerProfileField, StepperLayout.OnNextClickedCallback callback);
+
+        void onCompleteClicked(ProfileBaseBo retailerProfileField, StepperLayout.OnCompleteClickedCallback callback);
+
     }
 
     @PerActivity
@@ -205,6 +212,10 @@ public interface IProfileEditContract {
         void updateLatLong(String lat, String longitude);
 
         boolean checkRegex(int menuNumber, String typedText);
+
+        boolean doValidateProdileEdit();
+
+        void setProfileValues(boolean isSave,StepperLayout.OnNextClickedCallback nextCallback,StepperLayout.OnCompleteClickedCallback completeCallback);
 
     }
 }

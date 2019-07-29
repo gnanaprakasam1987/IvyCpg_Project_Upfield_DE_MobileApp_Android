@@ -719,5 +719,17 @@ negative button and neutral button -->
         <item name="android:enabled">false</item>
     </style>
 
+    <style name="DarkStepTabTitleStyle" parent="MSStepTabTitle">
+        <item name="android:textColor">@color/ms_white</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
+    </style>
+
+    <style name="MSNavBarButton" parent="Base.Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:textSize">@dimen/_14sdp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/ms_default_button_background</item>
+    </style>
+
 
 </resources>
