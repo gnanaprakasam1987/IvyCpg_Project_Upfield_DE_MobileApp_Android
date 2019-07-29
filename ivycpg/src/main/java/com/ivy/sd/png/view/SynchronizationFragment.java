@@ -596,7 +596,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         if (!aws || txtPassword.getText().toString().length() > 0) {
             if (btn_count == 1) {
-                if ((uploadPresenter.checkDataForSync() || withPhotosCheckBox.isChecked() || dayCloseCheckBox.isChecked()
+                if (((uploadPresenter.checkDataForSync() || withPhotosCheckBox.isChecked() || dayCloseCheckBox.isChecked())
                         && (bmodel.synchronizationHelper
                         .countImageFiles() > 0)) || (dayCloseCheckBox.isChecked())) {
                     sync.setBackgroundResource(R.drawable.round_light);
