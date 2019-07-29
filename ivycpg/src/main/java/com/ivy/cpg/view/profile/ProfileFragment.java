@@ -60,6 +60,7 @@ import java.util.Vector;
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 import static com.ivy.cpg.view.profile.ProfileActivity.retailerLat;
 import static com.ivy.cpg.view.profile.ProfileActivity.retailerLng;
+import static com.ivy.ui.profile.ProfileConstant.*;
 
 /*
  * Created by nivetha.s on 09-12-2015.
@@ -1308,6 +1309,80 @@ public class ProfileFragment extends IvyBaseFragment {
                 finalProfileList.add(outletBO);
                 break;
             }
+            case RFIELD10: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField10());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case RFIELD11: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField11());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case RFIELD12: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField12());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case RFIELD13: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField13());
+                finalProfileList.add(outletBO);
+                break;
+            }case RFIELD14: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField14());
+                finalProfileList.add(outletBO);
+                break;
+            }case RFIELD15: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField15());
+                finalProfileList.add(outletBO);
+                break;
+            }case RFIELD16: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField16());
+                finalProfileList.add(outletBO);
+                break;
+            }case RFIELD17: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField17());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case RFIELD18: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField18());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case RFIELD19: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField19());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case RFIELD20: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField20());
+                finalProfileList.add(outletBO);
+                break;
+            }
+
             default:
                 break;
         }
