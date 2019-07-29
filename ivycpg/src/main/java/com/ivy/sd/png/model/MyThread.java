@@ -67,7 +67,7 @@ public class MyThread extends Thread {
         if (opt == DataMembers.LOCAL_LOGIN) {
             LoginBaseActivity frm = (LoginScreen) ctx;
             int count = frm.loginPresenter.mPasswordLockCountPref.getInt("passwordlock", 0);
-            if (true || bmodel.synchronizationHelper.validateUser(
+            if (bmodel.synchronizationHelper.validateUser(
                     bmodel.getAppDataProvider().getUserName().toLowerCase(Locale.US),
                     bmodel.getAppDataProvider().getUserPassword()) && ((count + 1) != LoginHelper.getInstance(ctx).MAXIMUM_ATTEMPT_COUNT)) {
                 // If usermaster get updated
