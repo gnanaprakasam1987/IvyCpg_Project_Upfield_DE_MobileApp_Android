@@ -253,15 +253,16 @@ public class PhotoGalleryActivity extends BaseActivity {
         ArrayList<Uri> files = new ArrayList<>();
         /* List of the files you want to send */
         for (String path : selectedItemsList) {
-            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
-                    + DataMembers.photoFolderName + photoCaptureMap.get(path).getImageName());
-            if (Build.VERSION.SDK_INT >= 24) {
-                files.add(FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file));
+            if(photoCaptureMap.get(path)!=null){
+                File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                        + DataMembers.photoFolderName + photoCaptureMap.get(path).getImageName());
+                if (Build.VERSION.SDK_INT >= 24) {
+                    files.add(FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file));
 
-            } else {
-                files.add(Uri.fromFile(file));
+                } else {
+                    files.add(Uri.fromFile(file));
+                }
             }
-
         }
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);

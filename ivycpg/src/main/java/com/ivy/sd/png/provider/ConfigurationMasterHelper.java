@@ -522,6 +522,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PLAN_RETAILER_ON_NONFILED = "OFPLAN03";
     public boolean IS_PLAN_RETIALER_NON_FIELD;
 
+    private static final String CODE_RETAILER_ADHOC_PLAN= "OFPLAN08";
+    public boolean IS_RETAILER_ADHOC_PLAN;
+
     private static final String CODE_ADD_PLAN_RESCHDULE = "OFPLAN04";
     public boolean ADD_PLAN_RESCHDULE_TS;
     public boolean ADD_PLAN_RESCHDULE_TR;
@@ -2865,6 +2868,7 @@ public class ConfigurationMasterHelper {
         loadAddplanConfigs();
         this.IS_SHOW_ANNOUNCEMENT = hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) : false;
         this.IS_SHOW_NOTIFICATION = hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) : false;
+        this.IS_RETAILER_ADHOC_PLAN = hashMapHHTModuleConfig.get(CODE_RETAILER_ADHOC_PLAN) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_ADHOC_PLAN) : false;
     }
 
     private boolean isInOutModule() {
@@ -3191,7 +3195,13 @@ public class ConfigurationMasterHelper {
                     con.setModule_Order(c.getInt(2));
                     con.setMenuName(c.getString(3));
                     con.setMenuNumber(c.getString(4));
-                    con.setHasLink(c.getInt(5));
+                    if (bmodel.getAppDataProvider().getRetailMaster().isAdhoc()) {
+                        if ("MENU_STK_ORD".equals(con.getConfigCode()) || "MENU_NOTES".equals(con.getConfigCode()) || "MENU_TASK".equals(con.getConfigCode())
+                                || "MENU_ORDER".equals(con.getConfigCode()) || "MENU_CATALOG_ORDER".equals(con.getConfigCode()))
+                            con.setHasLink(c.getInt(5));
+                    } else {
+                        con.setHasLink(c.getInt(5));
+                    }
                     con.setMandatory(c.getInt(6));
                     activitymenuconfig.add(con);
 
@@ -3270,7 +3280,13 @@ public class ConfigurationMasterHelper {
                         con.setModule_Order(c.getInt(2));
                         con.setMenuName(c.getString(3));
                         con.setMenuNumber(c.getString(4));
-                        con.setHasLink(c.getInt(5));
+                        if (bmodel.getAppDataProvider().getRetailMaster().isAdhoc()) {
+                            if ("MENU_STK_ORD".equals(con.getConfigCode()) || "MENU_NOTES".equals(con.getConfigCode()) || "MENU_TASK".equals(con.getConfigCode())
+                                    || "MENU_ORDER".equals(con.getConfigCode()) || "MENU_CATALOG_ORDER".equals(con.getConfigCode()))
+                                con.setHasLink(c.getInt(5));
+                        } else {
+                            con.setHasLink(c.getInt(5));
+                        }
                         con.setMandatory(c.getInt(6));
                         storeCheckMenu.add(con);
 

@@ -5,6 +5,7 @@ public class DateWisePlanBo {
     private int DistributorId, UserId, EntityId, Sequence,cancelReasonId;
     private String EntityType, Status, Date="",Name,startTime="",endTime="",visitStatus,planStatus ="";
     private boolean isServerData;
+    private boolean isAdhoc;
     private long PlanId;
 
     private String operationType;
@@ -135,5 +136,13 @@ public class DateWisePlanBo {
 
     public void setPlanStatus(String planStatus) {
         this.planStatus = planStatus;
+    }
+
+    public boolean isAdhoc() {
+        return isAdhoc;
+    }
+
+    public void setAdhoc(boolean adhoc) {
+        isAdhoc = adhoc;
     }
 }

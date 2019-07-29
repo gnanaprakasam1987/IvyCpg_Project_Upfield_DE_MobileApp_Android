@@ -413,5 +413,7 @@
     <string name="not_applicable">Not Applicable</string>
     <string name="srp_must_be_less_than_of_mrp">Seller price must be less than of MRP: %.0f</string>
     <string name="close_paused_visit_to_sync">Close paused visit to Sync</string>
+    <string name="this_is_not_a_real_device">This is not a real device.</string>
+    <string name="app_will_not_work_in_rooted_device">App will not work in rooted device.</string>
     <string name="mobile_date_time_mismatch">Mobile Date Time Mismatch!</string>
 </resources>

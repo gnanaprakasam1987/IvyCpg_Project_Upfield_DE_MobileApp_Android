@@ -943,8 +943,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 retailer);
         retailerSelectionAdapter.notifyDataSetChanged();
 
-        String strCount = retailerSelectionAdapter.getItemCount() + "";
-        tv_storeVisit.setText(strCount);
+        tv_storeVisit.setText(String.valueOf(getStoreCount()));
         rvView.setAdapter(retailerSelectionAdapter);
         setHasOptionsMenu(true);
 
@@ -1034,8 +1033,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             setRetailerDoneforNoOrderMenu(retailer);
         retailerSelectionAdapter = new RetailerSelectionAdapter(
                 new ArrayList<>(retailer));
-        String strCount = "" + retailerSelectionAdapter.getItemCount();
-        tv_storeVisit.setText(strCount);
+        tv_storeVisit.setText(String.valueOf(getStoreCount()));
         rvView.setAdapter(retailerSelectionAdapter);
     }
 
@@ -1255,6 +1253,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         double value = 0.0;
 
         for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
+            if (!retObj.isAdhoc())
             value += retObj.getVisit_Actual();
         }
         totalActual = bmodel.formatValue(value);
@@ -1269,13 +1268,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
                 if (retObj.getIsVisited() != null || retObj.getIsDeviated() != null)
                     if (retObj.getIsVisited().equalsIgnoreCase("Y")
-                            && (retObj.getIsToday() == 1 || retObj.getIsDeviated().equalsIgnoreCase("Y"))) {
+                            && (retObj.getIsToday() == 1 || retObj.getIsDeviated().equalsIgnoreCase("Y")) && !retObj.isAdhoc()) {
                         count++;
                     }
 
             }
         } catch (Exception e) {
-
+            Commons.printException(e);
         }
         return count;
     }
@@ -2318,5 +2317,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         return DateTimeUtils.getTimeSpend(totTimeSpend,DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "yyyy/MM/dd HH:mm:ss");
     }
 
+    private int getStoreCount() {
+        int count = 0;
+        for (RetailerMasterBO ret : retailer) {
+            if (!ret.isAdhoc())
+                count++;
+        }
+        return count;
+    }
 
 }
