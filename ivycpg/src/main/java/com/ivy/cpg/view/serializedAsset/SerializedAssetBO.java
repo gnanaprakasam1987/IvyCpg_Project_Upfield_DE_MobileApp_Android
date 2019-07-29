@@ -57,6 +57,7 @@ public class SerializedAssetBO implements Parcelable {
     private double rentalPrice;
     private String effectiveToDate;
     private String effectiveFromDate;
+    private boolean surveyDone;
 
 
     protected SerializedAssetBO(Parcel in) {
@@ -131,6 +132,7 @@ public class SerializedAssetBO implements Parcelable {
         isSelectedReason = in.readByte() != 0;
         serviceRequestedRetailer = in.readString();
         status = in.readString();
+        surveyDone = in.readByte() != 0;
     }
 
     public static final Creator<SerializedAssetBO> CREATOR = new Creator<SerializedAssetBO>() {
@@ -781,6 +783,14 @@ public class SerializedAssetBO implements Parcelable {
 
     private String status;
 
+    public boolean isSurveyDone() {
+        return surveyDone;
+    }
+
+    public void setSurveyDone(boolean surveyDone) {
+        this.surveyDone = surveyDone;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -860,6 +870,7 @@ public class SerializedAssetBO implements Parcelable {
         parcel.writeByte((byte) (isSelectedReason ? 1 : 0));
         parcel.writeString(serviceRequestedRetailer);
         parcel.writeString(status);
+        parcel.writeByte((byte) (surveyDone ? 1 : 0));
     }
 
 

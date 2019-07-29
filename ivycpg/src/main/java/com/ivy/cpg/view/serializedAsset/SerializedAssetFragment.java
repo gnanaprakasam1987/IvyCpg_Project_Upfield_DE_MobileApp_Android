@@ -8,18 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,11 +21,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
@@ -56,15 +57,15 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class SerializedAssetFragment extends IvyBaseFragment implements TextView.OnEditorActionListener, BrandDialogInterface,
-        DataPickerDialogFragment.UpdateDateInterface, SerializedAssetContractor.SerializedAssetView, FiveLevelFilterCallBack {
+        DataPickerDialogFragment.UpdateDateInterface, SerializedAssetContractor.SerializedAssetView, FiveLevelFilterCallBack, SerializedAssetAdapter.OnSurveyBtnClickListener {
 
     private DrawerLayout mDrawerLayout;
-    private AlertDialog alertDialog;
     private ListView listview;
     private ActionBar actionBar;
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int MOVEMENT_ASSET = 2;
+    private static final int SURVEY_DONE_REQUEST = 3;
     private static final String ALL = "ALL";
     private static final String MENU_SERIALIZED_ASSET = "MENU_SERIALIZED_ASSET";
     private static final String TAG = "Serialized Asset Screen";
@@ -75,6 +76,10 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
     private SerializedAssetPresenterImpl assetPresenter;
     private SerializedAssetAdapter adapter;
     private BusinessModel mBModel;
+    private int lastSelectedPos = -1;
+    private ArrayList<SerializedAssetBO> assetList;
+    private AlertDialog alertDialog;
+    private ArrayList<String> surveyCompletedSRNo = new ArrayList<>();
 
     private Context context;
 
@@ -413,6 +418,10 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
                     if (!isPreVisit)
                         assetPresenter.updateTimeStamp();
 
+                    if (assetTrackingHelper.SHOW_ASSET_SURVEY_OPTION
+                            && !surveyCompletedSRNo.isEmpty())
+                        assetPresenter.deleteAssetSurvey(null);
+
                     Intent intent = new Intent(context, HomeScreenTwo.class);
 
                     if (isPreVisit)
@@ -530,7 +539,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             return true;
         } else if (i == R.id.menu_asset_change) {
             startActivity(new Intent(getActivity(), SerialNoChangeActivity.class)
-                    .putExtra("screenTitle",item.getTitle()));
+                    .putExtra("screenTitle", item.getTitle()));
             return true;
         }
 
@@ -584,19 +593,24 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
 
     @Override
     public void updateFiveFilteredList(ArrayList<SerializedAssetBO> mFilteredList) {
-        updateListView(mFilteredList);
+        if (assetList != null) {
+            assetList.clear();
+            assetList.addAll(mFilteredList);
+        }
+
+        updateListView();
         mDrawerLayout.closeDrawers();
     }
 
-    private void updateListView(ArrayList<SerializedAssetBO> list) {
+    private void updateListView() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         SerializedAssetFragment fragment = (SerializedAssetFragment) fm
                 .findFragmentById(R.id.serialized_asset_fragment);
 
-        adapter = new SerializedAssetAdapter(getActivity(), mBModel, assetPresenter, fragment, list);
+        adapter = new SerializedAssetAdapter(getActivity(), mBModel, assetPresenter, fragment, assetList, this);
         listview.setAdapter(adapter);
 
-        int size = list.size();
+        int size = assetList.size();
         if (size == 0) {
             Toast.makeText(getActivity(), getResources().getString(R.string.no_assets_exists),
                     Toast.LENGTH_SHORT).show();
@@ -644,10 +658,11 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
 
     @Override
     public void updateAssets(ArrayList<SerializedAssetBO> mList, boolean isUnMapped, Bundle mBundle) {
+        assetList = new ArrayList<>();
+        assetList.addAll(mList);
+        updateListView();
 
-        updateListView(mList);
-
-        if (mList.size() == 0) {
+        if (assetList.size() == 0) {
             Toast.makeText(getActivity(), getResources().getString(R.string.no_assets_exists),
                     Toast.LENGTH_SHORT).show();
 
@@ -682,9 +697,8 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
     @Override
     public void cancelProgressDialog() {
         assetPresenter.updateTimeStamp();
-        if (alertDialog != null) {
+        if (alertDialog != null)
             alertDialog.dismiss();
-        }
 
         new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                 "", getResources().getString(R.string.saved_successfully),
@@ -715,6 +729,19 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
     }
 
     @Override
+    public void navigateSurveyScreen(String moduleCode, String assetType, String serialNo) {
+        if (alertDialog != null)
+            alertDialog.dismiss();
+
+        Intent i = new Intent(getActivity(), SurveyActivityNew.class)
+                .putExtra("AssetType", assetType)
+                .putExtra("AssetSRNo", serialNo)
+                .putExtra("from", "HomeScreenTwo");
+        mBModel.mSelectedActivityName = getString(R.string.survey);
+        SerializedAssetFragment.this.startActivityForResult(i, SURVEY_DONE_REQUEST);
+    }
+
+    @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
         return false;
     }
@@ -725,9 +752,14 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         customProgressDialog(builder, getResources().getString(R.string.saving));
         alertDialog = builder.create();
         alertDialog.show();
-
         assetPresenter.save(MENU_SERIALIZED_ASSET);
     }
+
+    @Override
+    public ArrayList<String> getAssetSerialNoList() {
+        return surveyCompletedSRNo;
+    }
+
 
     @Override
     public void isDataExistToSave(boolean isAssetExist, boolean isPhotoExist, boolean isReasonExist, String errorMsg) {
@@ -737,7 +769,6 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
-
             assetPresenter.save(MENU_SERIALIZED_ASSET);
         } else {
             String titleText;
@@ -767,7 +798,6 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
                 // Photo saved successfully
@@ -783,6 +813,13 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             assetTrackingHelper.loadDataForAssetPOSM(getActivity().getApplicationContext(), MENU_SERIALIZED_ASSET);
             assetPresenter.updateList();
             adapter.notifyDataSetChanged();
+        } else if (requestCode == SURVEY_DONE_REQUEST) {
+            if (resultCode == SURVEY_DONE_REQUEST) {
+                assetList.get(lastSelectedPos).setSurveyDone(true);
+                if (!surveyCompletedSRNo.contains(data.getStringExtra("AssetSRNo")))
+                    surveyCompletedSRNo.add(data.getStringExtra("AssetSRNo"));
+                adapter.notifyDataSetChanged();
+            }
         } else {
 
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -821,4 +858,30 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
     }
 
 
+    @Override
+    public void fetchAssetSurveyData(String assetType, String serialNo, int lastSelectedPos) {
+        this.lastSelectedPos = lastSelectedPos;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        customProgressDialog(builder, getResources().getString(R.string.loading_data));
+        alertDialog = builder.create();
+        alertDialog.show();
+        assetPresenter.fetchAssetSurveyData("Asset", assetType, serialNo);
+    }
+
+    @Override
+    public void showDeleteAlertDialog(String assetType, String serialNo, int lastSelectedPos) {
+        this.lastSelectedPos = lastSelectedPos;
+        ((IvyBaseActivityNoActionBar) context).showAlert("", getString(R.string.survey_data_not_saved), () -> {
+            assetPresenter.deleteAssetSurvey(serialNo);
+        }, () -> {
+            assetList.get(lastSelectedPos).setAvailQty(1);
+            adapter.notifyDataSetChanged();
+        });
+    }
+
+    @Override
+    public void updateListAdapter() {
+        assetList.get(lastSelectedPos).setSurveyDone(false);
+        adapter.notifyDataSetChanged();
+    }
 }

@@ -153,8 +153,8 @@ public class AssetTrackingHelper {
             SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(mContext);
             surveyHelperNew.setFromHomeScreen(false);
             surveyHelperNew.downloadModuleId("STANDARD");
-            surveyHelperNew.downloadQuestionDetails(mMenuCode);
-            surveyHelperNew.loadSurveyAnswers(0);
+            surveyHelperNew.downloadQuestionDetails(mMenuCode,null);
+            surveyHelperNew.loadSurveyAnswers(0,null);
             // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
             mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFilterLevel(mMenuCode));
             mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(

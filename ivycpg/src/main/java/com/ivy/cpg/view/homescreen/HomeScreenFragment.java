@@ -1207,11 +1207,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     surveyHelperNew.setFromHomeScreen(true);
 
                     surveyHelperNew.downloadModuleId("SPECIAL");
-                    surveyHelperNew.downloadQuestionDetails("MENU_SURVEY_SW");
+                    surveyHelperNew.downloadQuestionDetails("MENU_SURVEY_SW",null);
 
                     surveyHelperNew
                             .loadSurveyAnswers(surveyHelperNew
-                                    .getSuperVisiroID());
+                                    .getSuperVisiroID(),null);
 
                     if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
 
@@ -1272,7 +1272,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 surveyHelperNew.setFromHomeScreen(true);
 
                 surveyHelperNew.downloadModuleId("SPECIAL");
-                surveyHelperNew.downloadQuestionDetails("MENU_SURVEY01_SW");
+                surveyHelperNew.downloadQuestionDetails("MENU_SURVEY01_SW",null);
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
                    /* bmodel.productHelper
@@ -1324,11 +1324,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 surveyHelperNew.setFromCSsurvey(false);
 
                 surveyHelperNew.downloadModuleId("SPECIAL");
-                surveyHelperNew.downloadQuestionDetails(MENU_SURVEY_BA_CS);
+                surveyHelperNew.downloadQuestionDetails(MENU_SURVEY_BA_CS,null);
 
                 surveyHelperNew
                         .loadSurveyAnswers(surveyHelperNew
-                                .getSuperVisiroID());
+                                .getSuperVisiroID(),null);
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
 
