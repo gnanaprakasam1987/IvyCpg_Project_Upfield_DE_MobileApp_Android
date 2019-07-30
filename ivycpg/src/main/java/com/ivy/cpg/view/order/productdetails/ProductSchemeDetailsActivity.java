@@ -165,7 +165,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
+                //viewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
