@@ -258,7 +258,7 @@ public class OutletTimeStampHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc,ridSF,tripUid";
+            String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc,ridSF,gpsDifference,tripUid";
 
             String dateTime = date + " " + timeIn;
             if (bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
@@ -284,7 +284,8 @@ public class OutletTimeStampHelper {
                     + "," + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()== null ? "": bmodel.retailerMasterBO.getIsDeviated()))
                     + "," + QT(String.valueOf(bmodel.getOrderValue()))
                     + "," + QT(String.valueOf(getTotalLines(context)))
-                    + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
+                    + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF())
+                    + "," + QT(dist+"");
 
             if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
                 values += "," + QT(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
