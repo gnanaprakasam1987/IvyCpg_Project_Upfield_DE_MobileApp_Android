@@ -951,19 +951,18 @@ public class ReasonHelper {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.openDataBase();
 
-        Cursor c = db.selectSQL(getReasonFromStdListMaster("DPR"));
+        Cursor c = db.selectSQL(getReasonFromStdListMaster("NV"));
         if (c != null) {
             setNonVisitReasonMaster(new ArrayList<ReasonMaster>());
             while (c.moveToNext()) {
                 reason = new ReasonMaster();
                 reason.setReasonID(c.getString(0));
                 reason.setReasonDesc(c.getString(1));
-                getNonVisitReasonMaster().add(reason);
+                reasonList.add(reason);
             }
             c.close();
         }
         db.closeDB();
-
         return reasonList;
 
     }
@@ -975,19 +974,18 @@ public class ReasonHelper {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.openDataBase();
 
-        Cursor c = db.selectSQL(getReasonFromStdListMaster("DPR"));
+        Cursor c = db.selectSQL(getReasonFromStdListMaster("NV"));
         if (c != null) {
             setNonVisitReasonMaster(new ArrayList<ReasonMaster>());
             while (c.moveToNext()) {
                 reason = new ReasonMaster();
                 reason.setReasonID(c.getString(0));
                 reason.setReasonDesc(c.getString(1));
-                getNonVisitReasonMaster().add(reason);
+                reasonList.add(reason);
             }
             c.close();
         }
         db.closeDB();
-
         return reasonList;
 
     }

@@ -34,6 +34,7 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 
+
 /**
  * Created by hanifa.m on 3/22/2017.
  */
@@ -129,6 +130,7 @@ public class CommonReasonDialog extends Dialog {
                     } else if (listLoad.equals(DELETE) || listLoad.equals(RESCHEDULE)) {
                         temp = selected_reason;
                         addNonVisitListener.calendarPlanReason(listLoad, temp.getReasonID());
+                        dismiss();
                     } else if (listLoad.equals(DEVIATE)) {
                         if (isReasonRemarksNA()) {
                             if (selected_reason.getReasonID().equals("0"))
@@ -149,8 +151,6 @@ public class CommonReasonDialog extends Dialog {
                                         selected_reason, bmodel.retailerMasterBO.getBeatID(), remarks);
                                 addNonVisitListener.addReatailerReason();
                             }
-
-
                             dismiss();
                         }
                     }
