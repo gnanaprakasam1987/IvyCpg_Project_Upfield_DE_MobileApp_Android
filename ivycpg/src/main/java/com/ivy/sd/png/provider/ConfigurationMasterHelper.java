@@ -523,7 +523,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PLAN_RETAILER_ON_NONFILED = "OFPLAN03";
     public boolean IS_PLAN_RETIALER_NON_FIELD;
 
-    private static final String CODE_RETAILER_ADHOC_PLAN= "OFPLAN08";
+    private static final String CODE_RETAILER_ADHOC_PLAN = "OFPLAN08";
     public boolean IS_RETAILER_ADHOC_PLAN;
 
     private static final String CODE_ADD_PLAN_RESCHDULE = "OFPLAN04";
@@ -1520,6 +1520,13 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ENABLE_PROMOTION_DATES = "PROMO04";  //jnj project specific
     public boolean IS_ENABLE_PROMOTION_DATES;
 
+    public boolean SHOW_MAPPED_PRD_PROMO_DATES;
+    public boolean EDIT_MAPPED_PRD_PROMO_DATES;
+    public boolean SHOW_EXEC_PROMO_DATES;
+    public boolean EDIT_EXEC_PROMO_DATES;
+    public boolean EDIT_SELLING_PROMO_DATES;
+
+
     private static final String CODE_TASK_OPEN = "TASK_RPT_OPEN";
     public int TASK_OPEN;
 
@@ -2026,7 +2033,7 @@ public class ConfigurationMasterHelper {
                         CALC_QDVP3 = true;
                     }
                     c.close();
-                }else
+                } else
                     c.close();
             db.closeDB();
         } catch (Exception e) {
@@ -2779,6 +2786,9 @@ public class ConfigurationMasterHelper {
 
         this.IS_ENABLE_PROMOTION_SKUNAME = hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_SKUNAME) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_SKUNAME) : false;
         this.IS_ENABLE_PROMOTION_DATES = hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_DATES) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_DATES) : false;
+        if (IS_ENABLE_PROMOTION_DATES)
+            loadWhichPromotionDates();
+
         this.IS_ENABLE_ORDER_STATUS_REPORT = hashMapHHTModuleConfig.get(CODE_ORDER_STATUS_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_STATUS_REPORT) : false;
         if (IS_ENABLE_ORDER_STATUS_REPORT) {
             loadOrderStatusReportConfiguration();
@@ -4261,7 +4271,6 @@ public class ConfigurationMasterHelper {
                 }
                 c.close();
             }
-
 
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
@@ -6473,6 +6482,48 @@ public class ConfigurationMasterHelper {
 
 
         return false;
+    }
+
+    private void loadWhichPromotionDates() {
+
+        SHOW_MAPPED_PRD_PROMO_DATES = false;
+        EDIT_MAPPED_PRD_PROMO_DATES = false;
+        SHOW_EXEC_PROMO_DATES = false;
+        EDIT_EXEC_PROMO_DATES = false;
+        EDIT_SELLING_PROMO_DATES = false;
+
+        String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                + " where hhtCode=" + StringUtils.getStringQueryParam(CODE_ENABLE_PROMOTION_DATES) + " and Flag=1 and ForSwitchSeller = 0";
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        db.openDataBase();
+
+        Cursor c = db.selectSQL(sql);
+        if (c != null && c.getCount() != 0) {
+            if (c.moveToNext()) {
+                if (c.getString(0) != null) {
+                    switch (c.getString(0)) {
+                        case "TD":
+                            SHOW_MAPPED_PRD_PROMO_DATES = true;
+                            break;
+                        case "TDE":
+                            EDIT_MAPPED_PRD_PROMO_DATES = true;
+                            break;
+                        case "ED":
+                            SHOW_EXEC_PROMO_DATES = true;
+                            break;
+                        case "EDE":
+                            EDIT_EXEC_PROMO_DATES = true;
+                            break;
+                        case "SDE":
+                            EDIT_SELLING_PROMO_DATES = true;
+                            break;
+                    }
+                }
+            }
+            c.close();
+            db.closeDB();
+        }
     }
 
     public void loadAddplanConfigs() {
