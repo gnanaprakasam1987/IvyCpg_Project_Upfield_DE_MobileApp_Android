@@ -124,6 +124,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     private boolean fromTaskNotification;
     private TaskConstant.SOURCE source;
     private ReasonCaptureDialog reasonCaptureDialog;
+    private boolean isPreVisit = false;
     @Inject
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
 
@@ -157,12 +158,14 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     protected void getMessageFromAliens() {
         if (getIntent().getExtras() != null) {
             isFromHomeSrc = getIntent().getBooleanExtra(TaskConstant.FROM_HOME_SCREEN, false);
+            isPreVisit = getIntent().getBooleanExtra("PreVisit", false);
             isRetailerWiseTask = getIntent().getBooleanExtra(TaskConstant.RETAILER_WISE_TASK, false);
             tabSelection = getIntent().getIntExtra(TaskConstant.TAB_SELECTION, 0);
             taskDetailBo = getIntent().getExtras().getParcelable(TaskConstant.TASK_OBJECT);
             menuCode = getIntent().getExtras().getString(TaskConstant.MENU_CODE, "MENU_TASK");
             screenTitle = getIntent().getExtras().getString(TaskConstant.SCREEN_TITLE, getString(R.string.task_creation));
             fromTaskNotification = getIntent().getExtras().getBoolean(TaskConstant.TASK_NOTIFICATION_SRC, false);
+
 
             if (getIntent().getExtras().containsKey(TaskConstant.FROM_HOME_SCREEN))
                 source = TaskConstant.SOURCE.HOME_SCREEN;
@@ -376,9 +379,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         } else if (id == R.id.menu_edit_note) {
+            if(!isPreVisit)
             navigateToTaskCreation();
             return true;
         } else if (id == R.id.menu_delete_note) {
+            if(!isPreVisit)
             showDeleteAlert();
             return true;
         } else if (id == R.id.menu_close) {
