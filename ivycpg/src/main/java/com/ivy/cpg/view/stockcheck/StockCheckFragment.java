@@ -1879,7 +1879,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            onBackButonClick();
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else
+                onBackButonClick();
             return true;
         } else if (i == R.id.menu_survey) {
             startActivity(new Intent(getActivity(), SurveyActivityNew.class));
@@ -2596,22 +2599,19 @@ public class StockCheckFragment extends IvyBaseFragment implements
         if (stockCheckHelper.hasStockCheck()) {
             showBackDialog();
         } else {
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
-                mDrawerLayout.closeDrawers();
-            else {
-                stockCheckPresenter.returnToHome();
-                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+            stockCheckPresenter.returnToHome();
+            Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
 
-                if (isPreVisit)
-                    intent.putExtra("PreVisit", true);
+            if (isPreVisit)
+                intent.putExtra("PreVisit", true);
 
-                if (isFromChild)
-                    startActivity(intent.putExtra("isStoreMenu", true));
-                else
-                    startActivity(intent);
+            if (isFromChild)
+                startActivity(intent.putExtra("isStoreMenu", true));
+            else
+                startActivity(intent);
 
-                ((Activity) context).finish();
-            }
+            ((Activity) context).finish();
+
             ((Activity) context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
     }
