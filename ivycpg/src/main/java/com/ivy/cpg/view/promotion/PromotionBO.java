@@ -27,6 +27,8 @@ public class PromotionBO {
     private String promotionGroupName;
     private ArrayList<PromotionAttachmentBO> promotionAttchmentList;
 
+    private boolean isAllowedtoExecute;
+
     PromotionBO() {
 
     }
@@ -53,6 +55,7 @@ public class PromotionBO {
         this.isAccepted = promotionBO.isAccepted();
         this.promotionGroupName = promotionBO.getPromotionGroupName();
         this.promotionAttchmentList = promotionBO.getPromotionAttchmentList();
+        this.isAllowedtoExecute = promotionBO.isAllowedtoExecute();
     }
 
     public String getImagePath() {
@@ -257,5 +260,13 @@ public class PromotionBO {
 
     public void setPromotionAttchmentList(ArrayList<PromotionAttachmentBO> promotionAttchmentList) {
         this.promotionAttchmentList = promotionAttchmentList;
+    }
+
+    public boolean isAllowedtoExecute() {
+        return isAllowedtoExecute;
+    }
+
+    public void setAllowedtoExecute(boolean allowedtoExecute) {
+        isAllowedtoExecute = allowedtoExecute;
     }
 }

@@ -343,7 +343,7 @@
 
         <Button
             android:id="@+id/task_execute_btn"
-            style="?attr/roundedCustomButtonNormal"
+            style="?attr/roundedCustomButtonNormal_Configured"
             android:layout_gravity="center|end"
             android:text="@string/mark_as_executed"
             android:textAllCaps="false" />

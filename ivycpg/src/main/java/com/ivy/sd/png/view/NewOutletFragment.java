@@ -20,17 +20,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
-import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.appcompat.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -61,8 +50,20 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.material.textfield.TextInputLayout;
 import com.ivy.core.IvyConstants;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
@@ -5072,7 +5073,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         .downloadFloatingSurveyConfig(isFromNewRetailerEdit ? MENU_NEW_RETAILER_EDT : MENU_NEW_RETAILER)) {
                     surveyHelperNew.setFromHomeScreen(true);
                     surveyHelperNew.downloadModuleId("NEW_RETAILER");
-                    surveyHelperNew.downloadQuestionDetails(MENU_NEW_RETAILER);
+                    surveyHelperNew.downloadQuestionDetails(MENU_NEW_RETAILER, null);
                     bmodel.mSelectedActivityName = "Survey";
                     if (screenMode == EDIT || screenMode == VIEW) {
                         surveyHelperNew.loadNewRetailerSurveyAnswers(outlet.getRetailerId());// passing selected retailerid

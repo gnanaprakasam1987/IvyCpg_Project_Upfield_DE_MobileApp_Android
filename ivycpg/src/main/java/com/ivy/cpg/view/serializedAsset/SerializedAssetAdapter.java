@@ -2,12 +2,11 @@ package com.ivy.cpg.view.serializedAsset;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +22,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.core.IvyConstants;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -65,18 +72,20 @@ public class SerializedAssetAdapter extends BaseAdapter {
     ArrayList<ReasonMaster> mAssetReasonList;
     ArrayList<ReasonMaster> mAssetConditionList;
     ArrayAdapter<ReasonMaster> mAssetConditionAdapter;
+    OnSurveyBtnClickListener onSurveyBtnClickListener;
 
 
     public SerializedAssetAdapter(Context context, BusinessModel mBModel, SerializedAssetPresenterImpl mAssetPresenter, Fragment mFragment
-            , ArrayList<SerializedAssetBO> items) {
+            , ArrayList<SerializedAssetBO> items, OnSurveyBtnClickListener onSurveyBtnClickListener) {
         super();
         this.mContext = context;
         this.mBModel = mBModel;
         this.items = items;
         assetTrackingHelper = SerializedAssetHelper.getInstance(context);
-        this.outPutDateFormat = mBModel.configurationMasterHelper.outDateFormat;
+        this.outPutDateFormat = ConfigurationMasterHelper.outDateFormat;
         this.mAssetPresenter = mAssetPresenter;
         this.mFragment = mFragment;
+        this.onSurveyBtnClickListener = onSurveyBtnClickListener;
 
         ReasonMaster reason1 = new ReasonMaster();
         reason1.setReasonID(Integer.toString(0));
@@ -180,6 +189,9 @@ public class SerializedAssetAdapter extends BaseAdapter {
             holder.execQtyLL = row.findViewById(R.id.ll_exec_qty);
             holder.execQtyRB = row.findViewById(R.id.radio_exec_qty);
 
+            holder.assetSurveyBtn = row.findViewById(R.id.btn_survey);
+            holder.assetSurveyLL = row.findViewById(R.id.asset_survey_ll);
+
             holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
             holder.mConditionSpin.setAdapter(mAssetConditionAdapter);
 
@@ -187,6 +199,34 @@ public class SerializedAssetAdapter extends BaseAdapter {
             if (assetTrackingHelper.SHOW_ASSET_EXECUTED)
                 holder.execQtyLL.setVisibility(View.VISIBLE);
 
+            if (!assetTrackingHelper.SHOW_ASSET_REASON) {
+                row.findViewById(R.id.reason_ll).setVisibility(View.GONE);
+                //holder.reason1Spin.setVisibility(View.GONE);
+            }
+            if (!assetTrackingHelper.SHOW_ASSET_CONDITION) {
+                row.findViewById(R.id.condition_ll).setVisibility(View.GONE);
+                //holder.mConditionSpin.setVisibility(View.GONE);
+            }
+            if (!assetTrackingHelper.SHOW_ASSET_INSTALL_DATE) {
+                holder.mInstallDate.setVisibility(View.GONE);
+                holder.llInstallDate.setVisibility(View.GONE);
+            }
+            if (!assetTrackingHelper.SHOW_ASSET_SERVICE_DATE) {
+                holder.mServiceDate.setVisibility(View.GONE);
+                holder.ll_service_date.setVisibility(View.GONE);
+            }
+
+            if (!assetTrackingHelper.SHOW_ASSET_PHOTO) {
+                holder.photoBTN.setVisibility(View.GONE);
+            }
+
+            if (!assetTrackingHelper.SHOW_ASSET_EXECUTED) {
+                holder.execQtyLL.setVisibility(View.GONE);
+            }
+
+            if (!assetTrackingHelper.SHOW_ASSET_SURVEY_OPTION) {
+                holder.assetSurveyLL.setVisibility(View.GONE);
+            }
 
             holder.assetDetailLL.setOnClickListener(v ->
                     mContext.startActivity(new Intent(mContext, SerializedAssetDetailActivity.class)
@@ -379,13 +419,13 @@ public class SerializedAssetAdapter extends BaseAdapter {
                         holder.mServiceDate.setEnabled(true);
 
                         if (!holder.assetBO.getmLastInstallDate().isEmpty())
-                            holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getInstallDate(), outPutDateFormat));
+                            holder.mInstallDate.setText(holder.assetBO.getInstallDate());
                         else {
                             holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
                             holder.mInstallDate.setText(holder.assetBO.getInstallDate());
                         }
                         if (!holder.assetBO.getServiceDate().isEmpty())
-                            holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getServiceDate(), outPutDateFormat));
+                            holder.mServiceDate.setText(holder.assetBO.getServiceDate());
                         else {
                             holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
                             holder.mServiceDate.setText(holder.assetBO.getServiceDate());
@@ -403,13 +443,13 @@ public class SerializedAssetAdapter extends BaseAdapter {
                         holder.mServiceDate.setEnabled(false);
 
                         if (!holder.assetBO.getmLastInstallDate().isEmpty())
-                            holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getInstallDate(), outPutDateFormat));
+                            holder.mInstallDate.setText(holder.assetBO.getInstallDate());
                         else {
                             holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
                             holder.mInstallDate.setText(holder.assetBO.getInstallDate());
                         }
                         if (!holder.assetBO.getServiceDate().isEmpty())
-                            holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getServiceDate(), outPutDateFormat));
+                            holder.mServiceDate.setText(holder.assetBO.getServiceDate());
                         else {
                             holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
                             holder.mServiceDate.setText(holder.assetBO.getServiceDate());
@@ -417,6 +457,20 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
                     }
 
+                    if (assetTrackingHelper.SHOW_ASSET_SURVEY_OPTION) {
+
+                        if (holder.assetBO.getAvailQty() == 0 && holder.assetBO.isSurveyDone()) {
+                            onSurveyBtnClickListener.showDeleteAlertDialog(holder.assetBO.getAssetType(),
+                                    holder.assetBO.getSerialNo(), position);
+                        } else {
+                            updateSurveyColorCode(ContextCompat.getColor(mContext,
+                                    (holder.assetBO.getAvailQty() > 0
+                                            ? R.color.colorPrimary
+                                            : R.color.gray_text)),
+                                    holder.assetSurveyBtn,
+                                    (holder.assetBO.getAvailQty() > 0));
+                        }
+                    }
                 }
             });
 
@@ -434,6 +488,12 @@ public class SerializedAssetAdapter extends BaseAdapter {
                     }
                 }
             });
+
+            holder.assetSurveyBtn.setOnClickListener(v ->
+                    onSurveyBtnClickListener.fetchAssetSurveyData(
+                            holder.assetBO.getAssetType(),
+                            holder.assetBO.getSerialNo(), position));
+
 
             if (mBModel.configurationMasterHelper.isAuditEnabled()) {
                 holder.audit.setVisibility(View.VISIBLE);
@@ -504,11 +564,11 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
         holder.mInstallDate
                 .setText((holder.assetBO.getInstallDate() == null) ? DateTimeUtils
-                        .convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat) :DateTimeUtils
+                        .convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat) : DateTimeUtils
                         .convertFromServerDateToRequestedFormat(holder.assetBO.getInstallDate(), outPutDateFormat));
         holder.mServiceDate
                 .setText((holder.assetBO.getServiceDate() == null) ? DateTimeUtils
-                        .convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat) :DateTimeUtils
+                        .convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat) : DateTimeUtils
                         .convertFromServerDateToRequestedFormat(holder.assetBO.getServiceDate(), outPutDateFormat));
 
         if (holder.assetBO.getAvailQty() > 0) {
@@ -547,42 +607,17 @@ public class SerializedAssetAdapter extends BaseAdapter {
             holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));*/
 
             if (!holder.assetBO.getmLastInstallDate().isEmpty())
-                holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getInstallDate(), outPutDateFormat));
-            else
-                holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-
+                holder.mInstallDate.setText(holder.assetBO.getInstallDate());
+            else {
+                holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                holder.mInstallDate.setText(holder.assetBO.getInstallDate());
+            }
             if (!holder.assetBO.getServiceDate().isEmpty())
-                holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getServiceDate(), outPutDateFormat));
-            else
-                holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-
-        }
-
-
-        if (!assetTrackingHelper.SHOW_ASSET_REASON) {
-            row.findViewById(R.id.reason_ll).setVisibility(View.GONE);
-            //holder.reason1Spin.setVisibility(View.GONE);
-        }
-        if (!assetTrackingHelper.SHOW_ASSET_CONDITION) {
-            row.findViewById(R.id.condition_ll).setVisibility(View.GONE);
-            //holder.mConditionSpin.setVisibility(View.GONE);
-        }
-        if (!assetTrackingHelper.SHOW_ASSET_INSTALL_DATE) {
-            holder.mInstallDate.setVisibility(View.GONE);
-            holder.llInstallDate.setVisibility(View.GONE);
-        }
-        if (!assetTrackingHelper.SHOW_ASSET_SERVICE_DATE) {
-            holder.mServiceDate.setVisibility(View.GONE);
-            holder.ll_service_date.setVisibility(View.GONE);
-        }
-
-        if (!assetTrackingHelper.SHOW_ASSET_PHOTO) {
-            holder.photoBTN.setVisibility(View.GONE);
-        }
-
-
-        if (!assetTrackingHelper.SHOW_ASSET_EXECUTED) {
-            holder.execQtyLL.setVisibility(View.GONE);
+                holder.mServiceDate.setText(holder.assetBO.getServiceDate());
+            else {
+                holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                holder.mServiceDate.setText(holder.assetBO.getServiceDate());
+            }
         }
 
         if ((holder.assetBO.getImgName() != null)
@@ -634,6 +669,20 @@ public class SerializedAssetAdapter extends BaseAdapter {
             }
         }
 
+        if (assetTrackingHelper.SHOW_ASSET_SURVEY_OPTION) {
+
+            if (holder.assetBO.isSurveyDone()) {
+                updateSurveyColorCode(ContextCompat.getColor(mContext, R.color.colorAccent), holder.assetSurveyBtn, true);
+            } else {
+                updateSurveyColorCode(ContextCompat.getColor(mContext,
+                        (holder.assetBO.getAvailQty() > 0
+                                ? R.color.colorPrimary
+                                : R.color.gray_text)),
+                        holder.assetSurveyBtn,
+                        (holder.assetBO.getAvailQty() > 0));
+            }
+        }
+
 
         return row;
     }
@@ -655,6 +704,19 @@ public class SerializedAssetAdapter extends BaseAdapter {
         CheckBox execQtyRB;
         LinearLayout execQtyLL;
         LinearLayout assetDetailLL;
+        LinearLayout assetSurveyLL;
+        AppCompatImageButton assetSurveyBtn;
+    }
+
+    private void updateSurveyColorCode(int ColorCode, AppCompatImageButton surveyBtn, boolean isEnabled) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            surveyBtn.setImageTintList(ColorStateList.valueOf(ColorCode));
+        else
+            surveyBtn.setColorFilter(ColorCode, PorterDuff.Mode.SRC_ATOP);
+
+        surveyBtn.setEnabled(isEnabled);
+
     }
 
     private void setPictureToImageView(String imageName, ImageView imageView) {
@@ -662,6 +724,8 @@ public class SerializedAssetAdapter extends BaseAdapter {
         Glide.with(mContext).load(
                 mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                         + "/" + DataMembers.photoFolderName + "/" + imageName)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
                 .centerCrop()
                 .placeholder(R.drawable.ic_photo_camera_blue_24dp)
                 .error(R.drawable.no_image_available)
@@ -780,5 +844,11 @@ public class SerializedAssetAdapter extends BaseAdapter {
             }
         }
 
+    }
+
+    public interface OnSurveyBtnClickListener {
+        void fetchAssetSurveyData(String assetType, String serialNo, int lastSelectedPos);
+
+        void showDeleteAlertDialog(String assetType, String SeriaNo, int lastSelectedPos);
     }
 }

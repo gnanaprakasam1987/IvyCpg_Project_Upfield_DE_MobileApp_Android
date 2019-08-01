@@ -15,8 +15,6 @@ ApplicationConfigs {
     boolean expiryEnable = false;
     String expiryDate = "2013/09/01";
 
-    boolean hasMotoBarcodeScanner = false;
-
     String LOG = "com.ivymobility.ivycpg";
 
     String LICENSE_SOAP_URL = "https://license.ivymobileapps.com/eistlicensing_v2/licenseservice.asmx";

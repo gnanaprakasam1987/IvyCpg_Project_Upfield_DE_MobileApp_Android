@@ -876,6 +876,8 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
 
     @Override
     public String getOutletData(String menuCode) {
+        if(outlet==null)
+            return "";
         switch (menuCode) {
             case STORENAME:
                 return outlet.getOutletName();

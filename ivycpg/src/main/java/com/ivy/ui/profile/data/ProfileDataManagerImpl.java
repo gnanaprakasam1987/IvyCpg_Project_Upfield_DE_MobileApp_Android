@@ -2336,7 +2336,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
 
                 surveyHelperNew.setFromHomeScreen(true);
                 surveyHelperNew.downloadModuleId(NewRetailerConstant.NEW_RETAILER);
-                surveyHelperNew.downloadQuestionDetails(NewRetailerConstant.MENU_NEW_RETAILER);
+                surveyHelperNew.downloadQuestionDetails(NewRetailerConstant.MENU_NEW_RETAILER, null);
                 surveyHelperNew.loadNewRetailerSurveyAnswers(id);
 
                 return true;

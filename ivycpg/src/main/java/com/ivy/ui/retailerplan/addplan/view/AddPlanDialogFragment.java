@@ -259,8 +259,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
     @Override
     protected void setUpViews() {
-       if (addPlanPresenter.getConfigurationMasterHelper().IS_RETAILER_ADHOC_PLAN)
-           tv_adhoc_plan.setVisibility(View.VISIBLE);
+        if (addPlanPresenter.getConfigurationMasterHelper().IS_RETAILER_ADHOC_PLAN)
+            tv_adhoc_plan.setVisibility(View.VISIBLE);
         if (selectedDate != null) {
             tvDateSelection.setVisibility(View.GONE);
             btnDateSelection.setVisibility(View.GONE);
@@ -575,21 +575,24 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                     editPlan.setVisibility(View.GONE);
                 } else {
 
-                    if (DateTimeUtils.getDateCount(selectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd") == 0) {
-                        if (addPlanPresenter.showRescheduleToday() && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
+                    if (DateTimeUtils.getDateCount(selectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd") == 0
+                            && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) { // Today
+                        if (addPlanPresenter.showRescheduleToday())
                             editPlan.setVisibility(View.VISIBLE);
-                        if (addPlanPresenter.showDeleteToday() && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
+                        if (addPlanPresenter.showDeleteToday())
                             deletePlan.setVisibility(View.VISIBLE);
-                        if (addPlanPresenter.showCancelToday() && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
+                        if (addPlanPresenter.showCancelToday())
                             cancelPlan.setVisibility(View.VISIBLE);
 
                     } else {
-                        if (addPlanPresenter.showRescheduleFuture() && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
-                            editPlan.setVisibility(View.VISIBLE);
-                        if (addPlanPresenter.showDeleteFuture() && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
-                            deletePlan.setVisibility(View.VISIBLE);
-                        if (addPlanPresenter.showCancelFuture() && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
-                            cancelPlan.setVisibility(View.VISIBLE);
+                        if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) {
+                            if (addPlanPresenter.showRescheduleFuture())
+                                editPlan.setVisibility(View.VISIBLE);
+                            if (addPlanPresenter.showDeleteFuture())
+                                deletePlan.setVisibility(View.VISIBLE);
+                            if (addPlanPresenter.showCancelFuture())
+                                cancelPlan.setVisibility(View.VISIBLE);
+                        }
                     }
 
                 }
@@ -610,13 +613,13 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                         )
                                 || (retailerMasterBO != null && "Y".equals(retailerMasterBO.getIsVisited()))) {
 
-                        addPlan.setVisibility(View.GONE);
-                        tv_adhoc_plan.setVisibility(View.GONE);
-                    }else {
-                        addPlan.setVisibility(View.VISIBLE);
-                        if (addPlanPresenter.getConfigurationMasterHelper().IS_RETAILER_ADHOC_PLAN)
+                    addPlan.setVisibility(View.GONE);
+                    tv_adhoc_plan.setVisibility(View.GONE);
+                } else {
+                    addPlan.setVisibility(View.VISIBLE);
+                    if (addPlanPresenter.getConfigurationMasterHelper().IS_RETAILER_ADHOC_PLAN)
                         tv_adhoc_plan.setVisibility(View.VISIBLE);
-                    }
+                }
             }
 
             final Calendar c = Calendar.getInstance();

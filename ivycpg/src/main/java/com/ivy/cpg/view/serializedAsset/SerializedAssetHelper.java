@@ -83,6 +83,8 @@ public class SerializedAssetHelper {
     public boolean SHOW_ASSET_RENTAL_PRICE;
     public boolean SHOW_ASSET_EFFECTIVE_DATE;
     public boolean SHOW_SERIAL_NO_IN_UPDATE_REQUEST;
+    boolean SHOW_ASSET_SURVEY_OPTION;
+    boolean SHOW_ASSET_SIH;
 
 
     //
@@ -129,8 +131,8 @@ public class SerializedAssetHelper {
             SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(mContext);
             surveyHelperNew.setFromHomeScreen(false);
             surveyHelperNew.downloadModuleId("STANDARD");
-            surveyHelperNew.downloadQuestionDetails(mMenuCode);
-            surveyHelperNew.loadSurveyAnswers(0);
+            surveyHelperNew.downloadQuestionDetails(mMenuCode, null);
+            surveyHelperNew.loadSurveyAnswers(0, null);
             mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFilterLevel(mMenuCode));
             mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(
                     mBusinessModel.productHelper.getRetailerModuleSequenceValues(), false));
@@ -189,6 +191,8 @@ public class SerializedAssetHelper {
             SHOW_ASSET_RENTAL_PRICE = false;
             SHOW_ASSET_EFFECTIVE_DATE = false;
             SHOW_SERIAL_NO_IN_UPDATE_REQUEST = false;
+            SHOW_ASSET_SURVEY_OPTION = false;
+            SHOW_ASSET_SIH = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
@@ -267,6 +271,9 @@ public class SerializedAssetHelper {
                         case "SNO":
                             SHOW_SERIAL_NO_IN_UPDATE_REQUEST = true;
                             break;
+                        case "SIH":
+                            SHOW_ASSET_SIH = true;
+                            break;
                     }
                 }
             }
@@ -325,6 +332,9 @@ public class SerializedAssetHelper {
                 break;
             case "TYPE":
                 SHOW_ASSET_TYPE = true;
+                break;
+            case "ASSETSURV":
+                SHOW_ASSET_SURVEY_OPTION = true;
                 break;
         }
     }
@@ -412,11 +422,12 @@ public class SerializedAssetHelper {
             sb.append("ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=A.AssetType ");
             sb.append("and SLM.ListType='ASSET_TYPE'),'') as AssetType,");
             sb.append("IFNULL(B.installDate,'') as installDate,IFNULL(B.lastserviceDate,'') as serviceDate,");
-            sb.append("B.rentPrice as RentalPrice,B.FromDate as effFromDate,IFNULL(B.ToDate,'') as effToDate,A.Price as AssetPrice,A.SIH as AssetSIH  ");
+            sb.append("B.rentPrice as RentalPrice,B.FromDate as effFromDate,IFNULL(B.ToDate,'') as effToDate,A.Price as AssetPrice,A.SIH as AssetSIH,IFNULL(AH.EntityReferenceNo,'') as surveyDone  ");
             sb.append("from SerializedAssetMaster A ");
             sb.append("inner join SerializedAssetMapping B on A.AssetId=B.AssetId ");
             sb.append("left join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
             sb.append("left join SerializedAssetVendorMaster SAVM on SAVM.id=A.vendorid ");
+            sb.append("left join AnswerHeader AH on AH.EntityReferenceNo=B.SerialNumber ");
 
             String allMasterSb = sb.toString();
 
@@ -449,15 +460,25 @@ public class SerializedAssetHelper {
                     assetTrackingBO.setModelName(c.getString(c.getColumnIndex("ModelName")));
                     assetTrackingBO.setAssetTypeId(c.getString(c.getColumnIndex("AssetTypeId")));
                     assetTrackingBO.setAssetType(c.getString(c.getColumnIndex("AssetType")));
-                    assetTrackingBO.setmLastInstallDate(c.getString(c.getColumnIndex("installDate")));
-                    assetTrackingBO.setInstallDate(c.getString(c.getColumnIndex("installDate")));
-                    assetTrackingBO.setServiceDate(c.getString(c.getColumnIndex("serviceDate")));
+
+                    assetTrackingBO.setmLastInstallDate(
+                            ((!c.getString(c.getColumnIndex("installDate")).isEmpty()) ? DateTimeUtils
+                                    .convertFromServerDateToRequestedFormat(c.getString(c.getColumnIndex("installDate")), ConfigurationMasterHelper.outDateFormat) : ""));
+
+                    assetTrackingBO.setInstallDate(
+                            ((!c.getString(c.getColumnIndex("installDate")).isEmpty()) ? DateTimeUtils
+                                    .convertFromServerDateToRequestedFormat(c.getString(c.getColumnIndex("installDate")), ConfigurationMasterHelper.outDateFormat) : ""));
+
+                    assetTrackingBO.setServiceDate(
+                            ((!c.getString(c.getColumnIndex("serviceDate")).isEmpty()) ? DateTimeUtils
+                                    .convertFromServerDateToRequestedFormat(c.getString(c.getColumnIndex("serviceDate")), ConfigurationMasterHelper.outDateFormat) : ""));
+
                     assetTrackingBO.setRentalPrice(c.getDouble(c.getColumnIndex("RentalPrice")));
-                    assetTrackingBO.setEffectiveFromDate(c.getString(c.getColumnIndex("effFromDate")));
-                    assetTrackingBO.setEffectiveToDate(c.getString(c.getColumnIndex("effToDate")));
+                    assetTrackingBO.setEffectiveFromDate(DateTimeUtils.convertFromServerDateToRequestedFormat(c.getString(c.getColumnIndex("effFromDate")), ConfigurationMasterHelper.outDateFormat));
+                    assetTrackingBO.setEffectiveToDate(DateTimeUtils.convertFromServerDateToRequestedFormat(c.getString(c.getColumnIndex("effToDate")), ConfigurationMasterHelper.outDateFormat));
                     assetTrackingBO.setAssetPrice(c.getDouble(c.getColumnIndex("AssetPrice")));
                     assetTrackingBO.setSihQty(c.getInt(c.getColumnIndex("AssetSIH")));
-
+                    assetTrackingBO.setSurveyDone((!c.getString(c.getColumnIndex("surveyDone")).isEmpty()));
                     mAssetTrackingList.add(assetTrackingBO);
                 }
 
@@ -826,12 +847,9 @@ public class SerializedAssetHelper {
      */
     public void saveAsset(Context mContext, String moduleName) {
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-        );
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
-
             db.openDataBase();
-
 
             String query = "select uid from SerializedAssetHeader where retailerid ="
                     + StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID());
@@ -851,31 +869,31 @@ public class SerializedAssetHelper {
 
             String id = mBusinessModel.getAppDataProvider().getUser().getUserid()
                     + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
+            boolean isData = false;
+            double totAchievedScr = 0, totTargetSrc = 0;
 
             String assetHeaderColumns = "uid,DateTime,RetailerId,remarks,VisitId";
-            StringBuilder assetHeaderValues = new StringBuilder();
-            assetHeaderValues.append(id);
-            assetHeaderValues.append(",");
-            assetHeaderValues.append(StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
-            assetHeaderValues.append(",");
-            assetHeaderValues.append(StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
-            assetHeaderValues.append(",");
-            assetHeaderValues.append(StringUtils.getStringQueryParam(mBusinessModel.getAssetRemark()));
-            assetHeaderValues.append(",");
-            assetHeaderValues.append(StringUtils.getStringQueryParam(outletLastVisitID));
-
-            db.insertSQL(DataMembers.tbl_SerializedAssetHeader, assetHeaderColumns,
-                    assetHeaderValues.toString());
-
-
             String AssetDetailColumns = "uid,AssetID,isAvailable,ReasonID,SerialNumber,conditionId,NFCNumber,installdate,lastServicedate,RetailerID";
             String AssetImageInfoColumns = "uid,AssetID,ImageName,serialNumber,imgName,RetailerID";
-
+            String surveyScore;
+            if (SHOW_ASSET_SURVEY_OPTION
+                    && mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                assetHeaderColumns += ",Score,TargetScore";
+                AssetDetailColumns += ",Score,TargetScore";
+            }
 
             for (SerializedAssetBO assetBo : mAssetTrackingList) {
                 StringBuilder assetDetailValues = new StringBuilder();
+                String surveyAchSrc = "0", surveyTgtSrc = "0";
                 if (assetBo.getAvailQty() > 0
                         || !assetBo.getReason1ID().equals(Integer.toString(0))) {
+
+                    if (SHOW_ASSET_SURVEY_OPTION
+                            && mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                        surveyScore = getSurveyScore(db, assetBo.getSerialNo());
+                        surveyAchSrc = surveyScore.split(",")[0];
+                        surveyTgtSrc = surveyScore.split(",")[1];
+                    }
 
                     assetDetailValues.append(id);
                     assetDetailValues.append(",");
@@ -920,45 +938,103 @@ public class SerializedAssetHelper {
                                             ConfigurationMasterHelper.outDateFormat)))
                                     : ""));
                     assetDetailValues.append(",");
-                    assetDetailValues.append(StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
+                    assetDetailValues.append(StringUtils
+                            .getStringQueryParam(mBusinessModel.getAppDataProvider()
+                                    .getRetailMaster().getRetailerID()));
 
+                    if (SHOW_ASSET_SURVEY_OPTION
+                            && mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                        assetDetailValues.append(",").append(StringUtils.getStringQueryParam(surveyAchSrc));
+                        assetDetailValues.append(",").append(surveyTgtSrc);
+                        totAchievedScr += SDUtil.convertToInt(surveyAchSrc);
+                        totTargetSrc += SDUtil.convertToInt(surveyTgtSrc);
+                    }
 
                     db.insertSQL(DataMembers.tbl_SerializedAssetDetail,
                             AssetDetailColumns,
                             assetDetailValues.toString());
+                    isData = true;
 
                     if (assetBo.getImageList().size() > 0) {
                         for (String imageName : assetBo.getImageList()) {
-                            StringBuffer assetImgInofValues = new StringBuffer();
-                            assetImgInofValues.append(id);
-                            assetImgInofValues.append(",");
-                            assetImgInofValues.append(assetBo.getAssetID());
-                            assetImgInofValues.append(",");
-                            assetImgInofValues.append(StringUtils.getStringQueryParam(imageName));
-                            assetImgInofValues.append(",");
-                            assetImgInofValues.append(StringUtils.getStringQueryParam(assetBo.getNFCTagId()));
-                            assetImgInofValues.append(",");
-                            assetImgInofValues.append(StringUtils.getStringQueryParam(assetBo.getImgName()));
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
 
+                            String assetImgInofValues = id +
+                                    "," +
+                                    assetBo.getAssetID() +
+                                    "," +
+                                    StringUtils.getStringQueryParam(imageName) +
+                                    "," +
+                                    StringUtils.getStringQueryParam(assetBo.getNFCTagId()) +
+                                    "," +
+                                    StringUtils.getStringQueryParam(assetBo.getImgName()) +
+                                    "," +
+                                    StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID());
                             db.insertSQL(DataMembers.tbl_SerializedAssetImageDetail,
                                     AssetImageInfoColumns,
-                                    assetImgInofValues.toString());
+                                    assetImgInofValues);
                         }
                     }
                 }
 
-
             }
 
 
-            db.closeDB();
+            if (isData) {
+                StringBuilder assetHeaderValues = new StringBuilder();
+                assetHeaderValues.append(id);
+                assetHeaderValues.append(",");
+                assetHeaderValues.append(StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                assetHeaderValues.append(",");
+                assetHeaderValues.append(StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
+                assetHeaderValues.append(",");
+                assetHeaderValues.append(StringUtils.getStringQueryParam(mBusinessModel.getAssetRemark()));
+                assetHeaderValues.append(",");
+                assetHeaderValues.append(StringUtils.getStringQueryParam(outletLastVisitID));
 
+                if (SHOW_ASSET_SURVEY_OPTION
+                        && mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                    assetHeaderValues.append(",");
+                    assetHeaderValues.append(StringUtils.getStringQueryParam(String.valueOf(totAchievedScr)));
+                    assetHeaderValues.append(",");
+                    assetHeaderValues.append(StringUtils.getStringQueryParam(String.valueOf(totTargetSrc)));
+                }
+
+                db.insertSQL(DataMembers.tbl_SerializedAssetHeader, assetHeaderColumns,
+                        assetHeaderValues.toString());
+            }
+
+            if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                String moduleCode = DataMembers.FIT_ASSET;
+                double sum = (double) 100 / totTargetSrc * totAchievedScr;
+                mBusinessModel.calculateFitscoreandInsert(db, sum, moduleCode);
+            }
+
+            db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
             db.closeDB();
         }
+    }
+
+
+    private String getSurveyScore(DBUtil db, String serialNo) {
+        String surveyScore = null;
+        try {
+            String sql = "SELECT IFNULL(SUM(achScore),0),IFNULL(SUM(tgtScore),0) FROM AnswerHeader WHERE EntityReferenceNo=" + StringUtils.getStringQueryParam(serialNo);
+            Cursor c = db.selectSQL(sql);
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext()) {
+                    surveyScore = c.getString(0);
+                    surveyScore += "," + c.getString(1);
+                }
+                c.close();
+            }
+            return surveyScore;
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return surveyScore;
     }
 
     private SerializedAssetBO getAssetTrackingBO() {
@@ -1389,6 +1465,7 @@ public class SerializedAssetHelper {
             while (c.moveToNext()) {
                 retailerMovedData.add(c.getString(0) + c.getString(1));
             }
+        db.closeDB();
         return retailerMovedData;
     }
 
@@ -1784,7 +1861,7 @@ public class SerializedAssetHelper {
                                         if (sNoBo.getAssetID() == c.getInt(1)) {
                                             sNoBo.setNewSerialNo(c.getString(0));
                                             sNoBo.setRentalPrice(c.getDouble(2));
-                                            sNoBo.setEffectiveToDate(c.getString(3));
+                                            sNoBo.setEffectiveToDate(DateTimeUtils.convertFromServerDateToRequestedFormat(c.getString(3), ConfigurationMasterHelper.outDateFormat));
                                         }
 
                                     }
@@ -1998,5 +2075,109 @@ public class SerializedAssetHelper {
         }
     }
 
+    Single<Boolean> deleteAssetSurvey(Context mContext, ArrayList<String> serialNoArrayList) {
+        StringBuilder deletedSRNo = new StringBuilder();
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try {
+                    db.openDataBase();
+                    for (String serialNo : serialNoArrayList) {
+                        String query = "Select serialNumber From SerializedAssetDetail Where serialNumber ="
+                                + StringUtils.getStringQueryParam(serialNo) + " And isAvailable=1";
+                        Cursor c = db.selectSQL(query);
+
+                        if (c != null) {
+                            if (c.getCount() == 0) {
+
+                                if (deletedSRNo.length() > 0)
+                                    deletedSRNo.append(",");
+
+                                deletedSRNo.append(StringUtils.getStringQueryParam(serialNo));
+                            }
+                            c.close();
+                        }
+                    }
+                    return deletedSRNo.length() > 0;
+
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return false;
+            }
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(Boolean isDeleted) throws Exception {
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        try {
+                            if (isDeleted) {
+                                String sql = "SELECT uid FROM AnswerHeader WHERE EntityReferenceNo in(" + deletedSRNo + ")";
+                                Cursor c = db.selectSQL(sql);
+                                if (c != null
+                                        && c.getCount() > 0) {
+                                    while (c.moveToNext()) {
+                                        callSurveyDeleteQuery(db, c.getString(0));
+                                    }
+                                    c.close();
+                                }
+                                db.closeDB();
+                                return true;
+                            }
+                        } catch (Exception e) {
+                            db.closeDB();
+                            Commons.printException(e);
+                        }
+                        return false;
+                    }
+                });
+            }
+        });
+    }
+
+    Single<Boolean> deleteAssetSurvey(Context mContext, String serialNo) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+                boolean isFlag = false;
+                try {
+                    db.openDataBase();
+                    if (serialNo.length() > 0) {
+                        String sql = "SELECT uid FROM AnswerHeader WHERE EntityReferenceNo=" + StringUtils.getStringQueryParam(serialNo);
+                        Cursor c = db.selectSQL(sql);
+                        if (c != null
+                                && c.getCount() > 0) {
+                            while (c.moveToNext()) {
+                                callSurveyDeleteQuery(db, c.getString(0));
+                                isFlag = true;
+                            }
+                            c.close();
+                        }
+                    }
+                    db.closeDB();
+                    return isFlag;
+                } catch (Exception e) {
+                    db.closeDB();
+                    Commons.printException(e);
+                }
+                return isFlag;
+            }
+        });
+    }
+
+    private void callSurveyDeleteQuery(DBUtil db, String uId) {
+
+        db.deleteSQL("AnswerHeader",
+                "uid = " + StringUtils.getStringQueryParam(uId), false);
+        db.deleteSQL("AnswerDetail",
+                "uid = " + StringUtils.getStringQueryParam(uId), false);
+        db.deleteSQL("AnswerImageDetail",
+                "uid = " + StringUtils.getStringQueryParam(uId), false);
+        db.deleteSQL("AnswerScoreDetail",
+                "uid = " + StringUtils.getStringQueryParam(uId), false);
+    }
 
 }

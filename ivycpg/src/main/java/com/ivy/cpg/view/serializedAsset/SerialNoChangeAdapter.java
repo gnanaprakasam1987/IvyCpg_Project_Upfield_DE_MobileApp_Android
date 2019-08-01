@@ -72,7 +72,7 @@ public class SerialNoChangeAdapter extends RecyclerView.Adapter<SerialNoChangeAd
         holder.newSerialNoEdTxt.setText(assetBo.getNewSerialNo());
 
         holder.rentalPriceEdTxt.setText(String.valueOf(assetBo.getRentalPrice()));
-        holder.effToDateBtn.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(assetBo.getEffectiveToDate(), outPutDateFormat));
+        holder.effToDateBtn.setText(assetBo.getEffectiveToDate());
 
         holder.newSerialNoEdTxt.setOnTouchListener((v, event) -> {
             holder.newSerialNoEdTxt.onTouchEvent(event);
