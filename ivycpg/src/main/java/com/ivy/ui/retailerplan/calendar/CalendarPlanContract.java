@@ -102,5 +102,9 @@ public interface CalendarPlanContract {
 
         void loadConfiguration();
 
+        void cancelPlans(String reasonId);
+
+        void cancelWeekPlans(String reasonId);
+
     }
 }

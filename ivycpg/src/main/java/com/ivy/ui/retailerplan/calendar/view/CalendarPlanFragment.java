@@ -7,21 +7,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,6 +45,7 @@ import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.profile.CommonReasonDialog;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -77,7 +86,7 @@ import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
 
 public class CalendarPlanFragment extends BaseFragment implements CalendarPlanContract.CalendarPlanView, CalendarClickListner,
         WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener,
-        WeekView.EmptyViewClickListener {
+        WeekView.EmptyViewClickListener,CommonReasonDialog.AddNonVisitListener {
 
     private String screenTitle;
 
@@ -396,7 +405,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         mWeekView.goToDate(date);
     }
 
-
     @Override
     public void loadTopWeekView(ArrayList<CalenderBO> mCalenderAllList, ArrayList<String> mAllowedDates) {
         int itemWidth = DeviceUtils.getDeviceWidth(Objects.requireNonNull(getActivity())) / 8;
@@ -534,7 +542,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         else
             fabAddRetailer.setVisibility(View.VISIBLE);
         loadRetailerInfoBtmSheet(planList);
-
     }
 
 
@@ -605,6 +612,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         menu.findItem(R.id.calendar).setVisible(false);
         menu.findItem(R.id.search).setVisible(false);
         menu.findItem(R.id.copy).setVisible(mSelectedType == DAY || (mSelectedType == WEEK && presenter.getWeekList().size() > 0));
+        menu.findItem(R.id.cancel).setVisible(mSelectedType == DAY || mSelectedType == WEEK);
         hideCopyPlanBottomSheet();
     }
 
@@ -636,6 +644,9 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
             return true;
         } else if (item.getItemId() == R.id.copy) {
             loadCopyPlanBtmSheet();
+            return true;
+        } else if (item.getItemId() == R.id.cancel) {
+            loadCancelPlanDialog();
             return true;
         }
 
@@ -767,5 +778,34 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                 });
 
         applyAlertDialogTheme(mContext, builder);
+    }
+
+    private void loadCancelPlanDialog(){
+        CommonReasonDialog comReasonDialog = new CommonReasonDialog(context, "nonVisit");
+        comReasonDialog.setNonvisitListener(this);
+        comReasonDialog.getFromScreenParam("DateWisePlan", presenter.getSelectedDate());
+        comReasonDialog.show();
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = comReasonDialog.getWindow();
+        lp.copyFrom(window != null ? window.getAttributes() : null);
+        lp.width = DeviceUtils.getDisplayMetrics(context).widthPixels - 100;
+        if (window != null) {
+            window.setAttributes(lp);
+        }
+    }
+
+    @Override
+    public void addReatailerReason() {
+
+    }
+
+    @Override
+    public void calendarPlanReason(String mode, String reasonId) {
+        presenter.cancelPlans(reasonId);
+    }
+
+    @Override
+    public void onDismiss() {
+
     }
 }

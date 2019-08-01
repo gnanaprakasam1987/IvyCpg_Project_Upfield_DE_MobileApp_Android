@@ -7,7 +7,7 @@
         android:icon="@drawable/near_ret"
         android:orderInCategory="3"
         android:title="@string/map_view"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/filter"
@@ -15,7 +15,7 @@
         android:orderInCategory="1"
         android:title="@string/filter"
         android:visible="false"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/calendar"
@@ -23,7 +23,7 @@
         android:iconTint="@color/white"
         android:orderInCategory="3"
         android:title="@string/calendar_view"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/copy"
@@ -31,7 +31,7 @@
         android:orderInCategory="2"
         android:title="copy"
         android:visible="false"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/search"
@@ -39,6 +39,13 @@
         android:orderInCategory="3"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/cancel"
+        android:icon="@drawable/ic_cancel"
+        android:orderInCategory="4"
+        android:title="@string/cancel"
+        app:showAsAction="always" />
 
 </menu>

@@ -33,7 +33,9 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 
 import static com.ivy.ui.retailer.RetailerConstants.COMPLETED;
@@ -117,7 +119,6 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             List<WeekViewEvent> events = new ArrayList<>();
             for (Object o : plannedListMap.entrySet()) {
                 Map.Entry pair = (Map.Entry) o;
-                System.out.println(pair.getKey() + " = " + pair.getValue());
                 for (DateWisePlanBo dateWisePlanBo : (ArrayList<DateWisePlanBo>) pair.getValue()) {
                     if (dateWisePlanBo.getStartTime().length() > 0 && dateWisePlanBo.getEndTime().length() > 0) {
                         Calendar startTime = Calendar.getInstance();
@@ -873,6 +874,30 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                 .subscribe((integer, throwable) -> {
                     startMonthDiff = integer;
                     endMonthDiff = integer;
+                }));
+    }
+
+    @Override
+    public void cancelPlans(String reasonId) {
+        getIvyView().showLoading();
+        getCompositeDisposable().add(addPlanDataManager.cancelPlan(getADayPlan(mSelectedDate), reasonId)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(aBoolean -> {
+                    fetchEventsFromDb(false);
+                }));
+    }
+
+    @Override
+    public void cancelWeekPlans(String reasonId) {
+
+        getIvyView().showLoading();
+        getCompositeDisposable().add(getListToDelete(getWeekNo(mSelectedDate))
+                .flatMap(dateWisePlanBos -> addPlanDataManager.cancelPlan(dateWisePlanBos, reasonId))
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe((aBoolean, throwable) -> {
+                    fetchEventsFromDb(false);
                 }));
     }
 

@@ -86,7 +86,7 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
     }
 
     @Override
-    public Observable<DateWisePlanBo> updatePlan(DateWisePlanBo dateWisePlanBo, String reasonId,long planID) {
+    public Observable<DateWisePlanBo> updatePlan(DateWisePlanBo dateWisePlanBo, String reasonId, long planID) {
         return Observable.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
             public DateWisePlanBo call() throws Exception {
@@ -94,34 +94,30 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                 initDb();
 
                 try {
-                    if (reasonId.equals("")) {
-                        mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
-                                + " SET StartTime = " + getStringQueryParam(dateWisePlanBo.getStartTime()) + " , EndTime =" + getStringQueryParam(dateWisePlanBo.getEndTime())
-                                + " where PlanId = " + dateWisePlanBo.getPlanId());
-                    } else {
-                        mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
-                                + " SET cancelReasonId= " + getStringQueryParam(reasonId) + ",Status = 'D', VisitStatus = 'RESCHEDULED' "
-                                + " where PlanId = " + dateWisePlanBo.getPlanId());
 
-                        String values = planID + ","
-                                + dateWisePlanBo.getDistributorId() + ","
-                                + dateWisePlanBo.getUserId() + ","
-                                + getStringQueryParam(dateWisePlanBo.getDate()) + ","
-                                + dateWisePlanBo.getEntityId() + ","
-                                + getStringQueryParam(dateWisePlanBo.getEntityType()) + ","
-                                + getStringQueryParam(dateWisePlanBo.getStatus()) + ","
-                                + dateWisePlanBo.getSequence() + ","
-                                + getStringQueryParam(dateWisePlanBo.getStartTime()) + ","
-                                + getStringQueryParam(dateWisePlanBo.getEndTime()) + ","
-                                + getStringQueryParam("PLANNED") + ","
-                                + getStringQueryParam("MOBILE") + ","
-                                + getStringQueryParam("APPROVED") + ","
-                                + getStringQueryParam("N");
+                    mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
+                            + " SET cancelReasonId= " + getStringQueryParam(reasonId) + ",Status = 'D', VisitStatus = 'RESCHEDULED' "
+                            + " where PlanId = " + dateWisePlanBo.getPlanId());
 
-                        String columns = DataMembers.tbl_date_wise_plan_cols + ",upload";
+                    String values = planID + ","
+                            + dateWisePlanBo.getDistributorId() + ","
+                            + dateWisePlanBo.getUserId() + ","
+                            + getStringQueryParam(dateWisePlanBo.getDate()) + ","
+                            + dateWisePlanBo.getEntityId() + ","
+                            + getStringQueryParam(dateWisePlanBo.getEntityType()) + ","
+                            + getStringQueryParam(dateWisePlanBo.getStatus()) + ","
+                            + dateWisePlanBo.getSequence() + ","
+                            + getStringQueryParam(dateWisePlanBo.getStartTime()) + ","
+                            + getStringQueryParam(dateWisePlanBo.getEndTime()) + ","
+                            + getStringQueryParam("PLANNED") + ","
+                            + getStringQueryParam("MOBILE") + ","
+                            + getStringQueryParam("APPROVED") + ","
+                            + getStringQueryParam("N");
 
-                        mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, columns, values);
-                    }
+                    String columns = DataMembers.tbl_date_wise_plan_cols + ",upload";
+
+                    mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, columns, values);
+
                     shutDownDb();
                 } catch (Exception e) {
                     Commons.printException("" + e);
@@ -165,13 +161,9 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
 
                 try {
 
-                    if (reasonId.equals(""))
-                        mDbUtil.deleteSQL(DataMembers.tbl_date_wise_plan,
-                                "PlanId = " + dateWisePlanBo.getPlanId(), false);
-                    else
-                        mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
-                                + " SET cancelReasonId= " + getStringQueryParam(reasonId) + ",Status = 'D', VisitStatus = 'DELETED' "
-                                + " where PlanId = " + dateWisePlanBo.getPlanId());
+                    mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
+                            + " SET cancelReasonId= " + getStringQueryParam(reasonId) + ",Status = 'D', VisitStatus = 'DELETED' "
+                            + " where PlanId = " + dateWisePlanBo.getPlanId());
 
                     shutDownDb();
                 } catch (Exception e) {
@@ -284,6 +276,29 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                     shutDownDb();
                 }
 
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> cancelPlan(List<DateWisePlanBo> planList,String reasonId ) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                initDb();
+
+                try {
+                    for (DateWisePlanBo dateWisePlanBo : planList) {
+                        mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
+                                + " SET cancelReasonId= " + getStringQueryParam(reasonId) + ",Status = 'D', VisitStatus = 'CANCELLED' "
+                                + " where PlanId = " + dateWisePlanBo.getPlanId());
+                    }
+                    shutDownDb();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    shutDownDb();
+                }
                 return true;
             }
         });
