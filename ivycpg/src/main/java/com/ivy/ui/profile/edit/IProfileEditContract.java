@@ -71,8 +71,6 @@ public interface IProfileEditContract {
         void createPriorityProductView(ArrayList<StandardListBO> mPriorityProductList, String selectedProductID,
                                        int mNumber, String MName, String textvalue, String productID);
 
-        void createAttributeView(int flag);
-
         void createDrugLicenseExpDate(String mName, int mNumber, String data);
 
         void createFoodLicenceExpDate(String mName, int mNumber, String data);
@@ -180,34 +178,11 @@ public interface IProfileEditContract {
 
         void getLinkRetailerListByDistributorId();
 
-        //AttributeView
-        void checkIsCommonAttributeView();
-
-        HashMap<Integer, ArrayList<Integer>> getAttributeListByLocationId();
-
-        int getLevel(int attrId);
-
-        ArrayList<NewOutletAttributeBO> getAttributeMapList(String attribName);
-
-        ArrayList<NewOutletAttributeBO> getAttributeList();
-
-        ArrayList<NewOutletAttributeBO> getAttributeListChild();
-
-        ArrayList<NewOutletAttributeBO> getAttributeParentList();
-
-        ArrayList<Integer> getCommonAttributeList();
-
-        ArrayList<Integer> getChannelAttributeList();
-
-        void saveUpdatedProfileEdit();
-
         void verifyOTP(String mType, String mValue);
 
         Vector<ChannelBO> getChannelMaster();
 
         void validateOTP(String type, String value);
-
-        void updateProfile();
 
         void updateLatLong(String lat, String longitude);
 

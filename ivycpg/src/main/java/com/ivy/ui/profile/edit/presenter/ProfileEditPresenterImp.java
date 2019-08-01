@@ -1,7 +1,6 @@
 package com.ivy.ui.profile.edit.presenter;
 
 
-import android.annotation.SuppressLint;
 import android.util.SparseArray;
 
 import androidx.lifecycle.Lifecycle;
@@ -14,7 +13,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
-import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -73,9 +71,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private LinkedHashMap<Integer, ArrayList<LocationBO>> mLocationListByLevId;
     private HashMap<String, String> mPreviousProfileChanges;
     private Vector<RetailerMasterBO> mDownloadLinkRetailer;
-    private ArrayList<RetailerFlexBO> downloadRetailerFlexValues;
     private Vector<RetailerMasterBO> RetailerMasterList;
-    private NewOutletHelper newOutletHelper;
 
 
     /*Location ArrayList*/
@@ -87,23 +83,13 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private Vector<ConfigureBO> profileConfig = new Vector<>();
     private Vector<ChannelBO> channelMaster = new Vector<>();
 
-    /*Attributes */
-    private ArrayList<Integer> mCommonAttributeList;
-    private HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID = new HashMap<>();
-    private HashMap<Integer, ArrayList<NewOutletAttributeBO>> mAttributeBOListByLocationID = new HashMap<>();
-    private ArrayList<NewOutletAttributeBO> mEditAttributeList = new ArrayList<>();
-    private ArrayList<NewOutletAttributeBO> mAttributeChildList = new ArrayList<>();
-    private ArrayList<NewOutletAttributeBO> mAttributeParentList = new ArrayList<>();
-    private ArrayList<NewOutletAttributeBO> mAttributeList = new ArrayList<>();
-    private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap = new HashMap<>();
-    private ArrayList<Integer> mChannelAttributeList = new ArrayList<>();
+    /*SelectedPrioProducts */
     private ArrayList<StandardListBO> selectedPrioProducts = new ArrayList<>();
 
     //PriorityProduct
     private ArrayList<String> products = null;
     private ArrayList<StandardListBO> mPriorityProductList = null;
     private String selectedProductID;
-    private ArrayList<NewOutletAttributeBO> attributeList;
 
     private boolean isLatLong = false;
     private String path;
@@ -140,7 +126,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         this.channelMasterHelper = channelMasterHelper;
         this.subChannelMasterHelper = subChannelMasterHelper;
         this.RetailerMasterList = RetailerMasterList;
-        this.newOutletHelper = newOutletHelper;
     }
 
 
@@ -242,11 +227,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     @Override
     public void validateOTP(String type, String value) {
-
-    }
-
-    @Override
-    public void updateProfile() {
 
     }
 
@@ -488,24 +468,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         getIvyView().retailersButtonOnClick(retailersList, configurationMasterHelper.VALUE_NEARBY_RETAILER_MAX);
     }
 
-
-    @Override
-    public void checkIsCommonAttributeView() {
-        // attributes mapped to channel already are added here
-        if (isChannelAvailable()) {
-            mChannelAttributeList = new ArrayList<>();
-            int subChannelID;
-            if (mPreviousProfileChanges.get(ProfileConstant.SUBCHANNEL) != null)
-                subChannelID = SDUtil.convertToInt(mPreviousProfileChanges.get(ProfileConstant.SUBCHANNEL));
-            else
-                subChannelID = retailerMasterBO.getSubchannelid();
-            if (mAttributeListByLocationID != null)
-                if (mAttributeListByLocationID.get(subChannelID) != null) {
-                    mChannelAttributeList.addAll(mAttributeListByLocationID.get(subChannelID));
-                }
-        }
-    }
-
     // to check sub channel is available or not
     // channel may be mapped in any sequance, so its availbily identified using iteration
     private boolean isChannelAvailable() {
@@ -515,89 +477,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             }
         }
         return false;
-    }
-
-
-    @SuppressLint("UseSparseArrays")
-    @Override
-    public HashMap<Integer, ArrayList<Integer>> getAttributeListByLocationId() {
-        if (mAttributeListByLocationID == null) {
-            mAttributeListByLocationID = new HashMap<>();
-        }
-        return mAttributeListByLocationID;
-    }
-
-
-    @Override
-    public ArrayList<NewOutletAttributeBO> getAttributeParentList() {
-        if (mAttributeParentList == null) {
-            mAttributeParentList = new ArrayList<>();
-        }
-        return mAttributeParentList;
-    }
-
-    @Override
-    public ArrayList<Integer> getCommonAttributeList() {
-        if (mCommonAttributeList == null) {
-            mCommonAttributeList = new ArrayList<>();
-        }
-        return mCommonAttributeList;
-    }
-
-
-    @Override
-    public int getLevel(int attrId) {
-        int count = 0;
-        ArrayList<NewOutletAttributeBO> arrayList = mAttributeChildList;
-        NewOutletAttributeBO tempBO;
-        for (int i = 0; i < arrayList.size(); i++) {
-            tempBO = arrayList.get(i);
-            int parentID = tempBO.getParentId();
-            if (attrId == parentID) {
-                attrId = tempBO.getAttrId();
-                count++;
-            }
-        }
-        return count;
-    }
-
-
-    @Override
-    public ArrayList<NewOutletAttributeBO> getAttributeMapList(String attribName) {
-        if (attribMap == null) {
-            attribMap = new HashMap<>();
-        }
-        return attribMap.get(attribName);
-    }
-
-    @Override
-    public ArrayList<NewOutletAttributeBO> getAttributeList() {
-        if (mAttributeList == null) {
-            mAttributeList = new ArrayList<>();
-        }
-        return mAttributeList;
-    }
-
-    @Override
-    public ArrayList<NewOutletAttributeBO> getAttributeListChild() {
-        if (mAttributeChildList == null) {
-            mAttributeChildList = new ArrayList<>();
-        }
-        return mAttributeChildList;
-    }
-
-
-    @Override
-    public ArrayList<Integer> getChannelAttributeList() {
-        if (mChannelAttributeList == null) {
-            mChannelAttributeList = new ArrayList<>();
-        }
-        return mChannelAttributeList;
-    }
-
-    @Override
-    public void saveUpdatedProfileEdit() {
-
     }
 
     @Override
@@ -1037,8 +916,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     public boolean doValidateProdileEdit() {
         validate = true;
         for (int i = 0; i < profileConfig.size(); i++) {
-
-            String configCode = profileConfig.get(i).getConfigCode();
 
             if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.STORENAME)
                     && profileConfig.get(i).getModule_Order() == 1) {
@@ -1841,9 +1718,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     case ProfileConstant.PRIORITYPRODUCT:
                         downloadPriority(mNumber, mName);
                         break;
-                    case ProfileConstant.ATTRIBUTE:
-//                        getIvyView().createAttributeView(0);
-                        break;
                     case ProfileConstant.GSTN:
                         prepareGSTN();
                         break;
@@ -1940,7 +1814,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             if (!mPreviousProfileChanges.get(configCode).equals(text))
                 text = mPreviousProfileChanges.get(configCode);
         getIvyView().createDrugLicenseExpDate(mName, mNumber, text);
-        ;
     }
 
     private void prepareFoodLiceneExpDate() {

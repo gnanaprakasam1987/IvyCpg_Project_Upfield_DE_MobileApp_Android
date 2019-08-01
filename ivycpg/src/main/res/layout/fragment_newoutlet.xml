@@ -26,12 +26,12 @@
         android:layout_marginBottom="@dimen/profile_botton_layout_height"
         android:scrollbars="none">
         <!--Root Parent layout-->
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/rootLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/background_noise"
-            android:orientation="vertical" />
+            android:orientation="vertical" />-->
     </ScrollView>
 
 
@@ -69,11 +69,19 @@
                 android:gravity="center"
                 android:onClick="onClick"
                 android:text="@string/save"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:textAllCaps="false" />
 
         </LinearLayout>
     </LinearLayout>
     <!--Footer View End here-->
+
+    <LinearLayout
+            android:id="@+id/rootLinearLayout_dummy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_noise"
+            android:orientation="vertical"
+        android:visibility="gone"/>
 
 </RelativeLayout>

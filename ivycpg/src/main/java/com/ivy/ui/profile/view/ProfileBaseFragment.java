@@ -37,10 +37,13 @@ public class ProfileBaseFragment extends BaseFragment
     private boolean isFromEditProfileView;
     private static final String SCREEN_MODE_INTENT_KEY ="screenMode";
     private static final String RETAILERID_INTENT_KEY ="retailerId";
+    Bundle bundle;
+
     private boolean isProfileView;
 
     private Context context;
-    private String retailerId="";
+    private String retailerId="",channelName;
+    private int channelid ;
     private boolean isShowAttribute;
 
     private StepperLayout mStepperLayout;
@@ -93,7 +96,7 @@ public class ProfileBaseFragment extends BaseFragment
         mStepperLayout.setAdapter(new ProfileStepperAdapter(
                 ((FragmentActivity)context).getSupportFragmentManager(),
                 context,retailerId,isShowAttribute,
-                bmodel.configurationMasterHelper.IS_CONTACT_TAB,isFromEditProfileView,isProfileView,0,""));
+                bmodel.configurationMasterHelper.IS_CONTACT_TAB,isFromEditProfileView,isProfileView,channelid,channelName));
 
         mStepperLayout.setListener(this);
 
@@ -142,6 +145,10 @@ public class ProfileBaseFragment extends BaseFragment
                     bmodel.newOutletHelper.setRetailerContactList(bmodel.profilehelper.getContactBos(retailerId, isFromEditProfileView));
                 }
             }
+
+            channelid  = bundle.getInt("channelid",0);
+            if(bundle.containsKey("channelName"))
+                channelName = bundle.getString("channelName","");
         }
 
         int attribAvail = bmodel.profilehelper.isConfigAvail("RETAILER_PROFILE", ProfileConstant.ATTRIBUTE);

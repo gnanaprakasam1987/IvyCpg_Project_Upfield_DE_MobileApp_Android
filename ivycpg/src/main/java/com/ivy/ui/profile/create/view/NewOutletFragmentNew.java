@@ -135,7 +135,7 @@ public class NewOutletFragmentNew extends BaseFragment
     @BindView(R.id.scrollview2)
     ScrollView mScrollView;
 
-    @BindView(R.id.rootLinearLayout)
+    @BindView(R.id.rootLinearLayout_dummy)
     LinearLayout mRootLinearLayout;
 
 

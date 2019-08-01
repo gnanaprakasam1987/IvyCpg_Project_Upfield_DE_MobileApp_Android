@@ -104,7 +104,6 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 import static com.ivy.sd.png.view.ProfileContainerFragment.selectedChannelId;
@@ -248,11 +247,6 @@ public class ProfileEditFragmentNew extends BaseFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @OnClick(R.id.profile_edit_save)
-    public void seveUpdateProfile() {
-        profileEditPresenter.saveUpdatedProfileEdit();
     }
 
     @Override
@@ -487,11 +481,6 @@ public class ProfileEditFragmentNew extends BaseFragment
         this.mPriorityProductList = mPriorityProductList;
         this.selectedProductID = selectedProductID;
         getmRootLinearLayout().addView(getPriorityProductView(mNumber, MName, textvalue, productID), getCommonsparams());
-    }
-
-    @Override
-    public void createAttributeView(int flag) {
-
     }
 
 

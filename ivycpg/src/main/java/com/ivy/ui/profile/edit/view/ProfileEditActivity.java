@@ -107,7 +107,8 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
         ProfileEditFragmentNew profileEditFragmentNew;
         if (getSupportFragmentManager().findFragmentById(R.id.activity_profile_edit) instanceof ProfileEditFragmentNew) {
             profileEditFragmentNew = (ProfileEditFragmentNew) getSupportFragmentManager().findFragmentById(R.id.activity_profile_edit);
-            profileEditFragmentNew.updateNearByRetailer(list);
+            if (profileEditFragmentNew != null)
+                profileEditFragmentNew.updateNearByRetailer(list);
         }
     }
 

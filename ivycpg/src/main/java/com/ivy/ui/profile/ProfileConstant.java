@@ -70,17 +70,17 @@ public class ProfileConstant {
     public static final String RFIELD_6 = "RFIELD6";
     public static final String RFIELD_7 = "RFIELD7";
 
-   public static final String RFIELD10 = "RFIELD10";
-   public static final String RFIELD11 = "RFIELD11";
-   public static final String RFIELD12 = "RFIELD12";
-   public static final String RFIELD13 = "RFIELD13";
-   public static final String RFIELD14 = "RFIELD14";
-   public static final String RFIELD15 = "RFIELD15";
-   public static final String RFIELD16 = "RFIELD16";
-   public static final String RFIELD17 = "RFIELD17";
-   public static final String RFIELD18 = "RFIELD18";
-   public static final String RFIELD19 = "RFIELD19";
-   public static final String RFIELD20 = "RFIELD20";
+   public static final String RFIELD10 = "PROFILE93";
+   public static final String RFIELD11 = "PROFILE94";
+   public static final String RFIELD12 = "PROFILE95";
+   public static final String RFIELD13 = "PROFILE96";
+   public static final String RFIELD14 = "PROFILE97";
+   public static final String RFIELD15 = "PROFILE98";
+   public static final String RFIELD16 = "PROFILE99";
+   public static final String RFIELD17 = "PROFILE100";
+   public static final String RFIELD18 = "PROFILE101";
+   public static final String RFIELD19 = "PROFILE102";
+   public static final String RFIELD20 = "PROFILE103";
 
     /*Configuration Static Constant */
     public static final String D = "D";
