@@ -504,7 +504,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public int getContractSpinnerSelectedItemListId() {
-        return ((NewOutletBO) contractSpinner.getSelectedItem()).getListId();
+        return ((ContractStatus) contractSpinner.getSelectedItem()).getListId();
     }
 
     @Override
