@@ -195,7 +195,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                 @Override
                 public void onClick(View view) {
                     bmodel.newOutletHelper.loadNewOutletConfiguration(0);
-                    Intent i = new Intent(getActivity(), NewOutletFragmentNew.class);
+                    Intent i = new Intent(getActivity(), NewOutlet.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     i.putExtra("screenMode", 1);
                     i.putExtra("retailerId", retailer.getRetailerId());

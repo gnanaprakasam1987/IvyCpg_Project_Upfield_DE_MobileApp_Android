@@ -287,10 +287,20 @@ public class NewOutletFragment extends IvyBaseFragment
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         width = displaymetrics.widthPixels;
 
-        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        try {
+
+            if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+
+            if (bmodel.labelsMasterHelper.applyLabels("new_retailer") != null)
+                setScreenTitle(bmodel.labelsMasterHelper.applyLabels("new_retailer"));
+            else
+                setScreenTitle(getResources().getString(R.string.new_retailer));
+        } catch (Exception e) {
+            setScreenTitle(getResources().getString(R.string.new_retailer));
         }
 
 
