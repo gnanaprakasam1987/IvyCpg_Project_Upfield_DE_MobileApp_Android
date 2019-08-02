@@ -4085,8 +4085,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (isAllDone) {
                 onnext();
             }
+            productSearch.setProductNameOnBar("");
         } else if (vw == mBtnGuidedSelling_prev) {
             updateGuidedSellingView(false, true);
+            productSearch.setProductNameOnBar("");
         }
     }
 

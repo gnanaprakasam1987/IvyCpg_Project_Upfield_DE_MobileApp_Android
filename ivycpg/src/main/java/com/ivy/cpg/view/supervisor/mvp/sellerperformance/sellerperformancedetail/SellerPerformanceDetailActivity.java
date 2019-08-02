@@ -33,11 +33,10 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
-
-import static android.graphics.Color.rgb;
 
 public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar implements
         SellerPerformanceDetailContractor.SellerPerformanceDetailView {
@@ -324,7 +323,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
     public void updateSellerCallInfo(SellerBo sellerBo){
         deviatedTv.setText(String.valueOf(sellerBo.getDeviationCount()));
 
-        String hms = sellerPerformancePresenter.convertSecondsToHMmSs(sellerBo.getTotalCallDuration());
+        String hms = DateTimeUtils.convertMillisToHMmmSs(sellerBo.getTotalCallDuration());
 
         durationTv.setText(hms);
     }

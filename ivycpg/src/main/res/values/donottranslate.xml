@@ -416,4 +416,7 @@
     <string name="mobile_date_time_mismatch">Mobile Date Time Mismatch!</string>
     <string name="survey_mandatory">Survey is mandatory…</string>
     <string name="survey_data_not_saved">Data not saved. Do you want to Delete Survey…?</string>
+
+    <string name="would_you_like_to_add_this_store_today_plan">Would you like to add this store \n in today\'s plan?</string>
+    <string name="next_activity">Next Activity</string>
 </resources>

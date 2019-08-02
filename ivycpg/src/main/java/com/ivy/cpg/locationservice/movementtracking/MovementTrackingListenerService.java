@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -173,7 +174,10 @@ public class MovementTrackingListenerService extends Service {
 						sendGpsServiceIntent.putExtras(b);
 
 						// Start intent service to upload location details
-						startService(sendGpsServiceIntent);
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+							startForegroundService(sendGpsServiceIntent);
+						}else
+							startService(sendGpsServiceIntent);
 
 						//Stop the Movement track listener service after location send
 						stopService(new Intent(getApplicationContext(),MovementTrackingListenerService.class));
@@ -224,21 +228,28 @@ public class MovementTrackingListenerService extends Service {
 	 * Stopping the Activity Recognition Listener
 	 */
 	public void removeActivityUpdatesButtonHandler() {
-		Task<Void> task = mActivityRecognitionClient.removeActivityUpdates(
-				mPendingIntent);
-		task.addOnSuccessListener(new OnSuccessListener<Void>() {
-			@Override
-			public void onSuccess(Void result) {
-				Commons.print("Removed activity updates successfully");
-			}
-		});
 
-		task.addOnFailureListener(new OnFailureListener() {
-			@Override
-			public void onFailure(@NonNull Exception e) {
-				Commons.print("Failed to remove activity updates");
+		try {
+			if (mActivityRecognitionClient != null) {
+				Task<Void> task = mActivityRecognitionClient.removeActivityUpdates(
+						mPendingIntent);
+				task.addOnSuccessListener(new OnSuccessListener<Void>() {
+					@Override
+					public void onSuccess(Void result) {
+						Commons.print("Removed activity updates successfully");
+					}
+				});
+
+				task.addOnFailureListener(new OnFailureListener() {
+					@Override
+					public void onFailure(@NonNull Exception e) {
+						Commons.print("Failed to remove activity updates");
+					}
+				});
 			}
-		});
+		}catch (Exception e){
+			Commons.printException(e);
+		}
 	}
 
 	@Override

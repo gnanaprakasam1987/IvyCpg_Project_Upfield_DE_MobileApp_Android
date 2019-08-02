@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
 import androidx.annotation.NonNull;
-import android.text.format.DateUtils;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -22,8 +21,8 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -32,8 +31,8 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +40,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Set;
-import java.util.TimeZone;
 
 import javax.annotation.Nullable;
 
@@ -78,7 +76,8 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
     }
 
     @Override
-    public void downloadOutletListAws() {
+    public void downloadOutletListAws(String date) {
+        SupervisorActivityHelper.getInstance().downloadOutletListAws(context,convertPlaneDateToGlobal(date));
         retailerMasterHashmap.putAll(SupervisorActivityHelper.getInstance().getRetailerMasterHashmap());
     }
 
@@ -101,23 +100,26 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         queryRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (QueryDocumentSnapshot snapshot : task.getResult()){
-                    registration = snapshot.getReference()
-                            .collection(DETAIL_PATH)
-                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                @Override
-                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                    if (queryDocumentSnapshots != null) {
-                                        for (DocumentChange snapshot : queryDocumentSnapshots.getDocumentChanges()) {
-                                            switch (snapshot.getType()) {
-                                                case ADDED:
-                                                    setSellerDetailValues(snapshot.getDocument());
-                                                    break;
+
+                if (task.isSuccessful() && task.getResult() != null) {
+                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                        registration = snapshot.getReference()
+                                .collection(DETAIL_PATH)
+                                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                        if (queryDocumentSnapshots != null) {
+                                            for (DocumentChange snapshot : queryDocumentSnapshots.getDocumentChanges()) {
+                                                switch (snapshot.getType()) {
+                                                    case ADDED:
+                                                        setSellerDetailValues(snapshot.getDocument());
+                                                        break;
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            });
+                                });
+                    }
                 }
             }
         });
@@ -305,25 +307,9 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
     }
 
     @Override
-    public String convertMillisToTime(Long time) {
-
-        if (time != null && time != 0) {
-            Date date = new Date(time);
-            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return format.format(date);
-        } else
-            return "";
-    }
-
-    @Override
     public String calculateDuration(long startTime,long endTime){
 
-        String duratingStr = (String) DateUtils.getRelativeTimeSpanString(startTime, endTime, 0);
-
-        duratingStr = duratingStr.replace("ago","");
-
-        return duratingStr;
+        return DateTimeUtils.convertMillisToHMmmSs((endTime-startTime));
     }
 
     public void removeFirestoreListener() {

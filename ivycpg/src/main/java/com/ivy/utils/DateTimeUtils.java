@@ -636,6 +636,28 @@ public class DateTimeUtils {
         return "00:00:00";
     }
 
+    public static String getTimeFromMillis(Long millis){
+        if(millis !=null && millis != 0) {
+            Date date = new Date(millis);
+            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            return format.format(date);
+        }else
+            return "";
+    }
+
+    public static String convertMillisToHMmmSs(long millis) {
+
+        try {
+            return String.format(Locale.US,FORMAT,
+                    TimeUnit.MILLISECONDS.toHours(millis),
+                    TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+        }catch(Exception e){
+            Commons.printException(e);
+            return "00:00:00";
+        }
+    }
 
     public static boolean isValidFormat(String format, String value) {
         Date date = null;
