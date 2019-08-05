@@ -41,6 +41,7 @@ import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -222,7 +223,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
         tabLayout.getTabAt(tabPos).select();
 
-        outletMapViewPresenter.downloadOutletListAws();
+        outletMapViewPresenter.downloadOutletListAws(selectedDate);
 
         outletMapViewPresenter.setTabPosition(tabPos);
 
@@ -338,7 +339,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             if (stringSplit.length > 1) {
                 tvMapInfoUserName.setText(stringSplit[0]);
                 tvInfoVisitTime.setText(getResources().getString(R.string.visit_time) + " " +
-                        outletMapViewPresenter.convertMillisToTime(Long.valueOf(stringSplit[1])));
+                        DateTimeUtils.getTimeFromMillis(Long.valueOf(stringSplit[1])));
             } else {
                 tvMapInfoUserName.setText(stringSplit[0]);
                 tvInfoVisitTime.setText(getResources().getString(R.string.visit_time));

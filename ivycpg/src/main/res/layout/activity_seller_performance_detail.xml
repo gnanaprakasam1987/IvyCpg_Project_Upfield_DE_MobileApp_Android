@@ -11,61 +11,64 @@
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <ScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
-        android:id="@+id/scroll_view"
-        android:fillViewport="true"
-        android:background="#f6f9fc">
+        android:layout_below="@+id/toolbar">
 
-        <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+    <com.google.android.material.appbar.CollapsingToolbarLayout
+        android:id="@+id/collapse_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        app:contentScrim="@color/colorPrimary"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/_5sdp"
-            android:orientation="vertical"
-            android:weightSum="1">
+            android:layout_height="@dimen/_270sdp"
+            android:id="@+id/chart_layout"
+            android:background="@drawable/chart_bg_color_gradient">
 
-            <RelativeLayout
+            <com.github.mikephil.charting.charts.CombinedChart
+                android:id="@+id/combined_chart"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.36"
-                android:id="@+id/chart_layout"
-                android:background="@drawable/chart_bg_color_gradient">
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_10sdp"
+                />
 
-                <com.github.mikephil.charting.charts.CombinedChart
-                    android:id="@+id/combined_chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/_10sdp"
-                    />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_calendar"
-                    android:layout_alignParentRight="true"
-                    android:visibility="gone"
-                    android:layout_marginRight="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_calendar"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"/>
 
 
-            </RelativeLayout>
+        </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.64">
+    </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-                <include layout="@layout/seller_performance_layout"
-                    android:id="@+id/seller_performance_layout"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
-            </RelativeLayout>
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        </LinearLayout>
+        <include layout="@layout/seller_performance_layout"
+            android:id="@+id/seller_performance_layout"/>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>

@@ -3,109 +3,104 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dimen_60dp"
-    android:gravity="center_horizontal">
+    android:background="@drawable/round_dialog_bg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="@dimen/filter_slider_width"
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/round_dialog_bg"
-        android:orientation="vertical">
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:minHeight="@dimen/competitor_heder_width"
+        android:padding="@dimen/profile_header_txt_layout_marginleft"
+        android:text="@string/would_you_like_to_add_this_store_today_plan"
+        android:textSize="@dimen/font_small"
+        android:textColor="@color/half_Black"
+        android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:minHeight="@dimen/competitor_heder_width"
-            android:padding="@dimen/profile_header_txt_layout_marginleft"
-            android:text="Would you like to add this store \n in today's plan?"
-            android:textColor="?attr/primarycolor"
-            android:textSize="@dimen/font_small"
-            android:visibility="gone" />
+    <TextView
+        android:id="@+id/msg_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginStart="@dimen/profile_history_20dp"
+        android:layout_marginLeft="@dimen/profile_history_20dp"
+        android:layout_marginTop="@dimen/profile_header_txt_layout_marginleft"
+        android:gravity="start|center_vertical"
+        android:paddingStart="@dimen/profile_header_txt_layout_marginleft"
+        android:paddingTop="@dimen/profile_header_txt_layout_marginleft"
+        android:paddingEnd="@dimen/profile_header_txt_layout_marginleft"
+        android:text="@string/reason_for_visit"
+        android:textColor="@color/half_Black"
+        android:textSize="@dimen/font_small" />
 
-        <TextView
-            android:id="@+id/msg_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginStart="@dimen/profile_history_20dp"
-            android:layout_marginTop="@dimen/profile_header_txt_layout_marginleft"
-            android:gravity="start|center_vertical"
-            android:paddingStart="@dimen/profile_header_txt_layout_marginleft"
-            android:paddingEnd="@dimen/profile_header_txt_layout_marginleft"
-            android:paddingTop="@dimen/profile_header_txt_layout_marginleft"
-            android:text="Reason for visit"
-            android:textColor="?attr/primarycolor"
-            android:textSize="@dimen/font_small"
-            android:layout_marginLeft="@dimen/profile_history_20dp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/profile_history_25dp"
+        android:layout_marginEnd="@dimen/profile_history_25dp"
+        android:layout_marginBottom="@dimen/profile_history_20dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/profile_history_20dp"
-            android:layout_marginStart="@dimen/profile_history_25dp"
-            android:layout_marginEnd="@dimen/profile_history_25dp">
-
-            <ImageView
-                android:id="@+id/dialog_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/downloadsuccess"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:id="@+id/reason_btns"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/dialog_img"
-                android:layout_marginTop="@dimen/profile_history_10dp"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/profile_header_txt_layout_marginleft"
-                android:layout_alignParentRight="true">
-
-                <Button
-                    android:id="@+id/btn_cancel"
-                    style="?attr/roundedCustomButtonNormalTransparent"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginEnd="@dimen/profile_history_20dp"
-                    android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:text="@string/cancel"
-                    android:textColor="@color/half_Black"
-                    android:textSize="@dimen/text_size_primary"
-                    android:visibility="gone"
-                    android:layout_marginRight="@dimen/profile_history_20dp" />
-
-                <Button
-                    android:id="@+id/btn_done"
-                    style="?attr/roundedCustomButtonNormal"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginStart="@dimen/profile_history_20dp"
-                    android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:text="@string/ok"
-                    android:textSize="@dimen/text_size_primary"
-                    android:layout_marginLeft="@dimen/profile_history_20dp" />
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/text_move_next"
+        <ImageView
+            android:id="@+id/dialog_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:gravity="center"
-            android:textSize="@dimen/forgot_text_size"
-            android:text="Next Activity"
-            android:layout_marginBottom="@dimen/profile_history_10dp"
-            android:visibility="gone"/>
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/downloadsuccess"
+            android:visibility="gone" />
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/reason_btns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dialog_img"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/profile_history_10dp"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/profile_header_txt_layout_marginleft">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                style="?attr/roundedCustomButtonNormalTransparent"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/profile_history_10dp"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
+                android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginBottom="@dimen/profile_history_10dp"
+                android:text="@string/cancel"
+                android:textColor="@color/half_Black"
+                android:textSize="@dimen/text_size_primary"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btn_done"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginLeft="@dimen/profile_history_20dp"
+                android:layout_marginTop="@dimen/profile_history_10dp"
+                android:layout_marginBottom="@dimen/profile_history_10dp"
+                android:text="@string/ok"
+                android:textSize="@dimen/text_size_primary" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/text_move_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/profile_history_10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:text="@string/next_activity"
+        android:textSize="@dimen/forgot_text_size"
+        android:visibility="gone" />
 
 </LinearLayout>

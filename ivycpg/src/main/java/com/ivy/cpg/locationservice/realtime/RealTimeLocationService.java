@@ -44,6 +44,7 @@ import java.util.Map;
 
 import static com.ivy.cpg.locationservice.LocationConstants.LOCATION_DISPLACEMENT;
 import static com.ivy.cpg.locationservice.LocationConstants.LOCATION_INTERVAL;
+import static com.ivy.cpg.locationservice.LocationConstants.LOCATION_MAX_WAIT_TIME;
 import static com.ivy.cpg.locationservice.LocationConstants.REALTIME_NOTIFICATION_ID;
 
 public class RealTimeLocationService extends Service {
@@ -170,16 +171,6 @@ public class RealTimeLocationService extends Service {
 
                         realTimeLocation.onRealTimeLocationReceived(locationDetailBO,getApplicationContext());
 
-                        Intent sendGpsServiceIntent = new Intent(getApplicationContext(),RealtimeLocationUploadIntentService.class);
-
-                        Bundle b = new Bundle();
-                        b.putSerializable("LOCATION",locationDetailBO);
-                        b.putString("Activity",activityName);
-                        sendGpsServiceIntent.putExtras(b);
-
-                        // Start intent service to upload location details
-                        startService(sendGpsServiceIntent);
-
 //                            }
 //
 //                        }
@@ -237,9 +228,8 @@ public class RealTimeLocationService extends Service {
     }
 
     public void requestActivityUpdatesButtonHandler() {
-        int DETECTION_INTERVAL_IN_MILLISECONDS = 5000;
         Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
-                DETECTION_INTERVAL_IN_MILLISECONDS,
+                LOCATION_INTERVAL,
                 mPendingIntent);
 
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
