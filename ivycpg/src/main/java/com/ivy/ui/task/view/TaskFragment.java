@@ -401,6 +401,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
         i.putExtra(TaskConstant.FROM_HOME_SCREEN, isFromHomeSrc);
         i.putExtra(TaskConstant.TAB_SELECTION, tabLayout.getSelectedTabPosition());
+        i.putExtra("PreVisit", isPreVisit);
 
         if (taskBO.getRid() != 0)
             i.putExtra(TaskConstant.RETAILER_WISE_TASK, true);
