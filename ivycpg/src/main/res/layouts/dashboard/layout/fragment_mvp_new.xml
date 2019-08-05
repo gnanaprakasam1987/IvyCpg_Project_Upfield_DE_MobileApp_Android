@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:theme="@style/MyToolbarBlue">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/collasping_height"
+            app:layout_scrollFlags="scroll|snap">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="@dimen/_10sdp"
+                    app:layout_constraintBottom_toTopOf="@id/sellerdashboardInfo"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_editor_absoluteY="25dp">
+
+                    <com.ivy.cpg.view.supervisor.customviews.CircleImageView
+                        android:id="@+id/im_user"
+                        style="@style/userLogoImageView"
+                        android:layout_marginEnd="@dimen/_24sdp"
+                        android:layout_marginRight="@dimen/_24sdp"
+                        android:src="@drawable/face"
+                        app:civ_border_color="@color/colorSecondary"
+                        app:civ_border_width="@dimen/_5sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtSeller"
+                        style="@style/TextViewListItemPrimary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:text=""
+                        android:textColor="@color/white"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/im_user"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/group"/>
+
+                    <TextView
+                        android:id="@+id/txtSellerRankSelf"
+                        style="@style/TextViewListTitleSecondary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="@drawable/ic_rank"
+                        android:foregroundGravity="left"
+                        android:gravity="left"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:paddingRight="@dimen/_10sdp"
+                        android:paddingBottom="@dimen/_10sdp"
+                        android:text="0   Rank"
+                        android:textColor="@color/white"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@id/constraintLayout"
+                        app:layout_constraintStart_toEndOf="@id/im_user"
+                        app:layout_constraintTop_toBottomOf="@id/txtSeller" />
+
+                    <TextView
+                        android:id="@+id/txtSellerRankTeam"
+                        style="@style/TextViewListTitleSecondary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="@drawable/ic_rank"
+                        android:foregroundGravity="left"
+                        android:gravity="left"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:paddingRight="@dimen/_10sdp"
+                        android:paddingBottom="@dimen/_10sdp"
+                        android:text="0   Rank"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/txtSellerRankSelf"
+                        app:layout_constraintTop_toBottomOf="@id/txtSeller"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/txtSellerRankEnterprise"
+                        style="@style/TextViewListTitleSecondary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="@drawable/ic_rank"
+                        android:foregroundGravity="left"
+                        android:gravity="left"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:paddingRight="@dimen/_10sdp"
+                        android:paddingBottom="@dimen/_10sdp"
+                        android:text="0   Rank"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/txtSellerRankTeam"
+                        app:layout_constraintTop_toBottomOf="@id/txtSeller"
+                        android:visibility="gone"/>
+
+                    <androidx.constraintlayout.widget.Group
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="txtSellerRankSelf,txtSellerRankTeam,txtSellerRankEnterprise"
+                        android:id="@+id/group" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/sellerdashboardInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_60sdp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:background="@drawable/button_rectangle_corner_white"
+                    android:padding="@dimen/_5sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/constraintLayout">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChart"
+                        android:layout_width="@dimen/piechart_radius"
+                        android:layout_height="@dimen/piechart_radius"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/pie_chart_margin_right"
+                        android:layout_marginRight="@dimen/pie_chart_margin_right"
+                        android:background="@color/white"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/kpiActual"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_20sdp"
+                        android:background="@color/white"
+                        android:gravity="left"
+                        android:text="@string/actual_default"
+                        android:textColor="?accentcolor"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/kpiTarget"
+                        app:layout_constraintStart_toEndOf="@id/pieChart"
+                        app:layout_constraintTop_toBottomOf="@id/kpiTitle" />
+
+                    <TextView
+                        android:id="@+id/kpiTarget"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:gravity="left"
+                        android:text="@string/target_default"
+                        android:textColor="?primarycolor"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/kpiBalance"
+                        app:layout_constraintStart_toEndOf="@id/kpiActual"
+                        app:layout_constraintTop_toBottomOf="@id/kpiTitle" />
+
+                    <TextView
+                        android:id="@+id/kpiBalance"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:gravity="left"
+                        android:text="@string/balance_default"
+                        android:textColor="@color/Orange"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/kpiTarget"
+                        app:layout_constraintTop_toBottomOf="@id/kpiTitle" />
+
+                    <TextView
+                        android:id="@+id/kpiTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_20sdp"
+                        android:background="@color/white"
+                        android:text=""
+                        android:textColor="@color/black_bg1"
+                        app:layout_constraintBottom_toTopOf="@id/kpiActual"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@id/pieChart"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!--<me.relex.circleindicator.CircleIndicator-->
+            <!--android:id="@+id/indicator"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/viewpager_indicator_height"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:gravity="center" />-->
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/dashSpinnerLayout"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_40sdp"
+                android:paddingStart="4dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="4dp"
+                android:paddingRight="4dp"
+                app:layout_constraintBottom_toTopOf="@id/header"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/star"
+                    android:layout_width="@dimen/dimens_40dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/ic_badge_mvp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/rdogrp"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioGroup
+                    android:id="@+id/rdogrp"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/filter"
+                    app:layout_constraintStart_toEndOf="@id/star"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <RadioButton
+                        android:id="@+id/btnAchievement"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_mvp_drawable"
+                        android:button="@null"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:text="Achievements"
+                        android:textColor="@color/white" />
+
+                    <RadioButton
+                        android:id="@+id/btnRanksandPoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_mvp_drawable"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="Ranks &amp; Points" />
+                </RadioGroup>
+
+                <ImageView
+                    android:id="@+id/filter"
+                    android:layout_width="@dimen/dimens_40dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/ic_filter_mvp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/rdogrp"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_20sdp"
+                android:background="#efefef"
+                app:layout_constraintBottom_toTopOf="@id/dashboardLv"
+                app:layout_constraintTop_toBottomOf="@id/dashSpinnerLayout">
+
+                <TextView
+                    android:id="@+id/headerTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:gravity="left"
+                    android:text="Sales Ranking"
+                    android:textColor="@color/light_gray" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/dashboardLv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/header" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

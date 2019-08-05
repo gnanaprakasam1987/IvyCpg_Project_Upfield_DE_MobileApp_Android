@@ -1124,7 +1124,8 @@ SynchronizationHelper {
                     "union select count(uid) from DisplayAssetTrackingHeader where upload='N'" +
                     "union select count(uid) from DisplayAssetTrackingDetails where upload='N'" +
                     "union select count(RetailerId) from RetailerNotes where upload='N'" +
-                    "union select count(RetailerId) from SerializedAssetServiceRequest where upload='N'";
+                    "union select count(RetailerId) from SerializedAssetServiceRequest where upload='N'" +
+                    "union select count(Tid) from UserEditDetail where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
