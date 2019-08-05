@@ -1326,16 +1326,14 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.FOOD_LICENCE_EXP_DATE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))) ||
-                            getIvyView().getFoodLicenceExpDateValue().equalsIgnoreCase("Select Date")) {
+                    if (getIvyView().getFoodLicenceExpDateValue().equalsIgnoreCase("Select Date")) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 AppUtils.validateInput(getIvyView().getFoodLicenceExpDateValue())));
                     }
                 } else if (configCode.equals(ProfileConstant.DRUG_LICENSE_EXP_DATE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))) ||
-                            getIvyView().getDrugLicenceExpDateValue().equalsIgnoreCase("Select Date")) {
+                    if (getIvyView().getDrugLicenceExpDateValue().equalsIgnoreCase("Select Date")) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(

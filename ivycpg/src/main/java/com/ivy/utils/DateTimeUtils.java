@@ -673,13 +673,5 @@ public class DateTimeUtils {
         return date != null;
     }
 
-    public static String getTimeFromMillis(Long millis){
-        if(millis !=null && millis != 0) {
-            Date date = new Date(millis);
-            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return format.format(date);
-        }else
-            return "";
-    }
+
 }

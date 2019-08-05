@@ -42,7 +42,6 @@ import com.ivy.cpg.view.webview.PrivacyPolicyActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -194,7 +193,8 @@ public class UserSettingsActivity extends PreferenceActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
 
-                    if (bmodel.synchronizationHelper.checkDataForSync()) {
+                    UploadHelper mUploadHelper = UploadHelper.getInstance(UserSettingsActivity.this);
+                    if (mUploadHelper.checkDataForSync()) {
                         CommonDialog dialog = new CommonDialog(UserSettingsActivity.this, getResources().getString(R.string.switch_user),
                                 getResources().getString(R.string.data_to_upload),
                                 getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
