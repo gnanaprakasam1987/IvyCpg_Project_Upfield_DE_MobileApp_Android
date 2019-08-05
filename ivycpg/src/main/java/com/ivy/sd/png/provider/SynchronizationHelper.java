@@ -111,7 +111,8 @@ import javax.crypto.Cipher;
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class SynchronizationHelper {
+public class
+SynchronizationHelper {
     public static final String JSON_MASTER_KEY = "Master";
     public static final String JSON_FIELD_KEY = "Field";
     public static final String JSON_DATA_KEY = "Data";

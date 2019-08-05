@@ -1356,12 +1356,6 @@
     <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
     <string name="attachment">Attachment</string>
 
-    <string-array name="stockcheck_sort_list">
-        <item>Availability Asc</item>
-        <item>Availability Desc</item>
-        <item>IsDistribution Asc</item>
-        <item>IsDistribution Desc</item>
-        <item>Default</item>
-    </string-array>
+
 
 </resources>

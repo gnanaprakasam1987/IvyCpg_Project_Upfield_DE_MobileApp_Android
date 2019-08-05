@@ -14,12 +14,12 @@ buildscript {
 }
 allprojects {
     repositories {
+        maven { url "http://dev-androidartifact.ivy-insights.com:8081/artifactory/app-tutorial-debug"}
         google()
         maven { url "https://maven.google.com" }
         maven { url "https://jitpack.io" }
         maven { url "http://dl.bintray.com/chat-sdk/chat-sdk-android" }
         jcenter()
-        maven { url "http://dev-androidartifact.ivy-insights.com:8081/artifactory/app-tutorial-debug"}
 
     }
 }

@@ -42,19 +42,19 @@ public class MvpBO {
         this.rank = rank;
     }
 
-    int getTotalRank() {
+    public int getTotalRank() {
         return totalRank;
     }
 
-    void setTotalRank(int totalRank) {
+    public void setTotalRank(int totalRank) {
         this.totalRank = totalRank;
     }
 
-    int getTotalScore() {
+    public int getTotalScore() {
         return totalScore;
     }
 
-    void setTotalScore(int totalScore) {
+    public void setTotalScore(int totalScore) {
         this.totalScore = totalScore;
     }
 
@@ -74,7 +74,7 @@ public class MvpBO {
         return entitylevel;
     }
 
-    void setEntitylevel(String entitylevel) {
+    public void setEntitylevel(String entitylevel) {
         this.entitylevel = entitylevel;
     }
 
@@ -82,7 +82,7 @@ public class MvpBO {
         return userPosID;
     }
 
-    void setUserPosID(int userPosID) {
+    public void setUserPosID(int userPosID) {
         this.userPosID = userPosID;
     }
 
@@ -90,7 +90,7 @@ public class MvpBO {
         return parentPosID;
     }
 
-    void setParentPosID(int parentPosID) {
+    public void setParentPosID(int parentPosID) {
         this.parentPosID = parentPosID;
     }
 
@@ -116,6 +116,26 @@ public class MvpBO {
 
     public void setBatchURL(String batchURL) {
         this.batchURL = batchURL;
+    }
+
+    private String groupName;
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    private String ImageName;
+
+    public String getImageName() {
+        return ImageName;
+    }
+
+    public void setImageName(String imageName) {
+        ImageName = imageName;
     }
 }
 

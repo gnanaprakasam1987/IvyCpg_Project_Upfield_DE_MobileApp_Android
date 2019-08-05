@@ -36,7 +36,7 @@ static def fetchRevisionNumber() {
 }
 
 def majorVersion = 2
-def minorVersion = 142
+def minorVersion = 143
 def patchVersion = 0
 def revNumber = fetchRevisionNumber()
 
@@ -53,7 +53,7 @@ android {
         multiDexEnabled true
         resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es", "fr"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"${BASE_CPG_STAGING_URL}\"")
+        buildConfigField("String", "BASE_URL", "\"${BASE_CPG_DEV_URL}\"")
         buildConfigField("String", "TEST_USER_NAME", "\"${TEST_USER_NAME}\"")
         buildConfigField("String", "TEST_PASSWORD", "\"${TEST_PASSWORD}\"")
         buildConfigField("boolean", "IS_AUTO_LOGIN_ENABLED", IS_AUTO_LOGIN_ENABLED)

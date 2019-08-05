@@ -421,4 +421,25 @@
 
     <string name="would_you_like_to_add_this_store_today_plan">Would you like to add this store \n in today\'s plan?</string>
     <string name="next_activity">Next Activity</string>
+
+    <string-array name="stockcheck_sort_list">
+        <item>Availability Asc</item>
+        <item>Availability Desc</item>
+        <item>IsDistribution Asc</item>
+        <item>IsDistribution Desc</item>
+        <item>Default</item>
+    </string-array>
+
+    <string name="reportsandranks">Sales Ranking</string>
+    <string name="monthlyachievement">Monthly Achievements</string>
+
+    <string name="self_rank">Self</string>
+    <string name="team_rank">Team</string>
+    <string name="enterprise_rank">Ent.</string>
+
+    <string name="capture_picture_request">Do you want to Capture Image?</string>
+
+    <string name="actual_default">Actual : 0</string>
+    <string name="target_default">Target : 0</string>
+    <string name="balance_default">Balance : 0</string>
 </resources>

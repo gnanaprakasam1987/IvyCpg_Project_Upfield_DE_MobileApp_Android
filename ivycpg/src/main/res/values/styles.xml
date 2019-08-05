@@ -549,6 +549,11 @@ negative button and neutral button -->
         <item name="android:enabled">false</item>
     </style>
 
+    <style name="ButtonSmallRoundCornerMVP" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/button_mvp_drawable</item>
+        <item name="android:enabled">false</item>
+        <item name="android:textColor">@color/light_gray</item>
+    </style>
 
     <!--Logout button style-->
     <style name="ButtonNormalLogout" parent="@style/ButtonNormal">
@@ -717,6 +722,13 @@ negative button and neutral button -->
 
     <style name="button_normal_style_disabled" parent="Base.Widget.AppCompat.Button">
         <item name="android:enabled">false</item>
+    </style>
+
+    <style name="popupStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:itemBackground">@android:color/white</item>
+        <item name="android:layout_marginRight">@dimen/_10sdp</item>
+        <item name="android:layout_width">@dimen/_40sdp</item>
     </style>
 
     <style name="DarkStepTabTitleStyle" parent="MSStepTabTitle">

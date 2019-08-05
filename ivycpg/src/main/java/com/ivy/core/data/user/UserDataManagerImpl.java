@@ -621,7 +621,7 @@ public class UserDataManagerImpl implements UserDataManager {
                     initDb();
 
                     String tid = appDataProvider.getUser().getUserid()
-                            + "" + appDataProvider.getRetailMaster().getRetailerID()
+                            + "" //+ appDataProvider.getRetailMaster().getRetailerID()
                             + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                     mDbUtil.deleteSQL(DataMembers.tbl_UserEditDetail, " Code =" + getStringQueryParam("ProfileImagePath") + "and UserID=" + appDataProvider.getUser().getUserid(), false);
@@ -635,7 +635,8 @@ public class UserDataManagerImpl implements UserDataManager {
                             + ",'ProfileImagePath'," + getStringQueryParam(imagePath) + ",'N')";
                     mDbUtil.executeQ(insertquery);
 
-                } catch (Exception ignored) {
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 shutDownDb();
                 return null;
