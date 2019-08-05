@@ -8,7 +8,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.text.format.DateUtils;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -314,11 +313,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     @Override
     public String calculateDuration(long startTime, long endTime) {
 
-        String duratingStr = (String) DateUtils.getRelativeTimeSpanString(startTime, endTime, 0);
-
-        duratingStr = duratingStr.replace("ago", "");
-
-        return duratingStr;
+        return DateTimeUtils.convertMillisToHMmmSs((endTime-startTime));
     }
 
     @Override

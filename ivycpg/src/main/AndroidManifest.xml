@@ -77,8 +77,6 @@
             android:exported="false" />
         <service android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingUploadService"
             android:exported="false"/>
-        <service android:name="com.ivy.cpg.locationservice.realtime.RealtimeLocationUploadIntentService"
-            android:exported="false"/>
 
         <receiver
             android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingAlarmReceiver"

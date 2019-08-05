@@ -145,6 +145,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         attendanceObj.put("status", "IN");
         attendanceObj.put("userId",userId);
         attendanceObj.put("userName",userName);
+        attendanceObj.put("appVersion",AppUtils.getApplicationVersionName(context));
 
         String UId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         attendanceObj.put("uid",UId);
@@ -221,6 +222,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         Map<String, Object> locationObj = new HashMap<>();
         locationObj.put("userId",userId);
         locationObj.put("userName",userName);
+        locationObj.put("appVersion",AppUtils.getApplicationVersionName(context));
         locationObj.put("latitude",Double.valueOf(locationDetailBO.getLatitude()));
         locationObj.put("longitude",Double.valueOf(locationDetailBO.getLongitude()));
         locationObj.put("accuracy",Double.valueOf(locationDetailBO.getAccuracy()));

@@ -2,11 +2,9 @@ package com.ivy.cpg.view.settings;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -20,7 +18,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
-import androidx.core.content.ContextCompat;
 import android.text.InputType;
 import android.util.TypedValue;
 import android.view.MenuItem;
@@ -33,6 +30,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.homescreen.deviceStatus.DeviceStatusActivity;
 import com.ivy.cpg.view.login.LoginHelper;
@@ -44,6 +43,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;
@@ -193,7 +193,34 @@ public class UserSettingsActivity extends PreferenceActivity {
             clear_data.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    showDialog(2);
+
+                    if (bmodel.synchronizationHelper.checkDataForSync()) {
+                        CommonDialog dialog = new CommonDialog(UserSettingsActivity.this, getResources().getString(R.string.switch_user),
+                                getResources().getString(R.string.data_to_upload),
+                                getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+                            @Override
+                            public void onPositiveButtonClick() {
+
+                            }
+                        },false);
+                        dialog.show();
+                    } else {
+                        CommonDialog dialog = new CommonDialog(UserSettingsActivity.this, getResources().getString(R.string.switch_user),
+                                getResources().getString(R.string.proceed), false,
+                                getResources().getString(R.string.yes),
+                                getResources().getString(R.string.no), new CommonDialog.PositiveClickListener() {
+                            @Override
+                            public void onPositiveButtonClick() {
+                                clearPreferences();
+                            }
+                        }, new CommonDialog.negativeOnClickListener() {
+                            @Override
+                            public void onNegativeButtonClick() {
+                            }
+                        });
+                        dialog.show();
+                    }
+
                     return true;
                 }
             });
@@ -286,19 +313,10 @@ public class UserSettingsActivity extends PreferenceActivity {
     @Override
     protected Dialog onCreateDialog(int id) {
 
-        switch (id) {
-            case 1:
-                return createmacDialog();
-            case 2:
-                UploadHelper mUploadHelper = UploadHelper.getInstance(this);
-                if (mUploadHelper.checkDataForSync()) {
-                    return clearSyncDialog();
-                } else {
-                    return clearDialog();
-                }
-            default:
-                return null;
+        if (id == 1) {
+            return createmacDialog();
         }
+        return null;
     }
 
 
@@ -394,43 +412,6 @@ public class UserSettingsActivity extends PreferenceActivity {
         }
 
     };
-
-    private Dialog clearDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getResources().getString(R.string.switch_user));
-        builder.setMessage(getResources().getString(R.string.proceed));
-        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                clearPreferences();
-            }
-        });
-        builder.setNegativeButton(getResources().getString(R.string.no),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        bmodel.applyAlertDialogTheme(builder);
-        return null;
-    }
-
-    private Dialog clearSyncDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getResources().getString(R.string.switch_user));
-        builder.setMessage(getResources().getString(R.string.data_to_upload));
-        builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.cancel();
-            }
-        });
-        bmodel.applyAlertDialogTheme(builder);
-        return null;
-    }
 
     private void clearPreferences() {
         try {

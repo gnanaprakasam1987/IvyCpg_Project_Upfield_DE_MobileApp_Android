@@ -171,7 +171,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                        if(task.getResult() != null) {
+                        if(task.isSuccessful() && task.getResult() != null) {
 
                             int covered = 0;
                             int billed = 0;
