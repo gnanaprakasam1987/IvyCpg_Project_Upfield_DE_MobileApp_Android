@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@color/white"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="5dp"
+    card_view:cardPreventCornerOverlap="true"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_8dp"
+        android:layout_marginBottom="@dimen/dimen_8dp">
+
+        <TextView
+            android:id="@+id/factorName_dashboard_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/whats_on_item_padding"
+            android:text="Value"
+            android:textColor="@color/half_Black"
+            card_view:layout_constraintEnd_toStartOf="@id/pieChart"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="left"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toStartOf="@id/pieChart"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@id/factorName_dashboard_tv">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="left"
+                android:layout_marginBottom="@dimen/dimen_4dp">
+
+                <TextView
+                    android:id="@+id/achived_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:drawableEnd="@drawable/blue_dot_5dp"
+                    android:drawableRight="@drawable/blue_dot_5dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/whats_on_item_padding"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="2dp"
+                    android:tag="achieved_day"
+                    android:text="Achieved"
+                    android:textColor="?primarycolor"
+                    card_view:layout_constraintEnd_toStartOf="@id/balance_title"
+                    card_view:layout_constraintStart_toStartOf="parent" />
+
+                <!--<TextView-->
+                    <!--android:id="@+id/acheived_dashboard_tv"-->
+                    <!--style="@style/TextViewListItemSecondary"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="8dp"-->
+                    <!--android:layout_marginLeft="8dp"-->
+                    <!--android:gravity="right"-->
+                    <!--android:paddingStart="5dp"-->
+                    <!--android:paddingLeft="5dp"-->
+                    <!--android:text="0"-->
+                    <!--android:textColor="?primarycolor"-->
+                    <!--card_view:layout_constraintBottom_toBottomOf="parent"-->
+                    <!--card_view:layout_constraintEnd_toStartOf="@id/balance_title"-->
+                    <!--card_view:layout_constraintStart_toEndOf="@id/achived_title"-->
+                    <!--card_view:layout_constraintTop_toTopOf="parent" />-->
+
+
+                <TextView
+                    android:id="@+id/balance_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:drawableEnd="@drawable/blue_dot_5dp"
+                    android:drawableRight="@drawable/blue_dot_5dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/whats_on_item_padding"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="2dp"
+                    android:tag="achieved_day"
+                    android:text="@string/balance"
+                    android:textColor="@color/Orange"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintEnd_toStartOf="@id/target_title"
+                    card_view:layout_constraintStart_toEndOf="@id/achived_title"
+                    card_view:layout_constraintTop_toTopOf="parent" />
+
+                <!--<TextView-->
+                    <!--android:id="@+id/balance_dashboard_tv"-->
+                    <!--style="@style/TextViewListItemSecondary"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="8dp"-->
+                    <!--android:layout_marginLeft="8dp"-->
+                    <!--android:gravity="right"-->
+                    <!--android:paddingStart="5dp"-->
+                    <!--android:paddingLeft="5dp"-->
+                    <!--android:text="0"-->
+                    <!--android:textColor="@color/Orange"-->
+                    <!--card_view:layout_constraintBottom_toBottomOf="parent"-->
+                    <!--card_view:layout_constraintEnd_toStartOf="@id/target_title"-->
+                    <!--card_view:layout_constraintStart_toEndOf="@id/balance_title"-->
+                    <!--card_view:layout_constraintTop_toTopOf="parent" />-->
+
+
+                <TextView
+                    android:id="@+id/target_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/whats_on_item_padding"
+                    android:paddingLeft="@dimen/whats_on_item_padding"
+                    android:paddingEnd="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="2dp"
+                    android:tag="target_day"
+                    android:text="@string/target"
+                    android:textColor="?accentcolor"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintEnd_toEndOf="parent"
+                    card_view:layout_constraintStart_toEndOf="@id/balance_title"
+                    card_view:layout_constraintTop_toTopOf="parent" />
+
+                <!--<TextView-->
+                    <!--android:id="@+id/target_dashboard_tv"-->
+                    <!--style="@style/TextViewListItemSecondary"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="8dp"-->
+                    <!--android:layout_marginLeft="8dp"-->
+                    <!--android:fontFamily="@font/roboto_light"-->
+                    <!--android:gravity="right"-->
+                    <!--android:paddingStart="5dp"-->
+                    <!--android:paddingLeft="5dp"-->
+                    <!--android:paddingRight="@dimen/_8sdp"-->
+                    <!--android:text="0"-->
+                    <!--android:textColor="?accentcolor"-->
+                    <!--card_view:layout_constraintBottom_toBottomOf="parent"-->
+                    <!--card_view:layout_constraintEnd_toEndOf="parent"-->
+                    <!--card_view:layout_constraintStart_toEndOf="@id/target_title"-->
+                    <!--card_view:layout_constraintTop_toTopOf="parent" />-->
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/achievedGroup"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    card_view:constraint_referenced_ids="achived_title" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/balanceGroup"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    card_view:constraint_referenced_ids="balance_title" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/targetGroup"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    card_view:constraint_referenced_ids="target_title" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChart"
+            android:layout_width="@dimen/piechart_radius"
+            android:layout_height="@dimen/piechart_radius"
+            android:layout_marginEnd="@dimen/pie_chart_margin_right"
+            android:layout_marginRight="@dimen/pie_chart_margin_right"
+            android:visibility="visible"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

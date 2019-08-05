@@ -194,5 +194,11 @@
         <item name="android:enabled">false</item>
     </style>
 
+    <style name="ButtonSmallRoundCornerMVP" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/button_mvp_drawable_v21</item>
+        <item name="android:enabled">false</item>
+        <item name="android:textColor">@color/light_gray</item>
+    </style>
+
     <!--Button Rounded styles-->
 </resources>

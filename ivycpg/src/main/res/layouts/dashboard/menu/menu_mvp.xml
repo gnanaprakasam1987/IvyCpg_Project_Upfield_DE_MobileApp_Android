@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="@string/select"
+        android:id="@+id/spinnerGroup"
+        android:actionViewClass="android.widget.Spinner"
+        app:actionLayout="@layout/spinner_mvp"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_notification"
+        android:icon="@drawable/ic_action_notification"
+        android:title="Notification"
+        app:showAsAction="always"/>
+
+</menu>
