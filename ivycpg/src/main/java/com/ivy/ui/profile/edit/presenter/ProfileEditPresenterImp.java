@@ -791,6 +791,14 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         getRetailerProfileObject(configBO,retailerMasterBO.getDistrict(),retailerFieldList);
                         break;
 
+                    case ProfileConstant.RFIELD8:
+                        configBO.setRefId(retailerMasterBO.getRetailerID());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getRField8(),retailerFieldList);
+                        break;
+                    case ProfileConstant.RFIELD9:
+                        configBO.setRefId(retailerMasterBO.getRetailerID());
+                        getRetailerProfileObject(configBO,retailerMasterBO.getRField9(),retailerFieldList);
+                        break;
                     case ProfileConstant.RFIELD10:
                         configBO.setRefId(retailerMasterBO.getRetailerID());
                         getRetailerProfileObject(configBO,retailerMasterBO.getRField10(),retailerFieldList);
@@ -1378,7 +1386,19 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
                 }
 
-                else if (configCode.equals(ProfileConstant.RFIELD10) && profileConfig.get(i).getModule_Order() == 1) {
+                else if (configCode.equals(ProfileConstant.RFIELD8) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                }else if (configCode.equals(ProfileConstant.RFIELD9) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                }else if (configCode.equals(ProfileConstant.RFIELD10) && profileConfig.get(i).getModule_Order() == 1) {
                     if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
@@ -1602,6 +1622,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || comparConfigerCode(mConfigCode, ProfileConstant.FAX)
                 || comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)
                 || comparConfigerCode(mConfigCode, ProfileConstant.DISTRICT)
+                || comparConfigerCode(mConfigCode, ProfileConstant.RFIELD8)
+                || comparConfigerCode(mConfigCode, ProfileConstant.RFIELD9)
                 || comparConfigerCode(mConfigCode, ProfileConstant.RFIELD10)
                 || comparConfigerCode(mConfigCode, ProfileConstant.RFIELD11)
                 || comparConfigerCode(mConfigCode, ProfileConstant.RFIELD12)
@@ -1754,6 +1776,12 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         break;
                     case ProfileConstant.DISTRICT:
                         prepareDistrict();
+                        break;
+                    case ProfileConstant.RFIELD8:
+                        prepareRField(retailerMasterBO.getRField8());
+                        break;
+                    case ProfileConstant.RFIELD9:
+                        prepareRField(retailerMasterBO.getRField9());
                         break;
                     case ProfileConstant.RFIELD10:
                         prepareRField(retailerMasterBO.getRField10());

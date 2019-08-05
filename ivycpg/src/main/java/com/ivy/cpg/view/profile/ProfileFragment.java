@@ -1309,6 +1309,21 @@ public class ProfileFragment extends IvyBaseFragment {
                 finalProfileList.add(outletBO);
                 break;
             }
+
+            case RFIELD8: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField8());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case RFIELD9: {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRField9());
+                finalProfileList.add(outletBO);
+                break;
+            }
             case RFIELD10: {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
