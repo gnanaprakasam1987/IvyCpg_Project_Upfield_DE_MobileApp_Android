@@ -82,9 +82,10 @@ public interface CalendarPlanContract {
 
         long getMaxPlanDate();
 
-        void deleteAndCopyPlan(String fromDate, String toDate);
 
         void copyPlan(String fromDate, String toDate);
+
+        void movePlan(String fromDate, String toDate, String reasonId);
 
         void setRetailerMasterBo(RetailerMasterBO retailerMasterBo);
 
@@ -96,11 +97,23 @@ public interface CalendarPlanContract {
 
         List<String> getWeekNoList();
 
-        void deleteCopyWeekPlan(String fromDate, String toDate);
-
         void copyWeekPlan(String fromDate, String toDate);
 
+        void moveWeekPlan(String fromDate, String toDate,String reasonId);
+
         void loadConfiguration();
+
+        void cancelPlans(String reasonId);
+
+        void cancelWeekPlans(String reasonId);
+
+        boolean isCurrentDay();
+
+        boolean isCurrentWeek();
+
+        boolean showRescheduleFuture();
+        boolean showRescheduleReasonFuture();
+        boolean showCancelPlanReasonFuture();
 
     }
 }

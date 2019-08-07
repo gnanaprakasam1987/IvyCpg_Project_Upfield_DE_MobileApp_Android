@@ -18,6 +18,9 @@ public class RetailerConstants {
     public static final String NOT_COMPLETED = "NOT COMPLETED";
     public static final String COMPLETED = "COMPLETED";
     public static final String APPROVED = "APPROVED";
+    public static final String CANCELLED = "CANCELLED";
+    public static final String DELETED = "DELETED";
+    public static final String RESCHEDULED = "RESCHEDULED";
     public static final String PENDING = "PENDING";
     public static final String REJECTED = "REJECTED";
 

@@ -390,7 +390,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                             && addPlanPresenter.showRescheduleReasonFuture()) {
                         getEditplanReason();
                     } else
-                        addPlanPresenter.updatePlan(startTime, endTime, dateWisePlanBo, "");
+                        addPlanPresenter.updatePlan(startTime, endTime, dateWisePlanBo, "0");
                 }
             } else {
                 addPlanPresenter.addNewPlan(selectedDate, startTime, endTime, retailerMasterBO, isAdhoc);
@@ -609,7 +609,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                 if (
                         (dateWisePlanBo != null && (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED)
                                 || dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)
-                                || dateWisePlanBo.getVisitStatus().equalsIgnoreCase("CANCELLED"))
+                                || dateWisePlanBo.getVisitStatus().equalsIgnoreCase("CANCELED"))
                         )
                                 || (retailerMasterBO != null && "Y".equals(retailerMasterBO.getIsVisited()))) {
 
@@ -751,7 +751,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                     && addPlanPresenter.showDeleteReasonFuture()) {
                 getDeleteplanReason();
             } else
-                addPlanPresenter.deletePlan(dateWisePlanBo, retailerMasterBO, "");
+                addPlanPresenter.deletePlan(dateWisePlanBo, retailerMasterBO, "0");
         }
     }
 

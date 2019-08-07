@@ -81,12 +81,12 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
                         " LEFT join RetailerAddress as RA on RA.RetailerID = dwp.EntityId AND RA.IsPrimary=1 " +
-                        " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER'" +
+                        " Where dwp.VisitStatus = 'PLANNED' or dwp.VisitStatus = 'CANCELLED' and " +
+                        " dwp.EntityType = 'RETAILER'" +
                         " ORDER BY dwp.Date asc,dwp.StartTime asc";
                 try {
 
                     initDb();
-
                     Cursor c = mDbUtil.selectSQL(sql);
 
                     if (c != null && c.getCount() > 0) {
@@ -97,7 +97,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                             dateWisePlanBO.setPlanId(c.getLong(0));
                             dateWisePlanBO.setDistributorId(c.getInt(1));
                             dateWisePlanBO.setUserId(c.getInt(2));
-                             dateWisePlanBO.setDate(c.getString(3));
+                            dateWisePlanBO.setDate(c.getString(3));
                             dateWisePlanBO.setEntityId(c.getInt(4));
                             dateWisePlanBO.setEntityType(c.getString(5));
                             dateWisePlanBO.setStatus(c.getString(6));
@@ -150,7 +150,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         ",IFNULL(dwp.VisitStatus,''),cancelReasonId,planStatus " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
-                        " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER' and dwp.Date=" + StringUtils.getStringQueryParam(date);
+                        " Where dwp.VisitStatus = 'PLANNED' or dwp.VisitStatus = 'CANCELLED' and " +
+                        " dwp.EntityType = 'RETAILER' and dwp.Date=" + StringUtils.getStringQueryParam(date);
                 try {
 
                     initDb();
