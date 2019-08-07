@@ -1,83 +1,153 @@
 package com.ivy.sd.camera;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.media.ExifInterface;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import androidx.core.content.FileProvider;
-import android.widget.Toast;
+import android.os.Environment;
 
-import com.ivy.sd.png.asean.view.BuildConfig;
-import com.ivy.sd.png.asean.view.R;
+import com.ivy.core.base.view.BaseActivity;
+import com.ivy.core.data.datamanager.DataManagerImpl;
+import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
-public class NativeCameraActivity extends Activity {
-    private static final int CAMERA_REQUEST = 1888;
-    private static final int SUCCESS = 1;
-    private String path = "";
-    private float camera_picture_width;
-    private float camera_picture_height;
-    private int camera_picture_quality;
+import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableOnSubscribe;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        BusinessModel bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
+public class CameraHelper {
+    private Context mContext;
+    private BusinessModel bmodel;
+    private static CameraHelper instance = null;
 
-        camera_picture_width = (float) bmodel.configurationMasterHelper.CAMERA_PICTURE_WIDTH;
-        camera_picture_height = (float) bmodel.configurationMasterHelper.CAMERA_PICTURE_HEIGHT;
-        camera_picture_quality = bmodel.configurationMasterHelper.CAMERA_PICTURE_QUALITY;
+    public boolean IS_ENABLE_CAMERA_PICTURE_SIZE = false;
+    public int CAMERA_PICTURE_WIDTH = 640;
+    public int CAMERA_PICTURE_HEIGHT = 480;
+    public int CAMERA_PICTURE_QUALITY = 40;
 
-        path = getIntent().getStringExtra("path");
-        if (path != null && checkCreateDir(path)) {
-            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            if (Build.VERSION.SDK_INT >= 24) {
+    public int photocount;
 
-                // set flag to give temporary permission to external app to use your FileProvider
-                cameraIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
-                        FileProvider.getUriForFile(NativeCameraActivity.this, BuildConfig.APPLICATION_ID + ".provider", new File(path)));
+    protected CameraHelper(Context context) {
+        this.mContext = context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
+    }
 
-                // validateData that the device can open your File!
-                PackageManager pm = this.getPackageManager();
-                if (cameraIntent.resolveActivity(pm) != null) {
-                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
+    public static CameraHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new CameraHelper(context);
+        }
+        return instance;
+    }
+
+    public void loadCameraPictureSize() {
+        try {
+
+            String codeValue;
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='PHOTOCAP04' and Flag=1 and ForSwitchSeller = 0";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                    String[] camera_params = codeValue.split(",");
+                    CAMERA_PICTURE_WIDTH = SDUtil.convertToInt(camera_params[0]);
+                    CAMERA_PICTURE_HEIGHT = SDUtil.convertToInt(camera_params[1]);
+                    CAMERA_PICTURE_QUALITY = SDUtil.convertToInt(camera_params[2]) >= 40 ? SDUtil.convertToInt(camera_params[2]) : 40;
                 }
-            } else {
-                cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(new File(path)));
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                c.close();
             }
-        } else {
-            Toast.makeText(this, "Image Path Not Found", Toast.LENGTH_LONG).show();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+    }
+
+    /**
+     * @return imageCount
+     */
+    public int countImageFiles() {
+        int imageSize = 0;
+        try {
+            File f = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                    + "/" + DataMembers.photoFolderName + "/");
+            if (f.exists()) {
+                File files[] = f.listFiles(new FilenameFilter() {
+                    public boolean accept(File directory, String fileName) {
+                        if (fileName.endsWith(".pdf")) {
+                            return fileName.endsWith(".pdf");
+                        }
+                        return fileName.endsWith(".jpg");
+                    }
+                });
+
+                File printfiles[] = f.listFiles(new FilenameFilter() {
+                    public boolean accept(File directory, String fileName) {
+                        return fileName.startsWith("PF");
+                    }
+                });
+
+                imageSize = (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE) ? files.length + printfiles.length
+                        : files.length;
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return imageSize;
+    }
+
+    public void loadCameraConfiguration() {
+        try {
+            photocount = 0;
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+            db.openDataBase();
+            String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode= 'PHOTOCAP01' and Flag=1 and ForSwitchSeller = 0";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    photocount = c.getInt(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            compressImage(path, camera_picture_height, camera_picture_width);
-            setResult(SUCCESS);
-            finish();
-        } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_CANCELED) {
-            finish();
-        }
+    public Completable compressTask(Context context,String path){
+//        ((BaseActivity) context).showLoading();
+        return Completable.create(new CompletableOnSubscribe() {
+            @Override
+            public void subscribe(CompletableEmitter emitter) {
+                compressImage(path);
+                if (!emitter.isDisposed()) {
+                    emitter.onComplete();
+                }
+            }
+        });
     }
 
     /**
@@ -87,7 +157,9 @@ public class NativeCameraActivity extends Activity {
      * @param maxHeight - define the maximum height of the image file
      * @param maxWidth  - define the maximum height of the image file
      */
-    private void compressImage(String path, float maxHeight, float maxWidth) {
+    public void compressImage(String path) {
+        float maxHeight = CAMERA_PICTURE_WIDTH;
+        float maxWidth = CAMERA_PICTURE_HEIGHT;
         Bitmap scaledBitmap = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
 
@@ -191,7 +263,7 @@ public class NativeCameraActivity extends Activity {
                     out = new FileOutputStream(path);
 
 //                  write the compressed bitmap at the destination specified by filename.
-                    scaledBitmap.compress(Bitmap.CompressFormat.JPEG, camera_picture_quality, out);
+                    scaledBitmap.compress(Bitmap.CompressFormat.JPEG, CAMERA_PICTURE_QUALITY, out);
                     scaledBitmap.recycle();//need to recycle the bitmap to avoid OUTOFMEMORYERROR
                     out.flush();
                     out.close();
@@ -222,29 +294,5 @@ public class NativeCameraActivity extends Activity {
         return inSampleSize;
     }
 
-    private boolean checkCreateDir(String folderPath) {
-        try {
-            String folders[] = folderPath.split("/");
-            String path = "";
-            for (String folderName : folders) {
-                if (!folderName
-                        .endsWith(getResources().getString(R.string.jpg))
-                        && !folderName.endsWith(getResources().getString(
-                        R.string.png))
-                        && !folderName.endsWith(getResources().getString(
-                        R.string.gif)))
-                    path += folderName
-                            + "/";
-                File SDPath = new File(path);
-                if (!SDPath.exists()) {
-                    if (!SDPath.mkdir()) {
-                        return false;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return true;
-    }
+
 }
