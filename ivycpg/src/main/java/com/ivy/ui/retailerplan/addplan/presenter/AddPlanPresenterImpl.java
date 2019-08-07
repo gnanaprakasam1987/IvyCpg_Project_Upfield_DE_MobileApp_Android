@@ -46,9 +46,9 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
     }
 
     @Override
-    public void addNewPlan(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO, boolean isAdhoc) {
+    public void addNewPlan(String date, String startTime, String endTime, RetailerMasterBO retailerMasterBO, boolean isAdhoc) {
 
-        DateWisePlanBo dateWisePlanBo = preparePlanObjects(date,startTime,endTime,retailerMasterBO, isAdhoc);
+        DateWisePlanBo dateWisePlanBo = preparePlanObjects(date, startTime, endTime, retailerMasterBO, isAdhoc);
 
         getCompositeDisposable().add(addPlanDataManager.savePlan(dateWisePlanBo)
                 .flatMapSingle(new Function<DateWisePlanBo, SingleSource<DateWisePlanBo>>() {
@@ -80,10 +80,8 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
         DateWisePlanBo dateWisePlanBo = updatePlanObjects(startTime, endTime, planBo);
         long planId = 0;
 
-        if (!reasonId.equals("")) {
-            planId = SDUtil.convertToLong(dataManager.getUser().getUserid()
-                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
-        }
+        planId = SDUtil.convertToLong(dataManager.getUser().getUserid()
+                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
         getCompositeDisposable().add(addPlanDataManager.updatePlan(dateWisePlanBo, reasonId, planId)
                 .subscribeOn(getSchedulerProvider().io())
@@ -123,7 +121,7 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
     @Override
     public void deletePlan(DateWisePlanBo dateWisePlanBo, RetailerMasterBO retailerMasterBO, String reasonID) {
 
-        getCompositeDisposable().add(addPlanDataManager.DeletePlan(dateWisePlanBo, reasonID)
+        getCompositeDisposable().add(addPlanDataManager.deletePlan(dateWisePlanBo, reasonID)
                 .flatMapSingle(new Function<DateWisePlanBo, SingleSource<DateWisePlanBo>>() {
                     @Override
                     public SingleSource<DateWisePlanBo> apply(DateWisePlanBo planBo) throws Exception {
@@ -146,7 +144,7 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
 
     }
 
-    private DateWisePlanBo preparePlanObjects(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO, boolean isAdhoc){
+    private DateWisePlanBo preparePlanObjects(String date, String startTime, String endTime, RetailerMasterBO retailerMasterBO, boolean isAdhoc) {
 
         date = DateTimeUtils.convertToServerDateFormat(date, "yyyy/MM/dd");
 
