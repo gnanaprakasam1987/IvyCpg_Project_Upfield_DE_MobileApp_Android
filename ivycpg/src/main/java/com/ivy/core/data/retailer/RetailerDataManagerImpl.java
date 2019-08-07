@@ -33,9 +33,7 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
-import io.reactivex.SingleObserver;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 import static com.ivy.sd.png.provider.ConfigurationMasterHelper.CODE_SHOW_ALL_ROUTE_FILTER;
@@ -130,7 +128,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                     + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                                                     + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
                                                     + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as SupplierTaxLocId,")
-                                                    + "ridSF FROM RetailerMaster A"
+                                                    + "ridSF,RA.URL,RV.visitTargetCount FROM RetailerMaster A"
 
                                                     + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
@@ -316,6 +314,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setDistrict(c.getString(c.getColumnIndex("District")));
                                             retailer.setLastVisitDate(c.getString(c.getColumnIndex("lastVisitDate")));
                                             retailer.setLastVisitedBy(c.getString(c.getColumnIndex("lastVisitedBy")));
+                                            retailer.setWebUrl(c.getString(c.getColumnIndex("URL")));
+                                            retailer.setVisitTargetCount(c.getInt(c.getColumnIndex("visitTargetCount")));
 
                                             retailer.setIsToday(0);
                                             retailer.setHangingOrder(false);
@@ -358,7 +358,6 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                 }
 
                                             retailerMasterBOS.add(retailer);
-
 
 
                                         }
@@ -422,13 +421,13 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         }).flatMap(new Function<ArrayList<RetailerMasterBO>, ObservableSource<ArrayList<RetailerMasterBO>>>() {
                             @Override
                             public ObservableSource<ArrayList<RetailerMasterBO>> apply(ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
-                                if(configurationMasterHelper.CALC_QDVP3)
+                                if (configurationMasterHelper.CALC_QDVP3)
                                     return updateSurveyScoreForRetailers(retailerMasterBOS);
                                 return Observable.fromCallable(() -> retailerMasterBOS);
                             }
-                        }).flatMap(new Function<ArrayList<RetailerMasterBO>, ObservableSource<ArrayList<RetailerMasterBO> >>() {
+                        }).flatMap(new Function<ArrayList<RetailerMasterBO>, ObservableSource<ArrayList<RetailerMasterBO>>>() {
                             @Override
-                            public ObservableSource<ArrayList<RetailerMasterBO> > apply(ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
+                            public ObservableSource<ArrayList<RetailerMasterBO>> apply(ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
                                 return updateRetailerMasterInfo(retailerMasterBOS);
                             }
                         });
@@ -440,13 +439,12 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
 
     /**
-     *
      * Update isToday and is_vansales.
      * IS_DEFAULT_PRESALE - true than update is_vansales = 0 based on
      * ORDB08 config RField Value is 1
      * IS_DEFAULT_PRESALE - fales than update is_vansales = 1
      */
-    private Observable<ArrayList<RetailerMasterBO>> updateRetailerMasterInfo(final ArrayList<RetailerMasterBO> retailerMasterBOS){
+    private Observable<ArrayList<RetailerMasterBO>> updateRetailerMasterInfo(final ArrayList<RetailerMasterBO> retailerMasterBOS) {
 
         return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
             @Override
@@ -487,7 +485,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
         });
     }
 
-    private Observable<ArrayList<RetailerMasterBO>> updateSurveyScoreForRetailers(final ArrayList<RetailerMasterBO> retailerMasterBOS){
+    private Observable<ArrayList<RetailerMasterBO>> updateSurveyScoreForRetailers(final ArrayList<RetailerMasterBO> retailerMasterBOS) {
         return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
             @Override
             public ArrayList<RetailerMasterBO> call() throws Exception {
@@ -1242,7 +1240,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
     }
 
-    private Observable<ArrayList<RetailerMasterBO>> fetchActualVisitAcheived(ArrayList<RetailerMasterBO> retailerMasterBOS){
+    private Observable<ArrayList<RetailerMasterBO>> fetchActualVisitAcheived(ArrayList<RetailerMasterBO> retailerMasterBOS) {
         return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
             @Override
             public ArrayList<RetailerMasterBO> call() throws Exception {
@@ -1263,7 +1261,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         c.close();
                     }
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
                 shutDownDb();

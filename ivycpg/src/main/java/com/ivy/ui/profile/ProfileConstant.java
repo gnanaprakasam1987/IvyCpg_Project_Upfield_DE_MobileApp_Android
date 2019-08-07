@@ -1,10 +1,9 @@
 package com.ivy.ui.profile;
 
 
-
 public class ProfileConstant {
 
- // * ROFILE09, PROFILE10, PROFILE11, PROFILE12, PROFILE41, PROFILE42*/
+    // * ROFILE09, PROFILE10, PROFILE11, PROFILE12, PROFILE41, PROFILE42*/
     public static final String PROFILE_60 = "PROFILE60";//Retailer Image :Note:-Only Profile Config,Has Edit=0
 
     public static final String STORENAME = "PROFILE02";//STORENAME,length validation=Y,Has Edit=0,RetailerMaster
@@ -13,7 +12,7 @@ public class ProfileConstant {
     public static final String ADDRESS3 = "PROFILE05";//ADDRESS3,length validation=Y,Has Edit=1,RetailerMaster
     public static final String CHANNEL = "PROFILE06";//CHANNEL,length validation=Y,Has Edit=1,RetailerMaster
     public static final String SUBCHANNEL = "PROFILE07";//SUBCHANNEL,length validation=Y,Has Edit=1,RetailerMaster
-    public static final String LATTITUDE= "PROFILE08";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerAddress
+    public static final String LATTITUDE = "PROFILE08";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerAddress
 
     public static final String PROFILE_09 = "PROFILE09";//CONTACT_PERSON1,length validation=Y,Has Edit=0,RetailerContact
     public static final String PROFILE_10 = "PROFILE10";//PHNO1,length validation=Y,input validation=NUMBER,Has Edit=0,RetailerContact
@@ -24,7 +23,7 @@ public class ProfileConstant {
 
     public static final String LOCATION01 = "PROFILE13";//LOCATION01 One level up,length validation=Y,Has Edit=0,RetailerMaster
     public static final String LOCATION02 = "PROFILE14";//LOCATION02 two level up,length validation=Y,Has Edit=0,RetailerMaster
-    public static final String LOCATION   = "PROFILE15";//LOCATION Least level,length validation=Y,Has Edit=0,RetailerMaster
+    public static final String LOCATION = "PROFILE15";//LOCATION Least level,length validation=Y,Has Edit=0,RetailerMaster
     public static final String RFiled1 = "PROFILE20";//RFiled1, IF (FUN42) -> CreditLimit - Outstanding,Has Edit=0
     public static final String CONTRACT_TYPE = "PROFILE22";//CONTRACT_TYPE,Has Edit=0 Note:-Only Profile Config
     public static final String CREDITPERIOD = "PROFILE25";//CREDITPERIOD,level,length validation=Y,Has Edit=0,RetailerMaster
@@ -62,8 +61,8 @@ public class ProfileConstant {
     public static final String FAX = "PROFILE86";//FAX,length validation=Y,Has Edit=1,RetailerAddress;
     public static final String REGION = "PROFILE87";//REGION,length validation=Y,Has Edit=1,RetailerAddress;
     public static final String COUNTRY = "PROFILE88";//COUNTRY,length validation=Y,Has Edit=1,RetailerAddress;
-   public static final String DISTRICT = "PROFILE89";//DISTRICT,length validation=Y,Has Edit=1,RetailerAddress;
-
+    public static final String DISTRICT = "PROFILE89";//DISTRICT,length validation=Y,Has Edit=1,RetailerAddress;
+    public static final String WEB_SITE_URL = "PROFILE109";//WEB_SITE_URL,length,validation=Y,Has Edit=1,RetailerAddress
     /*Configuration RField id's List */
     public static final String RFIELD_4 = "RFIELD4";
     public static final String RFIELD_5 = "RFIELD5";

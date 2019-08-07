@@ -15,12 +15,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +24,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
@@ -255,7 +256,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
                     getActivity().startActivity(callIntent);
                 } else {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
                 }
             }
         });
@@ -486,7 +487,7 @@ public class ProfileFragment extends IvyBaseFragment {
                                     Thread downloaderThread = new DownloaderThreadNew(getActivity(),
                                             activityHandler, hashMap,
                                             bmodel.userMasterHelper.getUserMasterBO()
-                                                    .getUserid(), transferUtility,new HashMap<String, String>());
+                                                    .getUserid(), transferUtility, new HashMap<String, String>());
                                     downloaderThread.start();
                                 }
                             }
@@ -1305,6 +1306,34 @@ public class ProfileFragment extends IvyBaseFragment {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(retailerObj.getDistrict());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE106": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(String.valueOf(retailerObj.getPlannedVisitCount()));
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE107": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(String.valueOf(retailerObj.getVisitDoneCount()));
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE108": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(String.valueOf(retailerObj.getVisitTargetCount()));
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE109": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(String.valueOf(retailerObj.getWebUrl()));
                 finalProfileList.add(outletBO);
                 break;
             }

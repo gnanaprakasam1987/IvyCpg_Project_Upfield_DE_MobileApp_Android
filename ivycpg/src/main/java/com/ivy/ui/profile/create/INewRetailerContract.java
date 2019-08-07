@@ -70,6 +70,9 @@ public interface INewRetailerContract {
         void createNewRetailerContactEmail(int menuNumber, String menuName, boolean mandatory,
                                            boolean isUppercaseLetter, String mConfigCode);
 
+        void createNewRetailerWebSite(int menuNumber, String menuName, boolean mandatory,
+                                           boolean isUppercaseLetter, String mConfigCode);
+
         void createNewRetailerCreditPeriod(int menuNumber, String menuName, boolean mandatory,
                                            boolean isUppercaseLetter, String mConfigCode);
 

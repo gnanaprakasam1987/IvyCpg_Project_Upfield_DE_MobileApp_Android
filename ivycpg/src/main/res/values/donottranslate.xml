@@ -441,4 +441,6 @@
     <string name="target_default">Target : 0</string>
     <string name="balance_default">Balance : 0</string>
     <string name="compressing_saving">Compressing and Saving...</string>
+    <string name="enter_valid_url">Enter valid url</string>
+    <string name="please_verify_url">Please verify url</string>
 </resources>

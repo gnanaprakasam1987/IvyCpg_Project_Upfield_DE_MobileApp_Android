@@ -1,16 +1,14 @@
 package com.ivy.sd.png.bo;
 
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 
 public class NewOutletBO {
     private int mSelectedImageIndex = 0;
     private double NewOutletlattitude, NewOutletLongitude;
-    private String visitDays="";
-    private String weekNo="";
+    private String visitDays = "";
+    private String weekNo = "";
     private String mName;
     private String valueText;
     private String srotText;
@@ -21,58 +19,60 @@ public class NewOutletBO {
     public ArrayList<String> ImageName = new ArrayList<>();
     public ArrayList<Integer> ImageId = new ArrayList<>();
 
-    private String Market="";
+    private String Market = "";
     private int channel, subChannel;
-    private String outletName="";
-    private String Address="";
-    private String Address2="";
+    private String outletName = "";
+    private String Address = "";
+    private String Address2 = "";
 
     private String Address3 = "";
-    private String City="", State="";
-    private String Phone="", email="";
+    private String City = "", State = "";
+    private String Phone = "", email = "";
     private String distid = "0";
-    private String contactpersonname="", contactpersonname2="", Phone2="";
-    private String contactpersonnameLastName="";
-    private String contactpersonname2LastName="";
-    private String Contact1title="0", contact1titlelovid="0";
-    private String Contact2title="0", contact2titlelovid="0";
-    private int contractStatuslovid=0;
+    private String contactpersonname = "", contactpersonname2 = "", Phone2 = "";
+    private String contactpersonnameLastName = "";
+    private String contactpersonname2LastName = "";
+    private String Contact1title = "0", contact1titlelovid = "0";
+    private String Contact2title = "0", contact2titlelovid = "0";
+    private int contractStatuslovid = 0;
     private int routeid, locid, loc1id, loc2id;
-    private String Fax="";
-    private String CreditLimit="0";
-    private String Payment="0";
+    private String Fax = "";
+    private String CreditLimit = "0";
+    private String Payment = "0";
     private String retailerId;
     private String creditDays;
-    private String rfield5="0";
-    private String rfield6="0";
-    private String rField4="0";
-    private String rField7="0";
-    private String tinExpDate="";
+    private String rfield5 = "0";
+    private String rfield6 = "0";
+    private String rField4 = "0";
+    private String rField7 = "0";
+    private String tinExpDate = "";
     private int userId;
-    private String panNo="";
-    private String drugLicenseNo="";
-    private String foodLicenseNo="";
-    private String dlExpDate="";
-    private String flExpDate="";
-    private String region="";
-    private String country="";
-    private String mobile="";
-    private String district="";
+    private String panNo = "";
+    private String drugLicenseNo = "";
+    private String foodLicenseNo = "";
+    private String dlExpDate = "";
+    private String flExpDate = "";
+    private String region = "";
+    private String country = "";
+    private String mobile = "";
+    private String district = "";
 
-    private String rfield3="";
+    private String rfield3 = "";
 
-    private String rfield8="";
-    private String rfield9="";
-    private String rfield10="";
-    private String rfield11="";
-    private String rfield12="";
-    private String rfield13="";
-    private String rfield14="";
-    private String rfield15="";
-    private String rfield16="";
-    private String rfield17="";
-    private String rfield18="";
-    private String rfield19="";
+    private String rfield8 = "";
+    private String rfield9 = "";
+    private String rfield10 = "";
+    private String rfield11 = "";
+    private String rfield12 = "";
+    private String rfield13 = "";
+    private String rfield14 = "";
+    private String rfield15 = "";
+    private String rfield16 = "";
+    private String rfield17 = "";
+    private String rfield18 = "";
+    private String rfield19 = "";
+
+    private String webSiteUrl = "";
 
     public String getRetailerId() {
         return retailerId;
@@ -83,7 +83,6 @@ public class NewOutletBO {
     }
 
     private ArrayList<StandardListBO> priorityProductList;
-
 
 
     private ArrayList<String> editAttributeList;
@@ -183,7 +182,7 @@ public class NewOutletBO {
 
     }
 
-    public NewOutletBO(int locid,  String listName) {
+    public NewOutletBO(int locid, String listName) {
         super();
         this.listName = listName;
         this.listId = locid;
@@ -476,7 +475,7 @@ public class NewOutletBO {
         this.tinno = tinno;
     }
 
-    private String tinno="0";
+    private String tinno = "0";
 
     public String getGstNum() {
         return gstNum;
@@ -486,7 +485,7 @@ public class NewOutletBO {
         this.gstNum = gstNum;
     }
 
-    private String gstNum="";
+    private String gstNum = "";
 
     public int getIsSEZ() {
         return isSEZ;
@@ -610,7 +609,7 @@ public class NewOutletBO {
         this.pincode = pincode;
     }
 
-    private String pincode="";
+    private String pincode = "";
 
 
     public String getContact1title() {
@@ -663,8 +662,6 @@ public class NewOutletBO {
     }
 
 
-
-
     //for use of profile screen
 
 
@@ -692,7 +689,7 @@ public class NewOutletBO {
         this.mAddressByTag = mAddressByTag;
     }
 
-    private HashMap<String,AddressBO> mAddressByTag;
+    private HashMap<String, AddressBO> mAddressByTag;
 
     public String getRfield5() {
         return rfield5;
@@ -812,5 +809,13 @@ public class NewOutletBO {
 
     public void setDistrict(String district) {
         this.district = district;
+    }
+
+    public java.lang.String getWebSiteUrl() {
+        return webSiteUrl;
+    }
+
+    public void setWebSiteUrl(java.lang.String webSiteUrl) {
+        this.webSiteUrl = webSiteUrl;
     }
 }

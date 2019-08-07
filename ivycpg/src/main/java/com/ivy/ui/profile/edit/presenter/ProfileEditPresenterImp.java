@@ -2,9 +2,10 @@ package com.ivy.ui.profile.edit.presenter;
 
 
 import android.annotation.SuppressLint;
+import android.util.SparseArray;
+
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.OnLifecycleEvent;
-import android.util.SparseArray;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
@@ -114,7 +115,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private boolean IS_UPPERCASE_LETTER;
     private int locid = 0, loc2id = 0;
     private boolean validate = true;
-    private boolean isMobileNoVerfied = true, isEmailVerfied = true;
+    private boolean isMobileNoVerfied = true, isEmailVerfied = true, isWebUrlVerified = true;
     //by default  both mobile and email false. once otp verify will be become true. as of now i have used true.
 
 
@@ -980,6 +981,9 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     case ProfileConstant.EMAIL:
                         updateEmail(configBO);
                         break;
+                    case ProfileConstant.WEB_SITE_URL:
+                        updateWebSiteUrl(configBO);
+                        break;
                     case ProfileConstant.MOBILE:
                         updateMobile(configBO);
                         break;
@@ -1358,6 +1362,23 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
             deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
         } else if ((!(retailerMasterBO.getEmail() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = StringUtils.getStringQueryParam(configBO.getConfigCode())
+                    + "," + StringUtils.getStringQueryParam(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getAddressid()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateWebSiteUrl(ConfigureBO configBO) {
+        if ((retailerMasterBO.getWebUrl() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getWebUrl() + "").equals(configBO.getMenuNumber())
                 && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                 || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
                 && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
@@ -2088,6 +2109,25 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
+            } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.WEB_SITE_URL)
+                    && profileConfig.get(i).getModule_Order() == 1
+                    && getIvyView().getDynamicEditTextValues(i).length() != 0) {
+                try {
+                    if (!StringUtils.isValidURL(getIvyView().getDynamicEditTextValues(i))) {
+                        getIvyView().setDynamicEditTextFocus(i);
+                        getIvyView().showMessage(R.string.enter_valid_url);
+                        validate = false;
+                        break;
+                    }
+                    if (!isWebUrlVerified) {
+                        getIvyView().setDynamicEditTextFocus(i);
+                        validate = false;
+                        getIvyView().showMessage(R.string.please_verify_url);
+                        break;
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
             } else if (profileConfig.get(i).getConfigCode()
                     .equalsIgnoreCase(ProfileConstant.MOBILE)
                     && profileConfig.get(i).getModule_Order() == 1
@@ -2450,6 +2490,12 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
+                } else if (configCode.equals(ProfileConstant.WEB_SITE_URL) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
                 } else if (configCode.equals(ProfileConstant.MOBILE) && profileConfig.get(i).getModule_Order() == 1) {
                     if (StringUtils.isNullOrEmpty(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
@@ -2660,7 +2706,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         String mConfigCode = profileConfig.get(mNumber).getConfigCode();
         if (!comparConfigerCode(mConfigCode, ProfileConstant.EMAIL) ||
                 !comparConfigerCode(mConfigCode, ProfileConstant.PAN_NUMBER) ||
-                !comparConfigerCode(mConfigCode, ProfileConstant.GSTN)) {   /*EMAIL, PenNumber,GST*/
+                !comparConfigerCode(mConfigCode, ProfileConstant.GSTN) ||
+                !comparConfigerCode(mConfigCode, ProfileConstant.WEB_SITE_URL)) {   /*EMAIL, PenNumber,GST,WEB_SITE_URL*/
             //regex
             getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
             //getIvyView().addRegexFilter(profileConfig.get(mNumber).getRegex());
@@ -2695,6 +2742,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || comparConfigerCode(mConfigCode, ProfileConstant.FOOD_LICENCE_NUM)
                 || comparConfigerCode(mConfigCode, ProfileConstant.DRUG_LICENSE_NUM)
                 || comparConfigerCode(mConfigCode, ProfileConstant.EMAIL)
+                || comparConfigerCode(mConfigCode, ProfileConstant.WEB_SITE_URL)
                 || comparConfigerCode(mConfigCode, ProfileConstant.REGION)
                 || comparConfigerCode(mConfigCode, ProfileConstant.COUNTRY)
                 || comparConfigerCode(mConfigCode, ProfileConstant.CONTACT_NUMBER)
@@ -2826,6 +2874,9 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     case ProfileConstant.EMAIL:
                         prepareEmail();
                         break;
+                    case ProfileConstant.WEB_SITE_URL:
+                        prepareWebUrl();
+                        break;
                     case ProfileConstant.MOBILE:
                         prepareMobile();
                         break;
@@ -2925,6 +2976,16 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         if (StringUtils.isNullOrEmpty(retailerMasterBO.getEmail()))
             retailerMasterBO.setEmail("");
         String text = retailerMasterBO.getEmail();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void prepareWebUrl() {
+        if (StringUtils.isNullOrEmpty(retailerMasterBO.getWebUrl()))
+            retailerMasterBO.setWebUrl("");
+        String text = retailerMasterBO.getWebUrl();
         if (mPreviousProfileChanges.get(configCode) != null)
             if (!mPreviousProfileChanges.get(configCode).equals(text))
                 text = mPreviousProfileChanges.get(configCode);
