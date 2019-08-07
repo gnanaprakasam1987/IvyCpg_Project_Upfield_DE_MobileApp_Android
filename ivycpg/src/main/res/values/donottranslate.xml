@@ -440,4 +440,5 @@
     <string name="actual_default">Actual : 0</string>
     <string name="target_default">Target : 0</string>
     <string name="balance_default">Balance : 0</string>
+    <string name="compressing_saving">Compressing and Saving...</string>
 </resources>
