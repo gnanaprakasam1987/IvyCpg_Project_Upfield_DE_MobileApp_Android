@@ -41,6 +41,7 @@ import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.nfc.NFCManager;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
@@ -48,12 +49,15 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import io.fabric.sdk.android.services.common.CommonUtils;
 
 public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         ApplicationConfigs {
@@ -72,6 +76,18 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        if (!BuildConfig.DEBUG) {
+            if (DeviceUtils.isEmulator()) {
+                Toast.makeText(this, getResources().getString(R.string.this_is_not_a_real_device), Toast.LENGTH_LONG).show();
+                finish();
+            }
+            if (CommonUtils.isRooted(this)) {
+                Toast.makeText(this, getResources().getString(R.string.app_will_not_work_in_rooted_device), Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+
 
 
         bmodel = (BusinessModel) getApplicationContext();

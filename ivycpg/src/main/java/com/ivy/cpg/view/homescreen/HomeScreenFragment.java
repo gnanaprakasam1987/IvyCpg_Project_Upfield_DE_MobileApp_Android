@@ -107,6 +107,7 @@ import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.announcement.AnnouncementConstant;
 import com.ivy.ui.announcement.view.AnnouncementActivity;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
+import com.ivy.ui.mvp.view.MVPFragmentNew;
 import com.ivy.ui.reports.dynamicreport.view.DynamicReportFragmentNew;
 import com.ivy.ui.retailerplan.calendar.view.CalendarPlanFragment;
 import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
@@ -1705,7 +1706,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_DIGITIAL_SELLER);
         RoadFragment mRoadFragment = (RoadFragment) fm
                 .findFragmentByTag(MENU_ROAD_ACTIVITY);
-        MVPFragment mMvpFragment = (MVPFragment) fm
+        MVPFragmentNew mMvpFragment = (MVPFragmentNew) fm
                 .findFragmentByTag(MENU_MVP);
 
         PrimarySaleFragment mPrimSaleFragment = (PrimarySaleFragment) fm
@@ -2228,7 +2229,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_LEAVE_APR);
                 break;
             case MENU_MVP:
-                ft.add(R.id.fragment_content, new MVPFragment(),
+                ft.add(R.id.fragment_content, new MVPFragmentNew(),
                         MENU_MVP);
                 break;
             case MENU_ATTENDANCE:

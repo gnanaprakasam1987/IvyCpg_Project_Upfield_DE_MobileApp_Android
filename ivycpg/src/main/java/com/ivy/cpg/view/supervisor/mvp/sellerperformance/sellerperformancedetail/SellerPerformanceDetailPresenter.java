@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import androidx.annotation.NonNull;
-import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,13 +33,13 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,9 +48,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.Vector;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
@@ -339,7 +336,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                        if(task.getResult() != null) {
+                        if(task.isSuccessful() && task.getResult() != null) {
 
                             int covered = 0;
                             int billed = 0;
@@ -458,25 +455,9 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     }
 
     @Override
-    public String convertMillisToTime(Long time) {
-
-        if (time != null && time != 0) {
-            Date date = new Date(time);
-            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return format.format(date);
-        } else
-            return "";
-    }
-
-    @Override
     public String calculateDuration(long startTime,long endTime){
 
-        String duratingStr = (String) DateUtils.getRelativeTimeSpanString(startTime, endTime, 0);
-
-        duratingStr = duratingStr.replace("ago","");
-
-        return duratingStr;
+        return DateTimeUtils.convertMillisToHMmmSs((endTime-startTime));
     }
 
     @Override
@@ -803,18 +784,6 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
         } catch (Exception e) {
             Commons.printException("" + e);
-        }
-    }
-
-    String convertSecondsToHMmSs(long seconds) {
-
-        try {
-            long m = TimeUnit.MILLISECONDS.toMinutes(seconds);
-            long h = TimeUnit.MILLISECONDS.toHours(seconds);
-            return String.format(Locale.US, "%02d h : %02d m", h, m);
-        }catch(Exception e){
-            Commons.printException(e);
-            return "00:00:00";
         }
     }
 

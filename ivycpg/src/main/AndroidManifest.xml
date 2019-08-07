@@ -77,8 +77,6 @@
             android:exported="false" />
         <service android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingUploadService"
             android:exported="false"/>
-        <service android:name="com.ivy.cpg.locationservice.realtime.RealtimeLocationUploadIntentService"
-            android:exported="false"/>
 
         <receiver
             android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingAlarmReceiver"
@@ -551,10 +549,6 @@
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name="com.ivy.cpg.view.webview.WebViewActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.camera.NativeCameraActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.print.CreditNotePrintPreviewScreen"

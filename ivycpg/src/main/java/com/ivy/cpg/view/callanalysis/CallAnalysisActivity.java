@@ -977,6 +977,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
                     con.setMenuNumber(salesReturnVolume + "");
+
+                } else if (callanalysismenu.get(i).getConfigCode().equals("CallA41")) {
+
+                    con.setMenuName(callanalysismenu.get(i).getMenuName());
+                    con.setMenuNumber(SalesReturnHelper.getInstance(this).getSalesReturnValue(this)+"");
                 }
 
                 if (!callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA36")
