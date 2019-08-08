@@ -1204,6 +1204,13 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                             }
                         }
                     }
+                }
+                else if (configCode.equals(ProfileConstant.PINCODE) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    }
                 } else if (configCode.equals(ProfileConstant.CITY) && profileConfig.get(i).getModule_Order() == 1) {
                     if (StringUtils.isNullOrEmpty(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
