@@ -4,12 +4,17 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+
 import com.google.android.material.textfield.TextInputLayout;
+
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -23,19 +28,20 @@ import java.util.Objects;
  */
 class InOutReasonDialog extends Dialog {
 
-    private Spinner reason_spnr;
     private OnMyDialogResult Result;
     private TextInputLayout remarksInputLayout;
+    private ReasonMaster selectedReasonMaster;
 
-    InOutReasonDialog(final Context context, OnMyDialogResult mDialogResult, boolean isRemarks, ArrayList<ReasonMaster> reasonList) {
+
+    InOutReasonDialog(final Context context, boolean isRemarks, ArrayList<ReasonMaster> reasonList) {
         super(context);
-        this.Result = mDialogResult;
+        //this.Result = mDialogResult;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Objects.requireNonNull(getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setContentView(R.layout.in_out_reason_dialog);
 
-        reason_spnr = findViewById(R.id.reason_spnr);
-        reason_spnr.setVisibility(View.VISIBLE);
+        ListView listView = findViewById(R.id.dlg_priority_lvw);
 
         remarksInputLayout = findViewById(R.id.remarkWrapper);
         remarksInputLayout.setHint(context.getResources().getString(R.string.remark_hint));
@@ -44,31 +50,34 @@ class InOutReasonDialog extends Dialog {
         if (!isRemarks)
             remarksInputLayout.setVisibility(View.GONE);
 
-        ArrayAdapter<ReasonMaster> dataAdapter = new ArrayAdapter<>(context,
-                R.layout.spinner_bluetext_layout);
-        dataAdapter.add(new ReasonMaster(0 + "", context.getResources().getString(R.string.select_reason)));
-        if (reasonList.size() > 0)
-            dataAdapter.addAll(reasonList);
-        dataAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        for (ReasonMaster rm : reasonList) {
+            String str = rm.toString();
+        }
 
-        reason_spnr.setAdapter(dataAdapter);
+
+        listView.setAdapter(new ArrayAdapter<ReasonMaster>(context, android.R.layout.simple_list_item_single_choice, reasonList));
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedReasonMaster = (ReasonMaster) parent.getItemAtPosition(position);
+
+            }
+        });
+
+
         Button btn_ok = findViewById(R.id.btn_ok);
-
         btn_ok.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                Commons.print(reason_spnr
-                        .getSelectedItem()
-                        + " "
-                        + reason_spnr.getSelectedItemPosition());
-                if (!((ReasonMaster) reason_spnr.getSelectedItem()).getReasonID()
-                        .equals("0")) {
 
-                    Result.cancel(((ReasonMaster) reason_spnr
-                            .getSelectedItem()).getReasonID(), remarksInputLayout.getEditText().getText().toString());
+                if (selectedReasonMaster == null) {
+                    Toast.makeText(context, context.getResources().getString(R.string.please_select_item), Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                if (Result != null)
+                    Result.cancel(selectedReasonMaster.getReasonID(), remarksInputLayout.getEditText().getText().toString());
 
             }
         });
@@ -76,8 +85,6 @@ class InOutReasonDialog extends Dialog {
     }
 
     public interface OnMyDialogResult {
-
-
         void cancel(String reasonid, String remarks);
     }
 
@@ -85,4 +92,6 @@ class InOutReasonDialog extends Dialog {
         Result = onMyDialogResult;
 
     }
+
+
 }
