@@ -17,11 +17,16 @@ public interface AddPlanDataManager extends AppDataManagerContract {
 
     Observable<DateWisePlanBo> cancelPlan(DateWisePlanBo dateWisePlanBo, String reasonId);
 
-    Observable<DateWisePlanBo> DeletePlan(DateWisePlanBo dateWisePlanBo,String reasonId);
+    Observable<DateWisePlanBo> deletePlan(DateWisePlanBo dateWisePlanBo, String reasonId);
 
-    Single<Boolean> deletePlan(List<DateWisePlanBo> planList);
+    Single<Boolean> copyPlan(List<DateWisePlanBo> planList, String toDate, int userId);
 
-    Single<Boolean> copyPlan(List<DateWisePlanBo> planList, String toDate);
+    Single<Boolean> copyPlan(List<DateWisePlanBo> planList, int userId);
 
-    Single<Boolean> copyPlan(List<DateWisePlanBo> planList);
+    Single<Boolean> cancelPlan(List<DateWisePlanBo> planList,String reasonId);
+
+    Single<Boolean> movePlan(List<DateWisePlanBo> planList, String toDate, String reasonId,int userId);
+
+    Single<Boolean> movePlan(List<DateWisePlanBo> fromPlanList,List<DateWisePlanBo> toplanList, String reasonId,int userId);
+
 }

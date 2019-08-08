@@ -232,13 +232,18 @@
     <string name="calendar_view">Calendar</string>
     <string name="map_view">Map</string>
     <string name="copy_plan">Copy Plan</string>
+    <string name="move_plan">Move Plan</string>
     <string name="copy">Copy</string>
     <string name="no_visits_copied">No. of Visit\'s Copied</string>
-    <string name="do_you_want_delete_plan_copy">Do you want to delete existing plan and copy selected plan? </string>
+    <string name="no_visits_moved">No. of Visit\'s Moved</string>
+    <string name="already_plan_exists">Already plan exists</string>
     <string name="from_to_date">From and To date are same! </string>
     <string name="from_to_week">From and To week are same!</string>
     <string name="reason_delete_plan">Reason for Delete Plan</string>
     <string name="reason_reschedule_plan">Reason for Reschedule Plan</string>
+    <string name="not_allowed_to_cancel_today">Not allowed to cancel today\'s plan</string>
+    <string name="not_allowed_to_cancel_week">Not allowed to cancel current week plan</string>
+    <string name="move">Move</string>
 
     <string name="enter_time_slot">Enter Time Slot</string>
     <string name="select_salutation">Select Salutation</string>
@@ -442,4 +447,5 @@
     <string name="actual_default">Actual : 0</string>
     <string name="target_default">Target : 0</string>
     <string name="balance_default">Balance : 0</string>
+    <string name="compressing_saving">Compressing and Saving...</string>
 </resources>
