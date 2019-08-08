@@ -1657,6 +1657,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_NOTIFICATION = "NOTIFY01";
     public boolean IS_SHOW_NOTIFICATION;
 
+    private static final String CODE_COMPETITOR_ONLY_MAPPED_PRODS = "FUN85";
+    public boolean IS_SHOW_COMPETITOR_ONLY_MAPPED_PRODS;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2882,6 +2885,8 @@ public class ConfigurationMasterHelper {
         this.IS_SHOW_ANNOUNCEMENT = hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) : false;
         this.IS_SHOW_NOTIFICATION = hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) : false;
         this.IS_RETAILER_ADHOC_PLAN = hashMapHHTModuleConfig.get(CODE_RETAILER_ADHOC_PLAN) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_ADHOC_PLAN) : false;
+
+        this.IS_SHOW_COMPETITOR_ONLY_MAPPED_PRODS = hashMapHHTModuleConfig.get(CODE_COMPETITOR_ONLY_MAPPED_PRODS) != null ? hashMapHHTModuleConfig.get(CODE_COMPETITOR_ONLY_MAPPED_PRODS) : false;
     }
 
     private boolean isInOutModule() {
