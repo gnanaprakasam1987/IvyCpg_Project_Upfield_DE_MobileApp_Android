@@ -103,9 +103,13 @@ public class ProductTaggingHelper {
                     }
                 }
             } else {
-                for (ProductMasterBO sku : productHelper.getProductMaster()) {
-                    mTaggedProducts.add(sku);
-                    mTaggedProductById.put(sku.getProductID(), sku);
+
+                if (!businessModel.configurationMasterHelper.IS_SHOW_COMPETITOR_ONLY_MAPPED_PRODS) {
+
+                    for (ProductMasterBO sku : productHelper.getProductMaster()) {
+                        mTaggedProducts.add(sku);
+                        mTaggedProductById.put(sku.getProductID(), sku);
+                    }
                 }
             }
             if(!db.isDbNullOrClosed())

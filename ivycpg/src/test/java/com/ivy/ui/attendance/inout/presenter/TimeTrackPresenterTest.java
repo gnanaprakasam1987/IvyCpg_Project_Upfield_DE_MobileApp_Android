@@ -158,13 +158,13 @@ public class TimeTrackPresenterTest {
     @Test
     public void testisAttendanceRemark() {
         mockConfigurationHelper.IS_ATTENDANCE_REMARK = true;
-        assertTrue(mPresenter.isAttendanceRemark());
+        assertTrue(mPresenter.hasAttendanceRemark());
     }
 
     @Test
     public void testisAttendanceRemarkFail() {
         mockConfigurationHelper.IS_ATTENDANCE_REMARK = false;
-        assertFalse(mPresenter.isAttendanceRemark());
+        assertFalse(mPresenter.hasAttendanceRemark());
     }
 
     @Test

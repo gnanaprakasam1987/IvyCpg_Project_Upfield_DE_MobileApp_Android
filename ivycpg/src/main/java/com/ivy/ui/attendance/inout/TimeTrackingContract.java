@@ -46,7 +46,7 @@ public interface TimeTrackingContract {
 
         boolean isPreviousInOutCompleted(ArrayList<NonFieldTwoBo> timeTrackList);
 
-        boolean isAttendanceRemark();
+        boolean hasAttendanceRemark();
 
         void fetchInOutReason();
 

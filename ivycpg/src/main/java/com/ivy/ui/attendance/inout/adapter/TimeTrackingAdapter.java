@@ -16,6 +16,8 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
+import org.jsoup.helper.StringUtil;
+
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -51,7 +53,7 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.nonFieldTwoBO = nonFieldTwoBos.get(position);
         holder.tvOutTime.setText(holder.nonFieldTwoBO.getOutTime());
-        holder.tvStatus.setText(holder.nonFieldTwoBO.getStatus());
+        holder.tvStatus.setText(org.apache.commons.lang3.StringUtils.capitalize(holder.nonFieldTwoBO.getStatus()));
         holder.btOutTime.setText(context.getResources().getString(R.string.endC));
         String inTime = holder.nonFieldTwoBO.getInTime() != null ? holder.nonFieldTwoBO.getInTime() : " ";
         String outTime = holder.nonFieldTwoBO.getOutTime() != null ? holder.nonFieldTwoBO.getOutTime() : " ";
