@@ -37,6 +37,7 @@ class InOutReasonDialog extends Dialog {
         super(context);
         //this.Result = mDialogResult;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Objects.requireNonNull(getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setContentView(R.layout.in_out_reason_dialog);
 
