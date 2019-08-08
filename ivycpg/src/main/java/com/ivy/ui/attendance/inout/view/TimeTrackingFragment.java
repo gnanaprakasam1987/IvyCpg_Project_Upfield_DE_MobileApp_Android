@@ -60,10 +60,10 @@ import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOC
 public class TimeTrackingFragment extends BaseFragment implements TimeTrackingContract.TimeTrackingView, TimeTrackListClickListener {
 
     private ArrayList<NonFieldTwoBo> timeTrackList;
-    int addDialogrequestCode;
+    private int addDialogrequestCode;
     private String screenTitle;
     private InOutReasonDialog dialog;
-    InOutReasonDialog.OnMyDialogResult onmydailogresult;
+    //private InOutReasonDialog.OnMyDialogResult onmydailogresult;
     private Context mContext;
 
     @Inject
@@ -254,7 +254,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
     @Override
     public void showInOutDialog(ArrayList<ReasonMaster> reasonList) {
-        dialog = new InOutReasonDialog(getActivity(), onmydailogresult, presenter.isAttendanceRemark(), reasonList);
+        dialog = new InOutReasonDialog(getActivity(), presenter.hasAttendanceRemark(), reasonList);
 
         dialog.setDialogResult(new InOutReasonDialog.OnMyDialogResult() {
 

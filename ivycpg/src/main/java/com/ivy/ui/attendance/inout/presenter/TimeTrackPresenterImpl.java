@@ -111,7 +111,7 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
     }
 
     @Override
-    public boolean isAttendanceRemark() {
+    public boolean hasAttendanceRemark() {
         return configurationMasterHelper.IS_ATTENDANCE_REMARK;
     }
 
