@@ -24,10 +24,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
-
-import androidx.multidex.MultiDex;
-import androidx.fragment.app.FragmentActivity;
-
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -35,6 +31,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
+import androidx.multidex.MultiDex;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
@@ -52,9 +51,9 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.IvyConstants;
 import com.ivy.core.data.app.AppDataProvider;
@@ -81,6 +80,7 @@ import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
@@ -113,7 +113,6 @@ import com.ivy.sd.png.bo.OrderFullfillmentBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -3790,6 +3789,87 @@ public class BusinessModel extends Application {
                     c.close();
                 }
             }
+
+
+            if (configurationMasterHelper.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN) {
+                c = db
+                        .selectSQL("SELECT DISTINCT ImageName,pid FROM LastVisitPromotionImage");
+                int count = 0;
+                if (c != null) {
+                    while (c.moveToNext()) {
+
+                        count += 100;
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
+                        digitalContentBO.setImageID(c.getInt(1));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.PROMOTION);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID() + count, digitalContentBO);
+
+
+                    }
+                    c.close();
+                }
+            }
+
+
+
+            if (configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN) {
+                c = db.selectSQL("SELECT DISTINCT ImageName,pid FROM LastVisitSOSImage");
+                int count = 0;
+                if (c != null) {
+                    while (c.moveToNext()) {
+
+                        count += 100;
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
+                        digitalContentBO.setImageID(c.getInt(1));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.SOS_DIGITAL_CONTENT);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID() + count, digitalContentBO);
+
+
+                    }
+                    c.close();
+                }
+            }
+
+
+
+            if (configurationMasterHelper.IS_SURVEY_RETAIN_LAST_VISIT_TRAN) {
+                c = db.selectSQL("SELECT DISTINCT ImageName,QuestionId FROM LastVisitSurveyImage");
+                int count = 0;
+                if (c != null) {
+                    while (c.moveToNext()) {
+
+                        count += 100;
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
+                        digitalContentBO.setImageID(c.getInt(1));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.SURVEY_DIGITAL_CONTENT);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID() + count, digitalContentBO);
+
+
+                    }
+                    c.close();
+                }
+            }
+
+
+
 
             c = db.selectSQL("SELECT DISTINCT ImageURL,fileSize,imageid,imagename,ifnull(SM.listCode,'') FROM DigitalContentMaster left join standardListMaster SM ON SM.listId=storageType");
             if (c != null) {

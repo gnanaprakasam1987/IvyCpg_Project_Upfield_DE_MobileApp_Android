@@ -470,7 +470,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
 
                     //add task created images into TaskImageDetails table
-                    columns_new = "TaskId,TaskImageId,TaskImageName,Upload,Status";
+                    columns_new = "TaskId,TaskImageId,TaskImageName,Upload,Status,IsServerTask";
                     String imgId;
                     String folderName = "Task/"
                             + dataManager.getUser().getDownloadDate()
@@ -484,7 +484,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                                     .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
                             value_new = finalTid + "," + imgId + "," + StringUtils.getStringQueryParam(folderName + imgBO.getTaskImg())
-                                    + "," + "'N'" + "," + "'I'";
+                                    + "," + "'N'" + "," + "'I'" + "," + taskObj.getServerTask();
 
                             mDbUtil.insertSQL("TaskImageDetails", columns_new, value_new);
                         }

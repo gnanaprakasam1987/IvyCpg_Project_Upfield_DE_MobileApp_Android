@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/imgDetailBottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/curve_top_white"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/_10sdp"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="@dimen/dimen_0dp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/file_path_tv_title"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/image_message"
+        tools:ignore="UnusedAttribute" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/file_path_tv"
+        style="@style/TextViewNormalRegular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/file_path_tv_title"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/image_message"
+        tools:ignore="UnusedAttribute" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_marginTop="@dimen/_5sdp"
+        android:id="@+id/date_tv_title"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/file_path_tv"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/date_label"
+        tools:ignore="UnusedAttribute" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/date_tv"
+        style="@style/TextViewNormalRegular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/date_tv_title"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/date_label"
+        tools:ignore="UnusedAttribute" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_marginTop="@dimen/_5sdp"
+        android:id="@+id/ret_name_tv_title"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/date_tv"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/retailer_name"
+        tools:ignore="UnusedAttribute" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/ret_name_tv"
+        style="@style/TextViewNormalRegular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ret_name_tv_title"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/retailer_name"
+        tools:ignore="UnusedAttribute" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_marginTop="@dimen/_5sdp"
+        android:id="@+id/prod_name_tv_title"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ret_name_tv"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/description"
+        tools:ignore="UnusedAttribute" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/prod_name_tv"
+        style="@style/TextViewNormalRegular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/prod_name_tv_title"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/name_hint"
+        tools:ignore="UnusedAttribute" />
+</RelativeLayout>

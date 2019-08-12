@@ -413,7 +413,6 @@
     <string name="order_type">Order Type</string>
     <string name="profile_view">Profile View</string>
     <string name="do_u_want_close">Do you want to Close?</string>
-
     <string name="exposition_status">Exposition Status</string>
     <string name="not_applicable">Not Applicable</string>
     <string name="srp_must_be_less_than_of_mrp">Seller price must be less than of MRP: %.0f</string>
@@ -447,5 +446,8 @@
     <string name="actual_default">Actual : 0</string>
     <string name="target_default">Target : 0</string>
     <string name="balance_default">Balance : 0</string>
-    <string name="compressing_saving">Compressing and Saving...</string>
+    <string name="compressing_saving">Compressing and Saving…</string>
+    <string name="current_visit">Current Visit</string>
+    <string name="last_visit">Last Visit</string>
+    <string name="choose_any_one_option">Choose any one option</string>
 </resources>

@@ -807,16 +807,19 @@ SynchronizationHelper {
 
             updateLastVisitPromotion();
             exceptionTableList.add("LastVisitPromotion");
+            exceptionTableList.add("LastVisitPromotionImage");
         }
 
         if (bmodel.configurationMasterHelper.IS_SURVEY_RETAIN_LAST_VISIT_TRAN) {
             updateLastVisitSurvey();
             exceptionTableList.add("LastVisitSurvey");
+            exceptionTableList.add("LastVisitSurveyImage");
         }
 
         if (bmodel.configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN) {
             updateLastVisitSOS();
             exceptionTableList.add("LastVisitSOS");
+            exceptionTableList.add("LastVisitSOSImage");
         }
 
         if (bmodel.configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
@@ -4018,17 +4021,55 @@ SynchronizationHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sql = "select PH.retailerId,locId,promotionId,isExecuted,promoQty,ReasonId,ExecRatingLovId,Flag,BrandId from PromotionDetail PD INNER JOIN PromotionHeader PH ON PD.uid=PH.uid where PH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " and PD.flag='S'";
+            String sql = "select PH.retailerId,locId,promotionId,isExecuted,promoQty,ReasonId,ExecRatingLovId,Flag,BrandId,IFNULL(imgName,'') as imageName from PromotionDetail PD INNER JOIN PromotionHeader PH ON PD.uid=PH.uid where PH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " and PD.flag='S'";
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
                 while (cur.moveToNext()) {
                     sql = "Select promotionId from LastVisitPromotion where retailerid=" + cur.getString(0) + " and locid=" + cur.getString(1) + " and promotionId=" + cur.getString(2) + " and brandId=" + cur.getString(8);
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
-                        db.updateSQL("update LastVisitPromotion set isExecuted=" + cur.getString(3) + ",promoQty=" + cur.getString(4) + ",ReasonId=" + cur.getString(5) + ",ExecRatingLovId=" + cur.getString(6) + ",Flag='" + cur.getString(7) + "' where retailerid=" + cur.getString(0) + " and locid=" + cur.getString(1) + " and promotionId=" + cur.getString(2) + " and brandId=" + cur.getString(8));
+                        db.updateSQL("update LastVisitPromotion set isExecuted=" + cur.getString(3)
+                                + ",promoQty=" + cur.getString(4)
+                                + ",ReasonId=" + cur.getString(5)
+                                + ",ExecRatingLovId=" + cur.getString(6)
+                                + ",Flag='" + cur.getString(7)
+                                + " where retailerid=" + cur.getString(0)
+                                + " and locid=" + cur.getString(1)
+                                + " and promotionId=" + cur.getString(2)
+                                + " and brandId=" + cur.getString(8));
+
+                        if (!cur.getString(9).isEmpty())
+                            db.updateSQL("update LastVisitPromotionImage set RetailerId=" + cur.getString(0)
+                                    + ",StoreLocId=" + cur.getString(1)
+                                    + ",PromotionId=" + cur.getString(2)
+                                    + ",pid=" + cur.getString(8)
+                                    + ",ImageName=" + StringUtils.getStringQueryParam(cur.getString(9))
+                                    + " where RetailerId=" + cur.getString(0)
+                                    + " and StoreLocId=" + cur.getString(1)
+                                    + " and PromotionId=" + cur.getString(2)
+                                    + " and pid=" + cur.getString(8));
                         cur1.close();
                     } else {
-                        db.insertSQL("LastVisitPromotion", "retailerId,locId,promotionId,isExecuted,promoQty,ReasonId,ExecRatingLovId,Flag,BrandId", cur.getString(0) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(3) + "," + cur.getString(4) + "," + cur.getString(5) + "," + cur.getString(6) + ",'" + cur.getString(7) + "'," + cur.getString(8));
+                        db.insertSQL("LastVisitPromotion"
+                                , "retailerId,locId,promotionId,isExecuted,promoQty,ReasonId,ExecRatingLovId,Flag,BrandId"
+                                , cur.getString(0)
+                                        + "," + cur.getString(1)
+                                        + "," + cur.getString(2)
+                                        + "," + cur.getString(3)
+                                        + "," + cur.getString(4)
+                                        + "," + cur.getString(5)
+                                        + "," + cur.getString(6)
+                                        + ",'" + cur.getString(7)
+                                        + "'," + cur.getString(8));
+
+                        if (!cur.getString(9).isEmpty())
+                            db.insertSQL("LastVisitPromotionImage"
+                                    , "RetailerId,StoreLocId,PromotionId,pid,ImageName"
+                                    , cur.getString(0)
+                                            + "," + cur.getString(1)
+                                            + "," + cur.getString(2)
+                                            + "," + cur.getString(8)
+                                            + "," + StringUtils.getStringQueryParam(cur.getString(9)));
 
                     }
                 }
@@ -4057,6 +4098,7 @@ SynchronizationHelper {
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
                         db.executeQ("delete from LastVisitSurvey where retailerid=" + cur.getString(0) + " and surveyId=" + cur.getString(1));
+                        db.executeQ("delete from LastVisitSurveyImage where RetailerId=" + cur.getString(0) + " and SurveyId=" + cur.getString(1));
                         cur1.close();
                     }
                 }
@@ -4081,6 +4123,24 @@ SynchronizationHelper {
                 cur2.close();
             }
 
+            //re insert transaction data from AnswerImageDetail records into LastVisitSurveyImage
+            sql2 = "select AH.retailerId,AH.surveyId,AD.qid,AID.ImgName from AnswerDetail AD " +
+                    "INNER JOIN AnswerHeader AH ON AD.uid=AH.uid " +
+                    "INNER JOIN AnswerImageDetail AID ON AD.ui=AID.uid " +
+                    "where AH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            cur2 = db.selectSQL(sql2);
+            if (cur2 != null) {
+                while (cur2.moveToNext()) {
+                    db.insertSQL("LastVisitSurveyImage"
+                            , "RetailerId,surveyId,qid,ImageName"
+                            , cur2.getString(0)
+                                    + "," + cur2.getString(1)
+                                    + "," + cur2.getString(2)
+                                    + "," + StringUtils.getStringQueryParam(cur2.getString(3)));
+                }
+            }
+
+
             db.closeDB();
         } catch (Exception ex) {
             Commons.printException("" + ex);
@@ -4103,14 +4163,16 @@ SynchronizationHelper {
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
                         db.executeQ("delete from LastVisitSOS where retailerid=" + cur.getString(0));
+                        db.executeQ("delete from LastVisitSOSImage RetailerId=" + cur.getString(0));
                         cur1.close();
                     }
                 }
                 cur.close();
             }
 
-            // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS
-            String sql2 = "select STD.retailerid,STD.locid,STD.pid,STD.parentid,STD.actual,STD.reasonid,STD.isown,STD.parenttotal from SOS_Tracking_Detail STD INNER JOIN SOS_Tracking_Header STH ON STD.uid=STH.uid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+
+            // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS and LastVisitSOSImage
+            String sql2 = "select STD.retailerid,STD.locid,STD.pid,STD.parentid,STD.actual,STD.reasonid,STD.isown,STD.parenttotal,STD.imgName from SOS_Tracking_Detail STD INNER JOIN SOS_Tracking_Header STH ON STD.uid=STH.uid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur2 = db.selectSQL(sql2);
             if (cur2 != null) {
                 while (cur2.moveToNext()) {
@@ -4123,6 +4185,13 @@ SynchronizationHelper {
                                     + "," + cur2.getString(5)
                                     + "," + cur2.getString(6)
                                     + "," + cur2.getString(7));
+
+                    db.insertSQL("LastVisitSOSImage"
+                            , "RetailerId,StoreLocId,pid,ImageName"
+                            , cur2.getString(0)
+                                    + "," + cur2.getString(1)
+                                    + "," + cur2.getString(2)
+                                    + "," + StringUtils.getStringQueryParam(cur2.getString(8)));
                 }
                 cur2.close();
             }
