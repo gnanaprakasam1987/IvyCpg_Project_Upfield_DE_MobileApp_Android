@@ -194,14 +194,14 @@ public class SalesFundamentalHelper {
             db.openDataBase();
             int mContentLevelId = 0;
 
-            StringBuilder accountGroupIds=new StringBuilder();
-            String accountQuery="Select groupId from AccountGroupDetail where retailerId="+ mBModel.getRetailerMasterBO().getRetailerID();
-            Cursor accountCursor=db.selectSQL(accountQuery);
-            if(accountCursor.getCount()>0){
-                while (accountCursor.moveToNext()){
+            StringBuilder accountGroupIds = new StringBuilder();
+            String accountQuery = "Select groupId from AccountGroupDetail where retailerId=" + mBModel.getRetailerMasterBO().getRetailerID();
+            Cursor accountCursor = db.selectSQL(accountQuery);
+            if (accountCursor.getCount() > 0) {
+                while (accountCursor.moveToNext()) {
                     accountGroupIds.append(accountCursor.getString(0));
 
-                    if(accountGroupIds.toString().length()>0)
+                    if (accountGroupIds.toString().length() > 0)
                         accountGroupIds.append(",");
                 }
             }
@@ -236,10 +236,9 @@ public class SalesFundamentalHelper {
             }
             sBuffer.append(moduleName.replace("MENU_", "") + "_NormMapping  SFN ON A.pid = SFN.pid  ");
 
-            if(accountGroupIds.toString().length()>0) {
-               sBuffer.append(" AND SFN.accountGroupId in("+accountGroupIds.toString()+")");
-            }
-            else {
+            if (accountGroupIds.toString().length() > 0) {
+                sBuffer.append(" AND SFN.accountGroupId in(" + accountGroupIds.toString() + ")");
+            } else {
                 if (IsRetailer) {
                     sBuffer.append("and SFN.RetailerId =");
                     sBuffer.append(mBModel.getRetailerMasterBO().getRetailerID());
@@ -357,7 +356,7 @@ public class SalesFundamentalHelper {
                     lstCompetitiorPids = new ArrayList<>();
                     while (cursor.moveToNext()) {
 
-                        if (!lstCompetitiorPids.contains(cursor.getInt(1) + ","+ cursor.getInt(0))) {
+                        if (!lstCompetitiorPids.contains(cursor.getInt(1) + "," + cursor.getInt(0))) {
                             for (SOSBO prodBO : getSOSList()) {
 
                                 if (prodBO.getProductID() == cursor.getInt(0)) {
@@ -370,7 +369,7 @@ public class SalesFundamentalHelper {
                                     comLevel.setNorm(cursor.getInt(4));
                                     comLevel.setLocations(cloneLocationList(getLocationList()));
                                     comLevel.setParentHierarchy(cursor.getString(5));
-                                    lstCompetitiorPids.add(cursor.getInt(1) + ","+ cursor.getInt(0));
+                                    lstCompetitiorPids.add(cursor.getInt(1) + "," + cursor.getInt(0));
                                     getSOSList().add(comLevel);
                                     break;
                                 }
@@ -412,7 +411,7 @@ public class SalesFundamentalHelper {
                 if (cursor != null) {
                     lstCompetitiorPids = new ArrayList<>();
                     while (cursor.moveToNext()) {
-                        if (!lstCompetitiorPids.contains(cursor.getInt(1) + ","+ cursor.getInt(0))) {
+                        if (!lstCompetitiorPids.contains(cursor.getInt(1) + "," + cursor.getInt(0))) {
                             for (SOSKUBO prodBO : getSOSKUList()) {
 
                                 if (prodBO.getProductID() == cursor.getInt(0)) {
@@ -423,7 +422,7 @@ public class SalesFundamentalHelper {
                                     comLevel.setProductName(cursor.getString(2));
                                     comLevel.setIsOwn(cursor.getInt(3));
                                     comLevel.setNorm(cursor.getInt(4));
-                                    lstCompetitiorPids.add(cursor.getInt(1) + ","+ cursor.getInt(0));
+                                    lstCompetitiorPids.add(cursor.getInt(1) + "," + cursor.getInt(0));
                                     getSOSKUList().add(comLevel);
                                     break;
                                 }
@@ -455,8 +454,9 @@ public class SalesFundamentalHelper {
             String refId = "0";
             String headerValues;
             String detailValues;
+            String auditColumn = modName.equals("SOSKU") ? "isDone" : "IsAuditDone";
             String headerColumns = "Uid,RetailerId,Date,Remark,refid,ridSF,VisitId";
-            String detailColumns = "Uid,Pid,RetailerId,Norm,ParentTotal,Required,Actual,Percentage,Gap,ReasonId,ImageName,IsOwn,ParentID,IsAuditDone,MappingId,LocId,imgName";
+            String detailColumns = "Uid,Pid,RetailerId,Norm,ParentTotal,Required,Actual,Percentage,Gap,ReasonId,ImageName,IsOwn,ParentID," + auditColumn + ",MappingId,LocId,imgName";
 
             String mParentDetailColumns = "Uid, PId, BlockCount, ShelfCount,"
                     + " ShelfLength, ExtraShelf,total,RetailerId,LocId";
@@ -1496,7 +1496,9 @@ public class SalesFundamentalHelper {
                 DataMembers.uidSOD = uid;
                 StringBuffer sb = new StringBuffer();
 
-                sb.append("SELECT SF.Pid,SF.Norm,SF.ParentTotal,SF.Required,SF.Actual,SF.Percentage,SF.Gap,SF.ReasonId,SF.ImageName,SF.Isown,IFNULL(SF.IsAuditDone,'2')");
+                String auditDoneColumn = moduleName.equals("SOSKU") ? "SF.isDone" : "SF.IsAuditDone";
+
+                sb.append("SELECT SF.Pid,SF.Norm,SF.ParentTotal,SF.Required,SF.Actual,SF.Percentage,SF.Gap,SF.ReasonId,SF.ImageName,SF.Isown,IFNULL(" + auditDoneColumn + ",'2')");
                 if (moduleName.equals("SOS") || moduleName.equals("SOD")) {
                     sb.append(", IFNULL(B.BlockCount,'0'), IFNULL(B.ShelfCount,'0'),IFNULL(B.ShelfLength,'0'), IFNULL(B.ExtraShelf,'0'),SF.Parentid,SF.locid");
                     if (moduleName.equals("SOS")) {
@@ -1504,7 +1506,7 @@ public class SalesFundamentalHelper {
                     }
                 }
                 sb.append(" , SF.imgName as tempImageName From " + moduleName + "_Tracking_Detail SF");
-                {
+                if (moduleName.equals("SOS") || moduleName.equals("SOD")) {
                     sb.append(" LEFT JOIN " + moduleName
                             + "_Tracking_Parent_Detail B ON");
                     sb.append(" B.Uid = SF.Uid AND B.PId = SF.Parentid and SF.locid=B.locid");
@@ -1795,12 +1797,11 @@ public class SalesFundamentalHelper {
             for (SOSBO levelbo : getSOSList()) {
                 for (int i = 0; i < levelbo.getLocations().size(); i++) {
                     if (mBModel.configurationMasterHelper.isAuditEnabled()) {
-                        if((!levelbo.getLocations().get(i).getParentTotal().equals("0")
+                        if ((!levelbo.getLocations().get(i).getParentTotal().equals("0")
                                 && levelbo.getLocations().get(i).getAudit() != 2)
                                 || levelbo.getLocations().get(i).getAudit() != 2)
                             return true;
-                    }
-                    else if (!levelbo.getLocations().get(i).getParentTotal().equals("0") || levelbo.getLocations().get(i).getAudit() != 2) {
+                    } else if (!levelbo.getLocations().get(i).getParentTotal().equals("0") || levelbo.getLocations().get(i).getAudit() != 2) {
                         return true;
                     }
                 }
@@ -1809,12 +1810,11 @@ public class SalesFundamentalHelper {
             for (SODBO levelbo : getSODList()) {
                 for (int i = 0; i < levelbo.getLocations().size(); i++) {
                     if (mBModel.configurationMasterHelper.isAuditEnabled()) {
-                        if((!levelbo.getLocations().get(i).getParentTotal().equals("0")
+                        if ((!levelbo.getLocations().get(i).getParentTotal().equals("0")
                                 && levelbo.getLocations().get(i).getAudit() != 2)
                                 || levelbo.getLocations().get(i).getAudit() != 2)
                             return true;
-                    }
-                    else if (!levelbo.getLocations().get(i).getParentTotal().equals("0") || levelbo.getLocations().get(i).getAudit() != 2) {
+                    } else if (!levelbo.getLocations().get(i).getParentTotal().equals("0") || levelbo.getLocations().get(i).getAudit() != 2) {
                         return true;
                     }
                 }
@@ -2076,8 +2076,8 @@ public class SalesFundamentalHelper {
 
             if (isData) {
                 db.insertSQL("SOS_Tracking_Header", headerColumns, uid + "," + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + "," + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                            + "," + StringUtils.getStringQueryParam(mBModel.getAppDataProvider().getRetailMaster().getRidSF())
-                            + "," + mBModel.getAppDataProvider().getUniqueId());
+                        + "," + StringUtils.getStringQueryParam(mBModel.getAppDataProvider().getRetailMaster().getRidSF())
+                        + "," + mBModel.getAppDataProvider().getUniqueId());
             }
 
 
@@ -2262,7 +2262,7 @@ public class SalesFundamentalHelper {
     }
 
     public List<SOSBO> getmCategoryForDialogSOSBO() {
-        return mCategoryForDialogSOSBO!=null?mCategoryForDialogSOSBO:new ArrayList<>();
+        return mCategoryForDialogSOSBO != null ? mCategoryForDialogSOSBO : new ArrayList<>();
     }
 
     public void setmCategoryForDialogSOSBO(List<SOSBO> mCategoryForDialogSOSBO) {
@@ -2270,7 +2270,7 @@ public class SalesFundamentalHelper {
     }
 
     public List<SODBO> getmCategoryForDialogSODBO() {
-        return mCategoryForDialogSODBO!=null?mCategoryForDialogSODBO:new ArrayList<>();
+        return mCategoryForDialogSODBO != null ? mCategoryForDialogSODBO : new ArrayList<>();
     }
 
     public void setmCategoryForDialogSODBO(List<SODBO> mCategoryForDialogSOSBO) {

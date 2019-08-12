@@ -63,6 +63,8 @@ public class DataMembers {
     public static final String TASK_DIGITAL_CONTENT = "TDC";
     public static final String SERIALIZED_ASSET_DIG_CONTENT = "SADC";
     public static final String PROMOTION = "PROMO";
+    public static final String SURVEY_DIGITAL_CONTENT = "SURVEY";
+    public static final String SOS_DIGITAL_CONTENT = "SOSDC";
 
     public static final String APP_TUTORIAL = "AppTutorial";
 
@@ -200,7 +202,7 @@ public class DataMembers {
     public static final String tbl_SalesReturnDetails = "SalesReturnDetails";
     public static final String tbl_vanload = "VanLoad";
     private static final String tbl_odameter = "Odameter";
-    private static final String tbl_CollectionDocument = "CollectionDocument";
+    public static final String tbl_CollectionDocument = "CollectionDocument";
 
     public static final String tbl_retailerscoreheader = "RetailerScoreHeader";
     public static final String tbl_retailerscoredetail = "RetailerScoreDetails";
@@ -213,12 +215,12 @@ public class DataMembers {
     public static final String tbl_LastVisitStock_History = "LastVisitStock_History";
 
     public static final String tbl_AnswerHeader = "AnswerHeader";
-    private static final String tbl_AnswerDetail = "AnswerDetail";
-    private static final String tbl_AnswerImageDetail = "AnswerImageDetail";
+    public static final String tbl_AnswerDetail = "AnswerDetail";
+    public static final String tbl_AnswerImageDetail = "AnswerImageDetail";
     public static final String tbl_OutletTimestamp = "OutletTimestamp";
     public static final String tbl_OutletTimestamp_images = "OutletTimestampImages";
     public static final String tbl_PhotoCapture = "PhotoCapture";
-    private static final String tbl_NewOutletImage = "NewOutletImage";
+    public static final String tbl_NewOutletImage = "NewOutletImage";
 
     private static final String tbl_leaveapprovaldetails = "LeaveApprovalDetails";
     private static final String tbl_leaveapprovaldetails_cols = "RefId,Status,ApprovedDate,uid";
@@ -270,16 +272,16 @@ public class DataMembers {
     private static final String tbl_AssetAddDelete_cols = "uid,retailerid,AssetId,serialNum,installdate,creationdate,flag,mappingid,productid,TypeLovId,reasonid,remarks,toRetailerId";
 
     public static final String tbl_SerializedAssetHeader = "SerializedAssetHeader";
-    public static final String tbl_SerializedAssetHeader_cols = "uid,DateTime,RetailerId,remarks,VisitId,Score,TargetScore";
+    private static final String tbl_SerializedAssetHeader_cols = "uid,DateTime,RetailerId,remarks,VisitId";
 
     public static final String tbl_SerializedAssetDetail = "SerializedAssetDetail";
-    public static final String tbl_SerializedAssetDetail_cols = "uid,AssetID,isAvailable,ReasonID,SerialNumber,conditionId,NFCNumber,installdate,lastServicedate,isAuditDone,Score,TargetScore";
+    private static final String tbl_SerializedAssetDetail_cols = "uid,AssetID,isAvailable,ReasonID,SerialNumber,conditionId,NFCNumber,installdate,lastServicedate,isAuditDone";
 
     public static final String tbl_SerializedAssetImageDetail = "SerializedAssetImageDetails";
-    public static final String tbl_SerializedAssetImageDetail_cols = "uid,AssetID,ImageName,serialNumber";
+    private static final String tbl_SerializedAssetImageDetail_cols = "uid,AssetID,ImageName,serialNumber";
 
     public static final String tbl_SerializedAssetServiceRequest = "SerializedAssetServiceRequest";
-    public static final String tbl_SerializedAssetServiceRequest_cols = "Uid,date,AssetId,serialNumber,reasonid,retailerid,serviceProviderId,IssueDescription,ImagePath,Status,ExpectedResolutionDate";
+    private static final String tbl_SerializedAssetServiceRequest_cols = "Uid,date,AssetId,serialNumber,reasonid,retailerid,serviceProviderId,IssueDescription,ImagePath,Status,ExpectedResolutionDate";
 
     public static final String tbl_SerializedAssetTransfer = "SerializedAssetTransfer";
     private static final String tbl_SerializedAssetTransfer_cols = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId,rentPrice,toDate,VisitId,DeliveryDate,Qty";
@@ -296,10 +298,10 @@ public class DataMembers {
     public static final String tbl_HhtModuleMaster = "HhtModuleMaster";
     public static final String tbl_HhtMenuMaster = "HhtMenuMaster";
 
-    private static final String tbl_TaskMaster = "TaskMaster";
+    public static final String tbl_TaskMaster = "TaskMaster";
     private static final String tbl_TaskMaster_cols = "taskid,taskdesc,taskcode,TaskOwner,Date,DueDate,CategoryId,EndDate,Status";
 
-    private static final String tbl_TaskImageDetails = "TaskImageDetails";
+    public static final String tbl_TaskImageDetails = "TaskImageDetails";
     private static final String tbl_TaskImageDetails_cols = "TaskId,TaskImageId,TaskImageName,Status";
 
     public static final String tbl_TaskConfigurationMaster = "TaskConfigurationMaster";
@@ -373,24 +375,24 @@ public class DataMembers {
     private static final String tbl_invoice_return_detail_cols = "InvoiceID,Pid,UomID,TypeID,Qty,Price,LineValue,LiableQty,ReturnQty";
 
     // For Asean IS Upload Tables
-    private static final String tbl_PromotionHeader = "PromotionHeader";
-    private static final String tbl_PromotionDetail = "PromotionDetail";
+    public static final String tbl_PromotionHeader = "PromotionHeader";
+    public static final String tbl_PromotionDetail = "PromotionDetail";
 
     private static final String tbl_MonthlyPlanHeaderMaster = "MonthlyPlanHeaderMaster";
     private static final String tbl_MonthlyPlanDetail = "MonthlyPlanDetail";
 
-    private static final String tbl_SOD_Tracking_Detail = "SOD_Tracking_Detail";
-    private static final String tbl_SOD_Tracking_Header = "SOD_Tracking_Header";
+    public static final String tbl_SOD_Tracking_Detail = "SOD_Tracking_Detail";
+    public static final String tbl_SOD_Tracking_Header = "SOD_Tracking_Header";
 
-    private static final String tbl_SOD_Asset_Tracking_Detail = "SOD_Asset_Tracking_Detail";
-    private static final String tbl_SOD_Asset_Tracking_Header = "SOD_Asset_Tracking_Header";
-    private static final String tbl_SOD_Assets_Detail = "SOD_Assets_Detail";
+    public static final String tbl_SOD_Asset_Tracking_Detail = "SOD_Asset_Tracking_Detail";
+    public static final String tbl_SOD_Asset_Tracking_Header = "SOD_Asset_Tracking_Header";
+    public static final String tbl_SOD_Assets_Detail = "SOD_Assets_Detail";
 
-    private static final String tbl_SOSKU_Tracking_Detail = "SOSKU_Tracking_Detail";
-    private static final String tbl_SOSKU_Tracking_Header = "SOSKU_Tracking_Header";
+    public static final String tbl_SOSKU_Tracking_Detail = "SOSKU_Tracking_Detail";
+    public static final String tbl_SOSKU_Tracking_Header = "SOSKU_Tracking_Header";
 
-    private static final String tbl_SOS_Tracking_Detail = "SOS_Tracking_Detail";
-    private static final String tbl_SOS_Tracking_Header = "SOS_Tracking_Header";
+    public static final String tbl_SOS_Tracking_Detail = "SOS_Tracking_Detail";
+    public static final String tbl_SOS_Tracking_Header = "SOS_Tracking_Header";
     private static final String tbl_SOS_Tracking_Parent_Detail = "SOS_Tracking_Parent_Detail";
     public static final String tbl_SOS__Block_Tracking_Detail = "SOS_Tracking_Block_Detail";
 
@@ -413,7 +415,7 @@ public class DataMembers {
     private static final String tbl_InvoiceDetailsUpload_cols = "InvoiceId,ProductId,Qty,Rate,UomId,uomCount,pcsQty,caseQty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,batchid,casePrice,outerPrice,pcsUOMId,OrderType,totalamount,PriceOffId,PriceOffValue,isFreeProduct,weight,hasSerial,TaxAmount,SchemeAmount,DiscountAmount,NetAmount,HsnCode,RField1";
     private static final String tbl_PaymentUpload_cols = "uid,BillNumber,Amount,CashMode,ChequeNumber,ChequeDate,BankID,BranchCode,RetailerID,BeatID,Date,remark,payType,ImageName,GroupId,StatusLovId,totaldiscount,DistributorID,receiptno,refid,RefNo,PrintFilePath,DistParentID,BankName,BranchName,ridSF,VisitId";
     private static final String tbl_CollectionDocument_cols = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath";
-    private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,outLatitude,outLongitude,OrderValue,lpc,RetailerName,ridSF,tripUid,gpsDifference";
+    private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,outLatitude,outLongitude,OrderValue,lpc,RetailerName,ridSF,tripUid";
     private static final String tbl_OutletTimestampImageupload_cols = "uid,imageName";
     private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate,pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
     private static final String tbl_deviateReasontableupload_cols = "uid,retailerid,date,reasonid,DistributorID,remarks,ridSF";
@@ -426,7 +428,7 @@ public class DataMembers {
     private static final String tbl_NonProductiveModuleTable_cols = "Tid,RetailerID,ModuleCode,ReasonID,ImagePath";
     private static final String tbl_SalesReturnHeader_cols = "uid,date,RetailerID,ReturnValue,Lpc,remark,latitude,longitude,credit_flag,unload,IsCreditNoteApplicable,ReplacedValue,Distributorid,DistParentID,SignaturePath,imgName,RefModule,RefModuleTId,IFlag,invoiceid,isCancel,CollectStatus,UserID,ridSF,VisitId";
     private static final String tbl_SalesReturnDetails_cols = "uid,outerQty,dOuomQty,dOuomid,Cqty,duomQty,duomid,Pqty,batchid,Condition,mfgdate,expdate,oldmrp,ProductID,invoiceno,srpedited,totalQty,reason_type,LotNumber,piece_uomid,HsnCode";
-    private static final String tbl_AnswerHeader_cols = "surveyid,retailerid,uid,date,ModuleID,SupervisiorId,Remark,achScore,tgtScore,AchBonusPoint,MaxBonusPoint,type,counterid,refid,DistributorID,userid,ridSF,VisitId,EntityReferenceNo";
+    private static final String tbl_AnswerHeader_cols = "surveyid,retailerid,uid,date,ModuleID,SupervisiorId,Remark,achScore,tgtScore,AchBonusPoint,MaxBonusPoint,type,counterid,refid,DistributorID,userid,ridSF,VisitId";
     private static final String tbl_AnswerDetail_cols = "answerid,qid,answer,qtype,uid,score,isExcluded";
     private static final String tbl_AnswerImageDetail_cols = "qid,uid,imgName";
 
@@ -728,6 +730,26 @@ public class DataMembers {
 
     public static final String tbl_SyncLogDetails = "SyncLogDetails";
     public static final String tbl_SyncLogDetails_cols = "TransactionId,UserId,AppVersionNumber,OSName,OSVersion,DeviceName,SyncType,StartTime,EndTime,PhotosCount,SyncStatus,DownloadedDate,TotalCount";
+
+    public static final String tbl_ProductMaster = "ProductMaster";
+
+    public static final String tbl_lastVisitPromotion = "LastVisitPromotion";
+    public static final String tbl_lastVisitPromotionImage = "LastVisitPromotionImage";
+
+    public static final String tbl_last_visit_planogram = "LastVisitPlanogram";
+    public static final String tbl_last_visit_planogram_image_detail = "LastVisitPlanogramImages";
+
+    public static final String tbl_lastVisitSOS = "LastVisitSOS";
+    public static final String tbl_lastVisitSOSImage = "LastVisitSOSImage";
+
+    public static final String tbl_SerializedAssetMaster = "SerializedAssetMaster";
+
+    public static final String tbl_PosmMaster = "PosmMaster";
+
+    public static final String tbl_SurveyMaster = "SurveyMaster";
+    public static final String tbl_QuestionMaster = "QuestionMaster";
+    public static final String tbl_lastVisitSurvey = "LastVisitSurvey";
+    public static final String tbl_lastVisitSurveyImage = "LastVisitSurveyImage";
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 

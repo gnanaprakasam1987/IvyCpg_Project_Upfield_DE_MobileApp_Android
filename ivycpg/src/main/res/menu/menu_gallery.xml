@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ivydist="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_gallery_share"
@@ -13,4 +14,23 @@
         android:orderInCategory="6"
         android:title="@string/delete"
         ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_gallery_section"
+        android:icon="@drawable/ic_filter_icon"
+        android:orderInCategory="6"
+        android:title="@string/filter"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_gallery_detail"
+        android:icon="@drawable/ic_info_new"
+        android:iconTint="@color/white"
+        android:orderInCategory="6"
+        android:title="@string/filter"
+        android:visible="false"
+        ivydist:showAsAction="always"
+        tools:targetApi="o" />
+
 </menu>

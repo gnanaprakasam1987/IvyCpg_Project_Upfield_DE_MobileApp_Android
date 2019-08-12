@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/filterlistview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/footer"
+        android:divider="@null" />
+
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/customFooterBackgroundColor"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="?attr/roundedCustomButtonNormalTransparent"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/dimen_4dp"
+            android:adjustViewBounds="true"
+            android:text="@string/clear"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btn_ok"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/dimen_4dp"
+            android:layout_toEndOf="@+id/btn_cancel"
+            android:layout_toRightOf="@+id/btn_cancel"
+            android:adjustViewBounds="true"
+            android:text="@string/apply"
+            android:textAllCaps="false" />
+    </RelativeLayout>
+
+</RelativeLayout>
