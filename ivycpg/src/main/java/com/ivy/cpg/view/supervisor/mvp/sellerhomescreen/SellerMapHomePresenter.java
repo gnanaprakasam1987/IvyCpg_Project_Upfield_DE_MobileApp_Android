@@ -707,7 +707,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                         notifyAttendance();
                 }
 
-                if (!isRealTimeLocationOn) {
+//                if (!isRealTimeLocationOn) {
 
                     LatLng destLatLng = new LatLng(sellerBoDocumentSnapshot.getLatitude(), sellerBoDocumentSnapshot.getLongitude());
 
@@ -717,8 +717,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 //                            .flat(true)
                             .snippet(String.valueOf(sellerBoHashmap.getUserId()));
 
-                    setMarkerHasMap(sellerBoHashmap, markerOptions);
-                }
+                    setMarkerHasMap(sellerBoHashmap, markerOptions,false);
+//                }
 
                 computeSellerInfo();
             }
@@ -757,7 +757,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                             notifyAttendance();
                     }
 
-                    setMarkerHasMap(sellerHasmapBo, markerOptions);
+                    setMarkerHasMap(sellerHasmapBo, markerOptions,true);
                 }
             }
         }catch(Exception e){
@@ -765,22 +765,25 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         }
     }
 
-    private void setMarkerHasMap(SellerBo sellerBo,MarkerOptions markerOptions) {
+    private void setMarkerHasMap(SellerBo sellerBo,MarkerOptions markerOptions,boolean isFromLocationListener) {
         if(!sellerIdHashSet.contains(sellerBo.getUserId())) {
 
-            if (!sellerInfoHasMap.get(sellerBo.getUserId()).isSellerWorking()) {
-                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_out);
-                markerOptions.icon(icon);
-            }else{
-                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_in);
-                markerOptions.icon(icon);
-            }
+            if (isFromLocationListener || !isRealTimeLocationOn) {
+                if (!sellerInfoHasMap.get(sellerBo.getUserId()).isSellerWorking()) {
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_out);
+                    markerOptions.icon(icon);
+                } else {
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_in);
+                    markerOptions.icon(icon);
+                }
 
-            sellerMapHomeView.createMarker(sellerInfoHasMap.get(sellerBo.getUserId()),markerOptions);
+                sellerMapHomeView.createMarker(sellerInfoHasMap.get(sellerBo.getUserId()), markerOptions);
+            }
             sellerIdHashSet.add(sellerBo.getUserId());
 
             computeSellerInfo();
-        }else{
+        }else if (isFromLocationListener || !isRealTimeLocationOn){
+
             LatLng destLatLng = new LatLng(sellerBo.getLatitude(), sellerBo.getLongitude());
 
             if (!sellerInfoHasMap.get(sellerBo.getUserId()).isSellerWorking()) {

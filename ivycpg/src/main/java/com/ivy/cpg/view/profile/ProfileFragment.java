@@ -1030,7 +1030,8 @@ public class ProfileFragment extends IvyBaseFragment {
             case "PROFILE46": {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
-                if (bmodel.beatMasterHealper.getBeatMaster().size() > 0)
+                if (bmodel.beatMasterHealper.getBeatMaster().size() > 0
+                        && bmodel.beatMasterHealper.getBeatMasterBOByID(retailerObj.getBeatID()) != null)
                     outletBO.setValueText(bmodel.beatMasterHealper.
                             getBeatMasterBOByID(retailerObj.
                                     getBeatID()).getBeatDescription());
