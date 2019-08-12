@@ -141,6 +141,11 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
                                 }
                             }
 
+                            sellerCoveredEntry.clear();
+                            sellerBilledEntry.clear();
+
+                            CHART_DAYS = 0;
+
                             prepareChartData(userId,getPreviousDays(date, -CHART_DAYS_COUNT));
                         }
 
