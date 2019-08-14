@@ -1309,24 +1309,11 @@ public class ProfileFragment extends IvyBaseFragment {
                 finalProfileList.add(outletBO);
                 break;
             }
-            case "PROFILE106": {
-                outletBO = new NewOutletBO();
-                outletBO.setmName(mName);
-                outletBO.setValueText(String.valueOf(retailerObj.getPlannedVisitCount()));
-                finalProfileList.add(outletBO);
-                break;
-            }
             case "PROFILE107": {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
-                outletBO.setValueText(String.valueOf(retailerObj.getVisitDoneCount()));
-                finalProfileList.add(outletBO);
-                break;
-            }
-            case "PROFILE108": {
-                outletBO = new NewOutletBO();
-                outletBO.setmName(mName);
-                outletBO.setValueText(String.valueOf(retailerObj.getVisitTargetCount()));
+                String visitCount = retailerObj.getVisit_frequencey() + "  /  " + retailerObj.getTotalVisited();
+                outletBO.setValueText(visitCount);
                 finalProfileList.add(outletBO);
                 break;
             }

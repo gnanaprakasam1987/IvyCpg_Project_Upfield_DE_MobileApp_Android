@@ -1507,7 +1507,7 @@ public class BusinessModel extends Application {
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as SupplierTaxLocId,")
-                            + "ridSF,RA.URL,RV.visitTargetCount FROM RetailerMaster A"
+                            + "ridSF,RA.Website,RV.visitTargetCount FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
@@ -1699,7 +1699,7 @@ public class BusinessModel extends Application {
                     retailer.setDistrict(c.getString(c.getColumnIndex("District")));
                     retailer.setLastVisitDate(c.getString(c.getColumnIndex("lastVisitDate")));
                     retailer.setLastVisitedBy(c.getString(c.getColumnIndex("lastVisitedBy")));
-                    retailer.setWebUrl(c.getString(c.getColumnIndex("URL")));
+                    retailer.setWebUrl(c.getString(c.getColumnIndex("Website")));
                     retailer.setVisitTargetCount(c.getInt(c.getColumnIndex("visitTargetCount")));
 
                     retailer.setIsToday(0);
