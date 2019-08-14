@@ -1181,7 +1181,7 @@ public class ProfileHelper {
                                 retailerContactBo.setCpId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cpid")));
             retailerContactBo.setContactSalutationId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("salutationId")));
                     retailerContactBo.setIsEmailPrimary(retailerContactEditCurson.getInt(retailerContactEditCurson.getColumnIndex("emailPref")));
-                                retailerContactBo.setRetailerID(c.getString(c.getColumnIndex("retailerID")));
+                                retailerContactBo.setRetailerID(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("retailerID")));
                     setContactAvailList(db,retailerContactBo,"ContactAvailabilityEdit",true);                    tempList.add(retailerContactBo);
                             }
                             retailerContactEditCurson.close();

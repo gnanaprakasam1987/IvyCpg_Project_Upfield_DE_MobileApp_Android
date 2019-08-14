@@ -275,6 +275,11 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                                 sellerPerformanceView.updateSellerTabViewInfo(selectedSeller);
                             }
 
+                            sellerCoveredEntry.clear();
+                            sellerBilledEntry.clear();
+
+                            CHART_DAYS = 0;
+
                             prepareChartData(userId, getPreviousDays(date, -CHART_DAYS_COUNT));
 
                         }

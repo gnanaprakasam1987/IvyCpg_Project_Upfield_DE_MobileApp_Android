@@ -340,6 +340,9 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
 
+                if (inMarketSellerArrayList.get(newPosition).getMarker() == null)
+                    return;
+
                 double angle = 130.0;
 
                 double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.supervisor_home_map_info_x);
