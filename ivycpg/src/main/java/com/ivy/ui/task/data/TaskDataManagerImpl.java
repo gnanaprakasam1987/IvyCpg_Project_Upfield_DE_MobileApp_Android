@@ -435,6 +435,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
                 String columns_new;
                 String value_new;
+                ArrayList<String> existingImageNames=new ArrayList<>();
 
 
                 try {
@@ -468,6 +469,14 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
                     mDbUtil.insertSQL("TaskMaster", columns_new, value_new);
 
+                    // add existing task images to verify while update task.
+                    Cursor cursor = mDbUtil.selectSQL("SELECT SUBSTR(TaskImageName,19) as ImageName from TaskImageDetails where taskid =" + StringUtils.getStringQueryParam(taskObj.getTaskId()));
+                    if (cursor.getCount() > 0) {
+                        while (cursor.moveToNext()) {
+                            existingImageNames.add(cursor.getString(0));
+                        }
+                    }
+                    cursor.close();
 
                     //add task created images into TaskImageDetails table
                     columns_new = "TaskId,TaskImageId,TaskImageName,Upload,Status";
@@ -478,7 +487,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             + dataManager.getUser().getUserid() + "/";
 
                     for (TaskDataBO imgBO : taskImgList) {
-                        if (!imgBO.getTaskImg().isEmpty()) {
+                        if (!imgBO.getTaskImg().isEmpty() && !checkTaskImage(imgBO.getTaskImg(),existingImageNames)) {
                             // Generate Unique ID for image
                             imgId = StringUtils.getStringQueryParam(dataManager.getUser()
                                     .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
@@ -536,6 +545,19 @@ public class TaskDataManagerImpl implements TaskDataManager {
                 });
             }
         });
+    }
+
+    private boolean checkTaskImage(String imageName,ArrayList<String> existingImages){
+        try{
+            for(String existingImgName: existingImages) {
+                if (!existingImgName.isEmpty() && existingImgName.equals(imageName)) {
+                    return true;
+                }
+            }
+        }catch (Exception ex){
+            Commons.printException(ex);
+        }
+        return false;
     }
 
     /**
@@ -829,8 +851,9 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         taskBo.setRid(c.getInt(3));
                         taskBo.setTaskDueDate(c.getString(4));
                         taskBo.setCreatedDate(c.getString(5));
-                        taskBo.setTaskCategoryDsc(c.getString(6));
-                        taskBo.setTaskOwner(c.getString(7));
+                        taskBo.setTaskCategoryID(c.getInt(6));
+                        taskBo.setTaskCategoryDsc(c.getString(7));
+                        taskBo.setTaskOwner(c.getString(8));
 
                         int daysCount = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 taskBo.getTaskDueDate(), "yyyy/MM/dd");

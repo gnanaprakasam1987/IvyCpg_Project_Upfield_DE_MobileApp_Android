@@ -1847,6 +1847,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 totSTKQty = bmodel.labelsMasterHelper
                         .applyLabels(holder.text_stock.getTag()) + ": ";
             holder.text_stock.setText(totSTKQty + String.valueOf(holder.productObj.getTotalStockQty()));
+        }else{
+            String totSTKQty = getString(R.string.stock) + ": ";
+            if (bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) != null)
+                totSTKQty = bmodel.labelsMasterHelper
+                        .applyLabels(holder.text_stock.getTag()) + ": ";
+            holder.text_stock.setText(totSTKQty);
         }
 
 
@@ -3757,21 +3763,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             }
         });
-
-        if (!bmodel.configurationMasterHelper.SHOW_FOC)
-            (row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
-        else {
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
-                        R.id.focTitle).getTag()) != null)
-                    ((TextView) row.findViewById(R.id.focTitle))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(row.findViewById(
-                                            R.id.focTitle).getTag()));
-            } catch (Exception e) {
-                Commons.printException(e + "");
-            }
-        }
 
         holder.foc.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {

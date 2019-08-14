@@ -385,24 +385,30 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
     @Override
     public void updateFilterListData(HashMap<String, ArrayList<Object>> selectedIds, boolean isRetailerWise) {
-
+        boolean isFilterSelected = false;
         ArrayList<TaskDataBO> filteredList = new ArrayList<>();
         if (selectedIds != null
                 && !selectedIds.isEmpty()) {
             for (Map.Entry<String, ArrayList<Object>> entry : selectedIds.entrySet()) {
-                for (TaskDataBO taskBo : taskPreparedList) {
-                    if (taskBo.getRid() != 0
-                            && (entry.getValue().contains(taskBo.getRid())
-                            || entry.getValue().contains(taskBo.getTaskCategoryID()))) {
-                        if (!filteredList.contains(taskBo))
-                            filteredList.add(taskBo);
-                    } else if (taskBo.getRid() == 0) {
-                        if (entry.getValue().contains(taskBo.getTaskCategoryID()))
-                            filteredList.add(taskBo);
+                if(entry!=null && entry.getValue().size()>0) {
+                    isFilterSelected = true;
+                    for (TaskDataBO taskBo : taskPreparedList) {
+                        if (taskBo.getRid() != 0
+                                && (entry.getValue().contains(taskBo.getRid())
+                                || entry.getValue().contains(taskBo.getTaskCategoryID()))) {
+                            if (!filteredList.contains(taskBo))
+                                filteredList.add(taskBo);
+                        } else if (taskBo.getRid() == 0) {
+                            if (entry.getValue().contains(taskBo.getTaskCategoryID()))
+                                filteredList.add(taskBo);
+                        }
                     }
                 }
             }
-            getIvyView().updateListData(filteredList);
+            if(isFilterSelected)
+                getIvyView().updateListData(filteredList);
+            else
+                getIvyView().updateListData(taskPreparedList);
         } else {
             getIvyView().updateListData(taskPreparedList);
         }

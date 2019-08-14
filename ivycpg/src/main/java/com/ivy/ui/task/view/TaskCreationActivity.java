@@ -628,7 +628,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     private void setUpRetailerSelection() {
         retailerMasterArrayAdapter = new ArrayAdapter<>(this,
-                R.layout.spinner_blacktext_layout);
+                R.layout.spinner_blacktext_list_item);
         retailerMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
 
         retSelectionAutoCompTxt.setOnTouchListener(new View.OnTouchListener() {

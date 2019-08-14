@@ -10,6 +10,7 @@ import com.ivy.cpg.view.basedi.BaseModule;
 import com.ivy.cpg.view.basedi.DaggerBaseComponent;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.ui.task.TaskConstant;
 
 import javax.inject.Inject;
 
@@ -57,7 +58,10 @@ public class TaskActivity extends BaseActivity implements BaseIvyView {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            setScreenTitle(getString(R.string.task));
+            if(getIntent()!=null)
+                setScreenTitle(getIntent().getExtras().getString(TaskConstant.SCREEN_TITLE, getString(R.string.task)));
+            else
+                setScreenTitle(getString(R.string.task));
         }
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }

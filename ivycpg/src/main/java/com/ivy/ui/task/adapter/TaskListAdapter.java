@@ -152,6 +152,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
                 Toast.makeText(mContext, mContext.getString(R.string.exec_task_not_allow_to_delete), Toast.LENGTH_SHORT).show();
             else {
                 taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_DELETE, holder.getAdapterPosition());
+                holder.swipeLayout.close(true);
             }
         });
 
