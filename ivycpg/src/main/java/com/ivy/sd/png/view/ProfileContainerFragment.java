@@ -112,6 +112,13 @@ public class ProfileContainerFragment extends BaseFragment
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).setDisplayShowHomeEnabled(true);
         }
 
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         mStepperLayout = view.findViewById(R.id.stepperLayout);
 
         mStepperLayout.setOffscreenPageLimit(3);

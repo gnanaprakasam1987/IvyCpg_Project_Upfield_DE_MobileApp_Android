@@ -285,7 +285,7 @@ public class OutletTimeStampHelper {
                     + "," + QT(String.valueOf(bmodel.getOrderValue()))
                     + "," + QT(String.valueOf(getTotalLines(context)))
                     + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF())
-                    + "," + QT(dist+"");
+                    + "," + ((LocationUtil.latitude>0 && LocationUtil.latitude>0) ? QT(dist+"") :QT(-1+""));
 
             if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
                 values += "," + QT(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());

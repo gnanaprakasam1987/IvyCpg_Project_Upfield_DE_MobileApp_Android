@@ -1,71 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/homescreenlist_view_width"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:background="@color/white"
-    android:gravity="center"
+    android:background="@drawable/round_dialog_bg"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/titleBar"
-        style="?attr/dialogTitleStyle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_gravity="center"
-        android:padding="8dp"
-        android:fontFamily="@font/baloobhai_regular"
-        android:adjustViewBounds="true"
-
-        android:textAlignment="center"
-        android:text="@string/select_reason" />
-
-
-    <Spinner
-        android:id="@+id/reason_spnr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/TextViewListItemPrimary"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
+        android:adjustViewBounds="true"
+        android:padding="8dp"
+        android:text="@string/select_reason"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/dlg_priority_lvw"
+        android:layout_width="0dp"
+        android:layout_height="140dp"
+        android:layout_below="@+id/titleBar"
         android:layout_marginStart="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:padding="2dp"
-        android:background="@android:color/transparent"
-        android:overlapAnchor="false"
-        android:visibility="visible" />
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:choiceMode="singleChoice"
+        android:minHeight="100dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/view4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleBar" />
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/remarkWrapper"
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:fontFamily="@font/roboto_regular"
-        android:layout_height="wrap_content">
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/view4"
+        app:layout_constraintStart_toStartOf="parent">
 
         <EditText
             android:id="@+id/etRemarks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_regular"
             android:layout_margin="8dp"
+            android:fontFamily="@font/roboto_regular"
             android:inputType="text"
             android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <View
+        android:id="@+id/view4"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_margin="8dp"
-        android:background="@color/light_gray"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/light_gray"
+        app:layout_constraintBottom_toTopOf="@+id/btn_ok"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dlg_priority_lvw" />
 
     <Button
         android:id="@+id/btn_ok"
-        style="?attr/roundedCustomButtonSmall"
+        style="?attr/roundedCustomButtonNormal"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:layout_marginTop="8dp"
+
         android:layout_marginBottom="16dp"
-        android:text="@string/ok" />
-</LinearLayout>
+        android:gravity="center"
+        android:text="@string/ok"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

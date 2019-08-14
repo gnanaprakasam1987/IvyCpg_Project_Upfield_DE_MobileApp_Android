@@ -1183,7 +1183,7 @@ public class ProfileHelper {
                     retailerContactBo.setContactSalutationId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("salutationId")));
                     retailerContactBo.setIsEmailPrimary(retailerContactEditCurson.getInt(retailerContactEditCurson.getColumnIndex("emailPref")));
                     retailerContactBo.setRetailerID(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("retailerID")));
-                    setContactAvailList(db, retailerContactBo, "ContactAvailabilityEdit", true);
+                    setContactAvailList(db,retailerContactBo,"ContactAvailabilityEdit", true);
                     tempList.add(retailerContactBo);
                 }
                 retailerContactEditCurson.close();

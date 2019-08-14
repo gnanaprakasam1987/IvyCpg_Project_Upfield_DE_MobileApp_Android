@@ -1624,7 +1624,8 @@ public class SalesReturnHelper {
         );
         db.createDataBase();
         db.openDataBase();
-        Cursor c = db.selectSQL("select pid,pname,parentid,psname,srp,mrp,pcuomid from SalesReturnProductMaster");
+        Cursor c = db.selectSQL("select SRPM.pid,SRPM.pname,SRPM.parentid,SRPM.psname,SRPM.srp,SRPM.mrp,SRPM.pcuomid,PM.ParentHierarchy from SalesReturnProductMaster SRPM " +
+                "left join ProductMaster PM on PM.PID = SRPM.parentID");
         if (c != null) {
             if (c.getCount() > 0) {
                 ProductMasterBO productMasterBO;
@@ -1643,6 +1644,7 @@ public class SalesReturnHelper {
                     productMasterBO.setCasebarcode("");
                     productMasterBO.setOuterbarcode("");
                     productMasterBO.setIsSaleable(1);
+                    productMasterBO.setParentHierarchy(c.getString(7));
                     mSalesReturnProducts.add(productMasterBO);
                     mSalesReturnProductById.put(productMasterBO.getProductID(), productMasterBO);
 
