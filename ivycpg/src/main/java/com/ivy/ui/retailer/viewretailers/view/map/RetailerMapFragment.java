@@ -791,7 +791,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
             planFilterBo = ((RetailerPlanFilterBo) obj);
 
-            if (planFilterBo.getRetailerIds().isEmpty()) {
+            if (planFilterBo.getRetailerIds().isEmpty() && planFilterBo.getSortBy() == 0) {
                 onMessageEvent("NODATA");
                 return;
             }

@@ -13,6 +13,8 @@ public interface RetailerPlanFilterContract {
 
     interface RetailerPlanFilterView extends BaseIvyView{
 
+        void showSortByRow();
+
         void showNotVisitedRow();
 
         void showTaskDueDateRow();

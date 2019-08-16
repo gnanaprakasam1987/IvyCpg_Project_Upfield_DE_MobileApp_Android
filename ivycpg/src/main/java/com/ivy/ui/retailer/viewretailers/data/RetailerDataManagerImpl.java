@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -150,7 +151,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         ",IFNULL(dwp.VisitStatus,''),cancelReasonId,planStatus " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
-                        " Where dwp.VisitStatus = 'PLANNED' or dwp.VisitStatus = 'CANCELLED' and " +
+                        " Where (dwp.VisitStatus = 'PLANNED' or dwp.VisitStatus = 'CANCELLED') and " +
                         " dwp.EntityType = 'RETAILER' and dwp.Date=" + StringUtils.getStringQueryParam(date);
                 try {
 
@@ -223,7 +224,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             }
             try {
                 BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(is, "iso-8859-1"), 8);
+                        new InputStreamReader(is, StandardCharsets.ISO_8859_1), 8);
                 StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {

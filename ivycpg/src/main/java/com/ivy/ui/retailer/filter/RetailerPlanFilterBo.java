@@ -74,4 +74,20 @@ public class RetailerPlanFilterBo {
     public void setFilterAttributeIdMap(HashMap<String, AttributeBO> filterAttributeIdMap) {
         this.filterAttributeIdMap = filterAttributeIdMap;
     }
+
+    /**
+     * 1 - Sort by City Asc
+     * 2 - Sort by City Desc
+     * 3 - Sort by Pincode Asc
+     * 4 - Sort by Pincode Desc
+     */
+    private int sortBy;
+
+    public int getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(int sortBy) {
+        this.sortBy = sortBy;
+    }
 }
