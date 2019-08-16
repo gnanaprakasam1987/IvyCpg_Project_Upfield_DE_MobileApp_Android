@@ -48,12 +48,11 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         if (appId.equals(""))
             return;
 
+        String email = AppUtils.getSharedPreferences(context).getString(FIREBASE_EMAIL, "");
+        if (email.equals(""))
+            return;
+
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
-
-            String email = AppUtils.getSharedPreferences(context).getString(FIREBASE_EMAIL, "");
-
-            if (email.equals(""))
-                return;
 
             String password = FIREBASE_PASSWORD;
 
