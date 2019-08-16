@@ -154,6 +154,8 @@
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLines="1"
+                android:paddingLeft="@dimen/target_top_margin"
+                android:textSize="@dimen/drop_down_text_font_size"
                 android:visibility="gone"
                 app:layout_constraintLeft_toRightOf="@+id/guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/applicable_tv" />
