@@ -1,9 +1,12 @@
 package com.ivy.ui.retailer;
 
+import com.ivy.utils.StringUtils;
+
 import java.util.ArrayList;
 
 public class RetailerConstants {
 
+    public static final String CODE_SORT_BY ="sort_by";
     public static final String CODE_IS_NOT_VISITED = "not_visited";
     public static final String CODE_LAST_VISIT_DATE = "last_visit_date";
     public static final String CODE_TASK_DUE_DATE = "task_due_date";

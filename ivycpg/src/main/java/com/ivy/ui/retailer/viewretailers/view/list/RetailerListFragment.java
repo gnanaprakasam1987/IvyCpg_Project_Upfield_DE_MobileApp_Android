@@ -250,7 +250,7 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
 
             planFilterBo = ((RetailerPlanFilterBo) obj);
 
-            if (planFilterBo.getRetailerIds().isEmpty()) {
+            if (planFilterBo.getRetailerIds().isEmpty() && planFilterBo.getSortBy() == 0) {
                 onMessageEvent("NODATA");
                 return;
             }

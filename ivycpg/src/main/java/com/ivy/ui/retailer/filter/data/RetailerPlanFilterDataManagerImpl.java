@@ -20,6 +20,7 @@ import io.reactivex.Single;
 
 import static com.ivy.ui.retailer.RetailerConstants.CODE_IS_NOT_VISITED;
 import static com.ivy.ui.retailer.RetailerConstants.CODE_LAST_VISIT_DATE;
+import static com.ivy.ui.retailer.RetailerConstants.CODE_SORT_BY;
 import static com.ivy.ui.retailer.RetailerConstants.CODE_TASK_DUE_DATE;
 
 public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterDataManager {
@@ -73,6 +74,7 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
 //                    }
 //                }
 
+                listValues.add(CODE_SORT_BY);
                 listValues.add(CODE_IS_NOT_VISITED);
                 listValues.add(CODE_TASK_DUE_DATE);
                 listValues.add(CODE_LAST_VISIT_DATE);

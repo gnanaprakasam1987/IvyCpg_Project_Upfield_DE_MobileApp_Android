@@ -5,14 +5,18 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
+import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
 import com.ivy.ui.retailer.viewretailers.RetailerContract;
 import com.ivy.ui.retailer.viewretailers.data.RetailerDataManager;
-import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
+import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
+import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,6 +24,9 @@ import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
+
+import static java.lang.Integer.MAX_VALUE;
+import static java.lang.Integer.MIN_VALUE;
 
 public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
         extends BasePresenter<V> implements RetailerContract.RetailerPresenter<V> {
@@ -174,26 +181,100 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
 
         for (RetailerMasterBO retailerMasterBO : this.visibleRetailerList) {
 
-            if (planFilterBo != null && !filter.isEmpty() && planFilterBo.getRetailerIds().contains(retailerMasterBO.getRetailerID())
-                    && retailerMasterBO.getRetailerName().toLowerCase().contains(filter)) {
+            if (planFilterBo != null && !filter.isEmpty() &&
+                    planFilterBo.getRetailerIds().contains(retailerMasterBO.getRetailerID()) &&
+                    (retailerMasterBO.getRetailerName().toLowerCase().contains(filter) ||
+                    (!StringUtils.isNullOrEmpty(retailerMasterBO.getCity()) &&
+                            retailerMasterBO.getCity().toLowerCase().contains(filter)) ||
+                    (!StringUtils.isNullOrEmpty(retailerMasterBO.getPincode()) &&
+                            retailerMasterBO.getPincode().toLowerCase().contains(filter)))) {
+
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 filteredRetailerList.add(retailerMasterBO);
-            } else if (planFilterBo != null && filter.isEmpty() && retailerIds.contains(retailerMasterBO.getRetailerID())) {
+
+            } else if (planFilterBo != null && filter.isEmpty() &&
+                    retailerIds.contains(retailerMasterBO.getRetailerID())) {
+
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 filteredRetailerList.add(retailerMasterBO);
-            } else if (planFilterBo == null && !filter.isEmpty() && retailerMasterBO.getRetailerName().toLowerCase().contains(filter)) {
+
+            } else if (planFilterBo == null && !filter.isEmpty() &&
+                    (retailerMasterBO.getRetailerName().toLowerCase().contains(filter) ||
+                            (!StringUtils.isNullOrEmpty(retailerMasterBO.getCity()) &&
+                                    retailerMasterBO.getCity().toLowerCase().contains(filter)) ||
+                            (!StringUtils.isNullOrEmpty(retailerMasterBO.getPincode()) &&
+                                    retailerMasterBO.getPincode().toLowerCase().contains(filter)))) {
+
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 filteredRetailerList.add(retailerMasterBO);
+
             } else if (planFilterBo == null && filter.isEmpty()) {
+
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 filteredRetailerList.add(retailerMasterBO);
             }
         }
 
-        if (isFromRetailerlist)
+        if (isFromRetailerlist) {
+
+            if (planFilterBo != null && planFilterBo.getSortBy() > 0)
+                sortList(planFilterBo.getSortBy(),filteredRetailerList);
+
             getIvyView().populateRetailers(filteredRetailerList);
+        }
 
         getIvyView().focusMarker();
+    }
+
+    private void sortList(int sortBy,ArrayList<RetailerMasterBO> filteredRetailerList) {
+
+        Commons.print("sortBy = " + sortBy);
+
+        Collections.sort(filteredRetailerList, new Comparator<RetailerMasterBO>() {
+            @Override
+            public int compare(RetailerMasterBO fstr, RetailerMasterBO sstr) {
+
+                String fCity = fstr.getCity() != null ? fstr.getCity() : "" ;
+                String sCity = sstr.getCity() != null ? sstr.getCity() : "" ;
+
+                String fPincode = fstr.getPincode() != null ? fstr.getPincode() : "" ;
+                String sPincode = sstr.getPincode() != null ? sstr.getPincode() : "" ;
+
+                switch (sortBy){
+                    case 1:
+                        if (fCity.isEmpty())
+                            return MAX_VALUE;
+                        else if (sCity.isEmpty())
+                            return MIN_VALUE;
+                        else
+                            return fCity.compareTo(sCity);
+                    case 2:
+                        if (fCity.isEmpty())
+                            return MAX_VALUE;
+                        else if (sCity.isEmpty())
+                            return MIN_VALUE;
+                        else
+                            return sCity.compareTo(fCity);
+                    case 3:
+                        if (fPincode.isEmpty())
+                            return MAX_VALUE;
+                        else if (sPincode.isEmpty())
+                            return MIN_VALUE;
+                        else
+                            return fPincode.compareTo(sPincode);
+                    case 4:
+                        if (fPincode.isEmpty())
+                            return MAX_VALUE;
+                        else if (sPincode.isEmpty())
+                            return MIN_VALUE;
+                        else
+                            return sPincode.compareTo(fPincode);
+                    default:
+                        return 0;
+
+                }
+            }
+        });
     }
 
     public void removeDatePlan(DateWisePlanBo planBo) {

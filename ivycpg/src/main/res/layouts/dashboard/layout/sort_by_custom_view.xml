@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/_10sdp"
+    android:paddingBottom="@dimen/_10sdp"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="@dimen/_300sdp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+    <TextView
+        style="@style/HeadingStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginLeft="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:text="@string/sort_by"
+        android:textStyle="normal" />
+
+
+    <RadioGroup
+        android:id="@+id/sort_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginLeft="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_5sdp">
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            style="@style/TextViewLabel"
+            android:id="@+id/city_asc_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:text="@string/sort_by_city_asc"
+            tools:targetApi="jelly_bean_mr1" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            style="@style/TextViewLabel"
+            android:id="@+id/city_desc_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:text="@string/sort_by_city_desc"
+            tools:targetApi="jelly_bean_mr1" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            style="@style/TextViewLabel"
+            android:id="@+id/pin_code_asc_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:text="@string/sort_by_pincode_asc"
+            tools:targetApi="jelly_bean_mr1" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            style="@style/TextViewLabel"
+            android:id="@+id/pin_code_desc_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:text="@string/sorty_by_pincode_desc"
+            tools:targetApi="jelly_bean_mr1" />
+
+    </RadioGroup>
+
+
+</LinearLayout>

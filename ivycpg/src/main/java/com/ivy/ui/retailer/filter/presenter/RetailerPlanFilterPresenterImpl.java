@@ -22,22 +22,23 @@ import io.reactivex.observers.DisposableObserver;
 
 import static com.ivy.ui.retailer.RetailerConstants.CODE_IS_NOT_VISITED;
 import static com.ivy.ui.retailer.RetailerConstants.CODE_LAST_VISIT_DATE;
+import static com.ivy.ui.retailer.RetailerConstants.CODE_SORT_BY;
 import static com.ivy.ui.retailer.RetailerConstants.CODE_TASK_DUE_DATE;
 
 public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContract.RetailerPlanFilterView>
         extends BasePresenter<V> implements RetailerPlanFilterContract.RetailerPlanFilterPresenter<V> {
 
-    private ArrayList<String> configurationList ;
+    private ArrayList<String> configurationList;
     private RetailerPlanFilterDataManager retailerPlanFilterDataManager;
     private ArrayList<AttributeBO> attributeListValues;
 
-    private HashMap<String,ArrayList<AttributeBO>> attributeChildLst;
+    private HashMap<String, ArrayList<AttributeBO>> attributeChildLst;
 
     @Inject
     RetailerPlanFilterPresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider,
                                     CompositeDisposable compositeDisposable,
                                     ConfigurationMasterHelper configurationMasterHelper, V view
-            ,RetailerPlanFilterDataManager retailerPlanFilterDataManager) {
+            , RetailerPlanFilterDataManager retailerPlanFilterDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
 
         this.retailerPlanFilterDataManager = retailerPlanFilterDataManager;
@@ -49,11 +50,11 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
                 retailerPlanFilterDataManager.prepareConfigurationMaster(),
                 retailerPlanFilterDataManager.prepareAttributeList(),
                 retailerPlanFilterDataManager.prepareChildAttributeList(),
-                new Function3<ArrayList<String>, ArrayList<AttributeBO>,HashMap<String, ArrayList<AttributeBO>>,Boolean>() {
+                new Function3<ArrayList<String>, ArrayList<AttributeBO>, HashMap<String, ArrayList<AttributeBO>>, Boolean>() {
                     @Override
                     public Boolean apply(ArrayList<String> configListValues,
                                          ArrayList<AttributeBO> attributeParentList,
-                                         HashMap<String,ArrayList<AttributeBO>> attributeChildList) throws Exception {
+                                         HashMap<String, ArrayList<AttributeBO>> attributeChildList) throws Exception {
 
                         setConfigurationList(configListValues);
                         setAttributeListValues(attributeParentList);
@@ -84,20 +85,21 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
 
         if (planFilterBo.getLastVisitDate() != null
                 && (planFilterBo.getLastVisitDate().getStringOne() == null
-                || planFilterBo.getLastVisitDate().getStringTwo() == null)){
+                || planFilterBo.getLastVisitDate().getStringTwo() == null)) {
             getIvyView().filterValidationFailure("Please Check Last Visit Date Fields");
-        }else if (planFilterBo.getTaskDate() != null
+        } else if (planFilterBo.getTaskDate() != null
                 && (planFilterBo.getTaskDate().getStringOne() == null
-                || planFilterBo.getTaskDate().getStringTwo() == null)){
+                || planFilterBo.getTaskDate().getStringTwo() == null)) {
             getIvyView().filterValidationFailure("Please Check Task Due Date Fields");
-        }else {
+        } else {
 
             if (planFilterBo.getIsNotVisited() == 0
                     && planFilterBo.getLastVisitDate() == null
-                    && planFilterBo.getTaskDate() == null &&
-                    (planFilterBo.getFilterAttributeIds() != null || planFilterBo.getFilterAttributeIds().isEmpty())){
+                    && planFilterBo.getTaskDate() == null
+                    && (planFilterBo.getFilterAttributeIds() != null && planFilterBo.getFilterAttributeIds().isEmpty())
+                    && planFilterBo.getSortBy() == 0) {
                 getIvyView().clearFilter();
-            }else {
+            } else {
                 getIvyView().filterValidationSuccess();
             }
         }
@@ -121,7 +123,7 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
 
     @Override
     public boolean isConfigureAvail(String configuration) {
-        return configurationList !=null && configurationList.contains(configuration);
+        return configurationList != null && configurationList.contains(configuration);
     }
 
     private void setConfigurationList(ArrayList<String> configurationList) {
@@ -144,14 +146,16 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
         this.attributeChildLst = attributeChildLst;
     }
 
-    public void prepareScreenData(){
+    public void prepareScreenData() {
 
         for (String configName : configurationList) {
-            if (configName.equalsIgnoreCase(CODE_IS_NOT_VISITED)){
+            if (configName.equalsIgnoreCase(CODE_SORT_BY)) {
+                getIvyView().showSortByRow();
+            } else if (configName.equalsIgnoreCase(CODE_IS_NOT_VISITED)) {
                 getIvyView().showNotVisitedRow();
-            }else if (configName.equalsIgnoreCase(CODE_TASK_DUE_DATE)){
+            } else if (configName.equalsIgnoreCase(CODE_TASK_DUE_DATE)) {
                 getIvyView().showTaskDueDateRow();
-            }else if (configName.equalsIgnoreCase(CODE_LAST_VISIT_DATE)){
+            } else if (configName.equalsIgnoreCase(CODE_LAST_VISIT_DATE)) {
                 getIvyView().showLastVisitRow();
             }
         }
