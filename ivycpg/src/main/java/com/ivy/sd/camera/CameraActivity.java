@@ -174,7 +174,8 @@ public class CameraActivity extends IvyBaseActivityNoActionBar {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disposable.dispose();
+        if(disposable!=null)
+            disposable.dispose();
     }
 
 }
