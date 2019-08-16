@@ -1500,6 +1500,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SBD_GAP_PROFILE = "SBD_PROFILE";
     public boolean SHOW_SBD_GAP_IN_PROFILE = true;
 
+    private static final String CODE_RETAILER_NOTES_PROFILE = "NOTES_PROFILE";
+    public boolean SHOW_RET_NOTES_IN_PROFILE;
+    public boolean ENABLE_RET_NOTES_DISPLAY_MODE_IN_PROFILE;
+
     private static final String CODE_SPLIT_ORDER = "SPLIT_ORDER";  //jnj project specific
     public boolean IS_ORDER_SPLIT;
 
@@ -2887,6 +2891,14 @@ public class ConfigurationMasterHelper {
         this.IS_RETAILER_ADHOC_PLAN = hashMapHHTModuleConfig.get(CODE_RETAILER_ADHOC_PLAN) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_ADHOC_PLAN) : false;
 
         this.IS_SHOW_COMPETITOR_ONLY_MAPPED_PRODS = hashMapHHTModuleConfig.get(CODE_COMPETITOR_ONLY_MAPPED_PRODS) != null ? hashMapHHTModuleConfig.get(CODE_COMPETITOR_ONLY_MAPPED_PRODS) : false;
+
+        if (hashMapHHTModuleConfig.get(CODE_RETAILER_NOTES_PROFILE) != null) {
+            this.SHOW_RET_NOTES_IN_PROFILE = true;
+            if (hashMapHHTModuleOrder.get(CODE_RETAILER_NOTES_PROFILE) == 1)
+                this.ENABLE_RET_NOTES_DISPLAY_MODE_IN_PROFILE = true;
+        }
+
+
     }
 
     private boolean isInOutModule() {

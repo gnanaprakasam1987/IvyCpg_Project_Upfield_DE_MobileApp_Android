@@ -79,5 +79,7 @@ public interface NotesContract extends BaseIvyView {
 
         boolean isNoteEditByOtherUser();
 
+        boolean enableDisplayMode();
+
     }
 }

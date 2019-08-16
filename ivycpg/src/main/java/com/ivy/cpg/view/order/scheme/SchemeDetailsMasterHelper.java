@@ -3330,13 +3330,13 @@ public class SchemeDetailsMasterHelper {
 
                         if (schemeProductBo.getUomID() == productBo.getCaseUomId()
                                 && productBo.getCaseUomId() != 0) {
-                            sb.append(productBo.getCsrp());
+                            sb.append(",").append(productBo.getCsrp());
                         } else if (schemeProductBo.getUomID() == productBo.getOuUomid()
                                 && productBo.getOuUomid() != 0) {
-                            sb.append(productBo.getOsrp());
+                            sb.append(",").append(productBo.getOsrp());
                         } else if (schemeProductBo.getUomID() == productBo.getPcUomid()
                                 || schemeProductBo.getUomID() == 0) {
-                            sb.append(productBo.getSrp());
+                            sb.append(",").append(productBo.getSrp());
                         }
                         sb.append("," + bModel.formatValue(schemeProductBo.getTaxAmount()));
                     } else {

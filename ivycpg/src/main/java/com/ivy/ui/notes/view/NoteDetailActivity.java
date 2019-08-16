@@ -2,11 +2,12 @@ package com.ivy.ui.notes.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
@@ -28,6 +29,7 @@ import butterknife.BindView;
 public class NoteDetailActivity extends BaseActivity implements NotesContract.NotesView {
 
     private boolean isFromHomeSrc;
+    private boolean isFromHomeProfSrc;
     private String menuCode;
     private String screenTitle;
     private NotesBo noteObj;
@@ -118,6 +120,7 @@ public class NoteDetailActivity extends BaseActivity implements NotesContract.No
             screenTitle = getIntent().getExtras().getString(NoteConstant.SCREEN_TITLE, getString(R.string.note_details));
             menuCode = getIntent().getExtras().getString(NoteConstant.MENU_CODE, "MENU_NOTES");
             isFromHomeSrc = getIntent().getExtras().getBoolean(NoteConstant.FROM_HOME_SCREEN, false);
+            isFromHomeProfSrc = getIntent().getExtras().getBoolean(NoteConstant.FROM_PROFILE_SCREEN, false);
 
             setUpToolBar("@" + Objects.requireNonNull(noteObj).getRetailerName());
             setNotesData(noteObj);
@@ -161,6 +164,17 @@ public class NoteDetailActivity extends BaseActivity implements NotesContract.No
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_edit_delete, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        if (isFromHomeProfSrc && mPresenter.enableDisplayMode()) {
+            menu.findItem(R.id.menu_edit_note).setVisible(false);
+            menu.findItem(R.id.menu_delete_note).setVisible(false);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

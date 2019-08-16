@@ -4,10 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.CompoundButtonCompat;
-import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -26,6 +22,11 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.CompoundButtonCompat;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -75,7 +76,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
         Pid = getIntent().getStringExtra("pid");
         mSelectedLocationIndex = getIntent().getIntExtra("selectedLocationIndex", 0);
 
-        isPreVisit = getIntent().getBooleanExtra("PreVisit",false);
+        isPreVisit = getIntent().getBooleanExtra("PreVisit", false);
 
         toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -463,8 +464,12 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
+                        CompoundButtonCompat.setButtonTintList(chkStockListed, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.colorAccent)));
+                        chkStockListed.setButtonDrawable(ContextCompat.getDrawable(CombinedStockDetailActivity.this, R.drawable.ic_check_select_24dp));
                         mProductMasterBO.setIsListed(1);
                     } else if (!isChecked) {
+                        CompoundButtonCompat.setButtonTintList(chkStockListed, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.checkbox_default_color)));
+                        chkStockListed.setButtonDrawable(ContextCompat.getDrawable(CombinedStockDetailActivity.this, R.drawable.ic_check_unselect_24dp));
                         mProductMasterBO.setIsListed(0);
                     }
 
@@ -475,8 +480,12 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
+                        CompoundButtonCompat.setButtonTintList(chkStkDistributed, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.colorAccent)));
+                        chkStkDistributed.setButtonDrawable(ContextCompat.getDrawable(CombinedStockDetailActivity.this, R.drawable.ic_check_select_24dp));
                         mProductMasterBO.setIsDistributed(1);
                     } else if (!isChecked) {
+                        CompoundButtonCompat.setButtonTintList(chkStkDistributed, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.checkbox_default_color)));
+                        chkStkDistributed.setButtonDrawable(ContextCompat.getDrawable(CombinedStockDetailActivity.this, R.drawable.ic_check_unselect_24dp));
                         mProductMasterBO.setIsDistributed(0);
                     }
                 }
@@ -485,27 +494,36 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
             chkPriceTag.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    if (isChecked)
+                    if (isChecked) {
+                        CompoundButtonCompat.setButtonTintList(chkPriceTag, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.colorAccent)));
+                        chkPriceTag.setButtonDrawable(ContextCompat.getDrawable(CombinedStockDetailActivity.this, R.drawable.ic_check_select_24dp));
                         mProductMasterBO.getLocations().get(mSelectedLocationIndex).setPriceTagAvailability(1);
-                    else
+                    } else {
+                        CompoundButtonCompat.setButtonTintList(chkPriceTag, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.checkbox_default_color)));
+                        chkPriceTag.setButtonDrawable(ContextCompat.getDrawable(CombinedStockDetailActivity.this, R.drawable.ic_check_unselect_24dp));
                         mProductMasterBO.getLocations().get(mSelectedLocationIndex).setPriceTagAvailability(0);
+                    }
                 }
             });
 
-            if (mProductMasterBO.getIsListed() == 1)
+            if (mProductMasterBO.getIsListed() == 1) {
                 chkStockListed.setChecked(true);
-            else
+            } else {
                 chkStockListed.setChecked(false);
+            }
 
-            if (mProductMasterBO.getIsDistributed() == 1)
+            if (mProductMasterBO.getIsDistributed() == 1) {
                 chkStkDistributed.setChecked(true);
-            else
+            } else {
                 chkStkDistributed.setChecked(false);
+            }
 
-            if (mProductMasterBO.getLocations().get(mSelectedLocationIndex).getPriceTagAvailability() == 1)
+            if (mProductMasterBO.getLocations()
+                    .get(mSelectedLocationIndex).getPriceTagAvailability() == 1) {
                 chkPriceTag.setChecked(true);
-            else
+            } else {
                 chkPriceTag.setChecked(false);
+            }
 
             /*
              Enable and Disable EditText filed based available UOM
@@ -516,7 +534,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 etExpOuter.setEnabled(false);
                 etPriceOuter.setEnabled(false);
                 etMrpPriceOuter.setEnabled(false);
-            } else if (!isPreVisit){
+            } else if (!isPreVisit) {
                 etShelfOuter.setEnabled(true);
                 etExpOuter.setEnabled(true);
                 etPriceOuter.setEnabled(true);
@@ -527,7 +545,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 etExpCase.setEnabled(false);
                 etPriceCase.setEnabled(false);
                 etMrpPriceCase.setEnabled(false);
-            } else if (!isPreVisit){
+            } else if (!isPreVisit) {
                 etShelfCase.setEnabled(true);
                 etExpCase.setEnabled(true);
                 etPriceCase.setEnabled(true);
@@ -538,7 +556,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 etExpPiece.setEnabled(false);
                 etPricePiece.setEnabled(false);
                 etMrpPricePiece.setEnabled(false);
-            } else if (!isPreVisit){
+            } else if (!isPreVisit) {
                 etShelfPiece.setEnabled(true);
                 etExpPiece.setEnabled(true);
                 etPricePiece.setEnabled(true);
@@ -557,7 +575,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     && (mProductMasterBO.getPcUomid() == 0 || !mProductMasterBO.isPieceMapped())) {
                 chkAvailability.setEnabled(false);
                 facingQty.setEnabled(false);
-            } else if (!isPreVisit){
+            } else if (!isPreVisit) {
                 chkAvailability.setEnabled(true);
                 facingQty.setEnabled(true);
             }
@@ -1844,14 +1862,17 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
         if (mProductMasterBO.getLocations()
                 .get(mSelectedLocationIndex).getAvailability() == 1) {
             CompoundButtonCompat.setButtonTintList(chkAvailability, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.colorAccent)));
+            chkAvailability.setButtonDrawable(ContextCompat.getDrawable(this, R.drawable.ic_check_select_24dp));
             chkAvailability.setChecked(true);
         } else if (mProductMasterBO.getLocations()
                 .get(mSelectedLocationIndex).getAvailability() == 0) {
             CompoundButtonCompat.setButtonTintList(chkAvailability, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.RED)));
+            chkAvailability.setButtonDrawable(ContextCompat.getDrawable(this, R.drawable.ic_check_cancel));
             chkAvailability.setChecked(true);
         } else if (mProductMasterBO.getLocations()
                 .get(mSelectedLocationIndex).getAvailability() == -1) {
             CompoundButtonCompat.setButtonTintList(chkAvailability, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.checkbox_default_color)));
+            chkAvailability.setButtonDrawable(ContextCompat.getDrawable(this, R.drawable.ic_check_unselect_24dp));
             chkAvailability.setChecked(false);
         }
 

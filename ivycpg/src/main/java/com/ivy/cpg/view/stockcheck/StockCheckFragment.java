@@ -13,24 +13,6 @@ import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.core.widget.CompoundButtonCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -70,10 +52,30 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.widget.CompoundButtonCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.tabs.TabLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.order.productdetails.ProductSchemeDetailsActivity;
+import com.ivy.cpg.view.order.scheme.SchemeBO;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
@@ -82,7 +84,6 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.cpg.view.order.scheme.SchemeBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
@@ -730,7 +731,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                     if (businessModel.configurationMasterHelper.IS_SHOW_PSQ) {
                         holder.psq.setVisibility(View.VISIBLE);
-                        if(businessModel.configurationMasterHelper.SHOW_LASTVISIT_GRAPH) {
+                        if (businessModel.configurationMasterHelper.SHOW_LASTVISIT_GRAPH) {
                             holder.lastVisit.setVisibility(View.VISIBLE);
                             holder.lastVisit1.setVisibility(View.VISIBLE);
                             holder.lastVisit2.setVisibility(View.VISIBLE);
@@ -834,6 +835,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(0);
 
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.RED)));
+                                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_cancel));
                                     holder.imageButton_availability.setChecked(true);
 
                                     if (stockCheckHelper.SHOW_STOCK_SP)
@@ -854,6 +856,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(-1);
 
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.checkbox_default_color)));
+                                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_unselect_24dp));
                                     holder.imageButton_availability.setChecked(false);
 
 
@@ -878,6 +881,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
 
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_productivity)));
+                                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.checkbox_select));
                                     holder.imageButton_availability.setChecked(true);
 
                                     if (stockCheckHelper.SHOW_STOCK_SP)
@@ -902,6 +906,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
 
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_productivity)));
+                                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_select_24dp));
                                     holder.imageButton_availability.setChecked(true);
 
                                     if (stockCheckHelper.SHOW_STOCK_SP
@@ -927,6 +932,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(0);
 
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.RED)));
+                                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_cancel));
                                     holder.imageButton_availability.setChecked(true);
 
                                     if (stockCheckHelper.SHOW_STOCK_SP
@@ -950,6 +956,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(-1);
 
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.checkbox_default_color)));
+                                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_unselect_24dp));
                                     holder.imageButton_availability.setChecked(false);
 
 
@@ -985,12 +992,17 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.chkPriceTagAvail.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                            if (isChecked)
+                            if (isChecked) {
+                                CompoundButtonCompat.setButtonTintList(holder.chkPriceTagAvail, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent)));
+                                holder.chkPriceTagAvail.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_select_24dp));
                                 holder.productObj.getLocations()
                                         .get(stockCheckPresenter.mSelectedLocationIndex).setPriceTagAvailability(1);
-                            else
+                            } else {
+                                CompoundButtonCompat.setButtonTintList(holder.chkPriceTagAvail, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.checkbox_default_color)));
+                                holder.chkPriceTagAvail.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_unselect_24dp));
                                 holder.productObj.getLocations()
                                         .get(stockCheckPresenter.mSelectedLocationIndex).setPriceTagAvailability(0);
+                            }
                         }
                     });
 
@@ -1050,11 +1062,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             holder.productObj.getLocations()
                                                     .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
                                             CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent)));
+                                            holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_select_24dp));
                                             holder.imageButton_availability.setChecked(true);
                                         } else if (sp_qty == 0) {
                                             holder.productObj.getLocations()
                                                     .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(0);
                                             CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.RED)));
+                                            holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_cancel));
                                             holder.imageButton_availability.setChecked(true);
                                         }
                                         holder.productObj.setAvailable(holder.productObj.getLocations()
@@ -1071,6 +1085,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             holder.productObj.getLocations()
                                                     .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(-1);
                                             CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.checkbox_default_color)));
+                                            holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_unselect_24dp));
                                             holder.imageButton_availability.setChecked(false);
                                         }
                                         holder.productObj.setAvailable(holder.productObj.getLocations()
@@ -1139,12 +1154,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             holder.productObj.getLocations()
                                                     .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
                                             CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent)));
+                                            holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_select_24dp));
                                             holder.imageButton_availability.setChecked(true);
 
                                         } else if (shelf_case_qty == 0) {
                                             holder.productObj.getLocations()
                                                     .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(0);
                                             CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.RED)));
+                                            holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_cancel));
                                             holder.imageButton_availability.setChecked(true);
                                         }
                                         holder.productObj.setAvailable(holder.productObj.getLocations()
@@ -1162,6 +1179,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             holder.productObj.getLocations()
                                                     .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(-1);
                                             CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.checkbox_default_color)));
+                                            holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_unselect_24dp));
                                             holder.imageButton_availability.setChecked(false);
                                         }
 
@@ -1241,12 +1259,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     holder.productObj.getLocations()
                                             .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent)));
+                                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_select_24dp));
                                     holder.imageButton_availability.setChecked(true);
 
                                 } else if (shelf_o_qty == 0) {
                                     holder.productObj.getLocations()
                                             .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(0);
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.RED)));
+                                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_cancel));
                                     holder.imageButton_availability.setChecked(true);
                                 }
                                 holder.productObj.setAvailable(holder.productObj.getLocations()
@@ -1263,6 +1283,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     holder.productObj.getLocations()
                                             .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(-1);
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.checkbox_default_color)));
+                                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_unselect_24dp));
                                     holder.imageButton_availability.setChecked(false);
                                 }
                                 holder.productObj.setAvailable(holder.productObj.getLocations()
@@ -1588,7 +1609,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 holder.ppq.setText(strPPQ);
 
                 String strPSQ = getResources().getString(R.string.psq) + ": ";
-                if(!businessModel.configurationMasterHelper.SHOW_LASTVISIT_GRAPH) {
+                if (!businessModel.configurationMasterHelper.SHOW_LASTVISIT_GRAPH) {
                     strPSQ = strPSQ + holder.productObj.getRetailerWiseP4StockQty();
                 }
                 holder.psq.setText(strPSQ);
@@ -1603,24 +1624,32 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 if (holder.productObj.getLocations()
                         .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 1) {
                     holder.imageButton_availability.setChecked(true);
+                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_select_24dp));
                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent)));
 
                 } else if (holder.productObj.getLocations()
                         .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 0) {
                     holder.imageButton_availability.setChecked(true);
+                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_cancel));
                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.RED)));
                 } else if (holder.productObj.getLocations()
                         .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == -1) {
                     holder.imageButton_availability.setChecked(false);
+                    holder.imageButton_availability.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_unselect_24dp));
                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.checkbox_default_color)));
                 }
 
                 if (stockCheckHelper.SHOW_STOCK_PRICE_TAG_AVAIL) {
                     if (holder.productObj.getLocations().get(stockCheckPresenter.mSelectedLocationIndex)
-                            .getPriceTagAvailability() == 1)
+                            .getPriceTagAvailability() == 1) {
+                        CompoundButtonCompat.setButtonTintList(holder.chkPriceTagAvail, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent)));
+                        holder.chkPriceTagAvail.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_select_24dp));
                         holder.chkPriceTagAvail.setChecked(true);
-                    else
+                    } else {
+                        CompoundButtonCompat.setButtonTintList(holder.chkPriceTagAvail, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.checkbox_default_color)));
+                        holder.chkPriceTagAvail.setButtonDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_unselect_24dp));
                         holder.chkPriceTagAvail.setChecked(false);
+                    }
                 }
 
                 if (stockCheckHelper.SHOW_STOCK_FC) {
@@ -1730,7 +1759,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         }
     }
 
-    private void setColorFilter(TextView txtView, int visitColor){
+    private void setColorFilter(TextView txtView, int visitColor) {
         txtView.getBackground().setColorFilter(ContextCompat.getColor(context, visitColor != 0 ? visitColor :
                 android.R.color.darker_gray), PorterDuff.Mode.SRC_IN);
     }
@@ -1759,9 +1788,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
         private Spinner mReason;
         ImageButton audit;
         AppCompatCheckBox imageButton_availability;
-        private RelativeLayout rl_priceTagCB;
+        private LinearLayout rl_priceTagCB;
         AppCompatCheckBox chkPriceTagAvail;
-        private TextView lastVisit,lastVisit1,lastVisit2,lastVisit3,isDistributed ;
+        private TextView lastVisit, lastVisit1, lastVisit2, lastVisit3, isDistributed;
     }
 
 
@@ -1957,7 +1986,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             competitorFilterClickedFragment();
             ((FragmentActivity) context).supportInvalidateOptionsMenu();
             return true;
-        } else if(i == R.id.menu_sort){
+        } else if (i == R.id.menu_sort) {
             if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
                 hideBottomSheet();
             } else {
@@ -2653,7 +2682,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     @Override
     public void onSortItemClicked(int sortType) {
-        stockCheckPresenter.sortList(sortType,stockList);
+        stockCheckPresenter.sortList(sortType, stockList);
         lastSelectedPos = sortType;
         hideBottomSheet();
     }

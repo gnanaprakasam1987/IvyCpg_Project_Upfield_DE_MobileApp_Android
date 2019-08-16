@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class NotesBo implements Parcelable {
-    private String tid;
+    private String tid = "0";
     private String retailerId;
     private String retailerName;
     private String createdDate;

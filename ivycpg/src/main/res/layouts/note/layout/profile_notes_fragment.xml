@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nested_scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="fill_vertical"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/filter_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="?attr/customHeaderBackgroundColor"
+                android:baselineAligned="false"
+                android:gravity="start|center"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/note_filter_label_tv"
+                    style="@style/TextViewCaptionNormal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:text="@string/filter_by"
+                    android:textAlignment="textStart" />
+
+                <RelativeLayout
+                    android:id="@+id/from_bg_rl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="2">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/from_date_label_tv"
+                        style="@style/BannerTextViewLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/from" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/note_from_date_btn"
+                        style="@style/datePickerButton"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="@dimen/list_item_date_picker_height"
+                        android:layout_below="@+id/from_date_label_tv"
+                        android:layout_centerVertical="true"
+                        android:gravity="start|center_vertical"
+                        android:text="@string/fromdate"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/list_item_primary_text_color" />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/to_bg_rl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="2">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/to_date_label_tv"
+                        style="@style/BannerTextViewLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/to" />
+
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/note_to_date_btn"
+                        style="@style/datePickerButton"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="@dimen/list_item_date_picker_height"
+                        android:layout_below="@+id/to_date_label_tv"
+                        android:layout_centerVertical="true"
+                        android:gravity="start|center_vertical"
+                        android:text="@string/to"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/list_item_primary_text_color" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/notes_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/filter_layout"
+                android:nestedScrollingEnabled="false"
+                android:scrollbars="vertical"
+                tools:targetApi="lollipop" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_create_note"
+                style="?attr/fabButtonStyle_Configured"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:elevation="@dimen/floating_btn_elevation"
+                android:src="@drawable/task_add"
+                android:visibility="visible"
+                app:backgroundTint="?attr/accentcolor"
+                app:borderWidth="0dp"
+                app:useCompatPadding="true"
+                tools:ignore="UnusedAttribute" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/task_bg_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#b1000000"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone" />
+
+        <include layout="@layout/note_bottom_sheet" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.core.widget.NestedScrollView>

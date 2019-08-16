@@ -101,5 +101,6 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_more_vert_black_24dp"
-        style="?attr/imageStyle_Configured"/>
+        style="?attr/imageStyle_Configured"
+        android:background="@color/transparent"/>
 </RelativeLayout>
