@@ -22,18 +22,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.tabs.TabLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -48,6 +36,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdate;
@@ -61,6 +59,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.ivy.core.IvyConstants;
 import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.cpg.nfc.NFCManager;
@@ -68,8 +69,14 @@ import com.ivy.cpg.nfc.NFCReadDialogActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.profile.assetHistory.AssetHistoryFragment;
+import com.ivy.cpg.view.profile.mslUnsold.MSLUnsoldFragment;
+import com.ivy.cpg.view.profile.orderandinvoicehistory.InvoiceHistoryFragment;
+import com.ivy.cpg.view.profile.orderandinvoicehistory.OrderHistoryFragment;
+import com.ivy.cpg.view.profile.otpValidation.OTPValidationDialog;
 import com.ivy.cpg.view.profile.otpValidation.OTPValidationHelper;
 import com.ivy.cpg.view.profile.otpValidation.RetailerSequenceSkipDialog;
+import com.ivy.cpg.view.profile.userSelection.UserSelectionDialogue;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
@@ -94,18 +101,15 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.TimerCount;
-import com.ivy.cpg.view.profile.assetHistory.AssetHistoryFragment;
-import com.ivy.cpg.view.profile.mslUnsold.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
-import com.ivy.cpg.view.profile.userSelection.UserSelectionDialogue;
-import com.ivy.cpg.view.profile.orderandinvoicehistory.InvoiceHistoryFragment;
-import com.ivy.cpg.view.profile.orderandinvoicehistory.OrderHistoryFragment;
-import com.ivy.cpg.view.profile.otpValidation.OTPValidationDialog;
+import com.ivy.ui.notes.NoteConstant;
+import com.ivy.ui.notes.view.NotesListFragment;
 import com.ivy.ui.profile.edit.view.ProfileEditActivity;
 import com.ivy.ui.task.TaskConstant;
-import com.ivy.utils.DateTimeUtils;
 import com.ivy.ui.task.view.TaskFragment;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import org.json.JSONObject;
@@ -123,6 +127,7 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
+import static com.ivy.sd.png.view.HomeScreenTwo.MENU_RTR_NOTES;
 
 
 public class ProfileActivity extends IvyBaseActivityNoActionBar
@@ -209,6 +214,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private String ASSET_HISTORY = "";
     private String TASK = "";
     private String SALES_PER_LEVEL = "";
+    private String retailer_notes_title = "";
     private String invoice_history_title = "", msl_title = "", retailer_kpi_title = "", plan_outlet_title = "", order_history_title = "", profile_title = "", retailer_contact_title;
 
     private Timer mLocTimer;
@@ -450,8 +456,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void addTabLayout() {
 
         try {
-            if ((bmodel.labelsMasterHelper.applyLabels("profile") != null) &&
-                    (bmodel.labelsMasterHelper.applyLabels("profile").length() > 0)) {
+            if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("profile"))) {
                 profile_title = bmodel.labelsMasterHelper.applyLabels("profile");
                 tabLayout.addTab(tabLayout.newTab().setText(profile_title));
             } else {
@@ -463,8 +468,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
         if (bmodel.configurationMasterHelper.SHOW_RETAILER_CONTACT) {
             try {
-                if ((bmodel.labelsMasterHelper.applyLabels("retailer_contact") != null) &&
-                        (bmodel.labelsMasterHelper.applyLabels("retailer_contact").length() > 0)) {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("retailer_contact"))) {
                     retailer_contact_title = bmodel.labelsMasterHelper.applyLabels("retailer_contact");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(retailer_contact_title));
@@ -479,8 +483,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.SHOW_ORDER_HISTORY) {
             try {
                 bmodel.configurationMasterHelper.loadProfileHistoryConfiguration();
-                if ((bmodel.labelsMasterHelper.applyLabels("order_history") != null) &&
-                        (bmodel.labelsMasterHelper.applyLabels("order_history").length() > 0)) {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("order_history"))) {
                     order_history_title = bmodel.labelsMasterHelper.applyLabels("order_history");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(order_history_title));
@@ -496,8 +499,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 && (bmodel.retailerMasterBO.getRField4().equals("1"))) {
             String survey_score_title;
             try {
-                if ((bmodel.labelsMasterHelper.applyLabels("survey_score") != null) &&
-                        (bmodel.labelsMasterHelper.applyLabels("survey_score").length() > 0)) {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("survey_score"))) {
                     survey_score_title = bmodel.labelsMasterHelper.applyLabels("survey_score");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(survey_score_title));
@@ -511,8 +513,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
         if (bmodel.configurationMasterHelper.SHOW_OUTLET_PLANNING_TAB) {
             try {
-                if ((bmodel.labelsMasterHelper.applyLabels("plan_outlet") != null) &&
-                        (bmodel.labelsMasterHelper.applyLabels("plan_outlet").length() > 0)) {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("plan_outlet"))) {
                     plan_outlet_title = bmodel.labelsMasterHelper.applyLabels("plan_outlet");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(plan_outlet_title));
@@ -526,8 +527,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
         if (bmodel.configurationMasterHelper.SHOW_LAST_3MONTHS_BILLS) {
             try {
-                if ((bmodel.labelsMasterHelper.applyLabels("retailer_kpi") != null) &&
-                        (bmodel.labelsMasterHelper.applyLabels("retailer_kpi").length() > 0)) {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("retailer_kpi"))) {
                     retailer_kpi_title = bmodel.labelsMasterHelper.applyLabels("retailer_kpi");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(retailer_kpi_title));
@@ -541,8 +541,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
         if (bmodel.configurationMasterHelper.SHOW_ASSET_HISTORY) {
             try {
-                if ((bmodel.labelsMasterHelper.applyLabels("asset_history") != null) &&
-                        (bmodel.labelsMasterHelper.applyLabels("asset_history").length() > 0)) {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("asset_history"))) {
                     ASSET_HISTORY = bmodel.labelsMasterHelper.applyLabels("asset_history");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(ASSET_HISTORY));
@@ -556,8 +555,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
         if (bmodel.configurationMasterHelper.SHOW_MSL_NOT_SOLD) {
             try {
-                if ((bmodel.labelsMasterHelper.applyLabels("msl") != null) &&
-                        (bmodel.labelsMasterHelper.applyLabels("msl").length() > 0)) {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("msl"))) {
                     msl_title = bmodel.labelsMasterHelper.applyLabels("msl");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(msl_title));
@@ -572,8 +570,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.SHOW_INVOICE_HISTORY) {
             try {
                 bmodel.configurationMasterHelper.loadInvoiceHistoryConfiguration();
-                if ((bmodel.labelsMasterHelper.applyLabels("invoice_history") != null) &&
-                        (bmodel.labelsMasterHelper.applyLabels("invoice_history").length() > 0)) {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("invoice_history"))) {
                     invoice_history_title = bmodel.labelsMasterHelper.applyLabels("invoice_history");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(invoice_history_title));
@@ -588,8 +585,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         if (bmodel.configurationMasterHelper.SHOW_TASK) {
             try {
-                if ((bmodel.labelsMasterHelper.applyLabels("task_tab") != null) &&
-                        (bmodel.labelsMasterHelper.applyLabels("task_tab").length() > 0)) {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("task_tab"))) {
                     TASK = bmodel.labelsMasterHelper.applyLabels("task_tab");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(TASK));
@@ -605,8 +601,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.SHOW_AVG_SALES_PER_LEVEL) {
             try {
 
-                if ((bmodel.labelsMasterHelper.applyLabels("sales_per_level") != null) &&
-                        (bmodel.labelsMasterHelper.applyLabels("sales_per_level").length() > 0)) {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("sales_per_level"))) {
                     SALES_PER_LEVEL = bmodel.labelsMasterHelper.applyLabels("sales_per_level");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(SALES_PER_LEVEL));
@@ -621,8 +616,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         if (bmodel.configurationMasterHelper.SHOW_DISTRIBUTOR_PROFILE) {
             try {
-                if ((bmodel.labelsMasterHelper.applyLabels("distributor_profile") != null) &&
-                        (bmodel.labelsMasterHelper.applyLabels("distributor_profile").length() > 0)) {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("distributor_profile"))) {
                     DISTRIBUTOR_PROFILE = bmodel.labelsMasterHelper.applyLabels("distributor_profile");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(DISTRIBUTOR_PROFILE));
@@ -637,6 +631,22 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         if (bmodel.configurationMasterHelper.SHOW_SBD_GAP_IN_PROFILE) {
             tabLayout.addTab(tabLayout.newTab().setText("SBD Gap"));
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_RET_NOTES_IN_PROFILE) {
+            try {
+                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("notes_profile"))) {
+                    retailer_notes_title = bmodel.labelsMasterHelper.applyLabels("notes_profile");
+
+                    tabLayout.addTab(tabLayout.newTab()
+                            .setText(retailer_notes_title));
+                } else {
+                    retailer_notes_title = getString(R.string.notes);
+                    tabLayout.addTab(tabLayout.newTab().setText(retailer_notes_title));
+                }
+            } catch (Exception e) {
+                Commons.printException("Error while setting label for Notes Tab", e);
+            }
         }
 
         /*
@@ -662,7 +672,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        if (!is7InchTablet && tabLayout.getTabCount() > 3) {
+        if (tabLayout.getTabCount() > 3) {
             tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         }
 
@@ -1502,6 +1512,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 bundle.putString("isFrom", "Profile");
                 dynamicReportFragment.setArguments(bundle);
                 return dynamicReportFragment;
+            } else if (retailer_notes_title.equalsIgnoreCase(tabName)) {
+                Bundle bundle = new Bundle();
+                bundle.putString(NoteConstant.MENU_CODE, MENU_RTR_NOTES);
+                bundle.putString(NoteConstant.SCREEN_TITLE, retailer_notes_title);
+                bundle.putBoolean(NoteConstant.FROM_PROFILE_SCREEN, true);
+                NotesListFragment notesListFragment = new NotesListFragment();
+                notesListFragment.setArguments(bundle);
+                return notesListFragment;
             }
             return null;
         }
@@ -2100,7 +2118,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     }
 
     private void callCamera(String imageName) {
-        isCameraCalled =true;
+        isCameraCalled = true;
         Intent intent = new Intent(this, CameraActivity.class);
         intent.putExtra(CameraActivity.QUALITY, 40);
         String mPath = getPhotoPath() + "/" + imageName;

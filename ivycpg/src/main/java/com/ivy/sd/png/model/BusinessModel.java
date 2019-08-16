@@ -5498,7 +5498,7 @@ public class BusinessModel extends Application {
                     supplierMasterBO.setIsPrimary(c.getInt(3));
                     supplierMasterBO.setDistParentID(c.getInt(4));
 
-                    if (c.getColumnCount() == 8) {
+                    if (!configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE) {
                         supplierMasterBO.setCreditLimit(c.getFloat(5));
                         supplierMasterBO.setSupplierTaxLocId(c.getInt(6));
 

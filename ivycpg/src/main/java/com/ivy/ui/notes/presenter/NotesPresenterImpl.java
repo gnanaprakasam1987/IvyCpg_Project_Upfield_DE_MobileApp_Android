@@ -315,6 +315,11 @@ public class NotesPresenterImpl<V extends NotesContract.NotesView> extends BaseP
     }
 
     @Override
+    public boolean enableDisplayMode() {
+        return mConfigurationMasterHelper.ENABLE_RET_NOTES_DISPLAY_MODE_IN_PROFILE;
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mNotesDataManager.tearDown();

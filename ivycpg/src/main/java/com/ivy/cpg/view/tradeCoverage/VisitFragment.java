@@ -486,7 +486,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 lbl_TodayTgt.setText(getString(R.string.total_vol));
             if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME_WGT)
                 lbl_TodayTgt.setText(getString(R.string.total_weight));
-            if(bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
+            if (bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
                 lbl_TodayTgt.setText(getString(R.string.text_total_time));
         }
 
@@ -1254,7 +1254,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
             if (!retObj.isAdhoc())
-            value += retObj.getVisit_Actual();
+                value += retObj.getVisit_Actual();
         }
         totalActual = bmodel.formatValue(value);
 
@@ -1823,9 +1823,23 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 }
 
             } else {
-                String address = (holder.retailerObjectHolder.getAddress1() != null ? (holder.retailerObjectHolder.getAddress1()) : "")
-                        + (holder.retailerObjectHolder.getAddress2() != null && !holder.retailerObjectHolder.getAddress2().equals("") ? ("," + holder.retailerObjectHolder.getAddress2()) : "")
-                        + (holder.retailerObjectHolder.getAddress3() != null && !holder.retailerObjectHolder.getAddress3().equals("") ? ("," + holder.retailerObjectHolder.getAddress3()) : "");
+
+                String address = "";
+
+                if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress1()))
+                    address = holder.retailerObjectHolder.getAddress1();
+
+                if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress2()))
+                    address += ", " + holder.retailerObjectHolder.getAddress2();
+
+                if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress3()))
+                    address += ", " + holder.retailerObjectHolder.getAddress3();
+
+                if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getCity()))
+                    address += ", " + holder.retailerObjectHolder.getCity();
+
+                if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getPincode()))
+                    address += " - " + holder.retailerObjectHolder.getPincode();
 
                 holder.outletAddress.setText(address);
             }
@@ -2314,7 +2328,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         } catch (Exception e) {
             Commons.printException(e);
         }
-        return DateTimeUtils.getTimeSpend(totTimeSpend,DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "yyyy/MM/dd HH:mm:ss");
+        return DateTimeUtils.getTimeSpend(totTimeSpend, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "yyyy/MM/dd HH:mm:ss");
     }
 
     private int getStoreCount() {

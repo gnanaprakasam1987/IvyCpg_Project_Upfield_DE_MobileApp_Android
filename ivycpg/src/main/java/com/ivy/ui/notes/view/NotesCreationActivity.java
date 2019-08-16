@@ -106,7 +106,7 @@ public class NotesCreationActivity extends BaseActivity implements NotesContract
         if (bundle != null) {
 
             if (bundle.containsKey(NoteConstant.FROM_HOME_SCREEN))
-                isFromHomeScreen = true;
+                isFromHomeScreen = bundle.getBoolean(NoteConstant.FROM_HOME_SCREEN);
 
             if (bundle.containsKey(NoteConstant.MENU_CODE))
                 menuCode = bundle.getString(NoteConstant.MENU_CODE, "");

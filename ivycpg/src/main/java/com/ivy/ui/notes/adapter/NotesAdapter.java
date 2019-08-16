@@ -1,16 +1,17 @@
 package com.ivy.ui.notes.adapter;
 
 import android.content.Context;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.ui.notes.NoteOnclickListener;
@@ -27,12 +28,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     private ArrayList<NotesBo> notesItemList;
     private boolean isFromHomeScreen;
     private NoteOnclickListener noteOnclickListener;
+    private boolean isDisplayOnly;
 
-    public NotesAdapter(Context mContext, ArrayList<NotesBo> notesItemList, boolean isFromHomeScreen, NoteOnclickListener noteOnclickListener) {
+    public NotesAdapter(Context mContext, ArrayList<NotesBo> notesItemList, boolean isFromHomeScreen, NoteOnclickListener noteOnclickListener, boolean isDisplayOnly) {
         this.mContext = mContext;
         this.notesItemList = notesItemList;
         this.isFromHomeScreen = isFromHomeScreen;
         this.noteOnclickListener = noteOnclickListener;
+        this.isDisplayOnly = isDisplayOnly;
     }
 
     @NonNull
@@ -73,7 +76,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
         holder.addDeleteBtn.setOnClickListener(v -> {
 
-            PopupMenu popupMenu = new PopupMenu(mContext, holder.addDeleteBtn);
+            PopupMenu popupMenu = new PopupMenu(mContext, holder.addDeleteBtn, Gravity.END);
             popupMenu.inflate(R.menu.menu_edit_delete);
             popupMenu.setOnMenuItemClickListener(item -> {
 
@@ -135,6 +138,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
             if (!isFromHomeScreen)
                 retailerNameTv.setVisibility(View.GONE);
+
+            if (isDisplayOnly)
+                addDeleteBtn.setVisibility(View.GONE);
         }
     }
 }

@@ -12,6 +12,8 @@ public class NoteConstant {
 
     public final static String NOTE_OBJECT = "noteObj";
 
+    public static final String FROM_PROFILE_SCREEN = "fromProfileScreen";
+
     public final static String LAST_FILTER_POSITION = "filerSelectedPos";
 
     public final static String FROM_DETAIL_SRC = "isFrmDetailSrc";

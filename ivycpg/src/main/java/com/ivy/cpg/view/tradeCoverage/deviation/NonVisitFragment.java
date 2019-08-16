@@ -7,9 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.IdRes;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.appcompat.widget.SearchView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,7 +30,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.IdRes;
+import androidx.appcompat.widget.SearchView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.profile.CommonReasonDialog;
+import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -47,10 +50,9 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.PlanningVisitActivity;
-import com.ivy.cpg.view.profile.CommonReasonDialog;
-import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -575,7 +577,7 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
             updateBeatFilter();
         }
 
-          }
+    }
 
     @Override
     public void onStart() {
@@ -1242,7 +1244,7 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
             else
                 holder.rField4.setVisibility(View.GONE);
 
-            holder.outletAddress.setText(holder.retailerObjectHolder.getAddress1());
+
 
             if (!bmodel.configurationMasterHelper.SHOW_RETIALER_CONTACTS) {
 
@@ -1399,7 +1401,24 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
             else
                 holder.rField4.setVisibility(View.GONE);
 
-            holder.outletAddress.setText(retailerObj.getAddress1());
+            String address = "";
+
+            if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress1()))
+                address = holder.retailerObjectHolder.getAddress1();
+
+            if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress2()))
+                address += ", " + holder.retailerObjectHolder.getAddress2();
+
+            if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress3()))
+                address += ", " + holder.retailerObjectHolder.getAddress3();
+
+            if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getCity()))
+                address += ", " + holder.retailerObjectHolder.getCity();
+
+            if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getPincode()))
+                address += " - " + holder.retailerObjectHolder.getPincode();
+
+            holder.outletAddress.setText(address);
 
             if (!bmodel.configurationMasterHelper.SHOW_RETIALER_CONTACTS) {
 

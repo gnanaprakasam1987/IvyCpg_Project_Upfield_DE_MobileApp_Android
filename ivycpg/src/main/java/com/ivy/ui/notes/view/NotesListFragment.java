@@ -3,14 +3,6 @@ package com.ivy.ui.notes.view;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +10,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.lib.view.YearMonthPickerDialog;
@@ -49,6 +50,7 @@ import butterknife.OnClick;
 public class NotesListFragment extends BaseFragment implements NotesContract.NotesListView, NoteOnclickListener {
 
     private boolean isFromHomeScreen;
+    private boolean isFromProfileSrc;
     private String screenTitle;
     private String menuCode;
     private int minMonth;
@@ -60,7 +62,7 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
     private YearMonthPickerDialog toMonthPickerDialog;
     private int lastFilterSelectedPos = -1;
     private boolean isAscendingSort;
-    BottomSheetBehavior bottomSheetBehavior;
+    private BottomSheetBehavior bottomSheetBehavior;
     private NotesAdapter notesAdapter;
     private ArrayList<NotesBo> noteList = new ArrayList<>();
 
@@ -88,7 +90,7 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
     @BindView(R.id.task_bg_view)
     View bgView;
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat(NoteConstant.MONTH_YEAR_FORMAT, Locale.US);
+    private SimpleDateFormat dateFormat = new SimpleDateFormat(NoteConstant.MONTH_YEAR_FORMAT, Locale.US);
 
     @Inject
     NotesContract.NotesPresenter<NotesContract.NotesView> mPresenter;
@@ -105,7 +107,13 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
 
     @Override
     protected int setContentViewLayout() {
-        return R.layout.notes_fragment;
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            if (bundle.containsKey(NoteConstant.FROM_PROFILE_SCREEN))
+                isFromProfileSrc = true;
+        }
+
+        return isFromProfileSrc ? R.layout.profile_notes_fragment : R.layout.notes_fragment;
     }
 
     @Override
@@ -133,15 +141,25 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
 
             if (bundle.containsKey(NoteConstant.SCREEN_TITLE))
                 screenTitle = bundle.getString(NoteConstant.SCREEN_TITLE, getString(R.string.note_label));
+
+           /* if (bundle.containsKey(NoteConstant.FROM_PROFILE_SCREEN))
+                isFromProfileSrc = true;*/
         }
     }
 
     @Override
     protected void setUpViews() {
-        setUpToolbar(screenTitle);
-        setHasOptionsMenu(true);
+        if (!isFromProfileSrc) {
+            setUpToolbar(screenTitle);
+            setHasOptionsMenu(true);
+            setUpBottomSheet();
+        } else {
+            if (mPresenter.enableDisplayMode())
+                createNoteFabBtn.setVisibility(View.GONE);
+        }
         setUpRecyclerView();
-        setUpBottomSheet();
+
+
     }
 
 
@@ -185,21 +203,12 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_COLLAPSED:
-                        if (notesRecyclerView.getVisibility() == View.VISIBLE) {
-                            hideBottomSheet();
-                        }
-                        break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED:
-                        break;
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        bgView.setVisibility(View.GONE);
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    if (notesRecyclerView.getVisibility() == View.VISIBLE) {
+                        hideBottomSheet();
+                    }
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    bgView.setVisibility(View.GONE);
                 }
             }
 
@@ -230,7 +239,8 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
         }
         notesAdapter.notifyDataSetChanged();
 
-        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+        if (!isFromProfileSrc
+                && bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
             hideBottomSheet();
     }
 
@@ -251,13 +261,13 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
             dateSplitArray = minMaxDateSplitArray[1].split("/");
             maxYear = SDUtil.convertToInt(dateSplitArray[0]);
             maxMonth = SDUtil.convertToInt(dateSplitArray[1]) - 1;
-        }else{
+        } else {
             minYear = Calendar.getInstance().get(Calendar.YEAR);
             maxYear = Calendar.getInstance().get(Calendar.YEAR);
         }
 
         Calendar calendarMin = Calendar.getInstance();
-        calendarMin.set(Calendar.YEAR, minYear == 0 ? Calendar.getInstance().get(Calendar.YEAR): minYear);
+        calendarMin.set(Calendar.YEAR, minYear == 0 ? Calendar.getInstance().get(Calendar.YEAR) : minYear);
         calendarMin.set(Calendar.MONTH, minMonth);
 
         Calendar calendarMax = Calendar.getInstance();
@@ -289,11 +299,12 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
         notesRecyclerView.setHasFixedSize(true);
         notesRecyclerView.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
         notesRecyclerView.setLayoutManager(layoutManager);
         notesRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()), DividerItemDecoration.VERTICAL));
-        notesAdapter = new NotesAdapter(getActivity(), noteList, isFromHomeScreen, this);
+        notesAdapter = new NotesAdapter(getActivity(), noteList, isFromHomeScreen, this, (isFromProfileSrc && mPresenter.enableDisplayMode()));
         notesRecyclerView.setAdapter(notesAdapter);
+
     }
 
 
@@ -382,9 +393,9 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
             if (!isPreVisit)
                 mPresenter.updateModuleTime();
 
-            Intent intent = new Intent(getActivity(),HomeScreenTwo.class);
+            Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
             if (isPreVisit)
-                intent.putExtra("PreVisit",true);
+                intent.putExtra("PreVisit", true);
             startActivity(intent);
         }
 
@@ -404,20 +415,22 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
     @Override
     public void onClickEditNote(NotesBo noteBo) {
 
-        if (noteBo.getUserId() == mPresenter.getUserID()
-                || mPresenter.isNoteEditByOtherUser()) {
-
-            Intent i = new Intent(getActivity(), NotesCreationActivity.class);
-            i.putExtra(NoteConstant.FROM_HOME_SCREEN, isFromHomeScreen);
-            i.putExtra(NoteConstant.MENU_CODE, menuCode);
-            i.putExtra(NoteConstant.SCREEN_TITLE, screenTitle);
-            i.putExtra(NoteConstant.FROM_EDIT_MODE, true);
-            i.putExtra(NoteConstant.NOTE_OBJECT, noteBo);
-            startActivity(i);
-
+        if (noteBo.getUserId() == mPresenter.getUserID() ||
+                mPresenter.isNoteEditByOtherUser()) {
+            navigateToNoteEdit(noteBo);
         } else {
             showMessage(R.string.retailer_note_can_not_be_edit);
         }
+    }
+
+    private void navigateToNoteEdit(NotesBo noteBo) {
+        Intent i = new Intent(getActivity(), NotesCreationActivity.class);
+        i.putExtra(NoteConstant.FROM_HOME_SCREEN, isFromHomeScreen);
+        i.putExtra(NoteConstant.MENU_CODE, menuCode);
+        i.putExtra(NoteConstant.SCREEN_TITLE, screenTitle);
+        i.putExtra(NoteConstant.FROM_EDIT_MODE, true);
+        i.putExtra(NoteConstant.NOTE_OBJECT, noteBo);
+        startActivity(i);
     }
 
     @Override
@@ -436,6 +449,7 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
         detailIntent.putExtra(NoteConstant.MENU_CODE, menuCode);
         detailIntent.putExtra(NoteConstant.SCREEN_TITLE, screenTitle);
         detailIntent.putExtra(NoteConstant.NOTE_OBJECT, notesBo);
+        detailIntent.putExtra(NoteConstant.FROM_PROFILE_SCREEN,isFromProfileSrc);
         startActivity(detailIntent);
     }
 

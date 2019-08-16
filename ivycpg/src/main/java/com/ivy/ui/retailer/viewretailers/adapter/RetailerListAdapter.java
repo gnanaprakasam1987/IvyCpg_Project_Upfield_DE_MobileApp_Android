@@ -1,18 +1,20 @@
 package com.ivy.ui.retailer.viewretailers.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.utils.StringUtils;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class RetailerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private List<RetailerMasterBO> mRetailerList;
     private RetailerListClickListner retailerListClickListner;
 
-    public RetailerListAdapter(Context context, List<RetailerMasterBO> mRetailerList,RetailerListClickListner retailerListClickListner) {
+    public RetailerListAdapter(Context context, List<RetailerMasterBO> mRetailerList, RetailerListClickListner retailerListClickListner) {
         mContext = context;
         this.mRetailerList = mRetailerList;
         this.retailerListClickListner = retailerListClickListner;
@@ -42,7 +44,25 @@ public class RetailerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         RetailerListViewHolder holder = (RetailerListViewHolder) viewHolder;
         holder.retailerMasterBO = mRetailerList.get(position);
         holder.tvRetailer.setText(holder.retailerMasterBO.getRetailerName());
-        holder.tvLocation.setText(holder.retailerMasterBO.getAddress1());
+
+        String retAddStr = "";
+
+        if (StringUtils.isNullOrEmpty(holder.retailerMasterBO.getAddress1()))
+            retAddStr = holder.retailerMasterBO.getAddress1();
+
+        if (StringUtils.isNullOrEmpty(holder.retailerMasterBO.getAddress2()))
+            retAddStr += ", " + holder.retailerMasterBO.getAddress2();
+
+        if (StringUtils.isNullOrEmpty(holder.retailerMasterBO.getAddress3()))
+            retAddStr += ", " + holder.retailerMasterBO.getAddress3();
+
+        if (StringUtils.isNullOrEmpty(holder.retailerMasterBO.getCity()))
+            retAddStr += ", " + holder.retailerMasterBO.getCity();
+
+        if (StringUtils.isNullOrEmpty(holder.retailerMasterBO.getPincode()))
+            retAddStr += " - " + holder.retailerMasterBO.getPincode();
+
+        holder.tvLocation.setText(retAddStr);
 
         holder.tvPlanned.setText(String.valueOf(holder.retailerMasterBO.getTotalPlanned()));
 

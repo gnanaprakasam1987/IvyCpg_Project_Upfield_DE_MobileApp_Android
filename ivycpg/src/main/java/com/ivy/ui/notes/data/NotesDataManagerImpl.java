@@ -128,7 +128,7 @@ public class NotesDataManagerImpl implements NotesDataManager {
             String noteTitle = notesBo.getNotesTitle().replaceAll("'", " ");
             String noteDesc = notesBo.getNotesDesc().replaceAll("'", " ");
             String status = StringUtils.getStringQueryParam("I");
-            String noteId = notesBo.getNoteId() == null ? null : StringUtils.getStringQueryParam(notesBo.getNoteId());
+            String noteId = notesBo.getNoteId() == null ? "0" : StringUtils.getStringQueryParam(notesBo.getNoteId());
             String modifiedDateTime = null;
 
             String whereCond = " Tid =''";
@@ -142,6 +142,7 @@ public class NotesDataManagerImpl implements NotesDataManager {
                 time = StringUtils.getStringQueryParam(notesBo.getTime());
                 status = StringUtils.getStringQueryParam("U");
                 modifiedDateTime = StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
+
                 if (notesBo.getTid().equals("0")) {
                     whereCond = " NoteID =" + StringUtils.getStringQueryParam(notesBo.getNoteId());
                 } else {
