@@ -6,7 +6,6 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -370,6 +369,12 @@ public class NewOutletFragmentNew extends BaseFragment
     public void createNewRetailerContactEmail(int menuNumber, String menuName, boolean mandatory, boolean isUppercaseLetter, String mConfigCode) {
 
         mRootLinearLayout.addView(createCommonEditTextView(menuNumber, menuName, mandatory, isUppercaseLetter, mConfigCode, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS), commonsParams);
+    }
+
+    @Override
+    public void createNewRetailerWebSite(int menuNumber, String menuName, boolean mandatory, boolean isUppercaseLetter, String mConfigCode) {
+
+        mRootLinearLayout.addView(createCommonEditTextView(menuNumber, menuName, mandatory, isUppercaseLetter, mConfigCode, InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS), commonsParams);
     }
 
     @Override
@@ -899,7 +904,7 @@ public class NewOutletFragmentNew extends BaseFragment
         latLongTextHeader = getDateTextLabel(mName);
         secondlayout.addView(latLongTextHeader, mandatoryTextViewParams);
 
-        latLongTextView =  new TextView(new ContextThemeWrapper(getActivity(), R.style.locationButton), null, 0);
+        latLongTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.locationButton), null, 0);
         latLongTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
         latLongTextView.setTextColor(Color.BLACK);
         latLongTextView.setGravity(Gravity.CENTER);
@@ -2536,6 +2541,7 @@ public class NewOutletFragmentNew extends BaseFragment
             public void afterTextChanged(Editable et) {
                 String s = et != null ? et.toString() : "";
                 if (!NewRetailerConstant.EMAIL.equalsIgnoreCase(mConfigCode)
+                        && !NewRetailerConstant.WEB_SITE_URL.equalsIgnoreCase(mConfigCode)
                         && isUppercaseLetter && !s.equals(s.toUpperCase())) {
                     s = s.toUpperCase();
                     editText.setText(s);
@@ -2639,8 +2645,9 @@ public class NewOutletFragmentNew extends BaseFragment
             public void afterTextChanged(Editable et) {
                 String s = et.toString();
                 if (!creditPeriod) {
-                    if (!NewRetailerConstant.EMAIL.equalsIgnoreCase(mConfigCode) &&
-                            isUppercaseLetter && !s.equals(s.toUpperCase())) {
+                    if (!NewRetailerConstant.EMAIL.equalsIgnoreCase(mConfigCode)
+                            && !NewRetailerConstant.WEB_SITE_URL.equalsIgnoreCase(mConfigCode)
+                            && isUppercaseLetter && !s.equals(s.toUpperCase())) {
                         s = s.toUpperCase();
                         editTextHashMap.get(menuNumber).setText(s);
                         editTextHashMap.get(menuNumber).setSelection(editTextHashMap.get(menuNumber).length());
@@ -2664,7 +2671,8 @@ public class NewOutletFragmentNew extends BaseFragment
 
 
     private void setInputFilter(String mConfigCode, AppCompatEditText appCompatEditText) {
-        if (!NewRetailerConstant.EMAIL.equalsIgnoreCase(mConfigCode)) {
+        if (!NewRetailerConstant.EMAIL.equalsIgnoreCase(mConfigCode)
+                && !NewRetailerConstant.WEB_SITE_URL.equalsIgnoreCase(mConfigCode)) {
             if (inputFilters != null && inputFilters.size() > 0) {
                 InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                 stockArr = inputFilters.toArray(stockArr);
@@ -2687,6 +2695,9 @@ public class NewOutletFragmentNew extends BaseFragment
             appCompatEditText.setHint(menuName);
         } else if (editTextType == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
             appCompatEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            appCompatEditText.setHint(menuName);
+        } else if (editTextType == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS) {
+            appCompatEditText.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
             appCompatEditText.setHint(menuName);
         } else if (editTextType == InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS) {
             if (!isUppercaseLetter)

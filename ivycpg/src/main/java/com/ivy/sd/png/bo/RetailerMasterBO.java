@@ -210,6 +210,8 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String lastVisitedBy;
     private int totalPlanned;
     private int totalVisited;
+    private int visitTargetCount;
+    private String webUrl;
 
     public int getIsSEZzone() {
         return isSEZzone;
@@ -1658,5 +1660,21 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setAdhoc(boolean adhoc) {
         isAdhoc = adhoc;
+    }
+
+    public int getVisitTargetCount() {
+        return visitTargetCount;
+    }
+
+    public void setVisitTargetCount(int visitTargetCount) {
+        this.visitTargetCount = visitTargetCount;
+    }
+
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public void setWebUrl(String webUrl) {
+        this.webUrl = webUrl;
     }
 }

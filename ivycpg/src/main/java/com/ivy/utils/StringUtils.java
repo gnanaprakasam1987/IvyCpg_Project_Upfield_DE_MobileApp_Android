@@ -1,6 +1,7 @@
 package com.ivy.utils;
 
 import android.text.TextUtils;
+import android.util.Patterns;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,6 +53,11 @@ public class StringUtils {
                         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
                         ")+"
         ).matcher(target).matches();
+    }
+
+    public static boolean isValidURL(CharSequence targetUrl) {
+        return !isNullOrEmpty(targetUrl.toString())
+                && Patterns.WEB_URL.matcher(targetUrl).matches();
     }
 
     public static boolean isValidRegx(CharSequence target, String regx) {

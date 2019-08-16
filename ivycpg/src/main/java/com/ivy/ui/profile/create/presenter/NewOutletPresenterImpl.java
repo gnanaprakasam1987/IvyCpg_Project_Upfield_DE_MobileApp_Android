@@ -140,6 +140,7 @@ import static com.ivy.ui.profile.create.NewRetailerConstant.TAXTYPE;
 import static com.ivy.ui.profile.create.NewRetailerConstant.TIN_EXP_DATE;
 import static com.ivy.ui.profile.create.NewRetailerConstant.TIN_NUM;
 import static com.ivy.ui.profile.create.NewRetailerConstant.USER;
+import static com.ivy.ui.profile.create.NewRetailerConstant.WEB_SITE_URL;
 import static com.ivy.ui.profile.create.NewRetailerConstant.WEEK_TEXT_LABEL;
 
 public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerView>
@@ -617,6 +618,11 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                             isUppercaseLetter, configCode);
                     break;
                 }
+                case WEB_SITE_URL: {
+                    getIvyView().createNewRetailerWebSite(position, mName, mandatory,
+                            isUppercaseLetter, configCode);
+                    break;
+                }
                 case PHNO1:
                 case PHNO2:
                 case CREDITLIMIT:
@@ -759,7 +765,7 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                 }
                 case LATLONG: {
                     isLatLongEnabled = true;
-                    getIvyView().createLatLongTextView(mName,position);
+                    getIvyView().createLatLongTextView(mName, position);
                     break;
                 }
                 case TIN_EXP_DATE: {
@@ -876,7 +882,7 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
 
     @Override
     public String getOutletData(String menuCode) {
-        if(outlet==null)
+        if (outlet == null)
             return "";
         switch (menuCode) {
             case STORENAME:
@@ -905,6 +911,8 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                 return outlet.getFax();
             case NewRetailerConstant.EMAIL:
                 return outlet.getEmail();
+            case WEB_SITE_URL:
+                return outlet.getWebSiteUrl();
             case CREDITLIMIT:
                 return outlet.getCreditLimit();
             case NewRetailerConstant.TIN_NUM:
@@ -2018,6 +2026,10 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                     outlet.setEmail(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     break;
                 }
+                case WEB_SITE_URL: {
+                    outlet.setWebSiteUrl(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
+                    break;
+                }
                 case PINCODE: {
                     outlet.setPincode(StringUtils.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     break;
@@ -2308,8 +2320,8 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                         outlet.setLoc2id(0);
                     break;
                 }
-                case LATLONG:{
-                    if(lattitude!=0 && longitude!=0) {
+                case LATLONG: {
+                    if (lattitude != 0 && longitude != 0) {
                         outlet.setNewOutletlattitude(lattitude);
                         outlet.setNewOutletLongitude(longitude);
                     }
@@ -2364,7 +2376,7 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                     outlet.setContact2titlelovid("0");
                 }
 
-            }  else if (PRIORITYPRODUCT.equalsIgnoreCase(configCode)) {
+            } else if (PRIORITYPRODUCT.equalsIgnoreCase(configCode)) {
                 outlet.setPriorityProductList(priorityProductIDList);
             }
         }
@@ -2517,13 +2529,21 @@ public class NewOutletPresenterImpl<V extends INewRetailerContract.INewRetailerV
                 }
             } else if (LATLONG.equalsIgnoreCase(configCode) && mandatory) {
                 if (getIvyView().getSelectedLatLong().startsWith("0.0")) {
-                    getIvyView().showInvalidDateError(i,menuName);
+                    getIvyView().showInvalidDateError(i, menuName);
                     isValid = false;
                 }
             } else if (NewRetailerConstant.EMAIL.equalsIgnoreCase(configCode)) {
                 if (!doCommonValidate(i, menuName))
                     isValid = false;
                 else if (!StringUtils.isValidEmail(getIvyView().getDynamicEditTextValues(i))) {
+                    getIvyView().setDynamicEditTextFocus(i);
+                    getIvyView().showInvalidError(i, menuName);
+                    isValid = false;
+                }
+            }else if (WEB_SITE_URL.equalsIgnoreCase(configCode)) {
+                if (!doCommonValidate(i, menuName))
+                    isValid = false;
+                else if (!StringUtils.isValidURL(getIvyView().getDynamicEditTextValues(i))) {
                     getIvyView().setDynamicEditTextFocus(i);
                     getIvyView().showInvalidError(i, menuName);
                     isValid = false;

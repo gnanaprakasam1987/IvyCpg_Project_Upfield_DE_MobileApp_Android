@@ -14,14 +14,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.appcompat.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -46,6 +38,15 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.location.LocationUtil;
@@ -846,11 +847,11 @@ public class ProfileEditFragmentNew extends BaseFragment
         });*/
 
         ivEdit.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               profileEditPresenter.getImageLongClickListener(false);
-           }
-       });
+            @Override
+            public void onClick(View v) {
+                profileEditPresenter.getImageLongClickListener(false);
+            }
+        });
         mProfileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -973,6 +974,16 @@ public class ProfileEditFragmentNew extends BaseFragment
         });
         emailLayout.addView(verifyBtn, verifyButtonParams);
         linearlayout.addView(emailLayout, weight1);
+        getmRootLinearLayout().addView(linearlayout, getCommonsparams());
+    }
+
+    private void createWebUrlView(final int mNumber, String mConfigCode, String menuName,
+                                  String values, final boolean IS_UPPERCASE_LETTER) {
+        LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
+                getActivity().getResources().getColor(R.color.white_box_start));
+        TextInputLayout editTextInputLayout = new TextInputLayout(getActivity());
+        editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
+        linearlayout.addView(editTextInputLayout, weight1);
         getmRootLinearLayout().addView(linearlayout, getCommonsparams());
     }
 
@@ -1218,7 +1229,8 @@ public class ProfileEditFragmentNew extends BaseFragment
 
         editTextHashMap.put(positionNumber, appCompatEditText);
 
-        if (!comparConfigerCode(configCode, ProfileConstant.EMAIL)) {
+        if (!comparConfigerCode(configCode, ProfileConstant.EMAIL)
+                || !comparConfigerCode(configCode, ProfileConstant.WEB_SITE_URL)) {
 
             if (inputFilters != null && inputFilters.size() > 0) {
                 InputFilter[] stockArr = new InputFilter[inputFilters.size()];
@@ -1688,7 +1700,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             } else if (isFromChannel) {
                 isNewChannel = true;
                 // getting existing attribute layout and clearig childs for loading attributes of current channel
-                parentLayout =  getView().findViewWithTag("attributeLayout");
+                parentLayout = getView().findViewWithTag("attributeLayout");
                 if (parentLayout != null) {
                     for (int i = 0; i < parentLayout.getChildCount(); i++) {
                         if (parentLayout.getChildAt(i).getTag() != null &&

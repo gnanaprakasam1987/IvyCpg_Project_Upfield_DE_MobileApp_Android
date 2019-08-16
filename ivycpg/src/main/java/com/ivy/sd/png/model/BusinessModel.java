@@ -24,10 +24,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
-
-import androidx.multidex.MultiDex;
-import androidx.fragment.app.FragmentActivity;
-
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -35,6 +31,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
+import androidx.multidex.MultiDex;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
@@ -52,9 +51,9 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.IvyConstants;
 import com.ivy.core.data.app.AppDataProvider;
@@ -81,6 +80,7 @@ import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
@@ -113,7 +113,6 @@ import com.ivy.sd.png.bo.OrderFullfillmentBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -1508,7 +1507,7 @@ public class BusinessModel extends Application {
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as SupplierTaxLocId,")
-                            + "ridSF FROM RetailerMaster A"
+                            + "ridSF,RA.Website,RV.visitTargetCount FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
@@ -1700,6 +1699,8 @@ public class BusinessModel extends Application {
                     retailer.setDistrict(c.getString(c.getColumnIndex("District")));
                     retailer.setLastVisitDate(c.getString(c.getColumnIndex("lastVisitDate")));
                     retailer.setLastVisitedBy(c.getString(c.getColumnIndex("lastVisitedBy")));
+                    retailer.setWebUrl(c.getString(c.getColumnIndex("Website")));
+                    retailer.setVisitTargetCount(c.getInt(c.getColumnIndex("visitTargetCount")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
@@ -2858,6 +2859,7 @@ public class BusinessModel extends Application {
             Commons.printException(e);
         }
     }
+
     /**
      * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
      * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#getRetailerAttribute}

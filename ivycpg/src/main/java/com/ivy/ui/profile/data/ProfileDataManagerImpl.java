@@ -237,7 +237,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
             @Override
             public ArrayList<String> call() throws Exception {
                 ArrayList<String> nearByRetailers = new ArrayList<>();
-                if(retailerId!=null) {
+                if (retailerId != null) {
                     try {
                         initDb();
                         String sql = "select  nearbyrid from NearByRetailers where rid=" + getStringQueryParam(retailerId);
@@ -396,7 +396,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                             ",RC2.contactname as contactName2,RC2.ContactName_LName as contactLName2,RC2.contactNumber as contactNumber2,RC2.contact_title as contact_title2,RC2.contact_title_lovid as contact_title_lovid2," +
                             "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State,RM.RField5,RM.RField6,RM.TinExpDate," +
                             "RM.pan_number,RM.food_licence_number,RM.food_licence_exp_date,RM.DLNo,RM.DLNoExpDate,RM.RField4,RM.RField7,RA.Mobile,RA.Region,RA.Country,RM.userid,RM.GSTNumber," +
-                            "RM.RField8,RM.RField9,RM.RField10,,RM.RField11,RM.RField12,RM.RField13,RM.RField14,RM.RField15,RM.RField16,RM.RField17,RM.RField18,RM.RField19"+
+                            "RM.RField8,RM.RField9,RM.RField10,,RM.RField11,RM.RField12,RM.RField13,RM.RField14,RM.RField15,RM.RField16,RM.RField17,RM.RField18,RM.RField19,RA.URL" +
                             " from RetailerMaster RM LEFT JOIN RetailerContact RC1 ON Rm.retailerid=RC1.retailerId AND RC1.isprimary=1" +
                             " LEFT JOIN RetailerContact RC2 ON Rm.retailerid=RC2.retailerId AND RC2.isprimary=0" +
                             " LEFT JOIN RetailerAddress RA ON RA.RetailerId=RM.retailerId" +
@@ -474,6 +474,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                                 retailer.setRfield17(c.getString(c.getColumnIndex("RField17")));
                                 retailer.setRfield18(c.getString(c.getColumnIndex("RField18")));
                                 retailer.setRfield19(c.getString(c.getColumnIndex("RField19")));
+                                retailer.setWebSiteUrl(c.getString(c.getColumnIndex("URL")));
 
                                 retailer.setImageName(loadImgList(retailer.getRetailerId()));
                                 retailer.setEditAttributeList(loadEditAttributes(retailer.getRetailerId()));
@@ -2354,7 +2355,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
         return Single.fromCallable(() -> {
             String column, value;
             column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
-                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile,District";
+                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile,District,URL";
             try {
 
                 String lattitude = (outlet.getNewOutletlattitude() + "").contains("E")
@@ -2390,7 +2391,8 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                                 + "," + getStringQueryParam(outlet.getRegion())
                                 + "," + getStringQueryParam(outlet.getCountry())
                                 + "," + getStringQueryParam(outlet.getMobile())
-                                + "," + getStringQueryParam(outlet.getDistrict());
+                                + "," + getStringQueryParam(outlet.getDistrict())
+                                + "," + getStringQueryParam(outlet.getWebSiteUrl());
 
 
                         dbUtil.insertSQL("RetailerAddress", column, value);
@@ -2415,7 +2417,8 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                             + "," + getStringQueryParam(outlet.getRegion())
                             + "," + getStringQueryParam(outlet.getCountry())
                             + "," + getStringQueryParam(outlet.getMobile())
-                            + "," + getStringQueryParam(outlet.getDistrict());
+                            + "," + getStringQueryParam(outlet.getDistrict())
+                            + "," + getStringQueryParam(outlet.getWebSiteUrl());
 
                     dbUtil.insertSQL("RetailerAddress", column, value);
 
@@ -2666,10 +2669,10 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
         return Single.fromCallable(() -> {
 
             LocationLevel locationLevel = new LocationLevel();
-            try{
+            try {
                 initDb();
 
-                String locationLevelId="";
+                String locationLevelId = "";
                 StringBuilder sb = new StringBuilder();
                 sb.append("select locid,locName, LocLevelId from locationmaster where locid=");
                 if (!isParent) {
@@ -2688,13 +2691,13 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
 
                             locationLevel.setLocationId(c.getInt(0));
                             locationLevel.setLocationName(c.getString(1));
-                            locationLevelId= c.getString(2);
+                            locationLevelId = c.getString(2);
                             c.close();
                         }
                     }
                     c.close();
                 }
-                sb  = new StringBuilder();
+                sb = new StringBuilder();
                 sb.append("select Name from LocationLevel where id=");
                 sb.append(getStringQueryParam(locationLevelId));
                 Cursor c1 = dbUtil.selectSQL(sb.toString());
@@ -2711,7 +2714,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
 
                 return locationLevel;
 
-            }catch (Exception ignored){
+            } catch (Exception ignored) {
 
             }
 

@@ -51,6 +51,7 @@ public class NewRetailerConstant {
     public static final String CREDITLIMIT = "CREDITLIMIT";
     public static final String TIN_NUM = "TIN_NUM";
     public static final String TIN_EXP_DATE = "TIN_EXP_DATE";
+    public static final String WEB_SITE_URL = "WEB_SITE_URL";
     public static final String PINCODE = "PINCODE";
     public static final String RFIELD3 = "RFIELD3";
     public static final String RFIELD4 = "RFIELD4";
