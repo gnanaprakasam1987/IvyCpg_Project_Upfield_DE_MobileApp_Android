@@ -764,7 +764,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         getRetailerProfileObject(configBO,retailerMasterBO.getEmail(),retailerFieldList);
                         break;
                     case ProfileConstant.WEB_SITE_URL:
-                        updateWebSiteUrl(configBO);
+                        getRetailerProfileObject(configBO,retailerMasterBO.getWebUrl(),retailerFieldList);
                         break;
                     case ProfileConstant.MOBILE:
                         configBO.setRefId(retailerMasterBO.getAddressid());
