@@ -1868,7 +1868,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     collectionHelper.loadPaymentMode();
 
                     if (bmodel.getInvoiceHeaderBO() != null
-                            && bmodel.getInvoiceHeaderBO().size() > 0) {
+                            && bmodel.getInvoiceHeaderBO().size() > 0
+                            || bmodel.configurationMasterHelper.SHOW_ADVANCE_PAYMENT) {
 
                         //load currency data
                         if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
