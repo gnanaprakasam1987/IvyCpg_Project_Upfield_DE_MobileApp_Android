@@ -133,6 +133,7 @@ import com.ivy.ui.DisplayAsset.DisplayAssetActivity;
 import com.ivy.ui.DisplayAsset.DisplayAssetHelper;
 import com.ivy.ui.announcement.AnnouncementConstant;
 import com.ivy.ui.announcement.view.AnnouncementActivity;
+import com.ivy.ui.gallery.view.GalleryActivity;
 import com.ivy.ui.notes.NoteConstant;
 import com.ivy.ui.notes.view.NotesActivity;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
@@ -168,7 +169,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private static final String MENU_RECORD = "MENU_RECORD";
     private static final String MENU_LCALL = "MENU_LCALL";
     private static final String MENU_SALES_RET = "MENU_SALES_RET";
-    private static final String MENU_SURVEY = "MENU_SURVEY";
+    public static final String MENU_SURVEY = "MENU_SURVEY";
     public static final String MENU_TASK = "MENU_TASK";
     public static final String MENU_PHOTO = "MENU_PHOTO";
     public static final String MENU_ASSET = "MENU_ASSET";
@@ -181,9 +182,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_PRICE_COMP = "MENU_PRICE_COMP";
     private static final String MENU_EMPTY_RETURN = "MENU_EMPTY_RETURN";
     private static final String MENU_SURVEY_QDVP3 = "MENU_SURVEY_QDVP3";
-    private static final String MENU_SURVEY01 = "MENU_SURVEY01";
-    private static final String MENU_QUALITY = "MENU_QUALITY";
-    private static final String MENU_PERSUATION = "MENU_PERSUATION";
+    public static final String MENU_SURVEY01 = "MENU_SURVEY01";
+    public static final String MENU_QUALITY = "MENU_QUALITY";
+    public static final String MENU_PERSUATION = "MENU_PERSUATION";
     private static final String MENU_CLOSE_KLGS = "MENU_CALL_ANALYS_KELGS";
     private static final String MENU_CLOSE_CALL = "MENU_CLOSE_CALL";
     private static final String MENU_POSM = "MENU_POSM";
@@ -926,7 +927,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (!isClick) {
                 isClick = true;
                 Intent intent = new Intent(HomeScreenTwo.this,
-                        StoreWiseGallery.class);
+                        GalleryActivity.class);
                 startActivity(intent);
                 finish();
             }

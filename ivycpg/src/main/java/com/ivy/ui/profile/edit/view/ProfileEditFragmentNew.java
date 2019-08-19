@@ -47,6 +47,17 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.textfield.TextInputLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.location.LocationUtil;
@@ -78,16 +89,21 @@ import com.ivy.ui.profile.data.DatePreviewListener;
 import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
 import com.ivy.ui.profile.edit.di.ProfileEditModule;
+import com.ivy.ui.profile.view.ProfileBaseBo;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.StringUtils;
+import com.stepstone.stepper.BlockingStep;
+import com.stepstone.stepper.StepperLayout;
+import com.stepstone.stepper.VerificationError;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
@@ -97,12 +113,12 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
+import static com.ivy.sd.png.view.ProfileContainerFragment.selectedChannelId;
 
 public class ProfileEditFragmentNew extends BaseFragment
-        implements IProfileEditContract.ProfileEditView, RetailerOTPDialog.OTPListener, DatePreviewListener {
+        implements IProfileEditContract.ProfileEditView, RetailerOTPDialog.OTPListener, DatePreviewListener,BlockingStep {
 
     @BindView(R.id.profile_edit_scrollview)
     ScrollView mScrollView;
@@ -140,22 +156,15 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     private Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
     private ArrayList<StandardListBO> mPriorityProductList = null, selectedPriorityProductList = null;
-    private HashMap<String, MaterialSpinner> spinnerHashMap = null;
-    private HashMap<String, ArrayAdapter<NewOutletAttributeBO>> spinnerAdapterMap = null;
-    private ArrayList<NewOutletAttributeBO> attributeHeaderList = null;
-    private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap = null;
-    private HashMap<String, ArrayList<Integer>> attributeIndexMap = null;
+    @SuppressLint("UseSparseArrays")
     private HashMap<Integer, NewOutletAttributeBO> selectedAttribList = new HashMap<>();
-    private ArrayList<Integer> attributeIndexList = null;
 
     private int locid = 0;
     private int subChannelSpinnerCount = 0;
     private int id;
     private String selectedProductID = "";
-    static String lat = "", longitude = "";
+    private static String lat = "", longitude = "";
     private boolean isLatLongCameravailable = false;
-    private int spinnerCount = 0;
-    private int check = 0;
 
     /*ProfileImageView */
     private ImageView mProfileImageView = null;
@@ -234,6 +243,8 @@ public class ProfileEditFragmentNew extends BaseFragment
         mButtonSave.setTypeface(FontUtils.getFontBalooHai(getContext(), FontUtils.FontType.REGULAR));
         setHasOptionsMenu(true);
         profileEditPresenter.getProfileEditDataFromLocalDataBase();
+        mScrollView.removeAllViews();
+        mRootLinearLayout = null;
         mScrollView.addView(getmRootLinearLayout());
     }
 
@@ -247,18 +258,13 @@ public class ProfileEditFragmentNew extends BaseFragment
         super.onDestroy();
     }
 
-    @OnClick(R.id.profile_edit_save)
-    public void seveUpdateProfile() {
-        profileEditPresenter.saveUpdatedProfileEdit();
-    }
-
     @Override
     public void showAlert() {
-        showAlertDialog(getActivity().getResources().getString(R.string.profile_updated_scccess), 0);
+        showAlertDialog(getResources().getString(R.string.profile_updated_scccess), 0);
     }
 
 
-    void showAlertDialog(String msg, int id) {
+    private void showAlertDialog(String msg, int id) {
         final int idd = id;
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(msg);
@@ -486,15 +492,6 @@ public class ProfileEditFragmentNew extends BaseFragment
         getmRootLinearLayout().addView(getPriorityProductView(mNumber, MName, textvalue, productID), getCommonsparams());
     }
 
-    @Override
-    public void createAttributeView(int flag) {
-        LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        LLParams.setMargins(10, 5, 10, 5);
-        getmRootLinearLayout().addView(addAttributeView(flag), LLParams);
-
-    }
-
 
     @Override
     public void createDrugLicenseExpDate(String mName, int mNumber, String data) {
@@ -516,7 +513,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public int getContractSpinnerSelectedItemListId() {
-        return ((NewOutletBO) contractSpinner.getSelectedItem()).getListId();
+        return ((ContractStatus) contractSpinner.getSelectedItem()).getListId();
     }
 
     @Override
@@ -1650,495 +1647,6 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     }
 
-
-    //To create layout for Retailer Attribute
-    private LinearLayout addAttributeView(int flag) {
-
-        LinearLayout parentLayout = null;
-        try {
-            //flag==0 - add common atrributes and attributes for current(from DB) channel
-            //flag==1 - add new(if user changing the channel, then corresponding attributes loaded) channel attributes
-            boolean isCommon = false, isFromChannel = false;
-
-            boolean isNewChannel = false;
-
-            if (flag == 0) isCommon = true;
-            else if (flag == 1) isFromChannel = true;
-
-            //Params
-            LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            LinearLayout.LayoutParams innerParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-            innerParams.setMargins(0, 0, 10, 0);
-
-            LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            titleParams.setMargins(3, 0, 0, 0);
-
-            ArrayList<Integer> mNewAttributeListByLocationID = null;// Newly selected channel's attribute
-
-            if (isCommon) {
-
-                // creating parent layout for attributes
-                parentLayout = new LinearLayout(getActivity());
-                parentLayout.setTag("attributeLayout");
-                parentLayout.setOrientation(LinearLayout.VERTICAL);
-
-                LinearLayout titleLayout = new LinearLayout(getActivity());
-                titleLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-                // title
-                TextView titleTV = new TextView(getActivity());
-                titleTV.setText(getResources().getString(R.string.attribute));
-                titleTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-                titleTV.setTextColor(Color.BLACK);
-                titleLayout.addView(titleTV, titleParams);
-
-                parentLayout.addView(titleLayout, LLParams);
-                profileEditPresenter.checkIsCommonAttributeView();
-
-
-            } else if (isFromChannel) {
-                isNewChannel = true;
-                // getting existing attribute layout and clearig childs for loading attributes of current channel
-                parentLayout = getView().findViewWithTag("attributeLayout");
-                if (parentLayout != null) {
-                    for (int i = 0; i < parentLayout.getChildCount(); i++) {
-                        if (parentLayout.getChildAt(i).getTag() != null &&
-                                ((String) parentLayout.getChildAt(i).getTag()).equals("channel"))
-                            parentLayout.removeViewAt(i);
-                    }
-                }
-                // getting newly selected channel's attribute
-                mNewAttributeListByLocationID = new ArrayList<>();
-                if (profileEditPresenter.getAttributeListByLocationId() != null
-                        && profileEditPresenter.getAttributeListByLocationId().get(((SpinnerBO) subchannel.getSelectedItem()).getId()) != null)
-                    mNewAttributeListByLocationID.addAll(profileEditPresenter.getAttributeListByLocationId().get(((SpinnerBO) subchannel.getSelectedItem()).getId()));
-
-            }
-
-            spinnerHashMap = new HashMap<>();
-            spinnerAdapterMap = new HashMap<>();
-            if (isFromChannel && isNewChannel) {
-
-                // User selected a sub channel an it is new one.
-                for (int i = 0; i < profileEditPresenter.getAttributeParentList().size(); i++) {
-
-                    final NewOutletAttributeBO parentBO;
-                    parentBO = profileEditPresenter.getAttributeParentList().get(i);
-
-                    if (mNewAttributeListByLocationID.contains(parentBO.getAttrId())) {
-
-                        LinearLayout layout = new LinearLayout(getActivity());
-
-                        // setting tag as channel, used to remove channel views particularly and update new one if channel changed
-                        layout.setTag("channel");
-
-                        layout.setOrientation(LinearLayout.HORIZONTAL);
-                        layout.setGravity(Gravity.CENTER_VERTICAL);
-                        layout.setWeightSum(3f);
-                        layout.setLayoutParams(LLParams);
-
-                        //Attribute label
-                        final String attribName = parentBO.getAttrName();
-                        TextView mn_textview = new TextView(getActivity());
-                        mn_textview.setText(attribName);
-                        mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-                        mn_textview.setTextColor(Color.BLACK);
-                        mn_textview.setLayoutParams(paramsAttrib);
-                        layout.addView(mn_textview);
-
-                        final int columnCount = profileEditPresenter.getLevel(parentBO.getAttrId());
-                        MaterialSpinner spinner;
-                        LinearLayout innerLL = new LinearLayout(getActivity());
-                        innerLL.setOrientation(LinearLayout.VERTICAL);
-                        innerLL.setLayoutParams(paramsAttribSpinner);
-                        LinearLayout innerHL = new LinearLayout(getActivity());
-                        innerHL.setWeightSum(2);
-                        innerHL.setLayoutParams(LLParams);
-                        innerHL.setOrientation(LinearLayout.HORIZONTAL);
-                        boolean isAdded = false;
-                        //  ArrayList<Integer> indexList = attributeIndexMap.get(attribName);
-
-                        //creating child levels
-                        for (int j = 0; j < columnCount; j++) {
-                            isAdded = false;
-                            final ArrayList<NewOutletAttributeBO> attrbList;
-                            final int index = j;
-                            //   final int selectedPos = indexList.get(j);
-                            spinner = new MaterialSpinner(getActivity());
-
-                            attrbList = new ArrayList<>();
-                            attrbList.add(0, new NewOutletAttributeBO(-1,
-                                    getActivity().getResources().getString(R.string.select_str) + " " + getActivity().getResources()
-                                            .getString(R.string.attribute)));
-                            attrbList.addAll(profileEditPresenter.getAttributeMapList(attribName));
-
-                            final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                                    android.R.layout.simple_spinner_item, attrbList);
-                            spinner.setAdapter(arrayAdapter);
-                            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinner.setLayoutParams(innerParams);
-                            innerHL.addView(spinner);
-                            spinnerAdapterMap.put(attribName + index, arrayAdapter);
-                            //  spinner.setSelection(selectedPos + 1);
-                            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                @Override
-                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                    if (++check > spinnerCount) {
-                                        selectedAttribList.remove(parentBO.getAttrId());
-                                        selectedAttribList.put(parentBO.getAttrId(), attrbList.get(position));
-
-                                        if (index < columnCount)
-                                            loadAttributeSpinner(attribName + parentBO.getAttrId(), attrbList.get(position).getAttrId());
-                                    }
-                                }
-
-                                @Override
-                                public void onNothingSelected(AdapterView<?> parent) {
-                                }
-                            });
-                            spinnerHashMap.put(attribName + index, spinner);
-                            if ((j + 1) % 2 == 0) {
-                                innerLL.addView(innerHL);
-                                innerHL = new LinearLayout(getActivity());
-                                innerHL.setWeightSum(2);
-                                innerHL.setLayoutParams(LLParams);
-                                innerHL.setOrientation(LinearLayout.HORIZONTAL);
-                                isAdded = true;
-                            }
-                        }
-                        if (!isAdded) {
-                            innerLL.addView(innerHL);
-                        }
-
-                        layout.addView(innerLL);
-                        parentLayout.addView(layout);
-                    }
-                }
-            } else if (isCommon) {
-                //Call while creating view first time
-                //Call while creating a  view
-
-                if (profileEditPresenter.getAttributeList().size() > 0) {
-                    // There is a attribute for current retailer..
-
-                    ArrayList<Integer> mAddedCommonAttributeList = new ArrayList<>();
-                    int rowCount = profileEditPresenter.getAttributeList().size();
-                    updateRetailerAttribute(profileEditPresenter.getAttributeList());
-
-                     /*Even if there is a record for current retailer.. we should load common attributes in the view,
-                     so that user can add new attribute for current retailer*/
-
-                    for (NewOutletAttributeBO newOutletAttributeBO : attributeHeaderList) {
-                        if (profileEditPresenter.getCommonAttributeList().contains(newOutletAttributeBO.getAttrId()))
-                            mAddedCommonAttributeList.add(newOutletAttributeBO.getAttrId());
-                    }
-                    prepareCommonAttributeView(profileEditPresenter.getCommonAttributeList(), parentLayout, mAddedCommonAttributeList);
-
-                    for (int i = 0; i < rowCount; i++) {
-
-                        final NewOutletAttributeBO parentBO;
-                        parentBO = attributeHeaderList.get(i);
-                        /*Allowing only if parent attribute is available in common list or channel's(from Db) attribute
-                        assert mChannelAttributeList != null;*/
-                        if ((isCommon && (profileEditPresenter.getCommonAttributeList().contains(parentBO.getAttrId())
-                                || (profileEditPresenter.getChannelAttributeList() != null
-                                && profileEditPresenter.getChannelAttributeList().contains(parentBO.getAttrId()))))) {
-
-                            LinearLayout layout = new LinearLayout(getActivity());
-                            // setting tag as channel, used to remove channel views particularly and update new one if channel changed
-                            if (profileEditPresenter.getChannelAttributeList() != null
-                                    && profileEditPresenter.getChannelAttributeList().contains(parentBO.getAttrId()))
-                                layout.setTag("channel");
-                            layout.setOrientation(LinearLayout.HORIZONTAL);
-                            layout.setGravity(Gravity.CENTER_VERTICAL);
-                            layout.setWeightSum(3f);
-                            layout.setLayoutParams(LLParams);
-
-                            final String attribName = parentBO.getAttrName();
-                            TextView mn_textview = new TextView(getActivity());
-                            mn_textview.setText(attribName);
-                            mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-                            mn_textview.setTextColor(Color.BLACK);
-                            mn_textview.setLayoutParams(paramsAttrib);
-                            layout.addView(mn_textview);
-
-                            final int columnCount = profileEditPresenter.getLevel(parentBO.getAttrId());
-
-                            MaterialSpinner spinner;
-
-                            LinearLayout innerLL = new LinearLayout(getActivity());
-                            innerLL.setOrientation(LinearLayout.VERTICAL);
-                            innerLL.setLayoutParams(paramsAttribSpinner);
-
-                            LinearLayout innerHL = new LinearLayout(getActivity());
-                            innerHL.setWeightSum(2);
-                            innerHL.setLayoutParams(LLParams);
-                            innerHL.setOrientation(LinearLayout.HORIZONTAL);
-
-                            boolean isAdded = false;
-                            ArrayList<Integer> indexList = attributeIndexMap.get(attribName);
-                            //creating child levels
-                            for (int j = 0; j < columnCount; j++) {
-                                isAdded = false;
-                                final ArrayList<NewOutletAttributeBO> attrbList;
-                                final int index = j;
-                                final int selectedPos = indexList.get(j);
-                                spinner = new MaterialSpinner(getActivity());
-                                attrbList = new ArrayList<>();
-                                attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
-                                        .getString(R.string.select_str) + " " + getActivity().getResources()
-                                        .getString(R.string.attribute)));
-                                attrbList.addAll(listHashMap.get(attribName).get(j));
-                                final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                                        android.R.layout.simple_spinner_item, attrbList);
-                                spinner.setAdapter(arrayAdapter);
-                                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                spinner.setLayoutParams(innerParams);
-                                innerHL.addView(spinner);
-                                spinnerAdapterMap.put(attribName + index, arrayAdapter);
-                                spinner.setSelection(selectedPos + 1);
-                                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                    @Override
-                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                        if (++check > spinnerCount) {
-                                            selectedAttribList.remove(parentBO.getAttrId());
-                                            selectedAttribList.put(parentBO.getAttrId(), attrbList.get(position));
-                                            if (index < columnCount)
-                                                loadAttributeSpinner(attribName + parentBO.getAttrId(), attrbList.get(position).getAttrId());
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onNothingSelected(AdapterView<?> parent) {
-                                    }
-                                });
-                                spinnerHashMap.put(attribName + index, spinner);
-                                if ((j + 1) % 2 == 0) {
-                                    innerLL.addView(innerHL);
-                                    innerHL = new LinearLayout(getActivity());
-                                    innerHL.setWeightSum(2);
-                                    innerHL.setLayoutParams(LLParams);
-                                    innerHL.setOrientation(LinearLayout.HORIZONTAL);
-                                    isAdded = true;
-                                }
-                            }
-                            if (!isAdded) {
-                                innerLL.addView(innerHL);
-                            }
-                            layout.addView(innerLL);
-                            parentLayout.addView(layout);
-                        }
-
-                    }
-                } else {
-                    // No attributes for current retailer..
-                    // so just adding common attributes(Because user can add attribute for current retailer from edit screen).
-                    prepareCommonAttributeView(profileEditPresenter.getCommonAttributeList(), parentLayout, new ArrayList<Integer>());
-                }
-
-
-            }
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        }
-        return parentLayout;
-    }
-
-    //To load spinner values for Retailer Attribute based on it's previous spinner selection
-    private void loadAttributeSpinner(String key, int attribId) {
-        MaterialSpinner spinner = spinnerHashMap.get(key);
-        ArrayAdapter<NewOutletAttributeBO> adapter = spinnerAdapterMap.get(key);
-        if (spinner != null && adapter != null) {
-            ArrayList<NewOutletAttributeBO> arrayList = new ArrayList<>();
-            arrayList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
-                    .getString(R.string.select_str) + " " + getActivity().getResources()
-                    .getString(R.string.attribute)));
-            for (NewOutletAttributeBO attributeBO : profileEditPresenter.getAttributeList()) {
-                if (attribId == attributeBO.getParentId()) {
-                    arrayList.add(attributeBO);
-                }
-            }
-
-            adapter.clear();
-            adapter.addAll(arrayList);
-            spinner.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-        }
-    }
-
-
-    @SuppressLint("UseSparseArrays")
-    private void updateRetailerAttribute(ArrayList<NewOutletAttributeBO> list) {
-
-        attributeHeaderList = new ArrayList<>();
-        listHashMap = new HashMap<>();
-        attributeIndexMap = new HashMap<>();
-        selectedAttribList = new HashMap<>();
-
-
-        ArrayList<ArrayList<NewOutletAttributeBO>> attributeGroupedList;
-        ArrayList<NewOutletAttributeBO> childList = profileEditPresenter.getAttributeListChild();
-        ArrayList<NewOutletAttributeBO> parentList = profileEditPresenter.getAttributeParentList();
-
-        int attribID;
-        int tempAttribID;
-        int parentID = 0;
-        int tempParentID = 0;
-        String title = "";
-        NewOutletAttributeBO tempBO = new NewOutletAttributeBO();
-        int tempLevel;
-
-        for (NewOutletAttributeBO attributeBO : list) {
-            attributeGroupedList = new ArrayList<>();
-            attributeIndexList = new ArrayList<>();
-            attribID = attributeBO.getAttrId();
-            for (int i = childList.size() - 1; i >= 0; i--) {
-                NewOutletAttributeBO attributeBO1 = childList.get(i);
-                tempAttribID = attributeBO1.getAttrId();
-                if (attribID == tempAttribID) {
-                    tempBO = attributeBO1;
-                    tempParentID = attributeBO1.getParentId();
-                    attributeGroupedList.add(getAttributeGroupedList(tempParentID, childList, tempAttribID));
-                    continue;
-                }
-                if (tempAttribID == tempParentID) {
-                    tempParentID = attributeBO1.getParentId();
-                    attributeGroupedList.add(getAttributeGroupedList(tempParentID, childList, tempAttribID));
-                }
-            }
-
-            for (NewOutletAttributeBO attributeBO2 : parentList) {
-                parentID = attributeBO2.getAttrId();
-                tempLevel = profileEditPresenter.getLevel(attributeBO2.getAttrId());
-                if (tempParentID == parentID) {
-                    spinnerCount += tempLevel;
-                    title = attributeBO2.getAttrName();
-                    attributeHeaderList.add(attributeBO2);
-                }
-            }
-            Collections.reverse(attributeGroupedList);
-            Collections.reverse(attributeIndexList);
-            listHashMap.put(title, attributeGroupedList);
-            attributeIndexMap.put(title, attributeIndexList);
-            selectedAttribList.put(tempParentID, tempBO);
-        }
-    }
-
-
-    private ArrayList<NewOutletAttributeBO> getAttributeGroupedList(int parentID
-            , ArrayList<NewOutletAttributeBO> list, int attribID) {
-        ArrayList<NewOutletAttributeBO> arrayList = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            NewOutletAttributeBO obj = list.get(i);
-            if (parentID == obj.getParentId()) {
-                arrayList.add(obj);
-            }
-        }
-        for (int i = 0; i < arrayList.size(); i++) {
-            NewOutletAttributeBO obj = arrayList.get(i);
-            if (attribID == obj.getAttrId())
-                attributeIndexList.add(i);
-        }
-        return arrayList;
-    }
-
-
-    private void prepareCommonAttributeView(ArrayList<Integer> mCommonAttributeList
-            , LinearLayout parentLayout, ArrayList<Integer> mAddedCommonAttributeList) {
-
-        LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-        LinearLayout.LayoutParams innerParams = new LinearLayout.LayoutParams(0,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-
-        int rowCount = profileEditPresenter.getAttributeParentList().size();
-        selectedAttribList = new HashMap<>();
-        for (int i = 0; i < rowCount; i++) {
-
-            final NewOutletAttributeBO parentBO = profileEditPresenter.getAttributeParentList().get(i);
-            if (mCommonAttributeList.contains(parentBO.getAttrId())
-                    && !mAddedCommonAttributeList.contains(parentBO.getAttrId())) {
-
-                LinearLayout layout = new LinearLayout(getActivity());
-                layout.setOrientation(LinearLayout.HORIZONTAL);
-                layout.setGravity(Gravity.CENTER_VERTICAL);
-                layout.setWeightSum(3f);
-                layout.setLayoutParams(LLParams);
-                final String attribName = parentBO.getAttrName();
-                TextView mn_textview = new TextView(getActivity());
-                mn_textview.setText(attribName);
-                mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-                mn_textview.setTextColor(Color.BLACK);
-                mn_textview.setLayoutParams(paramsAttrib);
-                layout.addView(mn_textview);
-                final int columnCount = profileEditPresenter.getLevel(parentBO.getAttrId());
-                MaterialSpinner spinner;
-                LinearLayout innerLL = new LinearLayout(getActivity());
-                innerLL.setOrientation(LinearLayout.VERTICAL);
-                innerLL.setLayoutParams(paramsAttribSpinner);
-                LinearLayout innerHL = new LinearLayout(getActivity());
-                innerHL.setWeightSum(2);
-                innerHL.setLayoutParams(LLParams);
-                innerHL.setOrientation(LinearLayout.HORIZONTAL);
-                boolean isAdded = false;
-                // ArrayList<Integer> indexList = attributeIndexMap.get(attribName);
-                //creating child levels
-                for (int j = 0; j < columnCount; j++) {
-                    isAdded = false;
-                    final ArrayList<NewOutletAttributeBO> attrbList;
-                    final int index = j;
-                    //final int selectedPos = indexList.get(j);
-                    spinner = new MaterialSpinner(getActivity());
-                    attrbList = new ArrayList<>();
-                    attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
-                            .getString(R.string.select_str) + " " + getActivity().getResources()
-                            .getString(R.string.attribute)));
-                    attrbList.addAll(profileEditPresenter.getAttributeMapList(attribName));
-                    final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                            android.R.layout.simple_spinner_item, attrbList);
-                    spinner.setAdapter(arrayAdapter);
-                    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner.setLayoutParams(innerParams);
-                    innerHL.addView(spinner);
-                    spinnerAdapterMap.put(attribName + index, arrayAdapter);
-                    // spinner.setSelection(selectedPos + 1);
-                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            if (++check > spinnerCount) {
-                                selectedAttribList.remove(parentBO.getAttrId());
-                                selectedAttribList.put(parentBO.getAttrId(), attrbList.get(position));
-                                if (index < columnCount)
-                                    loadAttributeSpinner(attribName + parentBO.getAttrId(), attrbList.get(position).getAttrId());
-                            }
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-
-                        }
-                    });
-                    spinnerHashMap.put(attribName + index, spinner);
-                    if ((j + 1) % 2 == 0) {
-                        innerLL.addView(innerHL);
-                        innerHL = new LinearLayout(getActivity());
-                        innerHL.setWeightSum(2);
-                        innerHL.setLayoutParams(LLParams);
-                        innerHL.setOrientation(LinearLayout.HORIZONTAL);
-                        isAdded = true;
-                    }
-                }
-                if (!isAdded) {
-                    innerLL.addView(innerHL);
-                }
-                layout.addView(innerLL);
-                parentLayout.addView(layout);
-            }
-        }
-    }
-
-
     @Override
     public void generateOTP() {
 
@@ -2420,7 +1928,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     //SpinnerBO tempBo = (SpinnerBO) parent.getSelectedItem();
                     if (++subChannelSpinnerCount > 1) {
-                        addAttributeView(1);
+                        //addAttributeView(1);
                     }
 
                 }
@@ -2509,6 +2017,57 @@ public class ProfileEditFragmentNew extends BaseFragment
         } catch (Exception ex) {
             Commons.printException("regex check", ex);
         }
+    }
+
+    @Override
+    public void onNextStepClicked(ProfileBaseBo retailerProfileField,StepperLayout.OnNextClickedCallback callback) {
+
+        selectedChannelId = getSubChennalSelectedItemId();
+
+        EventBus.getDefault().post(retailerProfileField);
+        callback.goToNextStep();
+    }
+
+    @Override
+    public void onCompleteClicked(ProfileBaseBo retailerProfileField,StepperLayout.OnCompleteClickedCallback callback) {
+
+        selectedChannelId = getSubChennalSelectedItemId();
+
+        EventBus.getDefault().post(retailerProfileField);
+        callback.complete();
+    }
+
+    @Override
+    public void onNextClicked(StepperLayout.OnNextClickedCallback callback) {
+        if (profileEditPresenter.doValidateProdileEdit())
+            profileEditPresenter.setProfileValues(false,callback,null);
+    }
+
+    @Override
+    public void onCompleteClicked(StepperLayout.OnCompleteClickedCallback callback) {
+        if (profileEditPresenter.doValidateProdileEdit())
+            profileEditPresenter.setProfileValues(true,null,callback);
+    }
+
+    @Override
+    public void onBackClicked(StepperLayout.OnBackClickedCallback callback) {
+        callback.goToPrevStep();
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 
 }

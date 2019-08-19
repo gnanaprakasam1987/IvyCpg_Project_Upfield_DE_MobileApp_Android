@@ -350,4 +350,6 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'com.google.android.gms:play-services-places-placereport:15.0.1'
 
+
+    implementation 'com.stepstone.stepper:material-stepper:4.3.1'
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:maxHeight="@dimen/list_title_height">
+
+    <TextView
+        android:id="@+id/source"
+        style="@style/HeadingStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:padding="@dimen/_5sdp"
+        android:textColor="@color/gray_text"
+        android:text="@string/select_contact_title" />
+</LinearLayout>

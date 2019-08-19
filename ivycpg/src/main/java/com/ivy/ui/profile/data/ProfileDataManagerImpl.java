@@ -18,6 +18,7 @@ import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.bo.AddressBO;
+import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.CensusLocationBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GenericObjectPair;
@@ -37,13 +38,16 @@ import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.create.NewRetailerConstant;
 import com.ivy.ui.profile.create.di.NewRetailer;
 import com.ivy.ui.profile.create.model.ContactTitle;
 import com.ivy.ui.profile.create.model.ContractStatus;
 import com.ivy.ui.profile.create.model.LocationLevel;
 import com.ivy.ui.profile.create.model.PaymentType;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
 
 import org.json.JSONArray;
@@ -1054,7 +1058,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
             @Override
             public ChannelWiseAttributeList call() throws Exception {
 
-                HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID = null;
+                HashMap<Integer, ArrayList<Integer>> mAttributeIdListByLocationID = null;
                 HashMap<Integer, ArrayList<NewOutletAttributeBO>> mAttributeBOListByLocationID = null;
                 ChannelWiseAttributeList channelWiseAttributeList = new ChannelWiseAttributeList();
                 try {
@@ -1062,8 +1066,10 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                             .selectSQL("SELECT EAM.attributeid,CriteriaId,ECT.isMandatory,AttributeName FROM entityattributemaster EAM inner join EntityCriteriaType ECT ON EAM.attributeId=ECT.attributeId where parentid =0 and criteriaType='CHANNEL' and IsSystemComputed=0 order by sequence");
                     if (c != null && c.getCount() > 0) {
 
-                        mAttributeListByLocationID = new HashMap<>();
                         mAttributeBOListByLocationID = new HashMap<>();
+
+                        mAttributeIdListByLocationID = new HashMap<>();
+
                         NewOutletAttributeBO newOutletAttributeBO;
 
                         while (c.moveToNext()) {
@@ -1075,7 +1081,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
 
                             if (mAttributeBOListByLocationID.get(c.getInt(1)) != null) {
                                 mAttributeBOListByLocationID.get(c.getInt(1)).add(newOutletAttributeBO);
-                                mAttributeListByLocationID.get(c.getInt(1)).add(c.getInt(0));
+                                mAttributeIdListByLocationID.get(c.getInt(1)).add(c.getInt(0));
                             } else {
                                 ArrayList<NewOutletAttributeBO> mAtrributeList = new ArrayList<>();
                                 mAtrributeList.add(newOutletAttributeBO);
@@ -1084,13 +1090,13 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
 
                                 ArrayList<Integer> list = new ArrayList<>();
                                 list.add(c.getInt(0));
-                                mAttributeListByLocationID.put(c.getInt(1), list);
+                                mAttributeIdListByLocationID.put(c.getInt(1), list);
                             }
                         }
                         c.close();
                     }
 
-                    channelWiseAttributeList = new ChannelWiseAttributeList(mAttributeBOListByLocationID, mAttributeListByLocationID);
+                    channelWiseAttributeList = new ChannelWiseAttributeList(mAttributeBOListByLocationID, mAttributeIdListByLocationID);
 
                 } catch (Exception e) {
                     Commons.printException(e);
@@ -1173,7 +1179,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
 
     /*It will return the RetailerAttribute Child */
     @Override
-    public Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerAttribute() {
+    public Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerChildAttribute() {
         return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
             @Override
             public ArrayList<NewOutletAttributeBO> call() throws Exception {
@@ -1378,6 +1384,9 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
         return Single.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
+
+                initDb();
+
                 Cursor headerCursor;
                 String tid = "";
                 try {
@@ -1403,186 +1412,13 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
         });
     }
 
-
-    @Override
-    public Single<Boolean> deleteQuery(final String configCode, final String RetailerID) {
-
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                try {
-                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + getStringQueryParam(configCode) + "and RetailerId=" + RetailerID, false);
-                } catch (Exception e) {
-                    Commons.printException("" + e);
-                }
-                return true;
-            }
-        });
-    }
-
-
-    @Override
-    public Single<Boolean> insertNewRow(final String configCode, final String RetailerID, String mTid, String mCustomQuery) {
-
-        final String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" + "values (" + getStringQueryParam(mTid) + "," + mCustomQuery;
-
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                try {
-                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + getStringQueryParam(configCode) + "and RetailerId=" + RetailerID, false);
-                } catch (Exception e) {
-                    Commons.printException("" + e);
-                }
-                return true;
-            }
-        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
-            @Override
-            public SingleSource<? extends Boolean> apply(final Boolean aBoolean) throws Exception {
-                return Single.fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        try {
-                            // if(aBoolean) if we want we can add condition. it will return the deleted row response .
-                            dbUtil.executeQ(insertquery);
-                        } catch (Exception e) {
-                            Commons.printException("" + e);
-                        }
-                        return true;
-                    }
-                });
-            }
-        });
-
-    }
-
-    @Override
-    public Single<Boolean> updateNearByRetailers(final String mTid, final String RetailerID,
-                                                 final HashMap<String, String> temp) {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                try {
-                    dbUtil.deleteSQL("RrtNearByEditRequest", " tid =" + getStringQueryParam(mTid), false);
-                } catch (Exception e) {
-                    Commons.printException("" + e);
-                }
-                return true;
-            }
-        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
-            @Override
-            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
-                return Single.fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        try {
-                            // if(aBoolean) if we want we can add condition. it will return the deleted row response .
-                            if (temp != null)
-                                for (String id : temp.keySet()) {
-                                    String Q = "insert into RrtNearByEditRequest (tid,rid,nearbyrid,status,upload)" +
-                                            "values (" + getStringQueryParam(mTid) + "," + RetailerID + "," + id
-                                            + "," + getStringQueryParam(temp.get(id)) + ",'N')";
-                                    dbUtil.executeQ(Q);
-                                }
-                        } catch (Exception e) {
-                            Commons.printException("" + e);
-                        }
-                        return true;
-                    }
-                });
-            }
-        });
-    }
-
-    @Override
-    public Single<Boolean> updateRetailerEditPriorityProducts(final String mTid, final String RetailerID
-            , final ArrayList<StandardListBO> selectedPrioProducts) {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                try {
-                    dbUtil.deleteSQL("RetailerEditPriorityProducts", " RetailerId ="
-                            + getStringQueryParam(RetailerID), false);
-                } catch (Exception e) {
-                    Commons.printException("" + e);
-                }
-                return true;
-            }
-        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
-            @Override
-            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
-                return Single.fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        try {
-                            if (selectedPrioProducts != null)
-                                for (StandardListBO bo : selectedPrioProducts) {
-                                    String Q = "insert into RetailerEditPriorityProducts (tid,RetailerId,productId,levelid,status,upload)" +
-                                            "values (" + getStringQueryParam(mTid)
-                                            + "," + getStringQueryParam(RetailerID)
-                                            + "," + SDUtil.convertToInt(bo.getListID())
-                                            + "," + getStringQueryParam(bo.getListCode())
-                                            + "," + getStringQueryParam(bo.getStatus()) + ",'N')";
-                                    dbUtil.executeQ(Q);
-                                }
-                            return true;
-                        } catch (Exception e) {
-                            Commons.printException("" + e);
-                            return false;
-                        }
-
-                    }
-                });
-            }
-        });
-    }
-
-    @Override
-    public Single<Boolean> updateRetailerMasterAttribute(final String mTid, final String RetailerID,
-                                                         final ArrayList<NewOutletAttributeBO> tempList) {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                try {
-                    dbUtil.deleteSQL("RetailerEditAttribute", " tid =" + getStringQueryParam(mTid), false);
-
-                } catch (Exception e) {
-                    Commons.printException("" + e);
-                }
-                return true;
-            }
-        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
-            @Override
-            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
-
-                return Single.fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        try {
-                            for (NewOutletAttributeBO id : tempList) {
-                                String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
-                                        "values (" + getStringQueryParam(mTid)
-                                        + "," + RetailerID
-                                        + "," + id.getAttrId()
-                                        + "," + id.getLevelId()
-                                        + "," + getStringQueryParam(id.getStatus()) + ",'N')";
-                                dbUtil.executeQ(Q);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return true;
-                    }
-                });
-            }
-        });
-    }
-
     @Override
     public Single<Boolean> updateRetailer(final String tid, final String RetailerID, final String currentDate) {
 
         final String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
                 "values (" + getStringQueryParam(tid) + "," + RetailerID + "," + getStringQueryParam(currentDate) + ")";
+
+        initDb();
 
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
@@ -1622,6 +1458,9 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                                 } catch (Exception e) {
                                     Commons.printException("" + e);
                                 }
+
+                                shutDownDb();
+
                                 return true;
                             }
                         });
@@ -1630,91 +1469,6 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                 });
             }
         });
-    }
-
-    @Override
-    public Single<Boolean> insertRetailerContactEdit(final String mTid, final String RetailerID,
-                                                     final ArrayList<RetailerContactBo> retailerContactList) {
-
-        final String column = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName," +
-                "ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid,salutationLovId,IsEmailNotificationReq";
-
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                try {
-                    String where = "RetailerId=" + RetailerID;
-
-                    Cursor getCpidCursor = dbUtil.selectSQL("Select CPId from RetailerContactEdit where retailerId=" + getStringQueryParam(RetailerID));
-
-                    if (getCpidCursor != null && getCpidCursor.getCount() > 0) {
-                        while (getCpidCursor.moveToNext()) {
-                            dbUtil.deleteSQL("ContactAvailabilityEdit", "CPId=" + getCpidCursor.getString(0), false);
-                        }
-                    }
-
-                    dbUtil.deleteSQL("RetailerContactEdit", where, false);
-                } catch (Exception e) {
-                    Commons.printException("" + e);
-                }
-                return true;
-            }
-        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
-            @Override
-            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
-
-                return Single.fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        if (retailerContactList.size() > 0) {
-                            for (RetailerContactBo retailerContactBo : retailerContactList) {
-                                if (retailerContactBo.getStatus().equalsIgnoreCase("U")
-                                        || retailerContactBo.getStatus().equalsIgnoreCase("I")
-                                        || retailerContactBo.getStatus().equalsIgnoreCase("D")) {
-                                    String value = getStringQueryParam(retailerContactBo.getTitle()) + ","
-                                            + getStringQueryParam(retailerContactBo.getContactTitleLovId()) + ","
-                                            + getStringQueryParam(retailerContactBo.getFistname()) + ","
-                                            + getStringQueryParam(retailerContactBo.getLastname()) + ","
-                                            + getStringQueryParam(retailerContactBo.getContactNumber()) + ","
-                                            + getStringQueryParam(retailerContactBo.getContactMail()) + ","
-                                            + retailerContactBo.getIsPrimary() + ","
-                                            + getStringQueryParam(retailerContactBo.getStatus()) + ","
-                                            + getStringQueryParam(retailerContactBo.getCpId()) + ","
-                                            + getStringQueryParam(RetailerID) + ","
-                                            + getStringQueryParam(mTid) + ","
-                                            + getStringQueryParam(retailerContactBo.getContactSalutationId()) + ","
-                                            + getStringQueryParam(retailerContactBo.getIsEmailPrimary() + "");
-                                    dbUtil.insertSQL("RetailerContactEdit", column, value);
-
-                                    addContactAvail(dbUtil, retailerContactBo, RetailerID, mTid);
-                                }
-                            }
-                        }
-                        return true;
-                    }
-                });
-
-            }
-        });
-    }
-
-    private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo, String retailerId, String Tid) {
-        String column = "CPAId,CPId,Day,StartTime,EndTime,Tid,status,upload, RetailerID";
-
-        for (RetailerContactAvailBo retailerContactAvailBo : retailerContactBo.getContactAvailList()) {
-
-            String value = StringUtils.getStringQueryParam(retailerContactAvailBo.getCpaid() != null && !retailerContactAvailBo.getCpaid().isEmpty() ? retailerContactAvailBo.getCpaid() : retailerId)
-                    + "," + StringUtils.getStringQueryParam(retailerContactBo.getCpId())
-                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getDay())
-                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getFrom())
-                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getTo())
-                    + "," + StringUtils.getStringQueryParam(Tid)
-                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getStatus())
-                    + "," + StringUtils.getStringQueryParam("N")
-                    + "," + StringUtils.getStringQueryParam(retailerContactBo.getRetailerID());
-
-            db.insertSQL("ContactAvailabilityEdit", column, value);
-        }
     }
 
     @Override
@@ -2030,7 +1784,6 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
             }
         });
     }
-
 
     public Single<Boolean> checkRetailerAlreadyAvailable(String retailerName, String pincode) {
 
@@ -2578,7 +2331,6 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
         });
     }
 
-
     @Override
     public Single<Boolean> setupSurveyScreenData(String id) {
         return Single.fromCallable(new Callable<Boolean>() {
@@ -2721,6 +2473,291 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
 
             return locationLevel;
         });
+    }
+
+    @Override
+    public Single<Boolean> saveEditProfileField(HashMap<String,?> retailerProfileField,String tid){
+
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                try {
+
+                    ArrayList<ConfigureBO> profileFieldList = new ArrayList<>();
+                    if (retailerProfileField.get("ProfileFields") != null && retailerProfileField.get("ProfileFields") instanceof ArrayList<?>)
+                        profileFieldList = (ArrayList<ConfigureBO>) retailerProfileField.get("ProfileFields");
+
+                    profileFieldInsert(profileFieldList, tid);
+
+
+
+                    ArrayList<StandardListBO> priorityProdList = new ArrayList<>();
+                    if (retailerProfileField.get("Priority") != null && retailerProfileField.get("Priority") instanceof ArrayList<?>)
+                        priorityProdList = (ArrayList<StandardListBO>) retailerProfileField.get("Priority");
+
+                    priorityProductInsert(priorityProdList, tid);
+
+
+
+                    HashMap<String,String> nearbyRetailerList = new HashMap<>();
+                    if (retailerProfileField.get("NearByRetailer") != null && retailerProfileField.get("NearByRetailer") instanceof ArrayList<?>)
+                        nearbyRetailerList = (HashMap<String,String>) retailerProfileField.get("NearByRetailer");
+
+                    nearByRetailerInsert(nearbyRetailerList, tid);
+
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+
+                return true;
+            }
+        });
+    }
+
+    private void nearByRetailerInsert(HashMap<String, String> nearbyRetailerList, String tid) {
+        dbUtil.deleteSQL("RrtNearByEditRequest", " tid =" + StringUtils.getStringQueryParam(tid), false);
+
+        if (nearbyRetailerList != null)
+            for (String id : nearbyRetailerList.keySet()) {
+                String Q = "insert into RrtNearByEditRequest (tid,rid,nearbyrid,status,upload)" +
+                        "values (" + StringUtils.getStringQueryParam(tid) + "," + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID())
+                        + "," + id + "," + StringUtils.getStringQueryParam(nearbyRetailerList.get(id)) + ",'N')";
+                dbUtil.executeQ(Q);
+            }
+    }
+
+    private void priorityProductInsert(ArrayList<StandardListBO> priorityProdList, String tid) {
+        dbUtil.deleteSQL("RetailerEditPriorityProducts", " RetailerId ="
+                + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID()), false);
+
+        if (priorityProdList != null)
+            for (StandardListBO bo : priorityProdList) {
+                String Q = "insert into RetailerEditPriorityProducts (tid,RetailerId,productId,levelid,status,upload)" +
+                        "values (" + StringUtils.getStringQueryParam(tid)
+                        + "," + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID())
+                        + "," + SDUtil.convertToInt(bo.getListID())
+                        + "," + StringUtils.getStringQueryParam(bo.getListCode())
+                        + "," + StringUtils.getStringQueryParam(bo.getStatus()) + ",'N')";
+                dbUtil.executeQ(Q);
+            }
+    }
+
+    private void profileFieldInsert(ArrayList<ConfigureBO> profileFieldList, String tid) {
+        for (ConfigureBO retaileProfileField : profileFieldList) {
+
+            String value = "";
+            boolean isInsert =  true;
+
+            if (retaileProfileField.isDeleteRow())
+                isInsert = false;
+
+            if (retaileProfileField.getConfigCode().equals(ProfileConstant.PHOTO_CAPTURE)) {
+
+                value = "Profile" + "/" + dataManager.getUser().getDownloadDate().replace("/", "")
+                        + "/" + dataManager.getUser().getUserid() + "/" + retaileProfileField.getMenuNumber();
+
+                FileUtils.checkFileExist(AppUtils.latlongImageFileName + "", dataManager.getRetailMaster().getRetailerID(), true);
+
+            }else if(retaileProfileField.getConfigCode().equals(ProfileConstant.PROFILE_60)){
+
+                if (isInsert) {
+                    value = "Profile" + "/" + dataManager.getUser().getDownloadDate().replace("/", "")
+                            + "/" + dataManager.getUser().getUserid() + "/" + retaileProfileField.getMenuNumber();
+
+                    deleteQuery(retaileProfileField.getConfigCode());
+                }
+
+                FileUtils.checkFileExist(retaileProfileField.getMenuNumber() + "", dataManager.getRetailMaster().getRetailerID(), false);
+
+            }else{
+                value = retaileProfileField.getMenuNumber();
+            }
+
+            if (isInsert) {
+
+                deleteQuery(retaileProfileField.getConfigCode());
+
+                String mCustomQuery = StringUtils.getStringQueryParam(retaileProfileField.getConfigCode()) + ","
+                        + StringUtils.getStringQueryParam(value) + "," + retaileProfileField.getRefId() + "," + dataManager.getRetailMaster().getRetailerID() + ")";
+
+                insertRowQuery(tid,mCustomQuery);
+
+            }else
+                deleteQuery(retaileProfileField.getConfigCode());
+
+        }
+    }
+
+    private void insertRowQuery(String tid, String mCustomQuery){
+        final String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)"
+                + "values (" + getStringQueryParam(tid) + "," + mCustomQuery;
+
+        dbUtil.executeQ(insertquery);
+    }
+
+    private void deleteQuery(String code){
+        dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code ="
+                + getStringQueryParam(code)
+                + "and RetailerId=" + dataManager.getRetailMaster().getRetailerID(), false);
+    }
+
+    @Override
+    public Single<Boolean> saveEditContactData(ArrayList<RetailerContactBo> contactList,final String tid) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                try {
+                    if (contactList != null && !contactList.isEmpty()) {
+                        for (RetailerContactBo retailerContactBo : contactList) {
+                            if (retailerContactBo.getStatus().equalsIgnoreCase("U")
+                                    || retailerContactBo.getStatus().equalsIgnoreCase("I")
+                                    || retailerContactBo.getStatus().equalsIgnoreCase("D")) {
+                                updateRetailerContactEditList(tid);
+                                break;
+                            }
+                        }
+                    }
+
+                    retailerContactEdit(contactList,tid);
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+
+                return true;
+            }
+        });
+    }
+
+    private void updateRetailerContactEditList(String tid) {
+        String mCustomquery = StringUtils.getStringQueryParam("CONTACTEDIT")
+                + "," + StringUtils.getStringQueryParam("1")
+                + "," + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID())
+                + "," + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID()) + ")";
+        insertRowQuery(tid, mCustomquery);
+    }
+
+    private void retailerContactEdit(ArrayList<RetailerContactBo> retailerContactList,String tid){
+
+        final String column = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName," +
+                "ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid,salutationLovId,IsEmailNotificationReq";
+
+        String where="RetailerId="+getStringQueryParam(dataManager.getRetailMaster().getRetailerID());
+
+        Cursor getCpidCursor = dbUtil.selectSQL("Select CPId from RetailerContactEdit where retailerId=" + getStringQueryParam(dataManager.getRetailMaster().getRetailerID()));
+
+        if (getCpidCursor != null && getCpidCursor.getCount() > 0) {
+            while (getCpidCursor.moveToNext()) {
+                dbUtil.deleteSQL("ContactAvailabilityEdit", "CPId=" + getCpidCursor.getString(0), false);
+            }
+        }
+
+        dbUtil.deleteSQL("RetailerContactEdit",where,false);
+
+        if (retailerContactList != null && !retailerContactList.isEmpty()) {
+            for (RetailerContactBo retailerContactBo : retailerContactList) {
+                if (retailerContactBo.getStatus().equalsIgnoreCase("U")
+                        || retailerContactBo.getStatus().equalsIgnoreCase("I")
+                        || retailerContactBo.getStatus().equalsIgnoreCase("D")) {
+                    String value = StringUtils.getStringQueryParam(retailerContactBo.getTitle()) + ","
+                            + StringUtils.getStringQueryParam(retailerContactBo.getContactTitleLovId()) + ","
+                            + StringUtils.getStringQueryParam(retailerContactBo.getFistname()) + ","
+                            + StringUtils.getStringQueryParam(retailerContactBo.getLastname()) + ","
+                            + StringUtils.getStringQueryParam(retailerContactBo.getContactNumber()) + ","
+                            + StringUtils.getStringQueryParam(retailerContactBo.getContactMail()) + ","
+                            + retailerContactBo.getIsPrimary() + ","
+                            + StringUtils.getStringQueryParam(retailerContactBo.getStatus()) + ","
+                            + StringUtils.getStringQueryParam(retailerContactBo.getCpId()) + ","
+                            + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID()) + ","
+                            + StringUtils.getStringQueryParam(tid)+ ","
+                            + StringUtils.getStringQueryParam(retailerContactBo.getContactSalutationId())+ ","
+                            + StringUtils.getStringQueryParam(retailerContactBo.getIsEmailPrimary()+"");
+                    dbUtil.insertSQL("RetailerContactEdit", column, value);
+
+                    addContactAvail(dbUtil,retailerContactBo,dataManager.getRetailMaster().getRetailerID(),tid);
+                }
+            }
+        }
+
+    }
+
+    private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo, String retailerId, String Tid) {
+        String column = "CPAId,CPId,Day,StartTime,EndTime,Tid,status,upload, RetailerID";
+
+        for (RetailerContactAvailBo retailerContactAvailBo : retailerContactBo.getContactAvailList()) {
+
+            String value = StringUtils.getStringQueryParam(retailerContactAvailBo.getCpaid() != null && !retailerContactAvailBo.getCpaid().isEmpty() ? retailerContactAvailBo.getCpaid() : retailerId)
+                    + "," + StringUtils.getStringQueryParam(retailerContactBo.getCpId())
+                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getDay())
+                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getFrom())
+                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getTo())
+                    + "," + StringUtils.getStringQueryParam(Tid)
+                    + "," + StringUtils.getStringQueryParam(retailerContactAvailBo.getStatus())
+                    + "," + StringUtils.getStringQueryParam("N")
+                    + "," + StringUtils.getStringQueryParam(retailerContactBo.getRetailerID());
+
+            db.insertSQL("ContactAvailabilityEdit", column, value);
+        }
+    }
+
+    @Override
+    public Single<Boolean> saveEditAttributeData(ArrayList<AttributeBO> attributeList, String mTid) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                initDb();
+
+                String tid = mTid;
+
+                Cursor headerCursor;
+                try {
+                    // delete Header if exist
+                    headerCursor = dbUtil.selectSQL("SELECT Tid FROM RetailerEditHeader"
+                            + " WHERE RetailerId = "
+                            + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID())
+                            + " AND Date = "
+                            + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                            + " AND Upload = "
+                            + StringUtils.getStringQueryParam("N"));
+
+                    if (headerCursor.getCount() > 0) {
+                        headerCursor.moveToNext();
+                        tid = headerCursor.getString(0);
+                        headerCursor.close();
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+
+                updateRetailerMasterAttributes(tid,attributeList);
+
+                return true;
+            }
+        });
+    }
+
+    private void updateRetailerMasterAttributes(final String mTid,final ArrayList<AttributeBO> selectedAttribList) {
+
+        try {
+            dbUtil.deleteSQL("RetailerEditAttribute", " tid =" + StringUtils.getStringQueryParam(mTid), false);
+
+            for (AttributeBO id : selectedAttribList) {
+                String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
+                        "values (" + StringUtils.getStringQueryParam(mTid)
+                        + "," + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID())
+                        + "," + id.getAttributeId()
+                        + "," + id.getLevelId()
+                        + "," + StringUtils.getStringQueryParam(id.getStatus()) + ",'N')";
+                dbUtil.executeQ(Q);
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
     }
 
     @Override

@@ -1507,7 +1507,9 @@ public class BusinessModel extends Application {
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as SupplierTaxLocId,")
-                            + "ridSF,RA.Website,RV.visitTargetCount FROM RetailerMaster A"
+                            + "ridSF,RField10,RField11,RField12,RField13,RField14,RField15,RField16,RField17,RField18,RField19,RField20,RA.Website,RV.visitTargetCount "
+
+                            + "FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
@@ -1701,6 +1703,18 @@ public class BusinessModel extends Application {
                     retailer.setLastVisitedBy(c.getString(c.getColumnIndex("lastVisitedBy")));
                     retailer.setWebUrl(c.getString(c.getColumnIndex("Website")));
                     retailer.setVisitTargetCount(c.getInt(c.getColumnIndex("visitTargetCount")));
+
+                    retailer.setRField10(c.getString(c.getColumnIndex("RField10")));
+                    retailer.setRField11(c.getString(c.getColumnIndex("RField11")));
+                    retailer.setRField12(c.getString(c.getColumnIndex("RField12")));
+                    retailer.setRField13(c.getString(c.getColumnIndex("RField13")));
+                    retailer.setRField14(c.getString(c.getColumnIndex("RField14")));
+                    retailer.setRField15(c.getString(c.getColumnIndex("RField15")));
+                    retailer.setRField16(c.getString(c.getColumnIndex("RField16")));
+                    retailer.setRField17(c.getString(c.getColumnIndex("RField17")));
+                    retailer.setRField18(c.getString(c.getColumnIndex("RField18")));
+                    retailer.setRField19(c.getString(c.getColumnIndex("RField19")));
+                    retailer.setRField20(c.getString(c.getColumnIndex("RField20")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
@@ -3779,6 +3793,87 @@ public class BusinessModel extends Application {
                 }
             }
 
+
+            if (configurationMasterHelper.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN) {
+                c = db
+                        .selectSQL("SELECT DISTINCT ImageName,pid FROM LastVisitPromotionImage");
+                int count = 0;
+                if (c != null) {
+                    while (c.moveToNext()) {
+
+                        count += 100;
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
+                        digitalContentBO.setImageID(c.getInt(1));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.PROMOTION);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID() + count, digitalContentBO);
+
+
+                    }
+                    c.close();
+                }
+            }
+
+
+
+            if (configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN) {
+                c = db.selectSQL("SELECT DISTINCT ImageName,pid FROM LastVisitSOSImage");
+                int count = 0;
+                if (c != null) {
+                    while (c.moveToNext()) {
+
+                        count += 100;
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
+                        digitalContentBO.setImageID(c.getInt(1));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.SOS_DIGITAL_CONTENT);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID() + count, digitalContentBO);
+
+
+                    }
+                    c.close();
+                }
+            }
+
+
+
+            if (configurationMasterHelper.IS_SURVEY_RETAIN_LAST_VISIT_TRAN) {
+                c = db.selectSQL("SELECT DISTINCT ImageName,QuestionId FROM LastVisitSurveyImage");
+                int count = 0;
+                if (c != null) {
+                    while (c.moveToNext()) {
+
+                        count += 100;
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
+                        digitalContentBO.setImageID(c.getInt(1));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.SURVEY_DIGITAL_CONTENT);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID() + count, digitalContentBO);
+
+
+                    }
+                    c.close();
+                }
+            }
+
+
+
+
             c = db.selectSQL("SELECT DISTINCT ImageURL,fileSize,imageid,imagename,ifnull(SM.listCode,'') FROM DigitalContentMaster left join standardListMaster SM ON SM.listId=storageType");
             if (c != null) {
                 while (c.moveToNext()) {
@@ -4479,7 +4574,7 @@ public class BusinessModel extends Application {
     }
 
     // Amazon Image Upload
-    void uploadImageToAmazonCloud(Handler handler) {
+    public void uploadImageToAmazonCloud(Handler handler) {
         try {
             AWSConnectionHelper.getInstance().setAmazonS3Credentials(getApplicationContext());
             TransferUtility tm = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getApplicationContext
@@ -5741,7 +5836,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String columns = "Message, Imageurl, TimeStamp, Type";
 
-            values = getStringQueryParam(msg) + "," + url + "," + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME)) + "," + getStringQueryParam(type);
+            values = getStringQueryParam(msg) + "," + QT(url) + "," + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME)) + "," + getStringQueryParam(type);
 
             db.insertSQL("Notification", columns, values);
 
@@ -7716,7 +7811,7 @@ public class BusinessModel extends Application {
     }
 
     //Azure ImageUpload
-    void uploadImageToAzureCloud(Handler handler) {
+    public void uploadImageToAzureCloud(Handler handler) {
         String start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
         AzureConnectionHelper.getInstance().setAzureCredentials(getApplicationContext());
         try {

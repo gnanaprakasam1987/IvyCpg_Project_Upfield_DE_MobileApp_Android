@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.delivery.invoice.DeliveryManagementHelper;
 import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
@@ -34,20 +35,9 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     private Context mContext;
     private SyncContractor.SyncView view;
 
-    private List<SyncRetailerBO> isVisitedRetailerList;
     private boolean isDayClosed;
     private boolean isWithImage;
     public boolean isFromCallAnalysis;
-
-    private static final int UPLOAD_ALL = 0;
-    private static final int RETAILER_WISE_UPLOAD = 1;
-    private static final int UPLOAD_WITH_IMAGES = 2;
-    private static final int UPLOAD_STOCK_IN_HAND = 3;
-    private static final int UPLOAD_STOCK_APPLY = 4;
-    private static final int UPLOAD_LOYALTY_POINTS = 6;
-    private static final int UPLOAD_ORDER_DELIVERY_STATUS = 7;
-    private static final int UPLOAD_PICK_LIST = 8;
-    private static final int UPLOAD_TRIP = 9;
 
 
     public UploadPresenterImpl(Context mContext, BusinessModel mBModel, SyncContractor.SyncView view
@@ -84,6 +74,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     @Override
     public void validateAndUpload(boolean isDayCloseChecked) {
 
+        // CALL05 is set to true and RFild is 1 (kellog's Specific validation)
         if (mBModel.configurationMasterHelper.IS_COLLECTION_MANDATE) {
 
             StringBuilder retailerIds = new StringBuilder();
@@ -103,35 +94,35 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
             }
         }
 
-
-
+        // No internet connection
         if (!mBModel.isOnline()) {
             view.showNoInternetToast();
             return;
         }
 
+        // Order exist without converting to Invoice.
         if (mBModel.configurationMasterHelper.IS_INVOICE
                 && mBModel.isOrderExistToCreateInvoiceAll()) {
             view.showOrderExistWithoutInvoice();
             return;
         }
 
-        if (mBModel.synchronizationHelper.checkDataForSync() || mBModel.synchronizationHelper.checkSIHTable()
-                || mBModel.synchronizationHelper.checkStockTable()) {
 
-            if (mBModel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT && !isDayCloseChecked) {
-                new LoadRetailerIsVisited().execute();
+        if (mUploadHelper.checkDataForSync() || mUploadHelper.hasStockInHandDataExist()
+                || mUploadHelper.hasStockApplyDateExisit()) {
+
+            if (isDayCloseChecked)
+                doDayCloseUpdates();
+
+            int dbImageCount = mBModel.synchronizationHelper.countImageFiles();
+            if (mBModel.configurationMasterHelper.photocount >= 10 && (((double) dbImageCount / mBModel.configurationMasterHelper.photocount) * 100) >= mBModel.configurationMasterHelper.photopercent) {
+                view.showAlertImageUploadRecommended();
+
             } else {
-                int dbImageCount = mBModel.synchronizationHelper.countImageFiles();
-                if (mBModel.configurationMasterHelper.photocount >= 10 && (((double) dbImageCount / mBModel.configurationMasterHelper.photocount) * 100) >= mBModel.configurationMasterHelper.photopercent) {
-                    view.showAlertImageUploadRecommended();
 
-                } else {
-                    if (isDayCloseChecked)
-                        doDayCloseUpdates();
-                    upload();
-                }
+                upload();
             }
+
 
         } else if ((isWithImage || !mBModel.configurationMasterHelper.IS_SYNC_WITH_IMAGES) && mBModel.synchronizationHelper.countImageFiles() > 0) {
             if (isDayCloseChecked)
@@ -163,114 +154,51 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         }
     }
 
-
-    class LoadRetailerIsVisited extends AsyncTask<Integer, Integer, Boolean> {
-
-
-        protected void onPreExecute() {
-            view.showProgressLoading();
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                isVisitedRetailerList = mBModel.synchronizationHelper.getRetailerIsVisited();
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE; // Return your real result here
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-
-            view.cancelProgress();
-            if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
-                    && !isDayClosed) {
-                view.showRetailerSelectionScreen(isVisitedRetailerList);
-
-            } else {
-                upload();
-            }
-
-        }
-
-    }
-
     @Override
     public void upload() {
 
-        if (mBModel.synchronizationHelper.checkSIHTable()
-                && !mBModel.synchronizationHelper.getUploadUrl("UPLDSIH").isEmpty())
-            startSync(UPLOAD_STOCK_IN_HAND);
-        else if (mBModel.synchronizationHelper.checkStockTable()
-                && !mBModel.synchronizationHelper.getUploadUrl("UPLDSTOK").isEmpty())
-            startSync(UPLOAD_STOCK_APPLY);
-        else if (mBModel.synchronizationHelper.checkLoyaltyPoints()
-                && !mBModel.synchronizationHelper.getUploadUrl("UPLDLOYALTY").isEmpty())
-            startSync(UPLOAD_LOYALTY_POINTS);
-        else if (mBModel.synchronizationHelper.checkPickListData()
-                && !mBModel.synchronizationHelper.getUploadUrl("UPLDDELIVERYSTS").isEmpty())
-            startSync(UPLOAD_PICK_LIST);
-        else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
-                && !isDayClosed) {
-            startSync(RETAILER_WISE_UPLOAD);
-        } else if (mBModel.synchronizationHelper.checkOrderDeliveryStatusTable()
-                && !mBModel.synchronizationHelper.getUploadUrl("UPLDORDDELSTS").isEmpty()) {
-            startSync(UPLOAD_ORDER_DELIVERY_STATUS);
-        }else if (mBModel.synchronizationHelper.checkTripData()
-                && !mBModel.synchronizationHelper.getUploadUrl("UPLOADTRIP").isEmpty())
-            startSync(UPLOAD_TRIP);
-        else if (mBModel.synchronizationHelper.checkDataForSync()) {
-            startSync(UPLOAD_ALL);
-        } else {
-            view.showNoDataExist();
-        }
-    }
-
-    @Override
-    public void uploadImages() {
-        startSync(UPLOAD_WITH_IMAGES);
-    }
-
-    private void startSync(int callFlag) {
-        Commons.print(" callFlag : " + callFlag);
-        if (AttendanceHelper.getInstance(mContext).checkMenuInOut(mContext.getApplicationContext()))
+        if (AttendanceHelper.getInstance(mContext).hasInOutAttendanceEnabled(mContext.getApplicationContext()))
             AttendanceHelper.getInstance(mContext).updateAttendaceDetailInTime(mContext.getApplicationContext());
 
         view.showProgressUploading();
 
-        if (callFlag == UPLOAD_ALL)
-            new MyThread((Activity) mContext, DataMembers.SYNCUPLOAD, isFromCallAnalysis).start();
-        else if (callFlag == RETAILER_WISE_UPLOAD)
-            new MyThread((Activity) mContext, DataMembers.SYNCUPLOADRETAILERWISE, isFromCallAnalysis).start();
-        else if (callFlag == UPLOAD_WITH_IMAGES) {
-            if (mBModel.configurationMasterHelper.IS_AZURE_CLOUD_STORAGE) {
-                new MyThread((Activity) mContext,DataMembers.AZURE_IMAGE_UPLOAD).start();
-            }else if (mBModel.configurationMasterHelper.IS_S3_CLOUD_STORAGE) {
-                new MyThread((Activity) mContext,
-                        DataMembers.AMAZONIMAGE_UPLOAD, isFromCallAnalysis).start();
-            }
-        } else if (callFlag == UPLOAD_STOCK_IN_HAND)
-            new MyThread((Activity) mContext, DataMembers.SYNCSIHUPLOAD, isFromCallAnalysis).start();
-        else if (callFlag == UPLOAD_STOCK_APPLY)
-            new MyThread((Activity) mContext, DataMembers.SYNCSTKAPPLYUPLOAD, isFromCallAnalysis).start();
-        else if (callFlag == 5)
-            new MyThread((Activity) mContext, DataMembers.SYNC_EXPORT, isFromCallAnalysis).start();
-        else if (callFlag == UPLOAD_LOYALTY_POINTS)
-            new MyThread((Activity) mContext, DataMembers.SYNCLYTYPTUPLOAD, isFromCallAnalysis).start();
-        else if (callFlag == UPLOAD_PICK_LIST)
-            new MyThread((Activity) mContext, DataMembers.SYNCPICKLISTUPLOAD, isFromCallAnalysis).start();
-        else if (callFlag == UPLOAD_TRIP)
-            new MyThread((Activity) mContext, DataMembers.SYNC_TRIP, isFromCallAnalysis).start();
+        if (mUploadHelper.hasStockInHandDataExist())
+            new UploadThread((Activity) mContext, UploadThread.SYNC_SIH_UPLOAD, isFromCallAnalysis).start();
+        else if (mUploadHelper.hasTransactionSequenceDataExist())
+            new UploadThread((Activity) mContext, UploadThread.SYNC_SEQ_NUMBER_UPLOAD, isFromCallAnalysis).start();
+        else if (mUploadHelper.hasStockApplyDateExisit())
+            new UploadThread((Activity) mContext, UploadThread.SYNC_STK_APPLY_UPLOAD, isFromCallAnalysis).start();
+        else if (mBModel.synchronizationHelper.hasLoyaltyPointsDataExist())
+            new UploadThread((Activity) mContext, UploadThread.SYNC_LYTY_PT_UPLOAD, isFromCallAnalysis).start();
+        else if (mBModel.synchronizationHelper.hasPickListDataExist())
+            new UploadThread((Activity) mContext, UploadThread.SYNC_PICK_LIST_UPLOAD, isFromCallAnalysis).start();
+        else if (mBModel.synchronizationHelper.hasOrderDeliveryStatusDataExist())
+            new UploadThread((Activity) mContext, UploadThread.SYNC_ORDER_DELIVERY_STATUS_UPLOAD, isFromCallAnalysis).start();
+        else if (mBModel.synchronizationHelper.hasTripDataExist())
+            new UploadThread((Activity) mContext, UploadThread.SYNC_TRIP, isFromCallAnalysis).start();
+        else if (mUploadHelper.checkDataForSync())
+            new UploadThread((Activity) mContext, UploadThread.SYNC_UPLOAD, isFromCallAnalysis).start();
+        else
+            view.showNoDataExist();
 
     }
+
+    @Override
+    public void uploadImages() {
+
+        if (AttendanceHelper.getInstance(mContext).hasInOutAttendanceEnabled(mContext.getApplicationContext()))
+            AttendanceHelper.getInstance(mContext).updateAttendaceDetailInTime(mContext.getApplicationContext());
+
+        view.showProgressUploading();
+
+        if (mBModel.configurationMasterHelper.IS_AZURE_CLOUD_STORAGE) {
+            new UploadThread((Activity) mContext, UploadThread.AZURE_IMAGE_UPLOAD).start();
+        } else if (mBModel.configurationMasterHelper.IS_S3_CLOUD_STORAGE) {
+            new UploadThread((Activity) mContext,
+                    UploadThread.AMAZONIMAGE_UPLOAD, isFromCallAnalysis).start();
+        }
+    }
+
 
     @Override
     public boolean isDayClosed() {
@@ -299,28 +227,8 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         return mBModel.synchronizationHelper.countTextFiles();
     }
 
-
     @Override
-    public StringBuilder getVisitedRetailerId() {
-        return mUploadHelper.getVisitedRetailerIds();
-    }
-
-    public void setIsVisitedRetailerList(List<SyncRetailerBO> isVisitedRetailerList){
-        this.isVisitedRetailerList = isVisitedRetailerList;
-    }
-
-    @Override
-    public void prepareSelectedRetailerIds() {
-        mUploadHelper.setVisitedRetailerIds(new StringBuilder());
-        for (SyncRetailerBO sbo : isVisitedRetailerList) {
-            //if (sbo.isChecked()) {
-            mUploadHelper.getVisitedRetailerIds().append(
-                    mBModel.QT(sbo.getRetailerId()));
-            mUploadHelper.getVisitedRetailerIds().append(",");
-            //}
-        }
-        if (mUploadHelper.getVisitedRetailerIds() != null && mUploadHelper.getVisitedRetailerIds().toString().length() > 0) {
-            mUploadHelper.getVisitedRetailerIds().delete(mUploadHelper.getVisitedRetailerIds().length() - 1, mUploadHelper.getVisitedRetailerIds().length());
-        }
+    public boolean checkDataForSync() {
+        return mUploadHelper.checkDataForSync();
     }
 }

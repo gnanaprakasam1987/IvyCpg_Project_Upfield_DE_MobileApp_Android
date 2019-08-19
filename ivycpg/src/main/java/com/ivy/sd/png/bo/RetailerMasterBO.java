@@ -314,6 +314,19 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String RField7;
     private String RField8;
     private String RField9;
+
+    private String RField10;
+    private String RField11;
+    private String RField12;
+    private String RField13;
+    private String RField14;
+    private String RField15;
+    private String RField16;
+    private String RField17;
+    private String RField18;
+    private String RField19;
+    private String RField20;
+
     private boolean isAdhoc;
 
     public RetailerMasterBO() {
@@ -1660,6 +1673,94 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setAdhoc(boolean adhoc) {
         isAdhoc = adhoc;
+    }
+
+    public String getRField10() {
+        return RField10;
+    }
+
+    public void setRField10(String RField10) {
+        this.RField10 = RField10;
+    }
+
+    public String getRField11() {
+        return RField11;
+    }
+
+    public void setRField11(String RField11) {
+        this.RField11 = RField11;
+    }
+
+    public String getRField12() {
+        return RField12;
+    }
+
+    public void setRField12(String RField12) {
+        this.RField12 = RField12;
+    }
+
+    public String getRField13() {
+        return RField13;
+    }
+
+    public void setRField13(String RField13) {
+        this.RField13 = RField13;
+    }
+
+    public String getRField14() {
+        return RField14;
+    }
+
+    public void setRField14(String RField14) {
+        this.RField14 = RField14;
+    }
+
+    public String getRField15() {
+        return RField15;
+    }
+
+    public void setRField15(String RField15) {
+        this.RField15 = RField15;
+    }
+
+    public String getRField16() {
+        return RField16;
+    }
+
+    public void setRField16(String RField16) {
+        this.RField16 = RField16;
+    }
+
+    public String getRField17() {
+        return RField17;
+    }
+
+    public void setRField17(String RField17) {
+        this.RField17 = RField17;
+    }
+
+    public String getRField18() {
+        return RField18;
+    }
+
+    public void setRField18(String RField18) {
+        this.RField18 = RField18;
+    }
+
+    public String getRField19() {
+        return RField19;
+    }
+
+    public void setRField19(String RField19) {
+        this.RField19 = RField19;
+    }
+
+    public String getRField20() {
+        return RField20;
+    }
+
+    public void setRField20(String RField20) {
+        this.RField20 = RField20;
     }
 
     public int getVisitTargetCount() {

@@ -33,13 +33,15 @@ public class NewOutlet extends IvyBaseActivityNoActionBar {
         getSupportFragmentManager().findFragmentById(R.id.newoutlet_fragment);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        ProfileContainerFragment containerFragment=new ProfileContainerFragment();
+        NewoutletContainerFragment containerFragment = new NewoutletContainerFragment();
 
         Bundle bundleNewoutLet=new Bundle();
         bundleNewoutLet.putInt("channelid",channelid);
+        if (getIntent().getStringExtra("retailerId") != null)
+            bundleNewoutLet.putString("retailerId",getIntent().getStringExtra("retailerId"));
         containerFragment.setArguments(bundleNewoutLet);
 
-        fragmentTransaction.replace(android.R.id.content,containerFragment);
+        fragmentTransaction.replace(R.id.newoutlet_fragment,containerFragment);
         fragmentTransaction.commit();
 
     }

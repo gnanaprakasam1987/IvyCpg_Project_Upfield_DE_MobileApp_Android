@@ -119,6 +119,7 @@ public class CommonReasonDialog extends Dialog {
                         NonproductivereasonBO nonproductive = new NonproductivereasonBO();
                         nonproductive.setReasonid(temp.getReasonID());
                         nonproductive.setReasontype("NV");
+                        nonproductive.setDate(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate());
                         bmodel.saveNonproductivereason(nonproductive, "");
                         bmodel.getRetailerMasterBO().setHasNoVisitReason(true);
 

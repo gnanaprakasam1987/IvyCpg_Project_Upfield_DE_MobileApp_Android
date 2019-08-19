@@ -36,6 +36,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
@@ -88,6 +89,9 @@ import com.ivy.utils.AppUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.StringUtils;
+import com.stepstone.stepper.BlockingStep;
+import com.stepstone.stepper.StepperLayout;
+import com.stepstone.stepper.VerificationError;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -112,7 +116,7 @@ import static com.ivy.ui.profile.create.NewRetailerConstant.WEEK_TEXT_LABEL;
 public class NewOutletFragmentNew extends BaseFragment
         implements INewRetailerContract.INewRetailerView,
         PrioritySelectionDialog.PrioritySelectionListener,
-        NearByRetailerDialog.NearByRetailerInterface {
+        NearByRetailerDialog.NearByRetailerInterface, BlockingStep {
 
     public static final int NEW_RETAILER_ORDER_CREATION = 1000;
     public static final int NEW_RETAILER_OPPORTUNITY_PRODUCTS = 1002;
@@ -130,7 +134,7 @@ public class NewOutletFragmentNew extends BaseFragment
     @BindView(R.id.scrollview2)
     ScrollView mScrollView;
 
-    @BindView(R.id.rootLinearLayout)
+    @BindView(R.id.rootLinearLayout_dummy)
     LinearLayout mRootLinearLayout;
 
 
@@ -2756,4 +2760,34 @@ public class NewOutletFragmentNew extends BaseFragment
     }
 
 
+    @Override
+    public void onNextClicked(StepperLayout.OnNextClickedCallback callback) {
+
+    }
+
+    @Override
+    public void onCompleteClicked(StepperLayout.OnCompleteClickedCallback callback) {
+
+    }
+
+    @Override
+    public void onBackClicked(StepperLayout.OnBackClickedCallback callback) {
+
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
+    }
 }

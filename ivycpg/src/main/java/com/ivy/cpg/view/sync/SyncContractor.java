@@ -26,8 +26,6 @@ public interface SyncContractor {
 
         int getTextFilesCount();
 
-        StringBuilder getVisitedRetailerId();
-
         void loadRetailerSelectionScreen();
 
         void updateDayCloseStatus(boolean isDayClosed);
@@ -40,7 +38,7 @@ public interface SyncContractor {
 
         void uploadImages();
 
-        void prepareSelectedRetailerIds();
+        boolean checkDataForSync();
 
     }
 
@@ -61,8 +59,6 @@ public interface SyncContractor {
         void showProgressUploading();
 
         void cancelProgress();
-
-        void showRetailerSelectionScreen(List<SyncRetailerBO> isVisitedRetailerList);
 
         void showAlertImageUploadRecommended();
     }

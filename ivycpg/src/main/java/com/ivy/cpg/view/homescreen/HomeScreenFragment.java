@@ -101,6 +101,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.ChannelSelectionDialog;
 import com.ivy.sd.png.view.NewOutletEditFragment;
+import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.sd.png.view.PlanDeviationFragment;
 import com.ivy.sd.png.view.ProfileContainerFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
@@ -1654,7 +1655,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private void switchFragment(String fragmentName, String menuName) {
         FragmentManager fm = getFragmentManager();
 
-        ProfileContainerFragment mNewOutletFragment = (ProfileContainerFragment) fm
+        NewoutletContainerFragment mNewOutletFragment = (NewoutletContainerFragment) fm
                 .findFragmentByTag(MENU_NEW_RETAILER);
 
         VisitFragment mVisitFragment = (VisitFragment) fm
@@ -2032,7 +2033,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putInt("channelid", channelId);
                 if(channelName!=null)
                     bndl.putString("channelName",channelName);
-                fragment = new ProfileContainerFragment();
+                fragment = new NewoutletContainerFragment();
                 fragment.setArguments(bndl);
                 fromHomeScreen = true;
                 ft.add(R.id.fragment_content, fragment, MENU_NEW_RETAILER);

@@ -55,8 +55,9 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/MVPTheme.Blue"
-        >
+        android:theme="@style/MVPTheme.Blue">
+        <activity android:name="com.ivy.ui.gallery.view.ImagePagerActivity"></activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -361,9 +362,6 @@
             android:name="com.ivy.cpg.view.photocapture.PhotoCaptureActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SyncRetailerSelectActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.cpg.view.photocapture.Gallery"
             android:screenOrientation="portrait" />
         <activity
@@ -534,9 +532,7 @@
         <activity
             android:name="com.ivy.sd.print.CommonPrintPreviewActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.attendance.inout.TimeTrackingActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.cpg.view.attendance.TLAttendanceActivity"
             android:screenOrientation="portrait" />
@@ -750,7 +746,8 @@
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
-        <!--REQUEST_INSTALL_PACKAGES
+        <!--
+REQUEST_INSTALL_PACKAGES
         Set custom default icon. This is used when no icon is set for
         incoming notification messages.
         -->
@@ -891,12 +888,15 @@
         <activity
             android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetApprovalActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.ui.AssetServiceRequest.AssetServiceRequestActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.ui.AssetServiceRequest.NewAssetServiceRequest"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.ui.AssetServiceRequest.AssetServiceRequestViewActivity"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.ivy.ui.AssetServiceRequest.AssetServiceRequestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.ui.AssetServiceRequest.NewAssetServiceRequest"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.ui.AssetServiceRequest.AssetServiceRequestViewActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity"
             android:screenOrientation="portrait" />
@@ -906,9 +906,11 @@
         <activity
             android:name="com.ivy.ui.reports.dynamicreport.view.DynamicReportActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.ui.announcement.view.AnnouncementActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.ui.gallery.view.GalleryActivity"
             android:screenOrientation="portrait" />
     </application>
 

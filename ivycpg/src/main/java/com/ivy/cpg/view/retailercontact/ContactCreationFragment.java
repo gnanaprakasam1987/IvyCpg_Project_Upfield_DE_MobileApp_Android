@@ -4,12 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -40,9 +34,13 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.profile.view.ProfileBaseBo;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
+import com.stepstone.stepper.BlockingStep;
+import com.stepstone.stepper.StepperLayout;
+import com.stepstone.stepper.VerificationError;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,6 +49,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -61,7 +67,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
 
-public class ContactCreationFragment extends IvyBaseFragment implements ContactsTimeSlotAdapterEdit.DeleteTimeSlotListener{
+public class ContactCreationFragment extends IvyBaseFragment implements ContactsTimeSlotAdapterEdit.DeleteTimeSlotListener,BlockingStep{
     private BusinessModel bmodel;
     private ArrayList<ConfigureBO> contactConfig;
 
@@ -1272,6 +1278,52 @@ public class ContactCreationFragment extends IvyBaseFragment implements Contacts
         updateTimeSlotList();
     }
 
+    @Override
+    public void onNextClicked(StepperLayout.OnNextClickedCallback callback) {
+
+        ProfileBaseBo profileBaseBo = new ProfileBaseBo();
+        profileBaseBo.setStatus("Update");
+        profileBaseBo.setFieldName("Contact");
+        profileBaseBo.setContactList(contactList);
+
+        EventBus.getDefault().post(profileBaseBo);
+
+        callback.goToNextStep();
+    }
+
+    @Override
+    public void onCompleteClicked(StepperLayout.OnCompleteClickedCallback callback) {
+
+        ProfileBaseBo profileBaseBo = new ProfileBaseBo();
+        profileBaseBo.setStatus("Save");
+        profileBaseBo.setFieldName("Contact");
+        profileBaseBo.setContactList(contactList);
+
+        EventBus.getDefault().post(profileBaseBo);
+
+        callback.complete();
+    }
+
+    @Override
+    public void onBackClicked(StepperLayout.OnBackClickedCallback callback) {
+        callback.goToPrevStep();
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
+    }
 }
 
 

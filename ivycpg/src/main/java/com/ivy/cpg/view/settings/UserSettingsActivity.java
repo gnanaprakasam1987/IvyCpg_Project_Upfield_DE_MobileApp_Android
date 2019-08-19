@@ -36,11 +36,12 @@ import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.homescreen.deviceStatus.DeviceStatusActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.password.ChangePasswordActivity;
+import com.ivy.cpg.view.sync.UploadHelper;
+import com.ivy.cpg.view.sync.UploadThread;
 import com.ivy.cpg.view.webview.PrivacyPolicyActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -171,8 +172,8 @@ public class UserSettingsActivity extends PreferenceActivity {
                 public boolean onPreferenceClick(Preference arg0) {
 
                     progressDialog = ProgressDialog.show(UserSettingsActivity.this, "Export", "File is exporting...");
-                    new MyThread(UserSettingsActivity.this,
-                            DataMembers.UPLOAD_FILE_IN_AMAZON).start();
+                    new UploadThread(UserSettingsActivity.this,
+                            UploadThread.UPLOAD_FILE_IN_AMAZON).start();
 
 
                     return true;
@@ -192,7 +193,8 @@ public class UserSettingsActivity extends PreferenceActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
 
-                    if (bmodel.synchronizationHelper.checkDataForSync()) {
+                    UploadHelper mUploadHelper = UploadHelper.getInstance(UserSettingsActivity.this);
+                    if (mUploadHelper.checkDataForSync()) {
                         CommonDialog dialog = new CommonDialog(UserSettingsActivity.this, getResources().getString(R.string.switch_user),
                                 getResources().getString(R.string.data_to_upload),
                                 getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {

@@ -221,7 +221,7 @@ public class AttendanceHelper {
         return "";
     }
 
-    public boolean checkMenuInOut(Context context) {
+    public boolean hasInOutAttendanceEnabled(Context context) {
         try {
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.createDataBase();

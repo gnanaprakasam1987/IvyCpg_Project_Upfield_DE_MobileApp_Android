@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
@@ -180,7 +181,7 @@ public class TermsAndConditionsActivity extends IvyBaseActivityNoActionBar {
                     .getUser().getDownloadDate());
             jsonFormatter.addParameter("DataValidationKey", bmodel.synchronizationHelper.generateChecksum(jsonobj.toString()));
             Commons.print(jsonFormatter.getDataInJson());
-            String appendurl = bmodel.synchronizationHelper.getUploadUrl("UPDATEUSER");
+            String appendurl = bmodel.synchronizationHelper.getUploadUrl(UploadHelper.UPLOAD_TERMSACCEPT_URL_CODE);
             bmodel.synchronizationHelper
                     .getUploadResponse(jsonFormatter.getDataInJson(),
                             jsonobj.toString(), appendurl);

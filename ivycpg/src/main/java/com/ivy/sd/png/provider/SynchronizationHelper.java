@@ -677,66 +677,11 @@ SynchronizationHelper {
         }
     }
 
-    public boolean checkSIHTable() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-        boolean hasData = false;
-        try {
-            db.openDataBase();
-            String sql;
-            Cursor c;
 
-            sql = "select count(*) from stockinhandmaster where upload='N' " +
-                    "union select count(*) from NonSalableSIHMaster where upload='N'";
 
-            c = db.selectSQL(sql);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    if (c.getInt(0) > 0)
-                        hasData = true;
-                }
-                c.close();
-            }
 
-            db.closeDB();
-            return hasData;
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            db.closeDB();
-            return hasData;
-        }
 
-    }
-
-    public boolean checkStockTable() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-        boolean hasData = false;
-        try {
-            db.openDataBase();
-            String sql;
-            Cursor c;
-
-            sql = "select count(*) from StockApply where upload='N'";
-
-            c = db.selectSQL(sql);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    if (c.getInt(0) > 0)
-                        hasData = true;
-                }
-                c.close();
-            }
-
-            db.closeDB();
-            return hasData;
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            db.closeDB();
-            return hasData;
-        }
-
-    }
-
-    public boolean checkLoyaltyPoints() {
+    public boolean hasLoyaltyPointsDataExist() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
@@ -766,7 +711,7 @@ SynchronizationHelper {
     }
 
 
-    public boolean checkPickListData() {
+    public boolean hasPickListDataExist() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
@@ -795,7 +740,7 @@ SynchronizationHelper {
 
     }
 
-    public boolean checkTripData() {
+    public boolean hasTripDataExist() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
@@ -862,16 +807,19 @@ SynchronizationHelper {
 
             updateLastVisitPromotion();
             exceptionTableList.add("LastVisitPromotion");
+            exceptionTableList.add("LastVisitPromotionImage");
         }
 
         if (bmodel.configurationMasterHelper.IS_SURVEY_RETAIN_LAST_VISIT_TRAN) {
             updateLastVisitSurvey();
             exceptionTableList.add("LastVisitSurvey");
+            exceptionTableList.add("LastVisitSurveyImage");
         }
 
         if (bmodel.configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN) {
             updateLastVisitSOS();
             exceptionTableList.add("LastVisitSOS");
+            exceptionTableList.add("LastVisitSOSImage");
         }
 
         if (bmodel.configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
@@ -1024,128 +972,6 @@ SynchronizationHelper {
     }
 
     /**
-     * checkDataForSync is used to check wheather DB has any unsubmitted data or
-     * not.
-     *
-     * @return true if data exist or false
-     * @params withPhoto
-     */
-
-    public boolean checkDataForSync() {
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
-            );
-            db.openDataBase();
-
-            int count;
-
-            String sb = "select  count(orderid) from orderheader where upload='N'" +
-                    "union select  count(billnumber) from payment where upload='N'" +
-                    "union select  count(VisitId) from OutletTimeStamp where upload='N'" +
-                    "union select  count(uid) from SalesReturnHeader where upload='N'" +
-                    "union select  count(stockid) from ClosingStockHeader where upload='N'" +
-                    "union select  count(RetailerID) from retailerMaster where upload='N'" +
-                    "union select  count(taskid) from TaskConfigurationMaster where (((isDone='1' and usercreated='0') or (isDone='0' or isDone='1'and  usercreated='1')) and upload='N')" +
-                    "union select  count(surveyid) from AnswerHeader where upload='N'" +
-                    "union select  count(uid) from deviateReasontable where upload='N'" +
-                    "union select  count(uid) from Photocapture where upload='N'" +
-                    "union select  count(uid) from SbdMerchandisingHeader where upload='N'" +
-                    "union select  count(uid) from Nonproductivereasonmaster where upload='N'" +
-                    "union select  count(TargetId) from DailyTargetPlanned where upload='N'" +
-                    "union select count(uid) from StockProposalMaster where upload='N'" +
-                    "union select count(uid) from VanUnloadDetails where upload='N'" +
-                    "union select count(uid) from AssetHeader where upload='N'" +
-                    "union select count(InvoiceNo) from InvoiceMaster where upload='N'" +
-                    "union select count(uid) from Odameter where upload='N'" +
-                    "union select count(uid) from StockApply where upload='N'" +
-                    "union select  count(rowid) from DayClose where upload='N' and status='1'" +
-                    "union select count(uid) from PromotionHeader where upload='N'" +
-                    "union select  count(uid) from SOD_Tracking_Header where upload='N'" +
-                    "union select  count(uid) from SOSKU_Tracking_Header where upload='N'" +
-                    "union select  count(uid) from SOS_Tracking_Header where upload='N'" +
-                    "union select  count(RetailerID) from MonthlyPlanHeaderMaster where upload='N'" +
-                    "union select  count(RetailerID) from MonthlyPlanDetail where upload='N'" +
-                    "union select  count(RetailerID) from NearExpiry_Tracking_Header where upload='N'" +
-                    "union select  count(RetailerId) from PriceCheckHeader where upload='N'" +
-                    "union select  count(RetailerId) from CompetitorHeader where upload='N'" +
-                    "union select  count(RetailerId) from PriceCheckHeader where upload='N'" +
-                    "union select count(retailerid) from AttendanceDetail where upload='N'" +
-                    "union select count(retailerid) from EmptyReconciliationHeader where upload='N'" +
-                    "union select count(timestampid) from OutletJoinCall where upload='N'" +
-                    "union select count(uid) from AssetAddDelete where upload='N'" +
-                    "union select count(invoiceid) from InvoiceReturnDetail where upload='N'" +
-                    "union select count(Tid) from PlanogramHeader where upload='N'" +
-                    "union select count(uid) from RoadActivityTransaction where upload='N'" +
-                    "union select count(OrderId) from DeliveryHeader where upload='N'" +
-                    "union select count(OrderId) from DeliveryDetail where upload='N'" +
-                    "union select count(DistId) from DistInvoiceDetails where upload='N'" +
-                    "union select count(DistId) from DistTimeStampHeader where upload='N'" +
-                    "union select count(MenuCode) from DistTimeStampDetails where upload='N'" +
-                    "union select count(UId) from DistStockCheckHeader where upload='N'" +
-                    "union select count(UId) from DistStockCheckDetails where upload='N'" +
-                    "union select count(UId) from DistOrderHeader where upload='N'" +
-                    "union select count(UId) from DistOrderDetails where upload='N'" +
-                    "union select count(UId) from TaskExecutionDetails where upload='N'" +
-                    "union select count(uid) from SOD_Tracking_Parent_Detail where upload='N'" +
-                    "union select count(uid) from SOD_Tracking_Block_Detail where upload='N'" +
-                    "union select count(uid) from UserFeedBack where upload='N'" +
-                    "union select count(uid) from VanDeliveryHeader where upload='N'" +
-                    "union select count(uid) from VanDeliveryDetail where upload='N'" +
-                    "union select count(uid) from SalesReturnReplacementDetails where upload='N'" +
-                    "union select count(uid) from SalesReturnTaxDetails where upload='N'" +
-                    "union select count(Tid) from ExpenseHeader where upload='N'" +
-                    "union select count(Tid) from RetailerContractRenewalDetails where upload='N'" +
-                    "union select count(uid) from LeaveApprovalDetails where upload='N'" +
-                    "union select count(uid) from NewRetailerSurveyResultHeader where upload='N'" +
-                    "union select count(uid) from NewRetailerSurveyResultDetail where upload='N'" +
-                    "union select count(uid) from RetailerEntryDetails where upload='N'" +
-                    "union select count(Tid) from LocationTracking where upload='N'" +
-                    "union select count(Tid) from RetailerEditHeader where upload='N'" +
-                    "union select count(Tid) from RetailerEditDetail where upload='N'" +
-                    "union select count(Tid) from AttendanceDetail where upload='N'" +
-                    "union select count(Tid) from LeaveDetail where upload='N'" +
-                    "union select count(RetailerId) from RetailerPriorityProducts where upload='N'" +
-                    "union select count(UID) from LoyaltyRedemptionDetail where upload='N'" +
-                    "union select count(UID) from LoyaltyRedemptionHeader where upload='N'" +
-                    "union select count(Tid) from ModuleActivityDetails where upload='N'" +
-                    "union select count(uid) from AttendanceTimeDetails where upload='N'" +
-                    "union select count(UID) from NonFieldActivity where upload='N'" +
-                    "union select count(Tid) from DisplaySchemeEnrollmentHeader where upload='N'" +
-                    "union select count(Tid) from DisplaySchemeTrackingHeader where upload='N'" +
-                    "union select count(PlanId) from DatewisePlan where upload='N'" +
-                    "union select count(KPIId) from RetailerKPIModifiedDetail where upload='N'" +
-                    "union select count(uid) from VanLoad where upload='N'" +
-                    "union select count(Uid) from JointCallDetail where upload='N'" +
-                    "union select count(Tid) from RetailerScoreHeader where upload='N'" +
-                    "union select count(Tid) from RetailerScoreDetails where upload='N'" +
-                    "union select count(uid) from DenominationHeader where upload='N'" +
-                    "union select count(uid) from DenominationDetails where upload='N'" +
-                    "union select count(Tid) from RetailerLocationDeviation where upload='N'" +
-                    "union select count(uid) from DisplayAssetTrackingHeader where upload='N'" +
-                    "union select count(uid) from DisplayAssetTrackingDetails where upload='N'" +
-                    "union select count(RetailerId) from RetailerNotes where upload='N'" +
-                    "union select count(RetailerId) from SerializedAssetServiceRequest where upload='N'" +
-                    "union select count(Tid) from UserEditDetail where upload='N'";
-            Cursor c = db.selectSQL(sb);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    count = c.getInt(0);
-                    if (count > 0) {
-                        c.close();
-                        db.closeDB();
-                        return true;
-                    }
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return false;
-    }
-
-    /**
      * @deprecated
      * @see {@link FileUtils#deleteFiles(String, String)}
      * method to use delete files from sdcard
@@ -1167,32 +993,6 @@ SynchronizationHelper {
                 }
             }
         }
-    }
-
-    public List<SyncRetailerBO> getRetailerIsVisited() {
-        List<SyncRetailerBO> isVisitedRetailerList = null;
-        try {
-            isVisitedRetailerList = new ArrayList<>();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
-            );
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT DISTINCT OT.RetailerID, RM.RetailerName FROM OutletTimestamp OT INNER JOIN RetailerMaster RM ON OT.RetailerID = RM.RetailerID Where OT.upload = 'N' ORDER BY RM.RetailerName");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    SyncRetailerBO retBO = new SyncRetailerBO();
-                    retBO.setRetailerId(c.getString(0));
-                    retBO.setRetailerName(c.getString(1));
-                    retBO.setChecked(true);
-                    isVisitedRetailerList.add(retBO);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return isVisitedRetailerList;
     }
 
 
@@ -4221,17 +4021,55 @@ SynchronizationHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sql = "select PH.retailerId,locId,promotionId,isExecuted,promoQty,ReasonId,ExecRatingLovId,Flag,BrandId from PromotionDetail PD INNER JOIN PromotionHeader PH ON PD.uid=PH.uid where PH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " and PD.flag='S'";
+            String sql = "select PH.retailerId,locId,promotionId,isExecuted,promoQty,ReasonId,ExecRatingLovId,Flag,BrandId,IFNULL(imgName,'') as imageName from PromotionDetail PD INNER JOIN PromotionHeader PH ON PD.uid=PH.uid where PH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " and PD.flag='S'";
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
                 while (cur.moveToNext()) {
                     sql = "Select promotionId from LastVisitPromotion where retailerid=" + cur.getString(0) + " and locid=" + cur.getString(1) + " and promotionId=" + cur.getString(2) + " and brandId=" + cur.getString(8);
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
-                        db.updateSQL("update LastVisitPromotion set isExecuted=" + cur.getString(3) + ",promoQty=" + cur.getString(4) + ",ReasonId=" + cur.getString(5) + ",ExecRatingLovId=" + cur.getString(6) + ",Flag='" + cur.getString(7) + "' where retailerid=" + cur.getString(0) + " and locid=" + cur.getString(1) + " and promotionId=" + cur.getString(2) + " and brandId=" + cur.getString(8));
+                        db.updateSQL("update LastVisitPromotion set isExecuted=" + cur.getString(3)
+                                + ",promoQty=" + cur.getString(4)
+                                + ",ReasonId=" + cur.getString(5)
+                                + ",ExecRatingLovId=" + cur.getString(6)
+                                + ",Flag='" + cur.getString(7)
+                                + " where retailerid=" + cur.getString(0)
+                                + " and locid=" + cur.getString(1)
+                                + " and promotionId=" + cur.getString(2)
+                                + " and brandId=" + cur.getString(8));
+
+                        if (!cur.getString(9).isEmpty())
+                            db.updateSQL("update LastVisitPromotionImage set RetailerId=" + cur.getString(0)
+                                    + ",StoreLocId=" + cur.getString(1)
+                                    + ",PromotionId=" + cur.getString(2)
+                                    + ",pid=" + cur.getString(8)
+                                    + ",ImageName=" + StringUtils.getStringQueryParam(cur.getString(9))
+                                    + " where RetailerId=" + cur.getString(0)
+                                    + " and StoreLocId=" + cur.getString(1)
+                                    + " and PromotionId=" + cur.getString(2)
+                                    + " and pid=" + cur.getString(8));
                         cur1.close();
                     } else {
-                        db.insertSQL("LastVisitPromotion", "retailerId,locId,promotionId,isExecuted,promoQty,ReasonId,ExecRatingLovId,Flag,BrandId", cur.getString(0) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(3) + "," + cur.getString(4) + "," + cur.getString(5) + "," + cur.getString(6) + ",'" + cur.getString(7) + "'," + cur.getString(8));
+                        db.insertSQL("LastVisitPromotion"
+                                , "retailerId,locId,promotionId,isExecuted,promoQty,ReasonId,ExecRatingLovId,Flag,BrandId"
+                                , cur.getString(0)
+                                        + "," + cur.getString(1)
+                                        + "," + cur.getString(2)
+                                        + "," + cur.getString(3)
+                                        + "," + cur.getString(4)
+                                        + "," + cur.getString(5)
+                                        + "," + cur.getString(6)
+                                        + ",'" + cur.getString(7)
+                                        + "'," + cur.getString(8));
+
+                        if (!cur.getString(9).isEmpty())
+                            db.insertSQL("LastVisitPromotionImage"
+                                    , "RetailerId,StoreLocId,PromotionId,pid,ImageName"
+                                    , cur.getString(0)
+                                            + "," + cur.getString(1)
+                                            + "," + cur.getString(2)
+                                            + "," + cur.getString(8)
+                                            + "," + StringUtils.getStringQueryParam(cur.getString(9)));
 
                     }
                 }
@@ -4260,6 +4098,7 @@ SynchronizationHelper {
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
                         db.executeQ("delete from LastVisitSurvey where retailerid=" + cur.getString(0) + " and surveyId=" + cur.getString(1));
+                        db.executeQ("delete from LastVisitSurveyImage where RetailerId=" + cur.getString(0) + " and SurveyId=" + cur.getString(1));
                         cur1.close();
                     }
                 }
@@ -4284,6 +4123,24 @@ SynchronizationHelper {
                 cur2.close();
             }
 
+            //re insert transaction data from AnswerImageDetail records into LastVisitSurveyImage
+            sql2 = "select AH.retailerId,AH.surveyId,AD.qid,AID.ImgName from AnswerDetail AD " +
+                    "INNER JOIN AnswerHeader AH ON AD.uid=AH.uid " +
+                    "INNER JOIN AnswerImageDetail AID ON AD.ui=AID.uid " +
+                    "where AH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            cur2 = db.selectSQL(sql2);
+            if (cur2 != null) {
+                while (cur2.moveToNext()) {
+                    db.insertSQL("LastVisitSurveyImage"
+                            , "RetailerId,surveyId,qid,ImageName"
+                            , cur2.getString(0)
+                                    + "," + cur2.getString(1)
+                                    + "," + cur2.getString(2)
+                                    + "," + StringUtils.getStringQueryParam(cur2.getString(3)));
+                }
+            }
+
+
             db.closeDB();
         } catch (Exception ex) {
             Commons.printException("" + ex);
@@ -4306,14 +4163,16 @@ SynchronizationHelper {
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
                         db.executeQ("delete from LastVisitSOS where retailerid=" + cur.getString(0));
+                        db.executeQ("delete from LastVisitSOSImage RetailerId=" + cur.getString(0));
                         cur1.close();
                     }
                 }
                 cur.close();
             }
 
-            // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS
-            String sql2 = "select STD.retailerid,STD.locid,STD.pid,STD.parentid,STD.actual,STD.reasonid,STD.isown,STD.parenttotal from SOS_Tracking_Detail STD INNER JOIN SOS_Tracking_Header STH ON STD.uid=STH.uid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+
+            // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS and LastVisitSOSImage
+            String sql2 = "select STD.retailerid,STD.locid,STD.pid,STD.parentid,STD.actual,STD.reasonid,STD.isown,STD.parenttotal,STD.imgName from SOS_Tracking_Detail STD INNER JOIN SOS_Tracking_Header STH ON STD.uid=STH.uid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur2 = db.selectSQL(sql2);
             if (cur2 != null) {
                 while (cur2.moveToNext()) {
@@ -4326,6 +4185,13 @@ SynchronizationHelper {
                                     + "," + cur2.getString(5)
                                     + "," + cur2.getString(6)
                                     + "," + cur2.getString(7));
+
+                    db.insertSQL("LastVisitSOSImage"
+                            , "RetailerId,StoreLocId,pid,ImageName"
+                            , cur2.getString(0)
+                                    + "," + cur2.getString(1)
+                                    + "," + cur2.getString(2)
+                                    + "," + StringUtils.getStringQueryParam(cur2.getString(8)));
                 }
                 cur2.close();
             }
@@ -4958,7 +4824,7 @@ SynchronizationHelper {
      *
      * @return
      */
-    public boolean checkOrderDeliveryStatusTable() {
+    public boolean hasOrderDeliveryStatusDataExist() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
