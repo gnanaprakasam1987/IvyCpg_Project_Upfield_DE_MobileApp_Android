@@ -1506,8 +1506,8 @@ public class BusinessModel extends Application {
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as Supplier   TaxLocId,")
-                            + "ridSF,RField10,RField11,RField12,RField13,RField14,RField15,RField16,RField17,RField18,RField19,RField20,RA.WebSite,RV.VisitTargetCount "
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as SupplierTaxLocId,")
+                            + "ridSF,RField10,RField11,RField12,RField13,RField14,RField15,RField16,RField17,RField18,RField19,RField20,A.WebSite "
 
                             + "FROM RetailerMaster A"
 
@@ -1702,7 +1702,6 @@ public class BusinessModel extends Application {
                     retailer.setLastVisitDate(c.getString(c.getColumnIndex("lastVisitDate")));
                     retailer.setLastVisitedBy(c.getString(c.getColumnIndex("lastVisitedBy")));
                     retailer.setWebUrl(c.getString(c.getColumnIndex("WebSite")));
-                    retailer.setVisitTargetCount(c.getInt(c.getColumnIndex("VisitTargetCount")));
 
                     retailer.setRField10(c.getString(c.getColumnIndex("RField10")));
                     retailer.setRField11(c.getString(c.getColumnIndex("RField11")));
@@ -4319,9 +4318,14 @@ public class BusinessModel extends Application {
                     + getRetailerMasterBO().getRetailerID()
                     + " AND BeatID=" + getRetailerMasterBO().getBeatID());
 
-            if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+            if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE) {
                 db.updateSQL("Update DatewisePlan set VisitStatus=" + StringUtils.getStringQueryParam(RetailerConstants.COMPLETED) +
                         " where EntityId=" + StringUtils.getStringQueryParam(getAppDataProvider().getRetailMaster().getRetailerID()) + " and Date=" + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+
+
+                updatePlanAndVisitCount(db);
+            }
+
 
             db.closeDB();
 

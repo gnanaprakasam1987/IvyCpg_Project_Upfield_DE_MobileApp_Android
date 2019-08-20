@@ -128,7 +128,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                     + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                                                     + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
                                                     + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as SupplierTaxLocId,")
-                                                    + "ridSF,RA.WebSite,RV.VisitTargetCount FROM RetailerMaster A"
+                                                    + "ridSF,A.WebSite FROM RetailerMaster A"
 
                                                     + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
@@ -315,7 +315,6 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setLastVisitDate(c.getString(c.getColumnIndex("lastVisitDate")));
                                             retailer.setLastVisitedBy(c.getString(c.getColumnIndex("lastVisitedBy")));
                                             retailer.setWebUrl(c.getString(c.getColumnIndex("WebSite")));
-                                            retailer.setVisitTargetCount(c.getInt(c.getColumnIndex("VisitTargetCount")));
 
                                             retailer.setIsToday(0);
                                             retailer.setHangingOrder(false);

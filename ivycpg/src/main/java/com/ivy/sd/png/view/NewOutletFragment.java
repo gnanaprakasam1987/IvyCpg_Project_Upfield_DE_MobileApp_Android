@@ -877,6 +877,11 @@ public class NewOutletFragment extends IvyBaseFragment
                             getEditTextView(i, mName,
                                     InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, mandatory),
                             commonsparams);
+                } else if (configCode.equalsIgnoreCase("WEB_SITE_URL")) {
+                    totalView.addView(
+                            getEditTextView(i, mName,
+                                    InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS, mandatory),
+                            commonsparams);
                 } else if (configCode.equalsIgnoreCase("PHNO1")
                         || configCode.equalsIgnoreCase("PHNO2")
                         || configCode.equalsIgnoreCase("CREDITLIMIT")
@@ -1416,8 +1421,7 @@ public class NewOutletFragment extends IvyBaseFragment
         try {
 
             int size = profileConfig.size();
-            for (int j = 0; j < size; j++)
-                Commons.print(" " + profileConfig.get(j).getConfigCode() + " " + profileConfig.get(j).getMandatory());
+
             for (int i = 0; i < size; i++) {
 
                 int mandatory;
@@ -1773,10 +1777,9 @@ public class NewOutletFragment extends IvyBaseFragment
 
 
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("EMAIL")
-                ) {
+                        .equalsIgnoreCase("EMAIL")) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if (mandatory == 1 || editText[i].getText().toString().trim().length() != 0) {
+                    if (editText[i].getText().toString().trim().length() != 0) {
                         if (!isValidEmail(editText[i].getText().toString())) {
                             validate = false;
                             scrollToSpecificEditText(edittextinputLayout);
@@ -1788,6 +1791,40 @@ public class NewOutletFragment extends IvyBaseFragment
 
                             break;
                         }
+                    } else if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
+                    }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("WEB_SITE_URL")) {
+                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                    if (editText[i].getText().toString().trim().length() != 0) {
+                        if (!StringUtils.isValidURL(editText[i].getText().toString())) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter_valid_url));
+                            editText[i].addTextChangedListener(watcher);
+
+                            break;
+                        }
+                    } else if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
                     }
                 } else if ((profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("FAX")
@@ -2340,7 +2377,8 @@ public class NewOutletFragment extends IvyBaseFragment
 
         if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("EMAIL") ||
                 !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PAN_NUMBER") ||
-                !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("GST_NO")) {
+                !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("GST_NO")
+                || !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("WEB_SITE_URL")) {
             //regex
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
@@ -2934,6 +2972,10 @@ public class NewOutletFragment extends IvyBaseFragment
                     editText[mNumber]
                             .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                     editText[mNumber].setHint(MName);
+                } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS) {
+                    editText[mNumber]
+                            .setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+                    editText[mNumber].setHint(MName);
                 } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS) {
                     if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
                         editText[mNumber]
@@ -2955,7 +2997,8 @@ public class NewOutletFragment extends IvyBaseFragment
                 }
 
                 //cmd for not apply inputfilter value for email id
-                if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("EMAIL"))
+                if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("EMAIL")
+                        || !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("WEB_SITE_URL"))
                     if (inputFilters != null && inputFilters.size() > 0) {
                         InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                         stockArr = inputFilters.toArray(stockArr);
@@ -2996,6 +3039,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     public void afterTextChanged(Editable et) {
                         String s = et.toString();
                         if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("EMAIL") &&
+                                !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("WEB_SITE_URL") &&
                                 bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
                             s = s.toUpperCase();
                             editText[mNumber].setText(s);
@@ -3217,6 +3261,8 @@ public class NewOutletFragment extends IvyBaseFragment
                 return outlet.getFax();
             case "EMAIL":
                 return outlet.getEmail();
+            case "WEB_SITE_URL":
+                return outlet.getWebSiteUrl();
             case "CREDITLIMIT":
                 return outlet.getCreditLimit();
             case "TIN_NUM":
@@ -5243,9 +5289,9 @@ public class NewOutletFragment extends IvyBaseFragment
         } else if (i == R.id.menu_oppr) {
             bmodel.configurationMasterHelper.downloadProductDetailsList();
 
-            ProductTaggingHelper.getInstance(getActivity()).downloadTaggedProducts(getActivity(),MENU_NEW_RETAILER);
+            ProductTaggingHelper.getInstance(getActivity()).downloadTaggedProducts(getActivity(), MENU_NEW_RETAILER);
             bmodel.productHelper.downloadCompetitorProducts("MENU_STK_ORD");
-            ProductTaggingHelper.getInstance(getActivity()).downloadCompetitorTaggedProducts(getActivity(),MENU_NEW_RETAILER);
+            ProductTaggingHelper.getInstance(getActivity()).downloadCompetitorTaggedProducts(getActivity(), MENU_NEW_RETAILER);
 
             /* Settign color **/
             bmodel.configurationMasterHelper.downloadFilterList();
@@ -5363,6 +5409,7 @@ public class NewOutletFragment extends IvyBaseFragment
             boolean isRPType = false;
             boolean isContractStatus = false;
             boolean isEmail = false;
+            boolean isUrl = false;
             boolean isFaxNo = false;
             boolean tinno = false;
             boolean rfield3 = false;
@@ -5561,8 +5608,16 @@ public class NewOutletFragment extends IvyBaseFragment
                         outlet.setFax(bmodel.validateInput(editText[i].getText().toString()));
                     }
                 } else if (configCode.equalsIgnoreCase("EMAIL")) {
-
                     isEmail = true;
+
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        outlet.setEmail("");
+                    } else {
+                        outlet.setEmail(bmodel.validateInput(editText[i].getText().toString()));
+                    }
+                } else if (configCode.equalsIgnoreCase("WEB_SITE_URL")) {
+
+                    isUrl = true;
 
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setEmail("");
@@ -5869,6 +5924,9 @@ public class NewOutletFragment extends IvyBaseFragment
             }
             if (!isEmail) {
                 outlet.setEmail("");
+            }
+            if (!isUrl) {
+                outlet.setWebSiteUrl("");
             }
             if (!isFaxNo) {
                 outlet.setFax("0");

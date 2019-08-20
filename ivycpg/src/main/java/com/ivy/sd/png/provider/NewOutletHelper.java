@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
-import androidx.appcompat.widget.AppCompatEditText;
 import android.util.SparseArray;
+
+import androidx.appcompat.widget.AppCompatEditText;
 
 import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
 import com.ivy.cpg.view.retailercontact.RetailerContactBo;
@@ -2332,7 +2333,7 @@ public class NewOutletHelper {
                     + DataMembers.VISIT_DAYS_COLUMN_NAME + ",LocationId," +
                     "creditlimit,RPTypeId,tinnumber,RField3,distributorId,TaxTypeid," +
                     "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber,RField5,RField6,TinExpDate," +
-                    "pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
+                    "pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid,Website";
 
             int userid = getNewoutlet().getUserId();
             if (userid == 0)
@@ -2369,7 +2370,8 @@ public class NewOutletHelper {
                     + "," + (getNewoutlet().getDlExpDate() == null || getNewoutlet().getDlExpDate().isEmpty() ? null : QT(getNewoutlet().getDlExpDate()))
                     + "," + QT(getNewoutlet().getrField4())
                     + "," + QT(getNewoutlet().getrField7())
-                    + "," + QT(userid + "");
+                    + "," + QT(userid + "")
+                    + "," + QT(getNewoutlet().getWebSiteUrl());
 
 
             db.insertSQL("RetailerMaster", column, value);
@@ -2608,7 +2610,8 @@ public class NewOutletHelper {
 
         return true;
     }
-//TODO to check
+
+    //TODO to check
     private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo) {
         String column = "CPAId,CPId,Day,StartTime,EndTime,isLocal,upload,retailerID";
 
