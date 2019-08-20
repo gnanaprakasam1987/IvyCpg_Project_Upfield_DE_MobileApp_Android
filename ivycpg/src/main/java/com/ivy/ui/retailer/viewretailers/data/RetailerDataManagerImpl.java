@@ -115,7 +115,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                             dateWisePlanBO.setVisitStatus(c.getString(12));
                             dateWisePlanBO.setCancelReasonId(c.getInt(13));
                             dateWisePlanBO.setPlanStatus(c.getString(14));
-                            dateWisePlanBO.setRecurringGroupId(c.getInt(15));
+                            dateWisePlanBO.setRecurringGroupId(c.getLong(15));
                             dateWisePlanBO.setRecurringGroupMode(c.getString(16));
 
                             if (datePlanHashMap.get(dateWisePlanBO.getDate()) == null) {
@@ -188,7 +188,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                             dateWisePlanBO.setCancelReasonId(c.getInt(13));
 
                             dateWisePlanBO.setPlanStatus(c.getString(14));
-                            dateWisePlanBO.setRecurringGroupId(c.getInt(15));
+                            dateWisePlanBO.setRecurringGroupId(c.getLong(15));
                             dateWisePlanBO.setRecurringGroupMode(c.getString(16));
 
                             datePlanHashMap.put(String.valueOf(dateWisePlanBO.getEntityId()), dateWisePlanBO);

@@ -511,7 +511,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
             tvVisitEndTime.setOnClickListener(startVisitTimeListener);
 
             saveElementGroup.setVisibility(View.VISIBLE);
-            hideShowViews(8);
+            hideShowViews(View.GONE);
 
             seperatorView.setVisibility(View.VISIBLE);
 
@@ -604,6 +604,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         tvOutletAddress.setText(retailerMasterBO.getAddress1());
 
         saveElementGroup.setVisibility(View.GONE);
+        spinnerRecursive.setVisibility(View.GONE);
+        cbEditRecursive.setVisibility(View.GONE);
 
 
         ArrayAdapter<SpinnerBO> spinnerAdapter = new ArrayAdapter<>(
