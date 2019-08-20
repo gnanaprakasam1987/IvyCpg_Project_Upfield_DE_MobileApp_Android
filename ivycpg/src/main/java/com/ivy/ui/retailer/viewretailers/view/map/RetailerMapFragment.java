@@ -233,6 +233,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
             if (getMap() != null)
                 getMap().clear();
+            else
+                return;
 
             if (addPlanDialogFragment != null && addPlanDialogFragment.isVisible())
                 addPlanDialogFragment.dismiss();
@@ -737,8 +739,10 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                getMap().clear();
+                if(getMap()==null)
+                    return true;
 
+                getMap().clear();
                 isFocusRetailer = false;
 
                 presenter.prepareFilteredRetailerList(planFilterBo, newText.toLowerCase(), false);
@@ -764,11 +768,11 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             ((Activity) context).finish();
             return true;
         } else if (item.getItemId() == R.id.filter) {
-
-            RetailerPlanFilterFragment planFilterFragment = new RetailerPlanFilterFragment(mSelectedDate, planFilterBo);
-            planFilterFragment.show(((FragmentActivity) context).getSupportFragmentManager(),
-                    "filter_plan_fragment");
-
+            if(getMap()!=null) {
+                RetailerPlanFilterFragment planFilterFragment = new RetailerPlanFilterFragment(mSelectedDate, planFilterBo);
+                planFilterFragment.show(((FragmentActivity) context).getSupportFragmentManager(),
+                        "filter_plan_fragment");
+            }
             return true;
         } else if (item.getItemId() == R.id.calendar) {
             FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();

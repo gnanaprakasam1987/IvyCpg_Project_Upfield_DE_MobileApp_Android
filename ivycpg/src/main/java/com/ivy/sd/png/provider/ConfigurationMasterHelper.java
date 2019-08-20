@@ -3222,7 +3222,7 @@ public class ConfigurationMasterHelper {
                     con.setModule_Order(c.getInt(2));
                     con.setMenuName(c.getString(3));
                     con.setMenuNumber(c.getString(4));
-                    if (bmodel.getAppDataProvider().getRetailMaster().isAdhoc()) {
+                    if (bmodel.getAppDataProvider().getRetailMaster()!=null && bmodel.getAppDataProvider().getRetailMaster().isAdhoc()) {
                         if ("MENU_STK_ORD".equals(con.getConfigCode()) || "MENU_NOTES".equals(con.getConfigCode()) || "MENU_TASK".equals(con.getConfigCode())
                                 || "MENU_ORDER".equals(con.getConfigCode()) || "MENU_CATALOG_ORDER".equals(con.getConfigCode()))
                             con.setHasLink(c.getInt(5));
