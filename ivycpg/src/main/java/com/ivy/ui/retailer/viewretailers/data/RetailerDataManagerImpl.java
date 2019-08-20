@@ -147,7 +147,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 HashMap<String, DateWisePlanBo> datePlanHashMap = new HashMap<>();
 
                 String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType," +
-                        "IFNULL(dwp.Status,''),dwp.Sequence,rm.RetailerName,StartTime,EndTime,IFNULL(dwp.PlanSource,'')" +
+                        "IFNULL(dwp.Status,''),dwp.Sequence,rm.RetailerName,IFNULL(dwp.StartTime,'') as StartTime,IFNULL(dwp.EndTime,'') as EndTime,IFNULL(dwp.PlanSource,'')" +
                         ",IFNULL(dwp.VisitStatus,''),cancelReasonId,planStatus " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +

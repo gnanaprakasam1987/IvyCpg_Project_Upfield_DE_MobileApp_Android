@@ -549,9 +549,10 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                                         DataMembers.actHomeScreenTwo);*/
 
                                 //  DataMembers.actHomeScreenTwo);
+                                setResult(RESULT_OK);
+                                finish();
                                 Intent myIntent = new Intent(SalesReturnSummery.this, HomeScreenTwo.class);
                                 startActivityForResult(myIntent, 0);
-                                finish();
                             }
                         })
                 .setNegativeButton(

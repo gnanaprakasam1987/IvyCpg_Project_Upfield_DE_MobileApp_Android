@@ -3593,9 +3593,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             float osrp = holder.productObj.getOutersize() * SDUtil.convertToFloat(qty);
                             holder.productObj.setOsrp(SDUtil.convertToFloat(SDUtil.format(osrp, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
 
-                            if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP
-                                    && mSchedule != null)
-                                mSchedule.notifyDataSetChanged();
                         } else {
                             if (!validateSRPEdit
                                     && bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT_WITH_VALIDATE_MRP)
