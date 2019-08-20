@@ -1403,19 +1403,19 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
 
             String address = "";
 
-            if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress1()))
+            if (!StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress1()))
                 address = holder.retailerObjectHolder.getAddress1();
 
-            if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress2()))
+            if (!StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress2()))
                 address += ", " + holder.retailerObjectHolder.getAddress2();
 
-            if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress3()))
+            if (!StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getAddress3()))
                 address += ", " + holder.retailerObjectHolder.getAddress3();
 
-            if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getCity()))
+            if (!StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getCity()))
                 address += ", " + holder.retailerObjectHolder.getCity();
 
-            if (StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getPincode()))
+            if (!StringUtils.isNullOrEmpty(holder.retailerObjectHolder.getPincode()))
                 address += " - " + holder.retailerObjectHolder.getPincode();
 
             holder.outletAddress.setText(address);
