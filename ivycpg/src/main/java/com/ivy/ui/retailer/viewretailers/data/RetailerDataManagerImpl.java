@@ -82,7 +82,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
                         " LEFT join RetailerAddress as RA on RA.RetailerID = dwp.EntityId AND RA.IsPrimary=1 " +
-                        " Where (dwp.VisitStatus = 'PLANNED' or dwp.VisitStatus = 'CANCELLED') and " +
+                        " Where (dwp.VisitStatus = 'PLANNED' or dwp.VisitStatus = 'CANCELLED' or dwp.VisitStatus = 'COMPLETED') and " +
                         " dwp.EntityType = 'RETAILER'" +
                         " ORDER BY dwp.Date asc,dwp.StartTime asc";
                 try {
@@ -153,7 +153,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         ",IFNULL(dwp.VisitStatus,''),cancelReasonId,planStatus,dwp.RecurringGroupId,IFNULL(dwp.RecurringGroupMode,'') " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
-                        " Where (dwp.VisitStatus = 'PLANNED' or dwp.VisitStatus = 'CANCELLED') and " +
+                        " Where (dwp.VisitStatus = 'PLANNED' or dwp.VisitStatus = 'CANCELLED' or dwp.VisitStatus = 'COMPLETED') and " +
                         " dwp.EntityType = 'RETAILER' and dwp.Date=" + StringUtils.getStringQueryParam(date);
                 try {
 

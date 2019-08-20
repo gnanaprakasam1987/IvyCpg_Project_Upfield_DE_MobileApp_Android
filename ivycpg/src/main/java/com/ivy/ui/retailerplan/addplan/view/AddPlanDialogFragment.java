@@ -403,8 +403,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                             endTime.equalsIgnoreCase(dateWisePlanBo.getEndTime()))
                         dismiss();
 
-                    // Edit Today
-                    if (DateTimeUtils.getDateCount(selectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd") == 0
+                        // Edit Today
+                    else if (DateTimeUtils.getDateCount(selectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd") == 0
                             && addPlanPresenter.showRescheduleReasonToday()) {
                         getEditplanReason();
                     }
@@ -532,6 +532,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                 spinnerRecursive.setEnabled(false);
                 if (dateWisePlanBo != null && dateWisePlanBo.getRecurringGroupId() > 0) {
                     cbEditRecursive.setVisibility(View.VISIBLE);
+                    spinnerRecursive.setVisibility(View.VISIBLE);
                     spinnerRecursive.setSelection(dateWisePlanBo.getRecurringGroupMode().equalsIgnoreCase("WEEK") ? 1 : 2);
                 } else {
                     cbEditRecursive.setVisibility(View.GONE);
@@ -774,7 +775,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @Override
     public void updateNewRecursivePlanList(List<DateWisePlanBo> planList) {
         if (planList.size() > 0)
-            addPlanPresenter.addRecursivePlans(planList);
+            addPlanPresenter.addRecursivePlans(planList, retailerMasterBO);
         else
             hideLoading();
     }
@@ -782,7 +783,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @Override
     public void updateEditedRecursivePlanList(List<DateWisePlanBo> planList, DateWisePlanBo planBo, String reasonID) {
         if (planList.size() > 0)
-            addPlanPresenter.saveEditedRecursiveList(planList,planBo,reasonID);
+            addPlanPresenter.saveEditedRecursiveList(planList, planBo, reasonID, retailerMasterBO);
         else
             hideLoading();
     }

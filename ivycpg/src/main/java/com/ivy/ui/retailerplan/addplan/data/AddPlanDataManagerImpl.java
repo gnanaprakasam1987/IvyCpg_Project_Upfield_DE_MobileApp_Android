@@ -98,7 +98,7 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
 
                 initDb();
 
-                String recursiveId = DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
+                String recursiveId = dateWisePlanList.get(0).getEntityId() + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                 try {
                     for (DateWisePlanBo dateWisePlanBo : dateWisePlanList) {
@@ -116,7 +116,7 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                                 + getStringQueryParam("MOBILE") + ","
                                 + getStringQueryParam("APPROVED") + ","
                                 + (dateWisePlanBo.isAdhoc() ? 1 : 0) + ","
-                                + recursiveId + ","
+                                + SDUtil.convertToLong(recursiveId) + ","
                                 + getStringQueryParam(dateWisePlanBo.getRecurringGroupMode()) + ","
                                 + 0 + ","
                                 + getStringQueryParam("N");
@@ -194,14 +194,14 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
             @Override
             public List<DateWisePlanBo> call() throws Exception {
 
-                String recursiveId = DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
+                String recursiveId = planBo.getEntityId() + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
                 initDb();
 
                 try {
 
                     mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
                             + " SET cancelReasonId= " + getStringQueryParam(reasonId) + ",Status = 'D', VisitStatus =  " + getStringQueryParam(RESCHEDULED)
-                            + " where RecurringGroupId = " + planBo.getRecurringGroupId() + " AND Date >= " + planBo.getDate());
+                            + " where RecurringGroupId = " + planBo.getRecurringGroupId() + " AND Date >= " + getStringQueryParam(planBo.getDate()));
 
                     for (DateWisePlanBo mPlanList : planList) {
 
@@ -219,7 +219,7 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                                 + getStringQueryParam("MOBILE") + ","
                                 + getStringQueryParam("APPROVED") + ","
                                 + (mPlanList.isAdhoc() ? 1 : 0) + ","
-                                + recursiveId + ","
+                                + SDUtil.convertToLong(recursiveId) + ","
                                 + getStringQueryParam(mPlanList.getRecurringGroupMode()) + ","
                                 + 0 + ","
                                 + getStringQueryParam("N");
