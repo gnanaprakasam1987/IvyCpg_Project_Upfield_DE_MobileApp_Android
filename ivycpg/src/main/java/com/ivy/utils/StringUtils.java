@@ -2,6 +2,7 @@ package com.ivy.utils;
 
 import android.text.TextUtils;
 import android.util.Patterns;
+import android.webkit.URLUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,6 +58,7 @@ public class StringUtils {
 
     public static boolean isValidURL(CharSequence targetUrl) {
         return !isNullOrEmpty(targetUrl.toString())
+                && URLUtil.isValidUrl(targetUrl.toString())
                 && Patterns.WEB_URL.matcher(targetUrl).matches();
     }
 
