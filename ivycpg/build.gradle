@@ -47,7 +47,7 @@ android {
     defaultConfig {
         applicationId "com.ivy.sd.png.asean.view"
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode "$minorVersion$patchVersion".toInteger()
         versionName "${majorVersion}.${minorVersion}.${patchVersion}.${revNumber}"
         multiDexEnabled true
