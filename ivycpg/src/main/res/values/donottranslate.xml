@@ -244,6 +244,9 @@
     <string name="not_allowed_to_cancel_today">Not allowed to cancel today\'s plan</string>
     <string name="not_allowed_to_cancel_week">Not allowed to cancel current week plan</string>
     <string name="move">Move</string>
+    <string name="dont_repeat">Don\'t Repeat</string>
+    <string name="every_week">Weekly on %1$s</string>
+    <string name="every_month">Monthly on the %1$s</string>
 
     <string name="enter_time_slot">Enter Time Slot</string>
     <string name="select_salutation">Select Salutation</string>
@@ -274,6 +277,9 @@
     <string name="time_slot_already_selected">Time Slot Fall In Already Selected Timeslot</string>
     <string name="from_time_should_be_lesser">Avail From Time Should Be Lesser Than Avail Till</string>
     <string name="session_expired">Session Expired</string>
+    <string name="recursive_retailer">Retailer already planned in recursive days </string>
+    <string name="recursive_time_slot">Time Slot not available in recursive days </string>
+    <string name="cb_edit_recursive">Apply for All Future Recursive plans </string>
 
     <string name="price_tag">Price Tag</string>
 

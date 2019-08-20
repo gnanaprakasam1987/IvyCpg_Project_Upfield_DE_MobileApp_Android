@@ -78,11 +78,11 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                 String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,'')" +
                         ",dwp.Sequence,rm.RetailerName,IFNULL(dwp.StartTime,''),IFNULL(dwp.EndTime,''),IFNULL(dwp.PlanSource,'')," +
-                        " IFNULL(dwp.VisitStatus,''),cancelReasonId,planStatus " +
+                        " IFNULL(dwp.VisitStatus,''),cancelReasonId,planStatus,dwp.RecurringGroupId,IFNULL(dwp.RecurringGroupMode,'') " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
                         " LEFT join RetailerAddress as RA on RA.RetailerID = dwp.EntityId AND RA.IsPrimary=1 " +
-                        " Where dwp.VisitStatus = 'PLANNED' or dwp.VisitStatus = 'CANCELLED' and " +
+                        " Where (dwp.VisitStatus = 'PLANNED' or dwp.VisitStatus = 'CANCELLED') and " +
                         " dwp.EntityType = 'RETAILER'" +
                         " ORDER BY dwp.Date asc,dwp.StartTime asc";
                 try {
@@ -115,6 +115,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                             dateWisePlanBO.setVisitStatus(c.getString(12));
                             dateWisePlanBO.setCancelReasonId(c.getInt(13));
                             dateWisePlanBO.setPlanStatus(c.getString(14));
+                            dateWisePlanBO.setRecurringGroupId(c.getInt(15));
+                            dateWisePlanBO.setRecurringGroupMode(c.getString(16));
 
                             if (datePlanHashMap.get(dateWisePlanBO.getDate()) == null) {
                                 ArrayList<DateWisePlanBo> plannedList = new ArrayList<>();
@@ -148,7 +150,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                 String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType," +
                         "IFNULL(dwp.Status,''),dwp.Sequence,rm.RetailerName,IFNULL(dwp.StartTime,'') as StartTime,IFNULL(dwp.EndTime,'') as EndTime,IFNULL(dwp.PlanSource,'')" +
-                        ",IFNULL(dwp.VisitStatus,''),cancelReasonId,planStatus " +
+                        ",IFNULL(dwp.VisitStatus,''),cancelReasonId,planStatus,dwp.RecurringGroupId,IFNULL(dwp.RecurringGroupMode,'') " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
                         " Where (dwp.VisitStatus = 'PLANNED' or dwp.VisitStatus = 'CANCELLED') and " +
@@ -186,6 +188,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                             dateWisePlanBO.setCancelReasonId(c.getInt(13));
 
                             dateWisePlanBO.setPlanStatus(c.getString(14));
+                            dateWisePlanBO.setRecurringGroupId(c.getInt(15));
+                            dateWisePlanBO.setRecurringGroupMode(c.getString(16));
 
                             datePlanHashMap.put(String.valueOf(dateWisePlanBO.getEntityId()), dateWisePlanBO);
                         }

@@ -2883,6 +2883,7 @@ public class ConfigurationMasterHelper {
         this.IS_SHOW_EXPLIST_IN_PROMO = hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) : false;
 
         loadAddplanConfigs();
+
         this.IS_SHOW_ANNOUNCEMENT = hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ANNOUNCEMENT) : false;
         this.IS_SHOW_NOTIFICATION = hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_NOTIFICATION) : false;
         this.IS_RETAILER_ADHOC_PLAN = hashMapHHTModuleConfig.get(CODE_RETAILER_ADHOC_PLAN) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_ADHOC_PLAN) : false;
@@ -6540,7 +6541,7 @@ public class ConfigurationMasterHelper {
         }
     }
 
-    public void loadAddplanConfigs() {
+    private void loadAddplanConfigs() {
         try {
             ADD_PLAN_RESCHDULE_TS = false;
             ADD_PLAN_RESCHDULE_TR = false;

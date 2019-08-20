@@ -1506,8 +1506,8 @@ public class BusinessModel extends Application {
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as SupplierTaxLocId,")
-                            + "ridSF,RField10,RField11,RField12,RField13,RField14,RField15,RField16,RField17,RField18,RField19,RField20,RA.Website,RV.visitTargetCount "
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as Supplier   TaxLocId,")
+                            + "ridSF,RField10,RField11,RField12,RField13,RField14,RField15,RField16,RField17,RField18,RField19,RField20,RA.WebSite,RV.VisitTargetCount "
 
                             + "FROM RetailerMaster A"
 
@@ -1701,8 +1701,8 @@ public class BusinessModel extends Application {
                     retailer.setDistrict(c.getString(c.getColumnIndex("District")));
                     retailer.setLastVisitDate(c.getString(c.getColumnIndex("lastVisitDate")));
                     retailer.setLastVisitedBy(c.getString(c.getColumnIndex("lastVisitedBy")));
-                    retailer.setWebUrl(c.getString(c.getColumnIndex("Website")));
-                    retailer.setVisitTargetCount(c.getInt(c.getColumnIndex("visitTargetCount")));
+                    retailer.setWebUrl(c.getString(c.getColumnIndex("WebSite")));
+                    retailer.setVisitTargetCount(c.getInt(c.getColumnIndex("VisitTargetCount")));
 
                     retailer.setRField10(c.getString(c.getColumnIndex("RField10")));
                     retailer.setRField11(c.getString(c.getColumnIndex("RField11")));
