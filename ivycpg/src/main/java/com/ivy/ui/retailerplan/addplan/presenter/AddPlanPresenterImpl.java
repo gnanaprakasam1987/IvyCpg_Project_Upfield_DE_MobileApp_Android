@@ -214,17 +214,33 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
 
     private DateWisePlanBo updatePlanObjects(String date, String startTime, String endTime, DateWisePlanBo planBo, String mode) {
 
-
-        String id = dataManager.getUser().getUserid()
-                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
-
-        planBo.setPlanId(SDUtil.convertToLong(id));
-        planBo.setDate(date);
         planBo.setStartTime(startTime);
         planBo.setEndTime(endTime);
         planBo.setRecurringGroupMode(mode);
 
-        return planBo;
+        date = DateTimeUtils.convertToServerDateFormat(date, generalPattern);
+
+        DateWisePlanBo editPlanBo = new DateWisePlanBo();
+
+        String id = dataManager.getUser().getUserid()
+                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
+
+        editPlanBo.setPlanId(SDUtil.convertToLong(id));
+        editPlanBo.setDate(date);
+        editPlanBo.setDistributorId(planBo.getDistributorId());
+        editPlanBo.setUserId(dataManager.getUser().getUserid());
+
+        editPlanBo.setEntityId(planBo.getEntityId());
+        editPlanBo.setEntityType(planBo.getEntityType());
+        editPlanBo.setStatus("I");
+        editPlanBo.setSequence(0);
+        editPlanBo.setStartTime(startTime);
+        editPlanBo.setEndTime(endTime);
+        editPlanBo.setName(planBo.getName());
+        editPlanBo.setAdhoc(false);
+        editPlanBo.setRecurringGroupMode(mode);
+
+        return editPlanBo;
 
     }
 
@@ -391,7 +407,7 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
                         //Week
                         while (!fromCal.after(toCal)) {
 
-                            int errorMsg = checkForPlanning(listHashMap, DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, retailerMasterBO.getRetailerID());
+                            int errorMsg = checkForPlanning(listHashMap, DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, retailerMasterBO.getRetailerID(), false);
 
                             if (errorMsg == 0) {
                                 recursivePlanList.add(preparePlanObjects(DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, retailerMasterBO, false, "WEEK"));
@@ -410,7 +426,7 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
                         //MONTH
                         while (!fromCal.after(toCal)) {
 
-                            int errorMsg = checkForPlanning(listHashMap, DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, retailerMasterBO.getRetailerID());
+                            int errorMsg = checkForPlanning(listHashMap, DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, retailerMasterBO.getRetailerID(), false);
 
                             if (errorMsg == 0) {
                                 recursivePlanList.add(preparePlanObjects(DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, retailerMasterBO, false, "MONTH"));
@@ -434,9 +450,9 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
     }
 
     @Override
-    public void addRecursivePlans(List<DateWisePlanBo> planList) {
+    public void addRecursivePlans(List<DateWisePlanBo> planList, RetailerMasterBO retailerMasterBO) {
         getCompositeDisposable().add(addPlanDataManager.savePlan(planList)
-                .flatMapSingle(aPlanList -> retailerDataManager.updatePlanVisitCount(aPlanList))
+                .flatMapSingle(aPlanList -> retailerDataManager.updatePlanAndVisitCount(retailerMasterBO, aPlanList.get(0)))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribe(aBoolean -> {
                     updateIsToday();
@@ -469,7 +485,7 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
                             //Week
                             while (!fromCal.after(toCal)) {
 
-                                int errorMsg = checkForPlanning(listHashMap, DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, "" + planBo.getEntityId());
+                                int errorMsg = checkForPlanning(listHashMap, DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, "" + planBo.getEntityId(), true);
 
                                 if (errorMsg == 0) {
                                     recursivePlanList.add(updatePlanObjects(DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, planBo, "WEEK"));
@@ -488,7 +504,7 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
                             //MONTH
                             while (!fromCal.after(toCal)) {
 
-                                int errorMsg = checkForPlanning(listHashMap, DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, "" + planBo.getEntityId());
+                                int errorMsg = checkForPlanning(listHashMap, DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, "" + planBo.getEntityId(), true);
 
                                 if (errorMsg == 0) {
                                     recursivePlanList.add(updatePlanObjects(DateTimeUtils.convertDateObjectToRequestedFormat(fromCal.getTime(), generalPattern), startTime, endTime, planBo, "MONTH"));
@@ -515,9 +531,9 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
     }
 
     @Override
-    public void saveEditedRecursiveList(List<DateWisePlanBo> planList, DateWisePlanBo planBo, String reasonID) {
+    public void saveEditedRecursiveList(List<DateWisePlanBo> planList, DateWisePlanBo planBo, String reasonID, RetailerMasterBO retailerMasterBO) {
         getCompositeDisposable().add(addPlanDataManager.updatePlan(planList, planBo, reasonID)
-                .flatMapSingle(aPlanList -> retailerDataManager.updatePlanVisitCount(aPlanList))
+                .flatMapSingle(aPlanList -> retailerDataManager.updatePlanAndVisitCount(retailerMasterBO, aPlanList.get(0)))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribe(aBoolean -> {
                     updateIsToday();
@@ -528,26 +544,21 @@ public class AddPlanPresenterImpl<V extends AddPlanContract.AddPlanView> extends
 
     }
 
-    private int checkForPlanning(HashMap<String, List<DateWisePlanBo>> plannedListMap, String planDate, String startTime, String endTime, String retailerId) {
+    private int checkForPlanning(HashMap<String, List<DateWisePlanBo>> plannedListMap, String planDate, String startTime, String endTime, String retailerId, boolean isEdit) {
         int id = 0;
-
-        List<DateWisePlanBo> planList = new ArrayList<>();
         if (plannedListMap.get(planDate) != null) {
-            for (DateWisePlanBo dateWisePlanBo : Objects.requireNonNull(plannedListMap.get(planDate))) {
-                if (!dateWisePlanBo.getVisitStatus().equals(CANCELLED))
-                    planList.add(dateWisePlanBo);
-            }
-        }
-        if (planList.size() > 0) {
-            for (DateWisePlanBo planBo : planList) {
+            List<DateWisePlanBo> planList = new ArrayList<>(Objects.requireNonNull(plannedListMap.get(planDate)));
+            if (planList.size() > 0) {
+                for (DateWisePlanBo planBo : planList) {
 
-                if ((planBo.getEntityId() + "").equalsIgnoreCase(retailerId))
-                    return R.string.recursive_retailer;
+                    if (!isEdit && (planBo.getEntityId() + "").equalsIgnoreCase(retailerId))
+                        return R.string.recursive_retailer;
 
-                if (DateTimeUtils.isBetweenTime(startTime, endTime, planBo.getStartTime(), true)
-                        || DateTimeUtils.isBetweenTime(startTime, endTime, planBo.getEndTime(), false))
-                    return R.string.recursive_time_slot;
+                    if (DateTimeUtils.isBetweenTime(startTime, endTime, planBo.getStartTime(), true)
+                            || DateTimeUtils.isBetweenTime(startTime, endTime, planBo.getEndTime(), false))
+                        return R.string.recursive_time_slot;
 
+                }
             }
         }
 

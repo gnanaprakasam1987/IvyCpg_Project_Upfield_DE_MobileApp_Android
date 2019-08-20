@@ -58,10 +58,10 @@ public interface AddPlanContract {
 
         void allowedToAddRecursivePlan(int mode, String date, String startTime, String endTime, RetailerMasterBO retailerMasterBO);
 
-        void addRecursivePlans(List<DateWisePlanBo> planList);
+        void addRecursivePlans(List<DateWisePlanBo> planList,RetailerMasterBO retailerMasterBO);
 
         void updateRecursivePlan(String startTime, String endTime, DateWisePlanBo planBo, String reasonId, boolean allFuturePlan);
 
-        void saveEditedRecursiveList(List<DateWisePlanBo> planList,DateWisePlanBo planBo,String reasonID);
+        void saveEditedRecursiveList(List<DateWisePlanBo> planList,DateWisePlanBo planBo,String reasonID,RetailerMasterBO retailerMasterBO);
     }
 }

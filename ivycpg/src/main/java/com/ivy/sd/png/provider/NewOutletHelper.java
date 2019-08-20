@@ -2443,7 +2443,7 @@ public class NewOutletHelper {
             //@See {@link ProfileDataManagerImpl#saveNewOutletAddressInformation(String, NewOutletBO)}
 
             column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
-                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile,District,URL";
+                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile,District";
 
             //converting big decimal value while Exponential value occur
             String lattitude = (outlet.getNewOutletlattitude() + "").contains("E")
