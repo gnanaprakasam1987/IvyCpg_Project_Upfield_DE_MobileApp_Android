@@ -8,6 +8,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.Group;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -20,10 +22,12 @@ import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.ivy.core.base.view.BaseBottomSheetDialogFragment;
 import com.ivy.cpg.view.profile.CommonReasonDialog;
@@ -32,6 +36,8 @@ import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
 import com.ivy.cpg.view.retailercontact.TimeSlotPickFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.SpinnerBO;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -53,6 +59,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -135,6 +142,13 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @BindView(R.id.tv_adhoc_plan)
     TextView tv_adhoc_plan;
 
+    @BindView(R.id.spinnerRecursive)
+    AppCompatSpinner spinnerRecursive;
+
+    @BindView(R.id.cbEditRecur)
+    AppCompatCheckBox cbEditRecursive;
+
+
     private BottomSheetBehavior bottomSheetBehavior;
 
     private Context context;
@@ -207,6 +221,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
     @Override
     public void initVariables(Dialog dialog, View view) {
+
+        addPlanPresenter.loadPlanEndDate();
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) view.getParent()).getLayoutParams();
         CoordinatorLayout.Behavior behavior = params.getBehavior();
@@ -377,23 +393,37 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
         if (validate(startTime, endTime)) {
 
+            SpinnerBO selectedRecursiveMode = (SpinnerBO) spinnerRecursive.getSelectedItem();
+
             //Edit or Reschedule plan
             if (dateWisePlanBo != null && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) {
                 if (selectedDate != null) {
+                    //unedited
+                    if (startTime.equalsIgnoreCase(dateWisePlanBo.getStartTime()) &&
+                            endTime.equalsIgnoreCase(dateWisePlanBo.getEndTime()))
+                        dismiss();
+
                     // Edit Today
                     if (DateTimeUtils.getDateCount(selectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd") == 0
                             && addPlanPresenter.showRescheduleReasonToday()) {
                         getEditplanReason();
                     }
-                    //EDit Future
-                    else if (DateTimeUtils.getDateCount(selectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd") == 0
+                    //Edit Future
+                    else if (DateTimeUtils.getDateCount(selectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd") < 0
                             && addPlanPresenter.showRescheduleReasonFuture()) {
                         getEditplanReason();
-                    } else
-                        addPlanPresenter.updatePlan(startTime, endTime, dateWisePlanBo, "0");
+                    } else {
+                        if (selectedRecursiveMode.getId() > 0) {
+                            addPlanPresenter.updateRecursivePlan(startTime, endTime, dateWisePlanBo, "0", cbEditRecursive.isChecked());
+                        } else
+                            addPlanPresenter.updatePlan(startTime, endTime, dateWisePlanBo, "0");
+                    }
                 }
             } else {
-                addPlanPresenter.addNewPlan(selectedDate, startTime, endTime, retailerMasterBO, isAdhoc);
+                if (selectedRecursiveMode.getId() > 0) {
+                    addPlanPresenter.allowedToAddRecursivePlan(selectedRecursiveMode.getId(), selectedDate, startTime, endTime, retailerMasterBO);
+                } else
+                    addPlanPresenter.addNewPlan(selectedDate, startTime, endTime, retailerMasterBO, isAdhoc);
             }
         }
     }
@@ -469,6 +499,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         @Override
         public void onClick(View v) {
             isAdhoc = v.getId() == R.id.tv_adhoc_plan;
+            boolean isEdit = v.getId() == R.id.tv_edit;
 
             if (addPlan.getVisibility() == View.VISIBLE) {
                 visitElementGroup.setVisibility(View.VISIBLE);
@@ -492,6 +523,25 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
             tvStartVisitTime.setText(startTime);
             tvVisitEndTime.setText(endtime);
+
+            spinnerRecursive.setEnabled(true);
+            if (isAdhoc) {
+                spinnerRecursive.setVisibility(View.GONE);
+                cbEditRecursive.setVisibility(View.GONE);
+            } else if (isEdit) {
+                spinnerRecursive.setEnabled(false);
+                if (dateWisePlanBo != null && dateWisePlanBo.getRecurringGroupId() > 0) {
+                    cbEditRecursive.setVisibility(View.VISIBLE);
+                    spinnerRecursive.setSelection(dateWisePlanBo.getRecurringGroupMode().equalsIgnoreCase("WEEK") ? 1 : 2);
+                } else {
+                    cbEditRecursive.setVisibility(View.GONE);
+                    spinnerRecursive.setVisibility(View.GONE);
+                }
+
+            } else {
+                spinnerRecursive.setVisibility(View.VISIBLE);
+                cbEditRecursive.setVisibility(View.GONE);
+            }
 
             if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -541,12 +591,11 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
         setViewBackground(null);
         userProfile.setVisibility(View.VISIBLE);
+
         sendEmail.setVisibility(View.VISIBLE);
         tvPlannedLayoutTxt.setVisibility(View.GONE);
         timeSlotGridLayout.setVisibility(View.GONE);
         seperatorView.setVisibility(View.GONE);
-
-        saveElementGroup.setVisibility(View.GONE);
 
         tvStartVisitTime.setOnClickListener(null);
         tvVisitEndTime.setOnClickListener(null);
@@ -555,6 +604,20 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         tvOutletAddress.setText(retailerMasterBO.getAddress1());
 
         saveElementGroup.setVisibility(View.GONE);
+
+
+        ArrayAdapter<SpinnerBO> spinnerAdapter = new ArrayAdapter<>(
+                getActivity(), android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        String weekDay = addPlanPresenter.getWeekDay(selectedDate), weekNumber = addPlanPresenter.getMonthWeekNo(selectedDate);
+
+        spinnerAdapter.add(new SpinnerBO(0, getString(R.string.dont_repeat)));
+        spinnerAdapter.add(new SpinnerBO(1, getString(R.string.every_week, weekDay)));
+        spinnerAdapter.add(new SpinnerBO(2, getString(R.string.every_month, weekNumber + " " + weekDay)));
+
+        spinnerRecursive.setAdapter(spinnerAdapter);
+
 
         if (dateWisePlanBo != null
                 && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)
@@ -577,18 +640,18 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
                     if (DateTimeUtils.getDateCount(selectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd") == 0
                             && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) { // Today
-                        if (addPlanPresenter.showRescheduleToday())
+                        if (addPlanPresenter.showRescheduleToday() || addPlanPresenter.showRescheduleReasonToday())
                             editPlan.setVisibility(View.VISIBLE);
-                        if (addPlanPresenter.showDeleteToday())
+                        if (addPlanPresenter.showDeleteToday() || addPlanPresenter.showDeleteReasonToday())
                             deletePlan.setVisibility(View.VISIBLE);
                         if (addPlanPresenter.showCancelToday())
                             cancelPlan.setVisibility(View.VISIBLE);
 
                     } else {
                         if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) {
-                            if (addPlanPresenter.showRescheduleFuture())
+                            if (addPlanPresenter.showRescheduleFuture() || addPlanPresenter.showRescheduleReasonFuture())
                                 editPlan.setVisibility(View.VISIBLE);
-                            if (addPlanPresenter.showDeleteFuture())
+                            if (addPlanPresenter.showDeleteFuture() || addPlanPresenter.showDeleteReasonFuture())
                                 deletePlan.setVisibility(View.VISIBLE);
                             if (addPlanPresenter.showCancelFuture())
                                 cancelPlan.setVisibility(View.VISIBLE);
@@ -694,21 +757,32 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         super.onStop();
     }
 
-    @Override
-    public void showUpdatedSuccessfullyMessage() {
-
-    }
 
     @Override
-    public void showUpdateFailureMessage() {
+    public void showError(String message) {
 
     }
-
 
     @Override
     public void updateDatePlan(DateWisePlanBo planBo) {
         EventBus.getDefault().post(planBo);
         dismiss();
+    }
+
+    @Override
+    public void updateNewRecursivePlanList(List<DateWisePlanBo> planList) {
+        if (planList.size() > 0)
+            addPlanPresenter.addRecursivePlans(planList);
+        else
+            hideLoading();
+    }
+
+    @Override
+    public void updateEditedRecursivePlanList(List<DateWisePlanBo> planList, DateWisePlanBo planBo, String reasonID) {
+        if (planList.size() > 0)
+            addPlanPresenter.saveEditedRecursiveList(planList,planBo,reasonID);
+        else
+            hideLoading();
     }
 
 
@@ -727,10 +801,12 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                 addPlanPresenter.deletePlan(dateWisePlanBo, retailerMasterBO, reasonId);
                 break;
             case RESCHEDULE:
-                addPlanPresenter.updatePlan(tvStartVisitTime.getText().toString(), tvVisitEndTime.getText().toString(), dateWisePlanBo, reasonId);
+                if (((SpinnerBO) spinnerRecursive.getSelectedItem()).getId() > 0) {
+                    addPlanPresenter.updateRecursivePlan(tvStartVisitTime.getText().toString(), tvVisitEndTime.getText().toString(), dateWisePlanBo, reasonId, cbEditRecursive.isChecked());
+                } else
+                    addPlanPresenter.updatePlan(tvStartVisitTime.getText().toString(), tvVisitEndTime.getText().toString(), dateWisePlanBo, reasonId);
                 break;
         }
-
     }
 
     @Override

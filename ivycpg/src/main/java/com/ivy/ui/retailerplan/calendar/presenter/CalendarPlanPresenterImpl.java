@@ -842,6 +842,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         getIvyView().showLoading();
         getCompositeDisposable().add(getListToCopy(fromDate, toDate)
                 .flatMap(planList -> addPlanDataManager.copyPlan(planList, getDataManager().getUser().getUserid()))
+                .flatMap(copiedList -> coreRetailerDataManager.updatePlanVisitCount(copiedList))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(aBoolean -> {
@@ -865,6 +866,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     private void moveWeekPlan(List<DateWisePlanBo> toPlanList, String reasonId) {
         getCompositeDisposable().add(getAWeekPlan(getWeekNo(mSelectedDate))
                 .flatMap(fromPlanList -> addPlanDataManager.movePlan(fromPlanList, toPlanList, reasonId, getDataManager().getUser().getUserid()))
+                .flatMap(movedList -> coreRetailerDataManager.updatePlanVisitCount(movedList))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(aBoolean -> {

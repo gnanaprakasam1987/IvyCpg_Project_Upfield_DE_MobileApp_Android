@@ -9,6 +9,8 @@ import com.ivy.core.di.scope.PerActivity;
 import com.ivy.ui.retailerplan.addplan.AddPlanContract;
 import com.ivy.ui.retailerplan.addplan.data.AddPlanDataManager;
 import com.ivy.ui.retailerplan.addplan.data.AddPlanDataManagerImpl;
+import com.ivy.ui.retailerplan.calendar.data.CalendarPlanDataManager;
+import com.ivy.ui.retailerplan.calendar.data.CalendarPlanDataManagerImpl;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 
@@ -56,5 +58,15 @@ public class AddPlanModule {
     @Provides
     RetailerDataManager retailerDataManager(RetailerDataManagerImpl retailerDataManager){
         return retailerDataManager;
+    }
+
+    @Provides
+    CalendarPlanDataManager providesOfflineDataManger(CalendarPlanDataManagerImpl calendarPlanDataManager) {
+        return calendarPlanDataManager;
+    }
+
+    @Provides
+    com.ivy.ui.retailer.viewretailers.data.RetailerDataManager planRetailerDataManager(com.ivy.ui.retailer.viewretailers.data.RetailerDataManagerImpl planRetailerDataManger){
+        return planRetailerDataManger;
     }
 }

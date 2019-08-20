@@ -2,8 +2,8 @@ package com.ivy.ui.retailerplan.addplan;
 
 public class DateWisePlanBo {
 
-    private int DistributorId, UserId, EntityId, Sequence,cancelReasonId;
-    private String EntityType, Status, Date="",Name,startTime="",endTime="",visitStatus,planStatus ="";
+    private int DistributorId, UserId, EntityId, Sequence,cancelReasonId,recurringGroupId;
+    private String EntityType, Status, Date="",Name,startTime="",endTime="",visitStatus,planStatus ="",RecurringGroupMode;
     private boolean isServerData;
     private boolean isAdhoc;
     private long PlanId;
@@ -144,5 +144,21 @@ public class DateWisePlanBo {
 
     public void setAdhoc(boolean adhoc) {
         isAdhoc = adhoc;
+    }
+
+    public int getRecurringGroupId() {
+        return recurringGroupId;
+    }
+
+    public void setRecurringGroupId(int recurringGroupId) {
+        this.recurringGroupId = recurringGroupId;
+    }
+
+    public String getRecurringGroupMode() {
+        return RecurringGroupMode;
+    }
+
+    public void setRecurringGroupMode(String recurringGroupMode) {
+        RecurringGroupMode = recurringGroupMode;
     }
 }
