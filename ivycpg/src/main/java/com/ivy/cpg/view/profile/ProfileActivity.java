@@ -456,7 +456,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void addTabLayout() {
 
         try {
-            if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("profile"))) {
+            if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("profile"))) {
                 profile_title = bmodel.labelsMasterHelper.applyLabels("profile");
                 tabLayout.addTab(tabLayout.newTab().setText(profile_title));
             } else {
@@ -468,7 +468,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
         if (bmodel.configurationMasterHelper.SHOW_RETAILER_CONTACT) {
             try {
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("retailer_contact"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("retailer_contact"))) {
                     retailer_contact_title = bmodel.labelsMasterHelper.applyLabels("retailer_contact");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(retailer_contact_title));
@@ -483,7 +483,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.SHOW_ORDER_HISTORY) {
             try {
                 bmodel.configurationMasterHelper.loadProfileHistoryConfiguration();
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("order_history"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("order_history"))) {
                     order_history_title = bmodel.labelsMasterHelper.applyLabels("order_history");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(order_history_title));
@@ -499,7 +499,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 && (bmodel.retailerMasterBO.getRField4().equals("1"))) {
             String survey_score_title;
             try {
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("survey_score"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("survey_score"))) {
                     survey_score_title = bmodel.labelsMasterHelper.applyLabels("survey_score");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(survey_score_title));
@@ -513,7 +513,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
         if (bmodel.configurationMasterHelper.SHOW_OUTLET_PLANNING_TAB) {
             try {
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("plan_outlet"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("plan_outlet"))) {
                     plan_outlet_title = bmodel.labelsMasterHelper.applyLabels("plan_outlet");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(plan_outlet_title));
@@ -527,7 +527,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
         if (bmodel.configurationMasterHelper.SHOW_LAST_3MONTHS_BILLS) {
             try {
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("retailer_kpi"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("retailer_kpi"))) {
                     retailer_kpi_title = bmodel.labelsMasterHelper.applyLabels("retailer_kpi");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(retailer_kpi_title));
@@ -541,7 +541,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
         if (bmodel.configurationMasterHelper.SHOW_ASSET_HISTORY) {
             try {
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("asset_history"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("asset_history"))) {
                     ASSET_HISTORY = bmodel.labelsMasterHelper.applyLabels("asset_history");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(ASSET_HISTORY));
@@ -555,7 +555,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
         if (bmodel.configurationMasterHelper.SHOW_MSL_NOT_SOLD) {
             try {
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("msl"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("msl"))) {
                     msl_title = bmodel.labelsMasterHelper.applyLabels("msl");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(msl_title));
@@ -570,7 +570,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.SHOW_INVOICE_HISTORY) {
             try {
                 bmodel.configurationMasterHelper.loadInvoiceHistoryConfiguration();
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("invoice_history"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("invoice_history"))) {
                     invoice_history_title = bmodel.labelsMasterHelper.applyLabels("invoice_history");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(invoice_history_title));
@@ -585,7 +585,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         if (bmodel.configurationMasterHelper.SHOW_TASK) {
             try {
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("task_tab"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("task_tab"))) {
                     TASK = bmodel.labelsMasterHelper.applyLabels("task_tab");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(TASK));
@@ -601,7 +601,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.SHOW_AVG_SALES_PER_LEVEL) {
             try {
 
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("sales_per_level"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("sales_per_level"))) {
                     SALES_PER_LEVEL = bmodel.labelsMasterHelper.applyLabels("sales_per_level");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(SALES_PER_LEVEL));
@@ -616,7 +616,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         if (bmodel.configurationMasterHelper.SHOW_DISTRIBUTOR_PROFILE) {
             try {
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("distributor_profile"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("distributor_profile"))) {
                     DISTRIBUTOR_PROFILE = bmodel.labelsMasterHelper.applyLabels("distributor_profile");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(DISTRIBUTOR_PROFILE));
@@ -635,7 +635,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         if (bmodel.configurationMasterHelper.SHOW_RET_NOTES_IN_PROFILE) {
             try {
-                if (StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("notes_profile"))) {
+                if (!StringUtils.isNullOrEmpty(bmodel.labelsMasterHelper.applyLabels("notes_profile"))) {
                     retailer_notes_title = bmodel.labelsMasterHelper.applyLabels("notes_profile");
 
                     tabLayout.addTab(tabLayout.newTab()

@@ -811,11 +811,11 @@ public class NewOutletBO {
         this.district = district;
     }
 
-    public java.lang.String getWebSiteUrl() {
+    public String getWebSiteUrl() {
         return webSiteUrl;
     }
 
-    public void setWebSiteUrl(java.lang.String webSiteUrl) {
+    public void setWebSiteUrl(String webSiteUrl) {
         this.webSiteUrl = webSiteUrl;
     }
 }

@@ -1943,7 +1943,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                         "creditlimit,RPTypeId,tinnumber,RField3,distributorId,TaxTypeid," +
                         "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber,RField5,RField6,TinExpDate," +
                         "pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid," +
-                        "RField8,RField9,RField10,RField11,RField12,RField13,RField14,RField15,RField16,RField17,RField18,RField19";
+                        "RField8,RField9,RField10,RField11,RField12,RField13,RField14,RField15,RField16,RField17,RField18,RField19,Website";
 
                 int userid = outlet.getUserId();
                 if (userid == 0)
@@ -1992,7 +1992,8 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                         + "," + getStringQueryParam(outlet.getRfield16())
                         + "," + getStringQueryParam(outlet.getRfield17())
                         + "," + getStringQueryParam(outlet.getRfield18())
-                        + "," + getStringQueryParam(outlet.getRfield19());
+                        + "," + getStringQueryParam(outlet.getRfield19())
+                        + "," + getStringQueryParam(outlet.getWebSiteUrl());
 
 
                 dbUtil.insertSQL("RetailerMaster", column, value);
@@ -2108,7 +2109,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
         return Single.fromCallable(() -> {
             String column, value;
             column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
-                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile,District,URL";
+                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile,District";
             try {
 
                 String lattitude = (outlet.getNewOutletlattitude() + "").contains("E")
@@ -2144,8 +2145,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                                 + "," + getStringQueryParam(outlet.getRegion())
                                 + "," + getStringQueryParam(outlet.getCountry())
                                 + "," + getStringQueryParam(outlet.getMobile())
-                                + "," + getStringQueryParam(outlet.getDistrict())
-                                + "," + getStringQueryParam(outlet.getWebSiteUrl());
+                                + "," + getStringQueryParam(outlet.getDistrict());
 
 
                         dbUtil.insertSQL("RetailerAddress", column, value);
@@ -2170,8 +2170,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                             + "," + getStringQueryParam(outlet.getRegion())
                             + "," + getStringQueryParam(outlet.getCountry())
                             + "," + getStringQueryParam(outlet.getMobile())
-                            + "," + getStringQueryParam(outlet.getDistrict())
-                            + "," + getStringQueryParam(outlet.getWebSiteUrl());
+                            + "," + getStringQueryParam(outlet.getDistrict());
 
                     dbUtil.insertSQL("RetailerAddress", column, value);
 
@@ -2476,7 +2475,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
     }
 
     @Override
-    public Single<Boolean> saveEditProfileField(HashMap<String,?> retailerProfileField,String tid){
+    public Single<Boolean> saveEditProfileField(HashMap<String, ?> retailerProfileField, String tid) {
 
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
@@ -2491,7 +2490,6 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                     profileFieldInsert(profileFieldList, tid);
 
 
-
                     ArrayList<StandardListBO> priorityProdList = new ArrayList<>();
                     if (retailerProfileField.get("Priority") != null && retailerProfileField.get("Priority") instanceof ArrayList<?>)
                         priorityProdList = (ArrayList<StandardListBO>) retailerProfileField.get("Priority");
@@ -2499,10 +2497,9 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                     priorityProductInsert(priorityProdList, tid);
 
 
-
-                    HashMap<String,String> nearbyRetailerList = new HashMap<>();
+                    HashMap<String, String> nearbyRetailerList = new HashMap<>();
                     if (retailerProfileField.get("NearByRetailer") != null && retailerProfileField.get("NearByRetailer") instanceof ArrayList<?>)
-                        nearbyRetailerList = (HashMap<String,String>) retailerProfileField.get("NearByRetailer");
+                        nearbyRetailerList = (HashMap<String, String>) retailerProfileField.get("NearByRetailer");
 
                     nearByRetailerInsert(nearbyRetailerList, tid);
 
@@ -2548,7 +2545,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
         for (ConfigureBO retaileProfileField : profileFieldList) {
 
             String value = "";
-            boolean isInsert =  true;
+            boolean isInsert = true;
 
             if (retaileProfileField.isDeleteRow())
                 isInsert = false;
@@ -2560,7 +2557,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
 
                 FileUtils.checkFileExist(AppUtils.latlongImageFileName + "", dataManager.getRetailMaster().getRetailerID(), true);
 
-            }else if(retaileProfileField.getConfigCode().equals(ProfileConstant.PROFILE_60)){
+            } else if (retaileProfileField.getConfigCode().equals(ProfileConstant.PROFILE_60)) {
 
                 if (isInsert) {
                     value = "Profile" + "/" + dataManager.getUser().getDownloadDate().replace("/", "")
@@ -2571,7 +2568,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
 
                 FileUtils.checkFileExist(retaileProfileField.getMenuNumber() + "", dataManager.getRetailMaster().getRetailerID(), false);
 
-            }else{
+            } else {
                 value = retaileProfileField.getMenuNumber();
             }
 
@@ -2582,29 +2579,29 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                 String mCustomQuery = StringUtils.getStringQueryParam(retaileProfileField.getConfigCode()) + ","
                         + StringUtils.getStringQueryParam(value) + "," + retaileProfileField.getRefId() + "," + dataManager.getRetailMaster().getRetailerID() + ")";
 
-                insertRowQuery(tid,mCustomQuery);
+                insertRowQuery(tid, mCustomQuery);
 
-            }else
+            } else
                 deleteQuery(retaileProfileField.getConfigCode());
 
         }
     }
 
-    private void insertRowQuery(String tid, String mCustomQuery){
+    private void insertRowQuery(String tid, String mCustomQuery) {
         final String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)"
                 + "values (" + getStringQueryParam(tid) + "," + mCustomQuery;
 
         dbUtil.executeQ(insertquery);
     }
 
-    private void deleteQuery(String code){
+    private void deleteQuery(String code) {
         dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code ="
                 + getStringQueryParam(code)
                 + "and RetailerId=" + dataManager.getRetailMaster().getRetailerID(), false);
     }
 
     @Override
-    public Single<Boolean> saveEditContactData(ArrayList<RetailerContactBo> contactList,final String tid) {
+    public Single<Boolean> saveEditContactData(ArrayList<RetailerContactBo> contactList, final String tid) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -2621,7 +2618,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                         }
                     }
 
-                    retailerContactEdit(contactList,tid);
+                    retailerContactEdit(contactList, tid);
 
                 } catch (Exception e) {
                     Commons.printException("" + e);
@@ -2640,12 +2637,12 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
         insertRowQuery(tid, mCustomquery);
     }
 
-    private void retailerContactEdit(ArrayList<RetailerContactBo> retailerContactList,String tid){
+    private void retailerContactEdit(ArrayList<RetailerContactBo> retailerContactList, String tid) {
 
         final String column = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName," +
                 "ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid,salutationLovId,IsEmailNotificationReq";
 
-        String where="RetailerId="+getStringQueryParam(dataManager.getRetailMaster().getRetailerID());
+        String where = "RetailerId=" + getStringQueryParam(dataManager.getRetailMaster().getRetailerID());
 
         Cursor getCpidCursor = dbUtil.selectSQL("Select CPId from RetailerContactEdit where retailerId=" + getStringQueryParam(dataManager.getRetailMaster().getRetailerID()));
 
@@ -2655,7 +2652,7 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
             }
         }
 
-        dbUtil.deleteSQL("RetailerContactEdit",where,false);
+        dbUtil.deleteSQL("RetailerContactEdit", where, false);
 
         if (retailerContactList != null && !retailerContactList.isEmpty()) {
             for (RetailerContactBo retailerContactBo : retailerContactList) {
@@ -2672,12 +2669,12 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                             + StringUtils.getStringQueryParam(retailerContactBo.getStatus()) + ","
                             + StringUtils.getStringQueryParam(retailerContactBo.getCpId()) + ","
                             + StringUtils.getStringQueryParam(dataManager.getRetailMaster().getRetailerID()) + ","
-                            + StringUtils.getStringQueryParam(tid)+ ","
-                            + StringUtils.getStringQueryParam(retailerContactBo.getContactSalutationId())+ ","
-                            + StringUtils.getStringQueryParam(retailerContactBo.getIsEmailPrimary()+"");
+                            + StringUtils.getStringQueryParam(tid) + ","
+                            + StringUtils.getStringQueryParam(retailerContactBo.getContactSalutationId()) + ","
+                            + StringUtils.getStringQueryParam(retailerContactBo.getIsEmailPrimary() + "");
                     dbUtil.insertSQL("RetailerContactEdit", column, value);
 
-                    addContactAvail(dbUtil,retailerContactBo,dataManager.getRetailMaster().getRetailerID(),tid);
+                    addContactAvail(dbUtil, retailerContactBo, dataManager.getRetailMaster().getRetailerID(), tid);
                 }
             }
         }
@@ -2733,14 +2730,14 @@ public class ProfileDataManagerImpl implements ProfileDataManager {
                     Commons.printException(e);
                 }
 
-                updateRetailerMasterAttributes(tid,attributeList);
+                updateRetailerMasterAttributes(tid, attributeList);
 
                 return true;
             }
         });
     }
 
-    private void updateRetailerMasterAttributes(final String mTid,final ArrayList<AttributeBO> selectedAttribList) {
+    private void updateRetailerMasterAttributes(final String mTid, final ArrayList<AttributeBO> selectedAttribList) {
 
         try {
             dbUtil.deleteSQL("RetailerEditAttribute", " tid =" + StringUtils.getStringQueryParam(mTid), false);

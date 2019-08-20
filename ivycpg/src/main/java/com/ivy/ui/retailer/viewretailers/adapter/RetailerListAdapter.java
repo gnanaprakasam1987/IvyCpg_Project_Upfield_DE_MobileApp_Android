@@ -47,19 +47,19 @@ public class RetailerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         String retAddStr = "";
 
-        if (StringUtils.isNullOrEmpty(holder.retailerMasterBO.getAddress1()))
+        if (!StringUtils.isNullOrEmpty(holder.retailerMasterBO.getAddress1()))
             retAddStr = holder.retailerMasterBO.getAddress1();
 
-        if (StringUtils.isNullOrEmpty(holder.retailerMasterBO.getAddress2()))
+        if (!StringUtils.isNullOrEmpty(holder.retailerMasterBO.getAddress2()))
             retAddStr += ", " + holder.retailerMasterBO.getAddress2();
 
-        if (StringUtils.isNullOrEmpty(holder.retailerMasterBO.getAddress3()))
+        if (!StringUtils.isNullOrEmpty(holder.retailerMasterBO.getAddress3()))
             retAddStr += ", " + holder.retailerMasterBO.getAddress3();
 
-        if (StringUtils.isNullOrEmpty(holder.retailerMasterBO.getCity()))
+        if (!StringUtils.isNullOrEmpty(holder.retailerMasterBO.getCity()))
             retAddStr += ", " + holder.retailerMasterBO.getCity();
 
-        if (StringUtils.isNullOrEmpty(holder.retailerMasterBO.getPincode()))
+        if (!StringUtils.isNullOrEmpty(holder.retailerMasterBO.getPincode()))
             retAddStr += " - " + holder.retailerMasterBO.getPincode();
 
         holder.tvLocation.setText(retAddStr);
