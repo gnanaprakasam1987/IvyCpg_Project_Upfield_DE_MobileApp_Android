@@ -552,7 +552,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 List<String> retailerIds = new ArrayList<>();
                 List<String> vistedRetailerIds = new ArrayList<>();
                 List<String> adhocRetailerIds = new ArrayList<>();
-                Cursor c = mDbUtil.selectSQL("select EntityId,VisitStatus,isAdhocPlan From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+                Cursor c = mDbUtil.selectSQL("select EntityId,VisitStatus,isAdhocPlan From DatewisePlan where UPPER(planStatus) ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
                         "AND Date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
                 if (c != null
@@ -933,7 +933,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             HashMap<String, Integer> plannedMap = new HashMap<>();
             HashMap<String, Integer> visitedMap = new HashMap<>();
             Cursor c;
-            c = mDbUtil.selectSQL("select EntityId From DatewisePlan where (planStatus ='APPROVED'or planStatus='PENDING')");
+            c = mDbUtil.selectSQL("select EntityId From DatewisePlan where (UPPER(planStatus) ='APPROVED'or UPPER(planStatus)='PENDING')");
             if (c != null
                     && c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -979,7 +979,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
         try {
 
             Cursor c;
-            c = mDbUtil.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.getStringQueryParam(retObj.getRetailerID()));
+            c = mDbUtil.selectSQL("select PlanId From DatewisePlan where (UPPER(planStatus) ='APPROVED'or UPPER(planStatus) = 'PENDING') AND EntityId=" + StringUtils.getStringQueryParam(retObj.getRetailerID()));
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
@@ -1059,7 +1059,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             initDb();
             List<String> retailerIds = new ArrayList<>();
             List<String> vistedRetailerIds = new ArrayList<>();
-            Cursor c = mDbUtil.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+            Cursor c = mDbUtil.selectSQL("select EntityId From DatewisePlan where UPPER(planStatus) ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
                     "AND Date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (c != null

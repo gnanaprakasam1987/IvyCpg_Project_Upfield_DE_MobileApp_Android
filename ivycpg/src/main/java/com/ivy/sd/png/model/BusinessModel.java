@@ -1859,7 +1859,7 @@ public class BusinessModel extends Application {
             HashMap<String, Integer> plannedMap = new HashMap<>();
             HashMap<String, Integer> visitedMap = new HashMap<>();
             Cursor c;
-            c = db.selectSQL("select EntityId From DatewisePlan where (planStatus ='APPROVED'or planStatus='PENDING')");
+            c = db.selectSQL("select EntityId From DatewisePlan where ( UPPER(planStatus) ='APPROVED'or UPPER(planStatus) ='PENDING')");
             if (c != null
                     && c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -1904,7 +1904,7 @@ public class BusinessModel extends Application {
         List<String> retailerIds = new ArrayList<>();
         List<String> vistedRetailerIds = new ArrayList<>();
         List<String> adhocRetailerIds = new ArrayList<>();
-        Cursor c = db.selectSQL("select EntityId,VisitStatus,isAdhocPlan From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+        Cursor c = db.selectSQL("select EntityId,VisitStatus,isAdhocPlan From DatewisePlan where UPPER(planStatus) = 'APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
                 "AND Date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null) {
             if (c.getCount() > 0) {
@@ -3819,7 +3819,6 @@ public class BusinessModel extends Application {
             }
 
 
-
             if (configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN) {
                 c = db.selectSQL("SELECT DISTINCT ImageName,pid FROM LastVisitSOSImage");
                 int count = 0;
@@ -3845,7 +3844,6 @@ public class BusinessModel extends Application {
             }
 
 
-
             if (configurationMasterHelper.IS_SURVEY_RETAIN_LAST_VISIT_TRAN) {
                 c = db.selectSQL("SELECT DISTINCT ImageName,QuestionId FROM LastVisitSurveyImage");
                 int count = 0;
@@ -3869,8 +3867,6 @@ public class BusinessModel extends Application {
                     c.close();
                 }
             }
-
-
 
 
             c = db.selectSQL("SELECT DISTINCT ImageURL,fileSize,imageid,imagename,ifnull(SM.listCode,'') FROM DigitalContentMaster left join standardListMaster SM ON SM.listId=storageType");
